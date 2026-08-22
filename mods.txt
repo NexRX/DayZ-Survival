@@ -1,0 +1,19 @@
+# DayZ server mod list
+# ---------------------
+# Format:  <workshop_id>  <local_@name>
+#   - One mod per line.
+#   - Order matters: mods are loaded top-to-bottom (dependencies first).
+#   - Blank lines and lines starting with '#' are ignored.
+#
+# This is the official "DayZ Expansion Bundle" collection:
+#   https://steamcommunity.com/sharedfiles/filedetails/?id=2572523362
+#
+# Add your own mods below the Expansion set, keeping the load order sane
+# (frameworks first, content next, tweaks last).
+
+1559212036  @CF
+2545327648  @Dabs_Framework
+1564026768  @Community-Online-Tools
+2572331007  @DayZ-Expansion-Bundle
+2116157322  @DayZ-Expansion-Licensed
+2792982069  @DayZ-Expansion-AI

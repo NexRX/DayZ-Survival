@@ -1,0 +1,17 @@
+# --- Secrets & local config ---
+.env
+
+# --- Large / generated runtime dirs ---
+steamcmd/
+server/
+profiles/
+
+# --- Editor / OS noise ---
+*.swp
+*~
+.DS_Store
+
+# --- Nix / direnv ---
+.direnv/
+result
+result-*
