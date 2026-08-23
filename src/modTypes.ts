@@ -23,7 +23,7 @@ import type { Mod } from "./mods.ts";
 // by the @name used in mods.txt. NCPR is deliberately excluded — its types
 // are published separately on GitHub (https://github.com/N3msi/NCPR)
 // rather than shipped in the workshop download, so there's no local file to
-// discover here; see MODS.md.
+// discover here; see ncpr.ts instead, which fetches and merges them directly.
 //
 // The two CJ187 money mods are included speculatively: their Steam pages
 // mention bundled example server files but don't spell out a types.xml by

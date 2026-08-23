@@ -82,20 +82,24 @@ are the ones that need something more, gathered from each mod's own Steam
 page description via a single bulk `GetPublishedFileDetails` API call (see
 `deno task resolve` for the same technique) - no manual browsing needed:
 
-### ⚠️ First-ever start needs a restart
+### First-ever start automatically primes itself
 
 Every merge/tuning step below (AI patrols, spatial AI, dynamic missions,
 types.xml merges, loot/difficulty/money tuning) works by editing config
 files that the mods themselves generate - and most mods only write those
 files out once their mission has actually loaded for the first time. On a
-**brand-new install**, none of them exist yet when `up`/`start` runs its
-ensure/tune pipeline, so that first launch boots with untuned mod defaults
-(each step just logs that its target file isn't there yet and skips
-itself). Stop the server once it's up, then run `up`/`start` again - by
-then every mod has generated its config, and this second pass is what
-actually applies all the tuning in this document. After that, every
-subsequent start re-applies it automatically; this is strictly a one-time,
-first-install thing.
+**brand-new install**, none of them exist yet.
+
+`up`/`start` ([`src/prime.ts`](src/prime.ts)) handles this automatically: if
+any of those files are missing, it launches the server headless in the
+background first, polls until every mod has generated its config (or gives
+up after 15 minutes, logging a warning either way), then stops it and runs
+the full ensure/tune pipeline before the real, foreground start. You'll see
+an extra "priming" pass with its own log lines the very first time you run
+`up`/`start` - that's expected, and it only ever happens once per install
+(every later start finds the configs already there and skips straight to
+the real start). The priming server's own console output is saved to
+`profiles/bootstrap-prime.log` if you want to see what it did.
 
 **Ship their own `types.xml` to merge in - automated**
 ([`src/modTypes.ts`](src/modTypes.ts), runs on every `up`/`start`)
@@ -120,15 +124,18 @@ blocks instead. It never touches or duplicates an entry that's already
 there (vanilla, another mod, or your own hand-editing), and it's a no-op
 until each mod is actually downloaded, so it's safe to run on every start.
 
-**`NCPR-*` (all 5 modules) is the one exception** - its types are published
-separately on the [NCPR GitHub](https://github.com/N3msi/NCPR) rather than
-shipped as a file in the workshop download itself, so there's nothing local
-for `ensureModTypesMerged()` to find. Merging that in would mean fetching a
-third-party GitHub repo on every server start (a reliability/offline
-tradeoff this project's design otherwise avoids), so it's left as a manual,
-one-time step if you want NCPR loot to spawn naturally - copy the relevant
-`<type>` blocks from that repo into `mpmissions/<mission>/db/types.xml`
-yourself.
+**`NCPR-*` (all 5 modules) is the one exception to local scanning** - its
+types are published separately on the
+[NCPR GitHub](https://github.com/N3msi/NCPR) rather than shipped as a file
+in the workshop download itself, so there's nothing local for
+`ensureModTypesMerged()` to find. [`src/ncpr.ts`](src/ncpr.ts) handles this
+separately instead: if any `@NCPR-*` module is in `mods.txt`, it fetches
+the mod's own `NM_TYPES.xml` and `NM_CFGSPAWNABLETYPES.xml` directly from
+that repo and merges them the same additive, name-deduped way as any local
+types.xml. Every fetched file is cached under `ai/cache/` (gitignored), so
+it keeps working offline after the first successful fetch; any network
+failure (offline, GitHub down/rate-limited) just skips the step with a
+warning instead of blocking `up`/`start`.
 
 **Need a one-time _in-game_ admin action (not a file edit)**
 

@@ -6,6 +6,9 @@ steamcmd/
 server/
 profiles/
 
+# --- Fetched-at-runtime third-party content (see src/ncpr.ts) ---
+ai/cache/
+
 # --- Editor / OS noise ---
 *.swp
 *~

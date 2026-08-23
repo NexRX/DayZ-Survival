@@ -9,6 +9,7 @@ import { ensureAIPatrols } from "./ai.ts";
 import { ensureSpatialAI } from "./spatial.ts";
 import { ensureDynamicMissions } from "./dynamicMissions.ts";
 import { ensureModTypesMerged } from "./modTypes.ts";
+import { ensureNCPRTypesMerged } from "./ncpr.ts";
 import { tuneAirdropLoot, tuneMissionRewards, tuneStartingLoadouts } from "./loot.ts";
 import {
   tuneAIBanditsDifficulty,
@@ -20,6 +21,7 @@ import {
 import { tuneAnimalSpawns, tuneFoodScarcity, tuneMoneyScarcity } from "./economy.ts";
 import { loadMods, modParam, serverModParam } from "./mods.ts";
 import { ensureConfig, type Settings } from "./config.ts";
+import { primeModConfigsIfNeeded } from "./prime.ts";
 
 export async function genConfig(s: Settings): Promise<void> {
   const cfg = `${SERVER_DIR}/serverDZ.cfg`;
@@ -84,7 +86,31 @@ export async function doStart(s: Settings): Promise<never> {
   await ensureServer(s);
   await ensureMods(s);
   const allMods = await loadMods();
+  await genConfig(s);
+
+  const mods = modParam(allMods);
+  const serverMods = serverModParam(allMods);
+  await Deno.mkdir(PROFILE_DIR, { recursive: true });
+  const extra = s.EXTRA_PARAMS.trim() ? s.EXTRA_PARAMS.trim().split(/\s+/) : [];
+  const args = [
+    await serverBinary(),
+    "-config=serverDZ.cfg",
+    `-port=${s.PORT}`,
+    `-mod=${mods}`,
+    ...(serverMods ? [`-servermod=${serverMods}`] : []),
+    `-BEpath=${PROFILE_DIR}/battleye`,
+    `-profiles=${PROFILE_DIR}`,
+    `-cpuCount=${navigator.hardwareConcurrency}`,
+    ...extra,
+  ];
+
+  // On a brand-new install, none of the mod-generated files the ensure/tune
+  // pipeline below edits exist yet - this runs the server headless once so
+  // they do, before we tune anything. No-op on every later start.
+  await primeModConfigsIfNeeded(args);
+
   await ensureModTypesMerged(allMods);
+  await ensureNCPRTypesMerged(allMods);
   await ensureAIPatrols();
   await ensureSpatialAI();
   await ensureDynamicMissions();
@@ -99,27 +125,10 @@ export async function doStart(s: Settings): Promise<never> {
   await tuneFoodScarcity();
   await tuneAnimalSpawns();
   await tuneMoneyScarcity();
-  await genConfig(s);
 
-  const mods = modParam(allMods);
-  const serverMods = serverModParam(allMods);
   log(`Starting DayZ server on UDP ${s.PORT}`);
   log(`Mods: ${mods}`);
   if (serverMods) log(`Server-only mods: ${serverMods}`);
-  await Deno.mkdir(PROFILE_DIR, { recursive: true });
-
-  const extra = s.EXTRA_PARAMS.trim() ? s.EXTRA_PARAMS.trim().split(/\s+/) : [];
-  const args = [
-    await serverBinary(),
-    "-config=serverDZ.cfg",
-    `-port=${s.PORT}`,
-    `-mod=${mods}`,
-    ...(serverMods ? [`-servermod=${serverMods}`] : []),
-    `-BEpath=${PROFILE_DIR}/battleye`,
-    `-profiles=${PROFILE_DIR}`,
-    `-cpuCount=${navigator.hardwareConcurrency}`,
-    ...extra,
-  ];
 
   // steam-run provides the prebuilt DayZServer an FHS environment on NixOS.
   const code = await runInherit("steam-run", args, {
