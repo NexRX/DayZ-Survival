@@ -24,6 +24,7 @@ import {
   SPATIAL_SETTINGS,
   TERJE_LOADOUTS,
   TERJE_RESPAWNS,
+  TERJE_START_SCREEN_CFG,
 } from "./paths.ts";
 import { log, ok, warn } from "./ui.ts";
 import { exists } from "./steam.ts";
@@ -46,6 +47,7 @@ const PRIME_TARGETS = [
   AI_BANDITS_STATIC_SETTINGS,
   TERJE_LOADOUTS,
   TERJE_RESPAWNS,
+  TERJE_START_SCREEN_CFG,
 ];
 
 const PRIME_TIMEOUT_MS = 15 * 60_000;

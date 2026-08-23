@@ -15,6 +15,7 @@ import {
   tuneMissionRewards,
   tuneRespawnPoints,
   tuneStartingLoadouts,
+  tuneStartScreenSettings,
 } from "./loot.ts";
 import {
   tuneAIBanditsDifficulty,
@@ -123,6 +124,7 @@ export async function doStart(s: Settings): Promise<never> {
   await tuneMissionRewards();
   await tuneStartingLoadouts();
   await tuneRespawnPoints();
+  await tuneStartScreenSettings();
   await tuneAIDifficulty();
   await tuneSpatialAIDifficulty();
   await tuneMissionDifficulty();

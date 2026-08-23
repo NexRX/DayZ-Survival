@@ -29,7 +29,10 @@ import type { Mod } from "./mods.ts";
 // mention bundled example server files but don't spell out a types.xml by
 // name. Harmless either way - findTypesFiles() below only merges what it
 // actually finds, so this is a no-op until the mods are downloaded and
-// confirmed (or corrected) either way.
+// confirmed (or corrected) either way. Buddys-BoltZ is included on the same
+// speculative basis (a community-made "types.xml example" thread on its
+// Steam page implies its ammo variants need one, but it's unclear whether
+// the mod ships it itself).
 const MOD_TYPES_SOURCES = new Set([
   "@Windstride-Clothing",
   "@DayZ-Dog",
@@ -39,6 +42,8 @@ const MOD_TYPES_SOURCES = new Set([
   "@Dart-Board-Game",
   "@CJ187-MoreMoney",
   "@CJ187-Money-Euros-Only",
+  "@Zens-Zippo-Lighter",
+  "@Buddys-BoltZ",
 ]);
 
 const TYPE_BLOCK = /<type name="([^"]+)">[\s\S]*?<\/type>/g;

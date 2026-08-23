@@ -17,6 +17,7 @@ import {
   DYNAMIC_MISSIONS_SETTINGS,
   TERJE_LOADOUTS,
   TERJE_RESPAWNS,
+  TERJE_START_SCREEN_CFG,
 } from "./paths.ts";
 import { log, ok } from "./ui.ts";
 import { exists } from "./steam.ts";
@@ -200,4 +201,40 @@ export async function tuneRespawnPoints(): Promise<void> {
   text = text.replace("<Respawns>", `<Respawns>\n${TERJE_RESPAWNS_MARKER}`);
   await Deno.writeTextFile(TERJE_RESPAWNS, text);
   ok(`Removed respawn option(s) [${removed.join(", ")}] from ${TERJE_RESPAWNS}`);
+}
+
+// --- Terje-Start-Screen settings (TerjeSettings/StartScreen.cfg) ---
+//
+// StartScreen.SkillsPageEnabled shows a page on character creation that lets
+// a fresh spawn pre-allocate skill/perk levels from a pool of points
+// (StartScreen.SkillsPagePoints) before ever playing - the opposite of
+// "earned power": skills should only grow from actually butchering, making
+// fires, etc. (Terje-Skills' own progression system, unaffected by this
+// setting). This disables just that page, verbatim-matched, the first time
+// it's seen; if an admin has already changed it themselves, this is a
+// no-op.
+const TERJE_START_SCREEN_MARKER = "// dayz-survival:startscreen-tuned";
+const TERJE_SKILLS_PAGE_ENABLED = /StartScreen\.SkillsPageEnabled\s*=\s*true;/;
+
+export async function tuneStartScreenSettings(): Promise<void> {
+  if (!(await exists(TERJE_START_SCREEN_CFG))) {
+    log(
+      "Terje-Start-Screen's StartScreen.cfg not generated yet — the mod will write its " +
+        "defaults into the profile on first server start",
+    );
+    return;
+  }
+
+  let text = await Deno.readTextFile(TERJE_START_SCREEN_CFG);
+  if (text.includes(TERJE_START_SCREEN_MARKER)) return; // already tuned, and not reset by a Steam update
+
+  if (!TERJE_SKILLS_PAGE_ENABLED.test(text)) return; // already customized by an admin - leave it alone
+
+  text = text.replace(TERJE_SKILLS_PAGE_ENABLED, "StartScreen.SkillsPageEnabled = false;");
+  text = `${TERJE_START_SCREEN_MARKER}\n${text}`;
+  await Deno.writeTextFile(TERJE_START_SCREEN_CFG, text);
+  ok(
+    "Disabled the start-screen skill-point allocation page in " +
+      `${TERJE_START_SCREEN_CFG} - skills are now purely earned through play`,
+  );
 }

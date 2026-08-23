@@ -59,6 +59,63 @@ A few notes on choices made while porting that list over:
   start** if it can't verify those credentials. Only add it if you actually
   want CFTools Cloud integration.
 
+### The reference server's own custom pack
+
+BARBA RIJA HARDCORE also runs its own bundle, **"BARBA RIJA HARDCORE SERVER
+PACK"** (3085139498) - a wrapper around 10 smaller, mostly independent mods.
+Five made it into `mods.txt`, all self-contained (no extra setup needed):
+
+- **`A-Hunters-Ritual`** - skinning an animal drops a blood item you can
+  purify with Hemoclear tablets or drink raw at your own risk. Reinforces
+  "hunt, don't just scavenge" (see the loot-economy section below).
+- **`Zens-Zippo-Lighter`** - a refillable Zippo (topped up with gasoline,
+  ~30 min per full tank) plus a reworked vanilla petrol lighter (~15 min,
+  non-refillable). Both are real light sources, not just fire-starters.
+  Ships a reference `types.xml` that `ensureModTypesMerged()`
+  ([`src/modTypes.ts`](src/modTypes.ts)) merges in automatically, same as
+  the other mods in that list, so the item actually spawns in the loot
+  economy.
+- **`Burning-Mutant`** / **`Freezing-Mutant`** - two special infected that
+  radiate damaging heat/cold in a radius around themselves (with matching
+  wound/frostbite chances and gear-based protection), on top of
+  `InediaInfectedAI`/`CreepyZombies`/`AI-Bandits` above. Each self-generates
+  its own tuning JSON in the profile on first load, the same pattern as
+  `AI-Bandits`.
+- **`Buddys-BoltZ`** - craftable explosive/smoke/chemgas crossbow bolts,
+  combining `HuntingBolts` with existing grenades/explosives. Speculatively
+  added to `ensureModTypesMerged()`'s source list in case it ships a
+  types.xml too (harmless no-op if it doesn't - see the comment there).
+
+Five were left out, for concrete reasons rather than just "already have it":
+
+- The pack itself and its **`dzr_hardcore_tweaks`** piece (2678427280) are
+  both since **removed from the Workshop entirely** ("removed... violates
+  Steam Community & Content Guidelines" / "incompatible with DayZ") -
+  unavailable regardless of interest. `dzr_hardcore_tweaks` wasn't a skill
+  system either, for what it's worth - just crafting-friction tweaks (cook
+  without a knife, longer firestarting/digging, rag crafting without
+  tools).
+- **Attachable Gas Mask** (3233855767) is the same author's (Bloodshot_vp)
+  own earlier, smaller mod that **`Gas-Mask-Overhaul`** (already in
+  Weapons/equipment above) directly supersedes - identical belt-holster/
+  canteen-slot attachment mechanic, just fewer masks/filters. Running both
+  would duplicate/conflict over the same vanilla slots.
+- **Namalsk Tourist Map** (2315833790) is a lootable paper-map item
+  illustrating Namalsk's geography specifically. Our mission is Chernarus
+  (`dayzOffline.chernarusplus`), so it'd just be a broken/pointless item
+  showing the wrong island here.
+- **Old Food** (3237950572) was already in `mods.txt`, under Food/survival
+  mechanics.
+- **SimpleMatch** (2848676009) reworks the vanilla `PetrolLighter` class the
+  same way `Zens-Zippo-Lighter` does, and **running both crashes the server
+  during config compile every time** - confirmed by bisecting `mods.txt`
+  down to just this pair, in both load orders. It's a genuine mutual
+  incompatibility between the two mods, not something fixable from this
+  project's side. `Zens-Zippo-Lighter` was kept since it's the mod
+  explicitly named in the reference pack's own list; drop it and add
+  `2848676009  @SimpleMatch` back instead if you'd rather have matchbox
+  rationing than a refillable Zippo.
+
 ### ⚠️ Before you run `deno task mods`/`up` with this list
 
 - **`Terje-Core`'s own Steam page warns**: removing it later "will corrupt
@@ -416,6 +473,13 @@ JSON/XML (which would just get reverted on the next start).
   `profiles/TerjeSettings/StartScreen/Respawns.xml` - all three are too
   safe/convenient for hardcore play. The regional map respawns and the
   SteamGUID-gated "admin" base are left as-is.
+- `tuneStartScreenSettings()` disables `StartScreen.SkillsPageEnabled` in
+  `profiles/TerjeSettings/StartScreen.cfg` - the page that lets a fresh
+  spawn pre-allocate skill/perk levels from a pool of points before ever
+  playing. That's the opposite of "earned power": skills should only grow
+  from actually butchering, making fires, etc. via `Terje-Skills`' own
+  progression system (`profiles/TerjeSettings/Skills.cfg`), which is
+  unaffected by this setting and keeps working normally.
 
 ### AI difficulty ([`src/difficulty.ts`](src/difficulty.ts))
 

@@ -146,6 +146,36 @@
 2918418331  @Survivor-Animations
 1565871491  @BuilderItems
 
+# --- "BARBA RIJA HARDCORE SERVER PACK" (3085139498), the reference
+# server's own custom content bundle. Not all of it made the cut:
+#   - The pack itself and its "dzr_hardcore_tweaks" piece (2678427280) are
+#     both since pulled from the Workshop entirely ("removed... violates
+#     Steam Community & Content Guidelines" / "incompatible with DayZ") -
+#     unavailable regardless of interest.
+#   - "Attachable Gas Mask" (3233855767) is skipped: it's the same author's
+#     (Bloodshot_vp) own earlier, smaller mod that "Gas Mask Overhaul"
+#     (above, in Weapons/equipment) directly supersedes - same belt-
+#     holster/canteen-slot attachment mechanic, just fewer masks/filters.
+#     Running both would duplicate/conflict over the same vanilla slots.
+#   - "Namalsk Tourist Map" (2315833790) is skipped: it's a lootable paper
+#     map item illustrating Namalsk's geography specifically, and our
+#     mission is Chernarus (dayzOffline.chernarusplus) - it'd just be a
+#     broken/pointless item showing the wrong island here.
+#   - "Old Food" (3237950572) is already above, in Food/survival mechanics.
+#   - "SimpleMatch" (2848676009) is skipped: it and "Zens-Zippo-Lighter"
+#     (below) both rework the vanilla PetrolLighter class as a refillable
+#     light source, and running both crashes the server during config
+#     compile every time (confirmed by bisecting down to just this pair, in
+#     both load orders - a genuine mutual incompatibility, not an ordering
+#     fix). Zens-Zippo-Lighter is kept, being the mod explicitly named in
+#     the reference pack's own list.
+# What's left, all standalone content with no further setup needed: ---
+3229104508  @A-Hunters-Ritual
+2834577714  @Burning-Mutant
+2867537797  @Freezing-Mutant
+3170285574  @Zens-Zippo-Lighter
+3036748011  @Buddys-BoltZ
+
 # Server-side-only AI extras (loaded via -servermod=, not downloaded by
 # players) - see MODS.md for what each does and how they're configured.
 2874589934  @DayZ-Dynamic-AI-Addon        server

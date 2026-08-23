@@ -84,6 +84,14 @@ export const TERJE_LOADOUTS = `${PROFILE_DIR}/TerjeSettings/StartScreen/Loadouts
 // self-generated from the mod's template the same way as Loadouts.xml above.
 export const TERJE_RESPAWNS = `${PROFILE_DIR}/TerjeSettings/StartScreen/Respawns.xml`;
 
+// Terje-Start-Screen's own settings file (self-generated with defaults on
+// first world load, confirmed on a live server run). Governs which pages of
+// the character-creation/respawn flow are shown, including the skill-point
+// allocation page (StartScreen.SkillsPageEnabled) - separate from Terje-
+// Skills' actual skill-progression system in TerjeSettings/Skills.cfg, which
+// grows skills purely from play regardless of this setting.
+export const TERJE_START_SCREEN_CFG = `${PROFILE_DIR}/TerjeSettings/StartScreen.cfg`;
+
 // Community Online Tools (COT, via @Community-Online-Tools) grants its
 // teleport/freecam/spawn admin menu per-player via one JSON file per player
 // in this directory, named after their internal identity id (a base64 hash,
