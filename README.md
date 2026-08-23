@@ -63,19 +63,16 @@ deno run login           # cache a Steam session
 deno run install         # install/update the server
 deno run mods            # download/update all mods
 deno run resolve         # verify mod IDs via the Steam Web API
+deno run search terms    # search the Steam Workshop for DayZ mods
 deno run status          # show setup status
+deno run admin           # grant AI-menu / Community Online Tools admin access
 deno run dayz --help
 ```
 
 `deno run dayz <command>` also works for any subcommand (e.g.
 `deno run dayz up`), since Deno forwards trailing arguments to the task.
 
-## Mods
-
-see [`mods.txt`](mods.txt)
-
-Add/reorder mods by editing `mods.txt` (`<workshop_id>  @name`, one per line) -
-the CLI reads the load order from there.
+See [`MODS.md`](MODS.md) for mod details and features
 
 ## Networking
 

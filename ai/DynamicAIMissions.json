@@ -1,0 +1,82 @@
+{
+    "Missions": [
+        {
+            "Name": "NWAF_Weapons_Cache",
+            "Position": [4501.0, 300.0, 10231.0],
+            "Bots_Count_Minimum": 5,
+            "Bots_Count_Maximum": 8,
+            "Bots_Expansion_Loadout": "",
+            "Bots_Range": 800,
+            "Bots_Accuracy": 0.5,
+            "Bots_Damage_Done_Multiplier": 1.0,
+            "Bots_Damage_Taken_Multiplier": 1.0,
+            "Bots_Drop_Loot": 1,
+            "Bots_Drop_Weapon": 1,
+            "Is_NBC_Mission": 0,
+            "Allow_Crate_Reward": 1,
+            "Allow_Vehicle_Reward": 1,
+            "Static_Objects": []
+        },
+        {
+            "Name": "Tisy_Armory_Raid",
+            "Position": [1900.0, 100.0, 14100.0],
+            "Bots_Count_Minimum": 6,
+            "Bots_Count_Maximum": 10,
+            "Bots_Expansion_Loadout": "",
+            "Bots_Range": 900,
+            "Bots_Accuracy": 0.55,
+            "Bots_Damage_Done_Multiplier": 1.0,
+            "Bots_Damage_Taken_Multiplier": 1.0,
+            "Bots_Drop_Loot": 1,
+            "Bots_Drop_Weapon": 1,
+            "Is_NBC_Mission": 0,
+            "Allow_Crate_Reward": 1,
+            "Allow_Vehicle_Reward": 0,
+            "Static_Objects": []
+        },
+        {
+            "Name": "Balota_Airfield_Standoff",
+            "Position": [4800.0, 2.0, 2400.0],
+            "Bots_Count_Minimum": 4,
+            "Bots_Count_Maximum": 6,
+            "Bots_Expansion_Loadout": "",
+            "Bots_Range": 600,
+            "Bots_Accuracy": 0.45,
+            "Bots_Damage_Done_Multiplier": 1.0,
+            "Bots_Damage_Taken_Multiplier": 1.0,
+            "Bots_Drop_Loot": 1,
+            "Bots_Drop_Weapon": 1,
+            "Is_NBC_Mission": 0,
+            "Allow_Crate_Reward": 1,
+            "Allow_Vehicle_Reward": 1,
+            "Static_Objects": []
+        }
+    ],
+    "LoadoutGroup": {
+        "Weapons": [
+            {
+                "Weapon_ClassName": "FAL",
+                "Magazine_ClassName": "Mag_FAL_20Rnd",
+                "Attach": ["Fal_OeBttsck", "ACOGOptic"]
+            },
+            {
+                "Weapon_ClassName": "SVD",
+                "Magazine_ClassName": "Mag_SVD_10Rnd",
+                "Attach": ["PSO1Optic"]
+            }
+        ],
+        "Armour": [
+            {
+                "Armour_ClassName": "PlateCarrierVest_Camo",
+                "Attach": [],
+                "Contents": []
+            }
+        ],
+        "Headgear": [
+            {
+                "Helmet_ClassName": "Mich2001Helmet",
+                "Give_NVG": 1
+            }
+        ]
+    }
+}

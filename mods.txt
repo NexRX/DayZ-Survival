@@ -1,19 +1,142 @@
 # DayZ server mod list
 # ---------------------
-# Format:  <workshop_id>  <local_@name>
+# Format:  <workshop_id>  <local_@name>  [server]
 #   - One mod per line.
 #   - Order matters: mods are loaded top-to-bottom (dependencies first).
 #   - Blank lines and lines starting with '#' are ignored.
+#   - Optional 3rd column: the literal word "server" marks a mod as
+#     server-side-only, loading it via -servermod= instead of -mod= so
+#     players never need to download it.
 #
-# This is the official "DayZ Expansion Bundle" collection:
-#   https://steamcommunity.com/sharedfiles/filedetails/?id=2572523362
+# Content pack modeled on "RemnantZ - BARBA RIJA HARDCORE", a Chernarus
+# hardcore server the maintainers of this project like. Skipped from that
+# server's list: "RemnantZ serverpack" (3768481791), which its own Steam
+# description says is "designed to be used by livonia Barba Rija Hardcore
+# server" — Livonia-specific and incompatible with our
+# dayzOffline.chernarusplus mission.
 #
-# Add your own mods below the Expansion set, keeping the load order sane
+# Add your own mods below, keeping the load order sane
 # (frameworks first, content next, tweaks last).
 
 1559212036  @CF
 2545327648  @Dabs_Framework
 1564026768  @Community-Online-Tools
-2572331007  @DayZ-Expansion-Bundle
+
+# --- DayZ Expansion, modular set (matches RemnantZ; replaces the old
+# all-in-one "DayZ-Expansion-Bundle" to avoid double-downloading/duplicating
+# the same content under two different mods) ---
+2291785308  @DayZ-Expansion-Core
+2116151222  @DayZ-Expansion
 2116157322  @DayZ-Expansion-Licensed
+2291785437  @DayZ-Expansion-Vehicles
+2572324799  @DayZ-Expansion-Book
+2572328470  @DayZ-Expansion-Market
 2792982069  @DayZ-Expansion-AI
+
+# --- Terje suite (Core first; Compatibility-COT needs Terje-Core +
+# Community-Online-Tools, both already above) ---
+3649957186  @Terje-Core
+3649957536  @Terje-Medicine
+3649958757  @Terje-Radiation
+3649959402  @Terje-Start-Screen
+3649959707  @Terje-Compatibility-COT
+3690738331  @Zens-COT-Plus-Fix
+
+# --- "s" suite (sGunplay/sVisual need sFramework; NOT related to CFTools
+# "GameLabs" despite similar naming/grouping on other servers - GameLabs is
+# a separate CFTools Cloud integration that requires its own CFTools account
+# + API key and can shut the server down on start without one, so it's
+# intentionally left out here) ---
+2863299105  @sFramework
+2863305254  @sGunplay
+2863300519  @sVisual
+
+# --- Nemsis Craftingpack Redux (Core first) ---
+2999980206  @NCPR-Core
+2999981660  @NCPR-Armors
+2999983669  @NCPR-Metalworking
+2999983984  @NCPR-Sewing
+2999984359  @NCPR-Signs-Canvas
+
+# --- Zombie/bandit AI, on top of DayZ-Expansion-AI's human patrols above:
+# InediaInfectedAI/CreepyZombies target infected, AI Bandits adds standalone
+# human threats — complementary, not a replacement, for the roaming patrols
+# tuned in src/ai.ts. The FIX must load after InediaInfectedAI. ---
+3031784065  @InediaInfectedAI
+3119213010  @InediaInfectedAI-Underwater-Fix
+2990236173  @InediaStamina
+1866298408  @CreepyZombies
+3628006769  @AI-Bandits
+
+# --- Vehicles ---
+3160244059  @UAZ-31514
+2122332595  @Vehicle3PP
+3661300360  @MBM-ApocalypseTruck
+3665166604  @MBM-ApocalypticPAZ
+1931069341  @MoreCars
+2048694610  @JunkYardDog
+3533929661  @Fuel-System
+
+# --- Animals/creatures ---
+2959526520  @DayZ-Raven
+3295021220  @DayZ-Horse
+2901480106  @Yuretskiy-Creatures
+2950280649  @DayZ-Rat
+2471347750  @DayZ-Dog
+
+# --- Base building / access control (Code Lock and Custom Keycards are
+# different mechanics — door codes vs. keycard readers — not a conflict) ---
+2810212624  @Custom-Keycards
+3238690259  @CS-Modular-Cave
+2924580520  @Zens-Repairable-Wells
+3083277274  @Risus-Bases
+2670506982  @Building-Fortifications
+1646187754  @Code-Lock
+3647777793  @Peek-Doors
+2860643107  @BoomLays-Things
+
+# --- Weapons/equipment ---
+2449234595  @Mag-Obfuscation
+3349198004  @Quiver
+3604658284  @Nail-Gun
+3118099775  @Crowwolfie-Recipes
+3149798901  @MoreMaterials
+3311720441  @Gas-Mask-Overhaul
+2891614133  @Hardcore-Backpack
+
+# --- Clothing ---
+1797720064  @Windstride-Clothing
+3354931239  @Alevarics-Clothing-Overhaul
+
+# --- Economy (Euros-Only + MoreMoney are a matched pair: currency skin +
+# loot-amount tuning, not competing systems) ---
+2859892388  @CJ187-Money-Euros-Only
+2018887948  @CJ187-MoreMoney
+3728619225  @P2P-Trading-Board
+
+# --- Food/survival mechanics ---
+3263494703  @Search-For-Charcoal
+3200745813  @Search-For-Loot-Improved
+3237950572  @Old-Food
+3417831913  @Keep-It-Dead-ProjectBR
+
+# --- Environment/atmosphere/events ---
+3012019528  @Lads-Lighting-Overhaul
+2536780687  @SkyZ-Skybox-Overhaul
+2289461232  @Namalsk-Survival
+2065443797  @AirRaid
+2975514806  @CJ187-RandomMineFields
+2002754349  @HeliWreckNoLoot
+
+# --- Misc/QoL ---
+3690267695  @Admirals-Advanced-Hologram-Mod
+3726129210  @Dart-Board-Game
+2627491185  @Andys-EarPlugs
+2918418331  @Survivor-Animations
+1565871491  @BuilderItems
+
+# Server-side-only AI extras (loaded via -servermod=, not downloaded by
+# players) - see MODS.md for what each does and how they're configured.
+2874589934  @DayZ-Dynamic-AI-Addon        server
+3277130230  @Dynamic-AI-Missions          server
+3773597150  @Dynamic-AI-Missions-Extended server
