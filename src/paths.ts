@@ -50,8 +50,11 @@ export const SPATIAL_SETTINGS = `${PROFILE_DIR}/ExpansionMod/AI/Spatial/SpatialS
 // confirmed on a live server run.
 export const DYNAMIC_MISSIONS_SETTINGS = `${PROFILE_DIR}/AIMissions/MainConfig.json`;
 
-// DayZ-Expansion-AI's airdrop missions (separate from @Dynamic-AI-Missions
-// above) store their own loot settings here, self-regenerated on first load.
+// DayZ-Expansion-Core's airdrop mission loot settings, stored here. Unlike
+// the other PRIME_TARGETS-style configs, this is NOT written on plain world
+// load - only once an actual airdrop mission fires - so prime.ts
+// deliberately does not wait on it; loot.ts's tuneAirdropLoot() re-applies
+// tuning to it lazily on every start once it does exist.
 export const AIRDROP_SETTINGS = `${PROFILE_DIR}/ExpansionMod/Settings/AirdropSettings.json`;
 
 // DayZ-Expansion-AI's in-game AI menu (T key: spawn companions, set

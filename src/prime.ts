@@ -17,7 +17,6 @@ import {
   AI_BANDITS_DYNAMIC_SETTINGS,
   AI_BANDITS_STATIC_SETTINGS,
   AI_PATROL_SETTINGS,
-  AIRDROP_SETTINGS,
   DYNAMIC_MISSIONS_SETTINGS,
   INEDIA_SETTINGS,
   PROFILE_DIR,
@@ -31,12 +30,16 @@ import { exists } from "./steam.ts";
 // Only files self-generated on *mission/world load*, independent of any
 // player ever connecting - AI_SETTINGS/COT admin grants are deliberately
 // excluded here since those are gated on a player connecting at least once
-// and would never appear during a headless priming run.
+// and would never appear during a headless priming run. AIRDROP_SETTINGS is
+// also deliberately excluded: unlike the others, it's only written once an
+// actual airdrop mission fires (not on plain world load), which can take far
+// longer than any reasonable priming window - loot.ts's tuneAirdropLoot()
+// already no-ops gracefully if it's still missing, so there's nothing to
+// gain by blocking `up` on it.
 const PRIME_TARGETS = [
   AI_PATROL_SETTINGS,
   SPATIAL_SETTINGS,
   DYNAMIC_MISSIONS_SETTINGS,
-  AIRDROP_SETTINGS,
   INEDIA_SETTINGS,
   AI_BANDITS_DYNAMIC_SETTINGS,
   AI_BANDITS_STATIC_SETTINGS,
