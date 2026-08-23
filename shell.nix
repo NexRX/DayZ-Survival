@@ -7,6 +7,7 @@
 pkgs.mkShell {
   packages = with pkgs; [
     steamcmd # packaged SteamCMD that works on NixOS
+    depotdownloader # reliable large-workshop-item downloads (bundle)
     steam-run # FHS wrapper to run the DayZ server + mods
     gnumake
     bashInteractive

@@ -21,6 +21,7 @@ SERVER_DIR="$ROOT_DIR/server"
 STEAMCMD_DIR="$ROOT_DIR/steamcmd"     # project-local Steam HOME (git-ignored)
 PROFILE_DIR="$ROOT_DIR/profiles"
 LOGIN_MARKER="$STEAMCMD_DIR/.dayz_login_ok"
+DD_LOGIN_MARKER="$STEAMCMD_DIR/.dd_login_ok"
 
 DAYZ_SERVER_APPID=223350
 DAYZ_CLIENT_APPID=221100
@@ -64,6 +65,7 @@ confirm() { # confirm "Question" [Y|N]  -> returns 0 for yes
 #     If not, re-exec this script inside the dev shell.
 # ===========================================================================
 if ! command -v steamcmd >/dev/null 2>&1 || ! command -v steam-run >/dev/null 2>&1 \
+   || ! command -v DepotDownloader >/dev/null 2>&1 \
    || ! command -v jq >/dev/null 2>&1 || ! command -v curl >/dev/null 2>&1; then
   if [[ -z "${DAYZ_IN_NIX:-}" ]] && command -v nix >/dev/null 2>&1; then
     export DAYZ_IN_NIX=1
@@ -76,11 +78,13 @@ if ! command -v steamcmd >/dev/null 2>&1 || ! command -v steam-run >/dev/null 2>
   fi
   command -v steamcmd  >/dev/null 2>&1 || die "steamcmd not found. Install Nix, or add steamcmd to PATH."
   command -v steam-run >/dev/null 2>&1 || die "steam-run not found. Install Nix, or add steam-run to PATH."
+  command -v DepotDownloader >/dev/null 2>&1 || die "DepotDownloader not found. Install Nix, or add depotdownloader to PATH."
   command -v jq        >/dev/null 2>&1 || warn "jq not found — 'resolve' will not work."
   command -v curl      >/dev/null 2>&1 || warn "curl not found — 'resolve' will not work."
 fi
 STEAMCMD_BIN="$(command -v steamcmd)"
 STEAM_RUN="$(command -v steam-run)"
+DEPOT_BIN="$(command -v DepotDownloader || true)"
 
 # ===========================================================================
 #  Config (.env) — load, prompt, persist. Steam PASSWORD is never stored.
@@ -176,6 +180,37 @@ run_steamcmd_quiet() {
     | grep --line-buffered -vE 'SaveInstallBaseFolders: rejecting attempt to save with no libraries|applicationmanager\.cpp \([0-9]+\) :' \
     || true
   set -o pipefail
+}
+
+# --- DepotDownloader (reliable for very large workshop items) ---------------
+# SteamCMD's workshop_download_item chokes on the ~2.8 GB Expansion bundle
+# (times out with 0 bytes persisted, so it can never resume). DepotDownloader
+# streams in resumable chunks and picks up where it left off, so we use it for
+# all mod content. It keeps its OWN login token (separate from SteamCMD), which
+# we cache project-local via ensure_depot_login below.
+run_depot() {
+  mkdir -p "$STEAMCMD_DIR"
+  ( cd "$STEAMCMD_DIR" && HOME="$STEAMCMD_DIR" "$DEPOT_BIN" "$@" )
+}
+
+# One-time: authorize DepotDownloader and cache its login token. Does a tiny
+# manifest-only fetch of the first mod to trigger login (password + Steam Guard
+# once); afterwards downloads run with just -username -remember-password.
+ensure_depot_login() {
+  [[ -f "$DD_LOGIN_MARKER" ]] && return 0
+  ensure_config
+  load_mods
+  log "Authorizing DepotDownloader for workshop access (one-time)"
+  echo "$c_dim  Password is used once to cache a DepotDownloader token; it is NOT saved.$c_reset"
+  local pass; pass="$(ask_secret 'Steam password')"
+  echo "$c_dim  (Steam Guard: confirm on your phone or enter the code when asked.)$c_reset"
+  if run_depot -app "$DAYZ_CLIENT_APPID" -pubfile "${MOD_IDS[0]}" -manifest-only \
+       -username "$STEAM_USER" -password "$pass" -remember-password; then
+    touch "$DD_LOGIN_MARKER"
+    ok "DepotDownloader authorized."
+  else
+    die "DepotDownloader login failed. Re-run and check username / password / Steam Guard."
+  fi
 }
 
 find_workshop_item() {
@@ -290,36 +325,35 @@ workshop_bytes() {
 }
 bytes_h() { numfmt --to=iec --suffix=B "${1:-0}" 2>/dev/null || printf '%sB' "${1:-0}"; }
 
-# Download a single workshop item in its own SteamCMD session, resuming until it
-# completes. Large mods (the ~2.8 GB Expansion bundle) routinely exceed
-# SteamCMD's per-item download timeout, so we keep resuming as long as progress
-# is being made on disk, and only abort if it stalls with no new bytes.
+# Download a single workshop item with DepotDownloader into the same layout
+# SteamCMD would use (steamapps/workshop/content/<appid>/<id>), so the rest of
+# the install pipeline (find_workshop_item / install_one_mod) is unchanged.
+# DepotDownloader resumes on its own, so we just retry a few times on hiccups.
 download_one() {
-  local id="$1" name="$2" before after stalled=0 max_stalled=4
-  if find_workshop_item "$id" >/dev/null && [[ -f "$SERVER_DIR/steamapps/workshop/appworkshop_${DAYZ_CLIENT_APPID}.acf" ]]; then
-    : # will still validate below
+  local id="$1" name="$2" out tries=0 max_tries=4
+  out="$SERVER_DIR/$WORKSHOP_SUBPATH/$id"
+  # Already on disk (previous successful download) -> use as-is. Delete the
+  # item's content folder to force a fresh re-download.
+  if [[ "$(workshop_bytes "$id")" -gt 262144 ]] && find_workshop_item "$id" >/dev/null; then
+    ok "$name already present ($(bytes_h "$(workshop_bytes "$id")")) — skipping download"
+    return 0
   fi
+  ensure_depot_login
+  mkdir -p "$out"
   while true; do
-    before="$(workshop_bytes "$id")"
-    log "Downloading $name ($id) — $(bytes_h "$before") cached so far…"
-    run_steamcmd_quiet +force_install_dir "$SERVER_DIR" +login "$STEAM_USER" \
-      +workshop_download_item "$DAYZ_CLIENT_APPID" "$id" validate +quit
-    if find_workshop_item "$id" >/dev/null; then
-      ok "$name downloaded"
+    tries=$((tries + 1))
+    log "Downloading $name ($id) via DepotDownloader — attempt $tries/$max_tries ($(bytes_h "$(workshop_bytes "$id")") cached)…"
+    if run_depot -app "$DAYZ_CLIENT_APPID" -pubfile "$id" \
+         -username "$STEAM_USER" -remember-password -validate -dir "$out" \
+       && [[ "$(workshop_bytes "$id")" -gt 262144 ]]; then
+      ok "$name downloaded ($(bytes_h "$(workshop_bytes "$id")"))"
       return 0
     fi
-    after="$(workshop_bytes "$id")"
-    if (( after > before )); then
-      stalled=0
-      warn "Timed out mid-download but progressed ($(bytes_h "$before") -> $(bytes_h "$after")); resuming…"
-    else
-      stalled=$((stalled + 1))
-      warn "No progress this attempt ($stalled/$max_stalled)."
-      if (( stalled >= max_stalled )); then
-        die "Download of $name stalled with no progress. Likely a slow/interrupted link to Steam or a slow/network disk. Just re-run './dayz.sh mods' to resume, or try a wired connection."
-      fi
+    if (( tries >= max_tries )); then
+      die "Download of $name ($id) failed after $max_tries attempts. Re-run './dayz.sh mods' to resume — DepotDownloader continues where it left off."
     fi
-    sleep 3
+    warn "Attempt $tries failed; retrying in 5s (DepotDownloader resumes)…"
+    sleep 5
   done
 }
 
@@ -495,11 +529,13 @@ SERVER_DIR="$ROOT_DIR/server"
 STEAMCMD_DIR="$ROOT_DIR/steamcmd"
 PROFILE_DIR="$ROOT_DIR/profiles"
 LOGIN_MARKER="$STEAMCMD_DIR/.dayz_login_ok"
+DD_LOGIN_MARKER="$STEAMCMD_DIR/.dd_login_ok"
 DAYZ_SERVER_APPID=223350
 DAYZ_CLIENT_APPID=221100
 WORKSHOP_SUBPATH="steamapps/workshop/content/$DAYZ_CLIENT_APPID"
 [[ -n "${STEAMCMD_BIN:-}" ]] || STEAMCMD_BIN="$(command -v steamcmd || true)"
 [[ -n "${STEAM_RUN:-}" ]]   || STEAM_RUN="$(command -v steam-run || true)"
+[[ -n "${DEPOT_BIN:-}" ]]   || DEPOT_BIN="$(command -v DepotDownloader || true)"
 
 apply_defaults
 
