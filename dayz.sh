@@ -273,18 +273,40 @@ install_one_mod() {
   done
 }
 
+# Download a single workshop item in its own SteamCMD session, retrying on
+# failure. Large mods (e.g. the 2.8 GB Expansion bundle) frequently hit
+# SteamCMD's download timeout; a dedicated session + retry lets it resume and
+# complete instead of tripping the batch timeout.
+download_one() {
+  local id="$1" name="$2" attempt=1 max=8
+  while true; do
+    log "Downloading $name ($id) — attempt $attempt/$max"
+    run_steamcmd_quiet +force_install_dir "$SERVER_DIR" +login "$STEAM_USER" \
+      +workshop_download_item "$DAYZ_CLIENT_APPID" "$id" validate +quit
+    if find_workshop_item "$id" >/dev/null; then
+      ok "$name downloaded"
+      return 0
+    fi
+    attempt=$((attempt + 1))
+    if (( attempt > max )); then
+      die "Failed to download $name ($id) after $max attempts. Re-run './dayz.sh mods' — SteamCMD resumes where it left off."
+    fi
+    warn "Download of $name timed out/failed; retrying (SteamCMD resumes)…"
+    sleep 3
+  done
+}
+
 do_mods() {
   ensure_login
   load_mods
-  log "Downloading ${#MOD_IDS[@]} workshop mod(s)…"
-  local args=(+force_install_dir "$SERVER_DIR" +login "$STEAM_USER") id
-  for id in "${MOD_IDS[@]}"; do args+=(+workshop_download_item "$DAYZ_CLIENT_APPID" "$id" validate); done
-  args+=(+quit)
-  run_steamcmd_quiet "${args[@]}"
+  log "Downloading ${#MOD_IDS[@]} workshop mod(s) (one session each, with retries)…"
+  local i
+  for i in "${!MOD_IDS[@]}"; do
+    download_one "${MOD_IDS[$i]}" "${MOD_NAMES[$i]}"
+  done
 
   log "Installing mods + keys into the server"
   mkdir -p "$SERVER_DIR/keys"
-  local i
   for i in "${!MOD_IDS[@]}"; do
     printf '   %s\n' "${MOD_NAMES[$i]}"
     install_one_mod "${MOD_IDS[$i]}" "${MOD_NAMES[$i]}"
