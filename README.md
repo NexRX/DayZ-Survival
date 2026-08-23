@@ -1,131 +1,88 @@
-# DayZ Survival — Expansion server
+# DayZ Survival Server WIP
 
-A single interactive script (`dayz.sh`) that sets up and runs a modded **DayZ**
-dedicated server pre-wired for the official **DayZ Expansion Bundle**, on
-**NixOS**. It installs the server, downloads the mods, handles the Steam login,
-generates the config, and launches the server — prompting for anything it needs
-and skipping whatever's already done.
+The goal of this project is to deliver a DayZ survival experience in the spirit
+of **Arma 2 Epoch** crossed with the progression and crafting loops of modern
+**survival games** - a persistent, living world where every session is a story
+of scavenging, building, trading, and fighting to stay alive.
 
-## Just run it
+## Design philosophy
+
+### Hardcore, but respects your time
+
+Survival should have teeth: hunger, thirst, temperature, illness, and injury are
+real threats that force players to plan ahead. But the challenge should come from
+_meaningful decisions_, not from tedium. Finding your first gun or your next meal
+should be a tense scramble, not an hour of running through empty fields. We tune
+loot, travel, and progression so downtime is spent making choices, not waiting.
+
+### A world that fights back
+
+PvP is a core part of the fantasy - encounters with other survivors should be
+tense and consequential. But the environment is a rival in its own right. AI
+bandits, roaming patrols, and infested hotspots contest the best loot. Dynamic
+missions and world events (heli crashes, convoys, airdrops, contaminated zones)
+pull players toward flashpoints and give the map a rhythm. The world should feel
+alive and dangerous whether the server holds two players or two hundred.
+
+### An Epoch-style economy and safe havens
+
+Trader cities and safe zones anchor the social side of the server: neutral
+ground to buy, sell, and refit before heading back into the danger. A persistent
+currency/valuables economy rewards scavenging and gives loot lasting value.
+But not everything can be bought
+
+### Base building with real stakes
+
+Bases are the long game: a place to store gear, park vehicles, and stake a claim.
+Building should be rich and expressive, but ownership must be _earned and
+maintained_ - decay, upkeep, and raiding keep the map from freezing into a
+fortress of abandoned bases. Territory should be defensible but never truly safe.
+
+### Gameplay-rich through heavy modding
+
+Most survival power fantasies should be on the table: helicopters, boats, and
+cars to master the map; deep crafting and character skills to grow into; trading
+and player-run economies; loot progression from rusty pistols to endgame kit.
+The guiding constraint is _earned power_ - becoming strong should be possible,
+but slow, risky, and always reversible in a single bad firefight.
+Not just buying your way to success!
+
+### Technical
+
+This project contains a deno cli app that manages the installation and running of this server (interactively). Any updates to the server should not have manual intervention on other hosts, the script should supply all updates or the filesystem itself via cloning etc
+
+## Commands
+
+You made need to run `nix develop` first
 
 ```bash
-./dayz.sh
+deno run dayz            # interactive menu
+deno run up              # do everything needed, then start
+deno run config          # (re)enter settings
+deno run login           # cache a Steam session
+deno run install         # install/update the server
+deno run mods            # download/update all mods
+deno run resolve         # verify mod IDs via the Steam Web API
+deno run status          # show setup status
+deno run dayz --help
 ```
 
-That's it. The script:
+`deno run dayz <command>` also works for any subcommand (e.g.
+`deno run dayz up`), since Deno forwards trailing arguments to the task.
 
-1. Enters the Nix dev shell automatically if `steamcmd` / `steam-run` /
-   `DepotDownloader` aren't on PATH (no FHS hacks — required on NixOS).
-2. Shows a status summary, then a menu. Pick **1) Set up & start** and it does
-   everything needed:
-   - prompts for your settings (Steam account, server name, ports, admin pw…)
-     and saves them to `.env` (your Steam **password is never stored**),
-   - logs in to Steam once (Steam Guard confirmed on your phone/app),
-   - installs the DayZ server if missing,
-   - downloads + installs the mods and their keys if missing,
-   - writes `server/serverDZ.cfg` from your settings,
-   - starts the server under `steam-run`.
+## Mods
 
-Mods are fetched with **DepotDownloader** (not SteamCMD): SteamCMD reliably
-times out on the ~2.8 GB Expansion Bundle and can't resume, whereas
-DepotDownloader streams resumable chunks. The first mod download prompts once
-for your Steam password + Steam Guard to cache a DepotDownloader token (kept
-project-local in `steamcmd/`, never written to `.env`); later downloads reuse
-it. The server binary itself is still installed with SteamCMD.
+see [`mods.txt`](mods.txt)
 
-Re-run it any time — it detects what's already in place and only redoes what's
-needed.
-
-### Non-interactive subcommands
-
-```bash
-./dayz.sh up         # do everything needed, then start
-./dayz.sh config     # (re)enter settings
-./dayz.sh login      # cache a Steam session
-./dayz.sh install    # install/update the server
-./dayz.sh mods       # download/update all mods
-./dayz.sh resolve    # verify mod IDs via the Steam Web API
-./dayz.sh status     # show setup status
-./dayz.sh --help
-```
-
-## Included mods
-
-The [DayZ Expansion Bundle](https://steamcommunity.com/sharedfiles/filedetails/?id=2572523362),
-in load order (see [`mods.txt`](mods.txt)):
-
-| #   | Mod                     | Workshop ID  |
-| --- | ----------------------- | ------------ |
-| 1   | CF                      | `1559212036` |
-| 2   | Dabs Framework          | `2545327648` |
-| 3   | Community-Online-Tools  | `1564026768` |
-| 4   | DayZ-Expansion-Bundle   | `2572331007` |
-| 5   | DayZ-Expansion-Licensed | `2116157322` |
-| 6   | DayZ-Expansion-AI       | `2792982069` |
-
-Add/reorder mods by editing `mods.txt` (`<workshop_id>  @name`, one per line) —
-`dayz.sh` reads the load order from there.
-
-## Requirements
-
-- **NixOS** (or Linux with Nix). `flake.nix` / `shell.nix` provide `steamcmd`,
-  `steam-run`, `depotdownloader`, `jq`, `curl`.
-- ~6 GB disk (server) + ~3 GB (Expansion mods).
-- **A Steam account that owns DayZ.** Both the server (app 223350) and the mods
-  (app 221100) require it — anonymous login is rejected with "No subscription".
-
-## Layout
-
-```
-.
-├── dayz.sh              # THE script — does everything
-├── mods.txt             # Mod load order (id -> @name)
-├── flake.nix / shell.nix# Nix dev shell (steamcmd, depotdownloader, steam-run…)
-├── .envrc               # Optional direnv auto-shell
-├── .env                 # Your saved settings (generated; git-ignored)
-├── server/              # DayZ server + mods (generated; git-ignored)
-└── steamcmd/            # SteamCMD + DepotDownloader state / login (git-ignored)
-└── profiles/            # Logs, BattlEye, crash dumps (git-ignored)
-```
+Add/reorder mods by editing `mods.txt` (`<workshop_id>  @name`, one per line) -
+the CLI reads the load order from there.
 
 ## Networking
 
-DayZ is **UDP only**. Open these ports (defaults; change in `./dayz.sh config`):
+Default ports for firewall rules to consider:
 
 | Port      | Purpose                                     |
 | --------- | ------------------------------------------- |
 | 2302      | Game port                                   |
 | 2303–2305 | Steam query / server ports (BI reserves +3) |
 | 27016     | Steam master-server heartbeat               |
-
-```bash
-sudo ufw allow 2302:2305/udp
-sudo ufw allow 27016/udp
-```
-
-On NixOS you can instead set, in your system config:
-
-```nix
-networking.firewall.allowedUDPPorts = [ 27016 ];
-networking.firewall.allowedUDPPortRanges = [ { from = 2302; to = 2305; } ];
-```
-
-Note: connecting from the **same machine** the server runs on often fails auth
-(`Login timed out (WaitAuthPlayerLoginState)`) because VAC can't validate a
-loopback client — join from a second device (e.g. via the DZSA Launcher) with the
-same mod set.
-
-## Full Expansion experience (traders, markets, spawn select)
-
-The Expansion **mods** load against the vanilla Chernarus mission, but
-Expansion features that need mission data (traders, ATMs, spawn selection,
-quests) require the Expansion **mission files**. Grab them from
-[DayZ-Expansion-Scripts](https://github.com/salutesh/DayZ-Expansion-Scripts),
-drop the mission into `server/mpmissions/`, and change the `Missions` template
-in `server/serverDZ.cfg` to it (e.g. `expansion.chernarusplus`).
-
-## Updating
-
-Just run `./dayz.sh` again and choose **Install/update server** and/or
-**Download/update mods**. Keep the server build and mods in sync after each DayZ
-patch, or clients on the new build can't join (`forceSameBuild = 1`).

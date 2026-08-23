@@ -21,40 +21,23 @@
           config.allowUnfree = true;
         };
 
-        # Everything the scripts in ./scripts need at runtime.
+        # Everything the CLI (deno task dayz -> ./src) needs at runtime.
         tools = with pkgs; [
+          deno # runs the TypeScript CLI in ./src + task runner
           steamcmd # packaged SteamCMD that works on NixOS
           depotdownloader # reliable large-workshop-item downloads (bundle)
           steam-run # FHS wrapper to run the DayZ server + mods
-          gnumake
           bashInteractive
-          curl
-          jq
-          coreutils
-          findutils
-          gnused
-          gawk
+          coreutils # cp, du used by the CLI
         ];
       in
       {
         devShells.default = pkgs.mkShell {
           packages = tools;
           shellHook = ''
-            echo "DayZ Survival dev shell — steamcmd + steam-run ready."
-            echo "  run:  ./dayz.sh"
+            echo "DayZ Survival dev shell — deno + steamcmd + steam-run ready."
+            echo "  run:  deno task dayz        (or: deno task up)"
           '';
-        };
-
-        # `nix run` convenience apps.
-        apps = {
-          default = {
-            type = "app";
-            program = "${pkgs.writeShellScript "dayz" "exec ./dayz.sh \"$@\""}";
-          };
-          up = {
-            type = "app";
-            program = "${pkgs.writeShellScript "dayz-up" "exec ./dayz.sh up"}";
-          };
         };
       }
     );

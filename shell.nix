@@ -6,21 +6,16 @@
 
 pkgs.mkShell {
   packages = with pkgs; [
+    deno # runs the TypeScript CLI in ./src + task runner
     steamcmd # packaged SteamCMD that works on NixOS
     depotdownloader # reliable large-workshop-item downloads (bundle)
     steam-run # FHS wrapper to run the DayZ server + mods
-    gnumake
     bashInteractive
-    curl
-    jq
-    coreutils
-    findutils
-    gnused
-    gawk
+    coreutils # cp, du used by the CLI
   ];
 
   shellHook = ''
-    echo "DayZ Survival dev shell — steamcmd + steam-run ready."
-    echo "  run:  ./dayz.sh"
+    echo "DayZ Survival dev shell — deno + steamcmd + steam-run ready."
+    echo "  run:  deno task dayz        (or: deno task up)"
   '';
 }
