@@ -55,6 +55,22 @@ This project contains a deno cli app that manages the installation and running o
 
 You made need to run `nix develop` first
 
+### Bringing up a new host
+
+On a brand-new machine, after cloning this repo:
+
+```bash
+nix develop --command deno run up
+```
+
+That's the whole bring-up procedure. It installs the server, downloads every
+mod, self-tunes AI/loot/difficulty, and starts the server - re-run the exact
+same command any time after (to update mods or restart) and it just skips
+whatever's already done. The only prompts you'll ever see are the ones that
+genuinely can't be scripted around: your Steam account name/server settings
+(once, cached to `.env`) and your Steam password + Steam Guard code (once,
+cached as a session so you're not asked again).
+
 ```bash
 deno run dayz            # interactive menu
 deno run up              # do everything needed, then start
@@ -66,6 +82,7 @@ deno run resolve         # verify mod IDs via the Steam Web API
 deno run search terms    # search the Steam Workshop for DayZ mods
 deno run status          # show setup status
 deno run admin           # grant AI-menu / Community Online Tools admin access
+deno run wipe            # reset world state, or remove the install entirely
 deno run dayz --help
 ```
 
