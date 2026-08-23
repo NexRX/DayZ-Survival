@@ -273,25 +273,52 @@ install_one_mod() {
   done
 }
 
-# Download a single workshop item in its own SteamCMD session, retrying on
-# failure. Large mods (e.g. the 2.8 GB Expansion bundle) frequently hit
-# SteamCMD's download timeout; a dedicated session + retry lets it resume and
-# complete instead of tripping the batch timeout.
+# Total bytes already fetched for a workshop item (partial + completed), across
+# the download/content dirs SteamCMD may use. Lets us tell "timed out but made
+# progress" from "truly stalled".
+workshop_bytes() {
+  local id="$1" root sub total=0 n
+  for root in "$SERVER_DIR" "$STEAMCMD_DIR/.local/share/Steam" "$STEAMCMD_DIR"; do
+    for sub in "steamapps/workshop/downloading/$DAYZ_CLIENT_APPID/$id" \
+               "steamapps/workshop/content/$DAYZ_CLIENT_APPID/$id"; do
+      if [[ -d "$root/$sub" ]]; then
+        n="$(du -sb "$root/$sub" 2>/dev/null | cut -f1)"; total=$((total + ${n:-0}))
+      fi
+    done
+  done
+  printf '%s' "$total"
+}
+bytes_h() { numfmt --to=iec --suffix=B "${1:-0}" 2>/dev/null || printf '%sB' "${1:-0}"; }
+
+# Download a single workshop item in its own SteamCMD session, resuming until it
+# completes. Large mods (the ~2.8 GB Expansion bundle) routinely exceed
+# SteamCMD's per-item download timeout, so we keep resuming as long as progress
+# is being made on disk, and only abort if it stalls with no new bytes.
 download_one() {
-  local id="$1" name="$2" attempt=1 max=8
+  local id="$1" name="$2" before after stalled=0 max_stalled=4
+  if find_workshop_item "$id" >/dev/null && [[ -f "$SERVER_DIR/steamapps/workshop/appworkshop_${DAYZ_CLIENT_APPID}.acf" ]]; then
+    : # will still validate below
+  fi
   while true; do
-    log "Downloading $name ($id) — attempt $attempt/$max"
+    before="$(workshop_bytes "$id")"
+    log "Downloading $name ($id) — $(bytes_h "$before") cached so far…"
     run_steamcmd_quiet +force_install_dir "$SERVER_DIR" +login "$STEAM_USER" \
       +workshop_download_item "$DAYZ_CLIENT_APPID" "$id" validate +quit
     if find_workshop_item "$id" >/dev/null; then
       ok "$name downloaded"
       return 0
     fi
-    attempt=$((attempt + 1))
-    if (( attempt > max )); then
-      die "Failed to download $name ($id) after $max attempts. Re-run './dayz.sh mods' — SteamCMD resumes where it left off."
+    after="$(workshop_bytes "$id")"
+    if (( after > before )); then
+      stalled=0
+      warn "Timed out mid-download but progressed ($(bytes_h "$before") -> $(bytes_h "$after")); resuming…"
+    else
+      stalled=$((stalled + 1))
+      warn "No progress this attempt ($stalled/$max_stalled)."
+      if (( stalled >= max_stalled )); then
+        die "Download of $name stalled with no progress. Likely a slow/interrupted link to Steam or a slow/network disk. Just re-run './dayz.sh mods' to resume, or try a wired connection."
+      fi
     fi
-    warn "Download of $name timed out/failed; retrying (SteamCMD resumes)…"
     sleep 3
   done
 }
