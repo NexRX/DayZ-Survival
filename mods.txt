@@ -33,9 +33,11 @@
 2572328470  @DayZ-Expansion-Market
 2792982069  @DayZ-Expansion-AI
 
-# --- Terje suite (Core first; Compatibility-COT needs Terje-Core +
+# --- Terje suite (Core first; Skills before Medicine, since Medicine's
+# Immunity/Medicine skills require it; Compatibility-COT needs Terje-Core +
 # Community-Online-Tools, both already above) ---
 3649957186  @Terje-Core
+3649958397  @Terje-Skills
 3649957536  @Terje-Medicine
 3649958757  @Terje-Radiation
 3649959402  @Terje-Start-Screen

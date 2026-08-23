@@ -10,7 +10,12 @@ import { ensureSpatialAI } from "./spatial.ts";
 import { ensureDynamicMissions } from "./dynamicMissions.ts";
 import { ensureModTypesMerged } from "./modTypes.ts";
 import { ensureNCPRTypesMerged } from "./ncpr.ts";
-import { tuneAirdropLoot, tuneMissionRewards, tuneStartingLoadouts } from "./loot.ts";
+import {
+  tuneAirdropLoot,
+  tuneMissionRewards,
+  tuneRespawnPoints,
+  tuneStartingLoadouts,
+} from "./loot.ts";
 import {
   tuneAIBanditsDifficulty,
   tuneAIDifficulty,
@@ -117,6 +122,7 @@ export async function doStart(s: Settings): Promise<never> {
   await tuneAirdropLoot();
   await tuneMissionRewards();
   await tuneStartingLoadouts();
+  await tuneRespawnPoints();
   await tuneAIDifficulty();
   await tuneSpatialAIDifficulty();
   await tuneMissionDifficulty();

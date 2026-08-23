@@ -171,13 +171,15 @@ from door placement above).
   live in `@AI Bandits/Doc` if you want to hand-place patrol routes/waypoints
   instead of the auto-generated default.
 - `Terje-Start-Screen` - self-generates
-  `profiles/TerjeSettings/StartScreen/Loadouts.xml` from the mod's template.
-  Most of the shipped template is already fine (the default "survivor"
-  loadout is clothes/chemlight/fruit/bandage - no weapon; "hunter" is gated
-  behind a skill level TerjeSkills would grant, which isn't in this pack;
-  "admin" is gated to specific SteamGUIDs). The CLI removes just the one
-  "multiselect" demo loadout, which otherwise lets a fresh spawn trade all
-  their starting points for a shotgun with zero scavenging.
+  `profiles/TerjeSettings/StartScreen/{Loadouts,Respawns}.xml` from the mod's
+  template. The CLI removes the "multiselect" demo loadout (trades all
+  starting points for a shotgun with zero scavenging), the "hunter" loadout
+  (a skill-gated starting-kit choice - we don't want a skill-gated character
+  class pick on spawn at all), and the matching skill-gated "hunting"
+  respawn zone, plus the "sleepingbag" and "deathpoint" respawn options
+  (too safe/convenient for hardcore play - death should cost you your
+  position). The default "survivor" loadout, the regional map respawns, and
+  the SteamGUID-gated "admin" loadout/base are left as-is.
 - `CJ187-Money-Euros-Only` / `CJ187-MoreMoney` - once their types.xml (if any)
   is merged in by `ensureModTypesMerged()`, the CLI caps natural spawn
   rates for any item whose name matches a currency keyword (ruble, dollar,
@@ -196,9 +198,10 @@ from door placement above).
 
 **Partial feature loss without a mod we didn't add**
 
-- `Terje-Medicine`'s Immunity/Medicine _skill_ bonuses specifically need
-  `Terje-Skills` (not in this pack) - the core disease/treatment system
-  works fine without it, you just don't get the skill-based bonuses.
+(none currently - `Terje-Skills` is included in this pack, so
+`Terje-Medicine`'s Immunity/Medicine skill bonuses and the rest of the
+progression system - butchering, firecraft, hunting, etc. - work as the mod
+intends.)
 
 **Confirmed non-issues (checked so you don't have to)**
 
@@ -401,12 +404,18 @@ JSON/XML (which would just get reverted on the next start).
   `profiles/AIMissions/MainConfig.json`'s `Settings[0]` block: **1** weapon,
   **1** armour piece, **2** misc items per completed mission (down from
   2/2/4).
-- `tuneStartingLoadouts()` removes the one weapon-granting demo loadout
-  ("multiselect", a shotgun for all of your starting points) from
-  Terje-Start-Screen's `profiles/TerjeSettings/StartScreen/Loadouts.xml`,
-  the first time it's seen verbatim. The mod's other shipped loadouts
-  (default "survivor", skill-gated "hunter", SteamGUID-gated "admin") are
-  left as-is.
+- `tuneStartingLoadouts()` removes the "multiselect" demo loadout (a free
+  shotgun for all of your starting points) and the "hunter" loadout (a
+  skill-gated starting-kit choice) from Terje-Start-Screen's
+  `profiles/TerjeSettings/StartScreen/Loadouts.xml`, each independently and
+  verbatim-matched the first time it's seen. The default "survivor" loadout
+  and the SteamGUID-gated "admin" loadout are left as-is.
+- `tuneRespawnPoints()` removes the matching skill-gated "hunting" respawn
+  zone, plus the "sleepingbag" (respawn at a placed sleeping bag) and
+  "deathpoint" (respawn at your own corpse) respawn options from
+  `profiles/TerjeSettings/StartScreen/Respawns.xml` - all three are too
+  safe/convenient for hardcore play. The regional map respawns and the
+  SteamGUID-gated "admin" base are left as-is.
 
 ### AI difficulty ([`src/difficulty.ts`](src/difficulty.ts))
 

@@ -79,6 +79,11 @@ export const AI_BANDITS_STATIC_SETTINGS = `${PROFILE_DIR}/AI_Bandits/StaticAIB.j
 // gear selection screen.
 export const TERJE_LOADOUTS = `${PROFILE_DIR}/TerjeSettings/StartScreen/Loadouts.xml`;
 
+// Terje-Start-Screen's respawn-point selection screen (regional spawns,
+// admin base, plus the skill-gated/sleeping-bag/dead-body respawn options),
+// self-generated from the mod's template the same way as Loadouts.xml above.
+export const TERJE_RESPAWNS = `${PROFILE_DIR}/TerjeSettings/StartScreen/Respawns.xml`;
+
 // Community Online Tools (COT, via @Community-Online-Tools) grants its
 // teleport/freecam/spawn admin menu per-player via one JSON file per player
 // in this directory, named after their internal identity id (a base64 hash,

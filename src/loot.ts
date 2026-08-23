@@ -12,7 +12,12 @@
 // want different numbers, rather than hand-editing the generated JSON/XML,
 // since these values get re-applied on every start.
 
-import { AIRDROP_SETTINGS, DYNAMIC_MISSIONS_SETTINGS, TERJE_LOADOUTS } from "./paths.ts";
+import {
+  AIRDROP_SETTINGS,
+  DYNAMIC_MISSIONS_SETTINGS,
+  TERJE_LOADOUTS,
+  TERJE_RESPAWNS,
+} from "./paths.ts";
 import { log, ok } from "./ui.ts";
 import { exists } from "./steam.ts";
 
@@ -111,19 +116,23 @@ export async function tuneMissionRewards(): Promise<void> {
 
 // --- Terje-Start-Screen starting loadouts (TerjeSettings/StartScreen/Loadouts.xml) ---
 //
-// The mod's own shipped template (github.com/TerjeBruoygard/TerjeMods) is
-// mostly fine as-is: the default "survivor" loadout is already modest
-// (clothes, a chemlight, a piece of fruit, a bandage - no weapon), "hunter"
-// is gated behind a skill level the TerjeSkills mod (not in this pack)
-// never grants, and "admin" is gated to specific SteamGUIDs. The one
-// exception is the "multiselect" demo loadout, which lets a fresh spawn
-// trade all of their starting points for a shotgun + ammo with zero
-// scavenging - directly undercutting "finding your first gun should be a
-// tense scramble". This removes just that one demo entry, verbatim-matched,
-// the first time it's seen; if an admin has already edited/removed it
-// themselves, this is a no-op.
-const TERJE_MARKER = "<!-- dayz-survival:loadouts-tuned -->";
-const TERJE_DEMO_LOADOUT = /\s*<Loadout id="multiselect"[\s\S]*?<\/Loadout>/;
+// The mod's own shipped template (github.com/TerjeBruoygard/TerjeMods) has a
+// few loadouts we don't want on a straightforward hardcore-survival server:
+// "multiselect" lets a fresh spawn trade all of their starting points for a
+// shotgun + ammo with zero scavenging (undercuts "finding your first gun
+// should be a tense scramble"), and "hunter" is a distinct starting-kit
+// choice gated behind a Terje-Skills skill level - we don't want a
+// skill-gated "character class" pick on spawn at all, independent of
+// whether Terje-Skills is installed. The default "survivor" loadout
+// (clothes, a chemlight, a piece of fruit, a bandage - no weapon) and the
+// SteamGUID-gated "admin" loadout are left as-is. Each entry is removed
+// independently and verbatim-matched, the first time it's seen; if an admin
+// has already edited/removed all of them themselves, this is a no-op.
+const TERJE_LOADOUTS_MARKER = "<!-- dayz-survival:loadouts-tuned -->";
+const TERJE_REMOVED_LOADOUTS: [string, RegExp][] = [
+  ["multiselect", /\s*<Loadout id="multiselect"[\s\S]*?<\/Loadout>/],
+  ["hunter", /\s*<Loadout id="hunter"[\s\S]*?<\/Loadout>/],
+];
 
 export async function tuneStartingLoadouts(): Promise<void> {
   if (!(await exists(TERJE_LOADOUTS))) {
@@ -135,12 +144,60 @@ export async function tuneStartingLoadouts(): Promise<void> {
   }
 
   let text = await Deno.readTextFile(TERJE_LOADOUTS);
-  if (text.includes(TERJE_MARKER)) return; // already tuned, and not reset by a Steam update
+  if (text.includes(TERJE_LOADOUTS_MARKER)) return; // already tuned, and not reset by a Steam update
 
-  if (!TERJE_DEMO_LOADOUT.test(text)) return; // already customized/pruned by an admin - leave it alone
+  const removed: string[] = [];
+  for (const [name, pattern] of TERJE_REMOVED_LOADOUTS) {
+    if (pattern.test(text)) {
+      text = text.replace(pattern, "");
+      removed.push(name);
+    }
+  }
+  if (removed.length === 0) return; // already customized/pruned by an admin - leave it alone
 
-  text = text.replace(TERJE_DEMO_LOADOUT, "");
-  text = text.replace("<Loadouts>", `<Loadouts>\n${TERJE_MARKER}`);
+  text = text.replace("<Loadouts>", `<Loadouts>\n${TERJE_LOADOUTS_MARKER}`);
   await Deno.writeTextFile(TERJE_LOADOUTS, text);
-  ok(`Removed the free-shotgun "multiselect" demo loadout from ${TERJE_LOADOUTS}`);
+  ok(`Removed loadout(s) [${removed.join(", ")}] from ${TERJE_LOADOUTS}`);
+}
+
+// --- Terje-Start-Screen respawn points (TerjeSettings/StartScreen/Respawns.xml) ---
+//
+// Same idea as the loadouts above: prune the shipped template's respawn
+// options that don't fit a straightforward hardcore-survival server -
+// "hunting" is a skill-gated respawn zone tied to the "hunter" loadout we
+// remove above, "sleepingbag" lets players respawn at a placed sleeping bag
+// (too safe/convenient - death should cost you your position), and
+// "deathpoint" respawns you at your own corpse. The regional map respawns
+// and the SteamGUID-gated "admin" base are left as-is.
+const TERJE_RESPAWNS_MARKER = "<!-- dayz-survival:respawns-tuned -->";
+const TERJE_REMOVED_RESPAWNS: [string, RegExp][] = [
+  ["hunting", /\s*<Respawn id="hunting"[\s\S]*?<\/Respawn>/],
+  ["sleepingbag", /\s*<Respawn id="sleepingbag"[\s\S]*?<\/Respawn>/],
+  ["deathpoint", /\s*<Respawn id="deathpoint"[\s\S]*?<\/Respawn>/],
+];
+
+export async function tuneRespawnPoints(): Promise<void> {
+  if (!(await exists(TERJE_RESPAWNS))) {
+    log(
+      "Terje-Start-Screen's Respawns.xml not generated yet — the mod will copy its " +
+        "template into the profile on first server start",
+    );
+    return;
+  }
+
+  let text = await Deno.readTextFile(TERJE_RESPAWNS);
+  if (text.includes(TERJE_RESPAWNS_MARKER)) return; // already tuned, and not reset by a Steam update
+
+  const removed: string[] = [];
+  for (const [name, pattern] of TERJE_REMOVED_RESPAWNS) {
+    if (pattern.test(text)) {
+      text = text.replace(pattern, "");
+      removed.push(name);
+    }
+  }
+  if (removed.length === 0) return; // already customized/pruned by an admin - leave it alone
+
+  text = text.replace("<Respawns>", `<Respawns>\n${TERJE_RESPAWNS_MARKER}`);
+  await Deno.writeTextFile(TERJE_RESPAWNS, text);
+  ok(`Removed respawn option(s) [${removed.join(", ")}] from ${TERJE_RESPAWNS}`);
 }
