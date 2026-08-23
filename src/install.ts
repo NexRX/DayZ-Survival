@@ -48,6 +48,18 @@ async function lowercaseTree(dir: string): Promise<void> {
   }
 }
 
+/** Find a mod's key directory, matching any casing of "key"/"keys" (mods are inconsistent: some use "Keys", others just "key"). */
+async function findKeyDir(dir: string): Promise<string | null> {
+  try {
+    for await (const entry of Deno.readDir(dir)) {
+      if (entry.isDirectory && /^keys?$/i.test(entry.name)) return `${dir}/${entry.name}`;
+    }
+  } catch {
+    // dir doesn't exist - not fatal, caller tries the next candidate
+  }
+  return null;
+}
+
 /** Copy one downloaded mod into the server dir and collect its .bikey files. */
 export async function installOneMod(
   mod: Mod,
@@ -65,10 +77,8 @@ export async function installOneMod(
     await Deno.symlink(src, dst);
   }
 
-  for (
-    const keydir of [`${dst}/keys`, `${dst}/Keys`, `${src}/keys`, `${src}/Keys`]
-  ) {
-    if (!(await exists(keydir))) continue;
+  const keydir = (await findKeyDir(dst)) ?? (await findKeyDir(src));
+  if (keydir) {
     await Deno.mkdir(`${SERVER_DIR}/keys`, { recursive: true });
     for await (const entry of Deno.readDir(keydir)) {
       if (/\.bikey$/i.test(entry.name)) {
@@ -78,7 +88,6 @@ export async function installOneMod(
         );
       }
     }
-    break;
   }
 }
 
