@@ -33,6 +33,15 @@ export const AI_PATROL_SETTINGS = `${MISSION_DIR}/expansion/settings/AIPatrolSet
 export const ECONOMY_TYPES_FILE = `${MISSION_DIR}/db/types.xml`;
 export const ECONOMY_EVENTS_FILE = `${MISSION_DIR}/db/events.xml`;
 
+// Search For Loot (Improved)'s persistent "area flags" cache: a binary index
+// of loot-searchable areas/buildings, built once and reused across restarts
+// for performance. It is NOT part of storage_1, so a world wipe won't touch
+// it - but it goes stale (and crashes the mod's loader, AFR_AreaFlagsService,
+// with "SkipAreaFlagsUsageChunk") whenever the mission's type/spawn data
+// changes underneath it (new mods, NCPR merges, manual loot edits). Deleting
+// it is always safe; the mod regenerates it fresh on next mission load.
+export const AREA_FLAGS_CACHE = `${MISSION_DIR}/areaflags.map`;
+
 // DayZ-Dynamic-AI-Addon (Spatial AI) stores its config in the *server
 // profile* (not the mission), regenerating it with defaults on first load.
 export const SPATIAL_SETTINGS = `${PROFILE_DIR}/ExpansionMod/AI/Spatial/SpatialSettings.json`;

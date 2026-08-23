@@ -115,8 +115,17 @@
 3728619225  @P2P-Trading-Board
 
 # --- Food/survival mechanics ---
+# NOTE: @Search-For-Loot-Improved (3200745813) was removed here. Its 22 Aug
+# 2026 update added a new "areaflags.map" disk-cache/tier feature whose
+# service (AFR_AreaFlagsService::SkipAreaFlagsUsageChunk) crashes the server
+# on every start with this mod list (crash is reproducible even against a
+# freshly-rebuilt cache, so it isn't stale-data - it's a bug in the new
+# feature). The item has since been pulled from the Workshop entirely ("This
+# item has been removed from the community because it violates Steam
+# Community & Content Guidelines" / "incompatible with DayZ"), so there is no
+# supported version to pin. Revisit only if the author ships a fixed/restored
+# release.
 3263494703  @Search-For-Charcoal
-3200745813  @Search-For-Loot-Improved
 3237950572  @Old-Food
 3417831913  @Keep-It-Dead-ProjectBR
 

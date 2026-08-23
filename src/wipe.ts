@@ -7,7 +7,7 @@
 // database (mpmissions/<mission>/storage_1), all of which `deno task up`
 // happily regenerates/reinstalls from scratch afterwards.
 
-import { MISSION_DIR, PROFILE_DIR, SERVER_DIR } from "./paths.ts";
+import { AREA_FLAGS_CACHE, MISSION_DIR, PROFILE_DIR, SERVER_DIR } from "./paths.ts";
 import { ask, confirm, log, ok, warn } from "./ui.ts";
 import { runCapture } from "./proc.ts";
 import { exists } from "./steam.ts";
@@ -30,6 +30,12 @@ export async function wipeWorld(): Promise<void> {
     ok(`Removed ${storage} - characters, bases, vehicles, and saved world state reset`);
   } else {
     log(`${storage} not found - nothing to wipe`);
+  }
+
+  // Stale relative to the mission's current type/spawn data otherwise, which
+  // crashes Search For Loot's AFR_AreaFlagsService on the next mission load.
+  if (await removeIfExists(AREA_FLAGS_CACHE)) {
+    ok(`Removed ${AREA_FLAGS_CACHE} - Search For Loot will rebuild it fresh on next start`);
   }
 }
 
