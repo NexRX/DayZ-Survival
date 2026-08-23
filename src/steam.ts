@@ -13,7 +13,7 @@ import {
   STEAMCMD_DIR,
   WORKSHOP_SUBPATH,
 } from "./paths.ts";
-import { requireTools, runCapture, runFiltered, runInherit } from "./proc.ts";
+import { requireTools, runCapture, runFiltered, runInherit, runInheritCapture } from "./proc.ts";
 import { askSecret, die, hint, log, ok } from "./ui.ts";
 import { ensureConfig, type Settings } from "./config.ts";
 import { loadMods } from "./mods.ts";
@@ -54,6 +54,17 @@ export async function runDepot(args: string[]): Promise<number> {
   });
 }
 
+/** Same as `runDepot`, but also returns the captured output (e.g. to detect Steam's login rate limit). */
+export async function runDepotCapture(
+  args: string[],
+): Promise<{ code: number; output: string }> {
+  await Deno.mkdir(STEAMCMD_DIR, { recursive: true });
+  return runInheritCapture("DepotDownloader", args, {
+    cwd: STEAMCMD_DIR,
+    env: homeEnv(),
+  });
+}
+
 /**
  * Whether a workshop item's downloaded content includes at least one .pbo
  * addon file. This is the real signal that a download is complete and
@@ -83,6 +94,25 @@ export async function findWorkshopItem(id: string): Promise<string | null> {
   for (const root of roots) {
     const p = `${root}/${WORKSHOP_SUBPATH}/${id}`;
     if (await exists(p)) return p;
+  }
+  return null;
+}
+
+/**
+ * The manifest id DepotDownloader last validated this workshop item against
+ * (from its `.DepotDownloader/<depot>_<manifest>.manifest` cache file), or
+ * null if never downloaded. Compared against Steam's currently-published
+ * `hcontent_file` (see `mods.ts`'s `fetchContentIds`) to detect drift without
+ * needing a Steam3 login.
+ */
+export async function localManifestId(id: string): Promise<string | null> {
+  const item = await findWorkshopItem(id);
+  if (!item) return null;
+  const dir = `${item}/.DepotDownloader`;
+  if (!(await exists(dir))) return null;
+  for await (const entry of Deno.readDir(dir)) {
+    const m = /^\d+_(\d+)\.manifest$/.exec(entry.name);
+    if (m) return m[1];
   }
   return null;
 }

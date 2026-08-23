@@ -39,6 +39,43 @@ export function serverModParam(mods: Mod[]): string {
   return mods.filter((m) => m.serverOnly).map((m) => m.name).join(";");
 }
 
+/**
+ * Bulk-fetch each mod's currently-published content id (`hcontent_file`) via
+ * the public `GetPublishedFileDetails` Web API - no Steam login required, and
+ * a single request regardless of mod count, so this is safe to call on every
+ * `up`/`mods` run without touching Steam's login rate limit. Used to detect
+ * when a mod has been updated upstream since we last validated it, so only
+ * the mods that actually changed need a real (rate-limited) DepotDownloader
+ * re-check. Returns an empty map on any failure (offline, API down) - this
+ * is a best-effort freshness check, never a hard requirement.
+ */
+export async function fetchContentIds(mods: Mod[]): Promise<Map<string, string>> {
+  const result = new Map<string, string>();
+  try {
+    const api = "https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/";
+    const body = new URLSearchParams();
+    body.set("itemcount", String(mods.length));
+    mods.forEach((m, i) => body.set(`publishedfileids[${i}]`, m.id));
+
+    const res = await fetch(api, { method: "POST", body });
+    if (!res.ok) return result;
+
+    const data = (await res.json()) as {
+      response?: {
+        publishedfiledetails?: Array<
+          { publishedfileid: string; hcontent_file?: string }
+        >;
+      };
+    };
+    for (const d of data.response?.publishedfiledetails ?? []) {
+      if (d.hcontent_file) result.set(d.publishedfileid, d.hcontent_file);
+    }
+  } catch {
+    // offline/unreachable - callers treat a missing entry as "unknown, don't force"
+  }
+  return result;
+}
+
 /** Print title + size for each mod via the public Steam Web API. */
 export async function resolveMods(mods: Mod[]): Promise<void> {
   const api = "https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/";

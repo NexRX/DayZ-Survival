@@ -43,6 +43,40 @@ export async function runCapture(
 }
 
 /**
+ * Run a command, streaming stdout+stderr to the console live (so long-running
+ * downloads still show progress) while also returning the full combined
+ * output text - e.g. so a caller can detect a specific error string (like
+ * Steam's "RateLimitExceeded") to react to.
+ */
+export async function runInheritCapture(
+  cmd: string,
+  args: string[],
+  opts: RunOpts = {},
+): Promise<{ code: number; output: string }> {
+  const child = new Deno.Command(cmd, {
+    args,
+    cwd: opts.cwd,
+    env: opts.env,
+    stdin: "inherit",
+    stdout: "piped",
+    stderr: "piped",
+  }).spawn();
+
+  const dec = new TextDecoder();
+  let output = "";
+  const pump = async (stream: ReadableStream<Uint8Array>) => {
+    for await (const chunk of stream) {
+      output += dec.decode(chunk, { stream: true });
+      Deno.stdout.writeSync(chunk);
+    }
+  };
+
+  await Promise.all([pump(child.stdout), pump(child.stderr)]);
+  const { code } = await child.status;
+  return { code, output };
+}
+
+/**
  * Run a command, streaming stdout+stderr line-by-line while dropping any line
  * matching `drop`. Used to hide known-benign SteamCMD log spam on Linux.
  */

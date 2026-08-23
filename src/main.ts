@@ -79,9 +79,14 @@ async function menu(s: Settings): Promise<void> {
         case "4":
           await doInstall(s);
           break;
-        case "5":
-          await doMods(s);
+        case "5": {
+          const ids = await ask(
+            "Workshop id(s) to force re-check even if not flagged as stale (blank = auto-detect only)",
+            "",
+          );
+          await doMods(s, ids.trim() ? new Set(ids.trim().split(/\s+/)) : undefined);
           break;
+        }
         case "7":
           await resolveMods(await loadMods());
           break;
@@ -116,7 +121,10 @@ const HELP = `Usage: deno task dayz [command]
   config        (Re)configure settings (.env)
   login         Log in to Steam (caches the session)
   install       Install/update the DayZ server
-  mods          Download/update all mods in mods.txt
+  mods          Download/update mods in mods.txt (auto-detects and re-checks
+                any already-installed mod Steam has updated since last time -
+                add workshop id(s) to also force-recheck specific ones, e.g.
+                'deno task mods 3149798901')
   resolve       Verify mod IDs via the Steam Web API
   search <terms> Search the Steam Workshop for DayZ mods (needs a Steam Web API key)
   status        Show setup status
@@ -144,9 +152,11 @@ async function main(): Promise<void> {
     case "install":
       await doInstall(s);
       break;
-    case "mods":
-      await doMods(s);
+    case "mods": {
+      const ids = Deno.args.slice(1);
+      await doMods(s, ids.length ? new Set(ids) : undefined);
       break;
+    }
     case "resolve":
       await resolveMods(await loadMods());
       break;
