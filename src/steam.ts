@@ -57,6 +57,15 @@ async function runSteamcmdQuiet(args: string[]): Promise<number> {
   return runFiltered("steamcmd", args, BENIGN, { env: homeEnv() });
 }
 
+/**
+ * Same as `runSteamcmdQuiet`, but forces Windows-platform content - needed
+ * for Windows-only apps (e.g. DayZ Tools, app 830640) since Linux SteamCMD
+ * otherwise refuses them with "Invalid platform".
+ */
+export async function runSteamcmdQuietForceWindows(args: string[]): Promise<number> {
+  return runSteamcmdQuiet(["+@sSteamCmdForcePlatformType", "windows", ...args]);
+}
+
 /** DepotDownloader run with its config/token kept project-local (cwd + HOME). */
 export async function runDepot(args: string[]): Promise<number> {
   await Deno.mkdir(STEAMCMD_DIR, { recursive: true });

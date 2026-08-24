@@ -48,6 +48,35 @@
           doCheck = false;
         };
 
+        # BiSignUtils: cross-platform reimplementation of BI's DSCreateKey
+        # (github.com/rvost/BiSignUtils) - a prebuilt, self-contained
+        # (glibc-only) Linux binary, not in nixpkgs. Used only to *generate*
+        # the server pack's signing keypair (1024-bit, matching real DayZ
+        # mods) - actual *signing* is done by the real DSSignFile.exe via
+        # Wine (see src/modSign.ts): BiSignUtils' own signer produces
+        # `.bisign` files that pass its own `checkAll` but that the real
+        # `DSCheckSignatures.exe` rejects as "wrong" - confirmed to be the
+        # actual root cause of a long-reproduced, previously-unexplained
+        # connect-time kick ("Client has a PBO which is not part of the
+        # server").
+        bisignutils = pkgs.stdenvNoCC.mkDerivation {
+          pname = "bisignutils";
+          version = "1.1.0";
+
+          src = pkgs.fetchurl {
+            url = "https://github.com/rvost/BiSignUtils/releases/download/1.1.0/BiSignUtils";
+            hash = "sha256:51df58731a86d690eeeaac82a600f172e9a3b3f7d40d7a39818e0d677a993272";
+          };
+
+          dontUnpack = true;
+
+          installPhase = ''
+            mkdir -p $out/bin
+            cp $src $out/bin/bisignutils
+            chmod +x $out/bin/bisignutils
+          '';
+        };
+
         # Everything the CLI (deno task dayz -> ./src) needs at runtime.
         tools = with pkgs; [
           deno # runs the TypeScript CLI in ./src + task runner
@@ -56,11 +85,14 @@
           steam-run # FHS wrapper to run the DayZ server + mods
           bashInteractive
           coreutils # cp, du used by the CLI
-          armake2 # build/sign the server pack's PBOs (see src/modBuild.ts)
+          armake2 # build the server pack's PBOs (see src/modBuild.ts)
+          bisignutils # generate the server pack's signing keypair
+          wineWowPackages.stable # runs the real DayZ Tools' DSSignFile.exe (see src/modSign.ts)
         ];
       in
       {
         packages.armake2 = armake2;
+        packages.bisignutils = bisignutils;
 
         devShells.default = pkgs.mkShell {
           packages = tools;

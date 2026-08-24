@@ -31,24 +31,37 @@ having a stable, populated world yet - these can be done any time.
       resetting with Terje-Core+Expansion, Spatial_MaxAccuracy on
       DayZ-Dynamic-AI-Addon, COT's weather panel, Keep-It-Dead + AI mods) -
       see the dedicated section below for details.
-- [ ] **DZSurvivalFindStone addon (serverpack/)** - source-only scaffold at
-      serverpack/addons/DZSurvivalFindStone/ (a hold-to-search action that
-      lets players find a Stone while standing on gravel/dirt/rail-ballast
-      surfaces - train tracks, dirt trails - no tool required). Building
-      and publishing is now automated as part of this project's single
-      "server pack" Workshop mod (`deno task build-serverpack` /
-      `deno task publish-serverpack`, via armake2 - see `src/modBuild.ts` /
-      `src/modPublish.ts` / `flake.nix`); the config.cpp has been confirmed
-      to rapify cleanly. What's left is genuinely manual: boot a local
-      server with the built `.serverpack-build/@DZSurvivalServerPack` in
-      `-mod=`, fix any script errors in profiles/*.RPT/script.log (two
-      likely trouble spots are flagged TODO verify in the source - an
-      animation constant name and the surface-lookup API signature),
-      confirm in-game that StoneKnife's actual crafting recipe wants Stone
-      and not SmallStone (swap if not), then `deno task publish-serverpack`
-      and add the resulting Workshop ID to mods.txt (future addons dropped
-      into serverpack/addons/ reuse the same Workshop item). See
-      `serverpack/README.md` for full details.
+- [ ] **DZSurvivalFindStone addon (serverpack/)** - a hold-to-search action
+      that lets players find a Stone while standing on gravel/dirt/rail-
+      ballast surfaces (train tracks, dirt trails), no tool required. Built
+      and published as this project's single "server pack" Workshop mod
+      (`deno task build-serverpack` / `deno task publish-serverpack`, packed
+      by armake2, signed by the real `DSSignFile.exe` (DayZ Tools, via Wine - see `src/modSign.ts`) with a 1024-bit key - see `src/modBuild.ts` /
+      `src/modPublish.ts` / `flake.nix`, Workshop id `3789404408`). Getting
+      this working took nine real, stacked bugs (weak signing keys, a
+      misplaced `.bisign` output path, a case-sensitive signature lookup
+      broken by `lowercaseTree()`, a wrong `mod.cpp`/`config.cpp` schema, a
+      doubled internal PBO path from a redundant `4_World/` source folder,
+      several guessed/non-existent scripting APIs cross-checked and fixed
+      against vanilla's own unpacked `server/dta/scripts.pbo`, wrong-case
+      `Addons`/`Keys` folder names, a `$PBOPREFIX$` that collided with
+      vanilla's own reserved `4_World` namespace, and finally - the actual
+      root cause of the client-side kick surviving all eight of the above -
+      BiSignUtils' signer producing `.bisign` files that pass its own
+      `checkAll` but that the real `DSCheckSignatures.exe` rejects as
+      "wrong", confirmed by downloading the real DayZ Tools and
+      cross-checking both tools' output directly against each other. All
+      nine are now fixed and confirmed working end-to-end: a real client
+      has successfully connected without being kicked. See
+      `serverpack/README.md` for the full bug-by-bug writeup.
+      **What's left:** the find-stone action itself doesn't appear as an
+      option while standing on a railway - the surface-type check in
+      `ActionFindStoneOnPath.c` likely doesn't include the real vanilla
+      surface name(s) for rail ballast; needs the actual value(s) confirmed
+      (e.g. via `GetGame().SurfaceGetType()` logging in a live session) and
+      the check updated. Also still unconfirmed: whether `StoneKnife`'s
+      actual crafting recipe wants `Stone` or `SmallStone` (swap the spawn
+      calls in `ActionFindStoneOnPath.c` if not).
 
 ## World-crafting checklist (do not start until the server has a stable base)
 

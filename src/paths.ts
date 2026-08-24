@@ -158,3 +158,15 @@ export const SERVERPACK_WORKSHOP_ID_FILE = `${SERVERPACK_DIR}/.workshop_id`;
 // path.
 export const SERVERPACK_KEYS_DIR = `${ROOT}/.serverpack-keys`;
 export const SERVERPACK_BUILD_DIR = `${ROOT}/.serverpack-build`;
+
+// Real Bohemia DayZ Tools (Steam app 830640, Windows-only) run via Wine -
+// needed only for `DSSignFile.exe`. armake2's packing is fine, but its
+// paired signer, BiSignUtils, produces `.bisign` files that BiSignUtils'
+// own `checkAll` accepts yet the real `DSCheckSignatures.exe` rejects as
+// "wrong" - the exact, previously-unexplained cause of DayZ's connect-time
+// "Client has a PBO which is not part of the server" kick (see modSign.ts).
+export const DAYZ_TOOLS_APPID = "830640";
+export const DAYTOOLS_DIR = `${ROOT}/daytools`;
+export const WINE_PREFIX_DIR = `${ROOT}/.wine-daytools`;
+export const DSSIGNFILE_EXE = `${DAYTOOLS_DIR}/Bin/DsUtils/DSSignFile.exe`;
+export const DSCHECKSIGNATURES_EXE = `${DAYTOOLS_DIR}/Bin/DsUtils/DSCheckSignatures.exe`;

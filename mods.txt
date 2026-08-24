@@ -131,6 +131,18 @@
 3237950572  @Old-Food
 3417831913  @Keep-It-Dead-ProjectBR
 
+# --- This project's own custom content (serverpack/ - a single Workshop
+# mod bundling every addon we write ourselves; see serverpack/README.md for
+# how to add more to it without needing a new Workshop entry). Currently:
+# DZSurvivalFindStone, a hold-to-search action letting players reliably
+# find a Stone on gravel/dirt/rail-ballast paths (train tracks, dirt
+# trails) as the route to crafting materials for a butchering tool - no
+# knife/blade is handed out at spawn (see src/loot.ts's tuneStartingKit()).
+# STATUS: published but UNVERIFIED IN-GAME YET - watch profiles/*.RPT and
+# script.log on first boot with this mod loaded; see serverpack/README.md's
+# "TODO verify" notes if anything fails to compile. ---
+3789404408  @DZSurvivalServerPack
+
 # --- Loot mechanics: object scavenging (search furniture/wrecks/garbage for
 # extra loot; entirely separate from the vanilla nominal-based economy - it
 # doesn't touch types.xml/CE at all, it's an additive layer on top. Ships

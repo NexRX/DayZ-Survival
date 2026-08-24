@@ -165,18 +165,30 @@ export async function tuneStartingLoadouts(): Promise<void> {
 //
 // The default "survivor" loadout ships with clothes, a chemlight, a piece of
 // fruit, and a bandage - no way to defend yourself, navigate, or gather
-// materials. We add a basic blunt weapon (a found stick, not a proper
-// weapon - still has to be scavenged/upgraded), a handful of rags (early
-// bandaging/crafting material), and a map (so a fresh spawn isn't totally
-// lost). Deliberately no knife/blade here - butchering tools have to be
-// found or crafted (see the DZSurvivalFindStone addon under serverpack/ for
-// the stone-gathering side of that). Each item is inserted independently
-// into the survivor loadout's <Items> block, the first time it's seen
-// (matched verbatim, so already-added items are never duplicated and an
-// admin's own edits/removals are respected).
+// materials. We add a random blunt weapon (found/improvised, not a proper
+// firearm - still has to be scavenged/upgraded further), a handful of rags
+// (early bandaging/crafting material), and a map (so a fresh spawn isn't
+// totally lost). Deliberately no knife/blade here - butchering tools have to
+// be found or crafted (see the DZSurvivalFindStone addon under serverpack/
+// for the stone-gathering side of that). Each item/selector is inserted
+// independently into the survivor loadout's <Items> block, the first time
+// it's seen (matched verbatim, so already-added items are never duplicated
+// and an admin's own edits/removals are respected).
 const TERJE_SURVIVOR_ITEMS_CLOSE = /(<Loadout id="survivor"[\s\S]*?)(\s*<\/Items>\s*<\/Loadout>)/;
+
+// A mix of low-tier blunt weapons - the mod's own Selector RANDOM mechanic
+// picks one uniformly at random per spawn, mirroring the pattern the shipped
+// template already uses for chemlights/fruit. Deliberately excludes
+// heavier/rarer melee (e.g. SledgeHammer) to keep a fresh spawn's starting
+// power in line with the earned-power philosophy.
+const TERJE_BLUNT_WEAPON_SELECTOR = `<Selector type="RANDOM">
+				<Item classname="WoodenStick" position="@InHands" />
+				<Item classname="Pipe" position="@InHands" />
+				<Item classname="BaseballBat" position="@InHands" />
+				<Item classname="Crowbar" position="@InHands" />
+			</Selector>`;
+
 const TERJE_STARTING_KIT_ITEMS: string[] = [
-  '<Item classname="WoodenStick" position="@InHands" />',
   '<Item classname="Rag" count="4" />',
   '<Item classname="Map" />',
 ];
@@ -194,6 +206,12 @@ export async function tuneStartingKit(): Promise<void> {
   if (!TERJE_SURVIVOR_ITEMS_CLOSE.test(text)) return; // survivor loadout renamed/removed by an admin - leave it alone
 
   const added: string[] = [];
+
+  if (!text.includes(TERJE_BLUNT_WEAPON_SELECTOR)) {
+    text = text.replace(TERJE_SURVIVOR_ITEMS_CLOSE, `$1\n\t\t\t${TERJE_BLUNT_WEAPON_SELECTOR}$2`);
+    added.push("random blunt weapon");
+  }
+
   for (const itemXml of TERJE_STARTING_KIT_ITEMS) {
     if (text.includes(itemXml)) continue; // already present (this run or a previous one)
     text = text.replace(TERJE_SURVIVOR_ITEMS_CLOSE, `$1\n\t\t\t${itemXml}$2`);

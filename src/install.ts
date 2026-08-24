@@ -1,7 +1,7 @@
 // Downloading workshop mods (via DepotDownloader) and installing them + their
 // signing keys into the server directory.
 
-import { DAYZ_CLIENT_APPID, SERVER_DIR, WORKSHOP_SUBPATH } from "./paths.ts";
+import { DAYZ_CLIENT_APPID, SERVER_DIR, SERVERPACK_NAME, WORKSHOP_SUBPATH } from "./paths.ts";
 import { die, log, ok, warn } from "./ui.ts";
 import { requireTools, runCapture } from "./proc.ts";
 import {
@@ -71,9 +71,19 @@ export async function installOneMod(
   const dst = `${SERVER_DIR}/${mod.name}`;
   await Deno.remove(dst, { recursive: true }).catch(() => {});
 
+  // Our own server pack's .bisign/.bikey filenames encode the signing key's
+  // authority name verbatim (see modBuild.ts) - DayZ's signature check
+  // matches that name case-sensitively against the key/signature content, so
+  // lowercasing it here (fine for third-party mods, which is what this exists
+  // for) would desync the filename from the case actually embedded in the
+  // signature and break verification. We wrote this addon ourselves with
+  // consistent casing throughout, so it doesn't need the Linux-compatibility
+  // lowercase pass at all - but it still gets copied like every other mod
+  // (never symlinked), so it's installed identically to everything else.
+  const skipLowercase = mod.name === `@${SERVERPACK_NAME}`;
   if (lowercase) {
     await runCapture("cp", ["-a", src, dst]);
-    await lowercaseTree(dst);
+    if (!skipLowercase) await lowercaseTree(dst);
   } else {
     await Deno.symlink(src, dst);
   }

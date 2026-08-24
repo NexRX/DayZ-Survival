@@ -132,6 +132,33 @@ Five were left out, for concrete reasons rather than just "already have it":
   workshop ID in `mods.txt` like every other mod here, so it doesn't affect
   us, but don't fold their actual `.pbo`s into some other redistributable.
 
+## This project's own custom content ([`serverpack/`](serverpack/))
+
+`3789404408  @DZSurvivalServerPack` in `mods.txt` (Loot mechanics section)
+is **our own** mod, not a third-party one - a single Workshop item bundling
+every from-scratch addon this project writes itself, built/signed on Linux
+with armake2 (no Windows/DayZ Tools needed - see `serverpack/README.md` and
+`src/modBuild.ts`/`src/modPublish.ts`). Adding a new addon to it is just a
+new `serverpack/addons/<Name>/` folder plus `deno task publish-serverpack`
+
+- it updates the same Workshop item, so there's only ever one entry to
+  maintain in `mods.txt`.
+
+Currently ships one addon:
+
+- **`DZSurvivalFindStone`** - a hold-to-search action that lets players
+  reliably find a `Stone` while standing on gravel/dirt/rail-ballast
+  surfaces (train tracks, dirt trails) - the intended route to crafting
+  materials for a butchering tool, since no knife/blade is handed out at
+  spawn (see `src/loot.ts`'s `tuneStartingKit()`).
+
+**Status: published, not yet verified in-game.** It builds and packs
+cleanly (config rapifies without errors), but watch `profiles/*.RPT` and
+`profiles/script.log` on the first boot with this mod loaded - two spots
+are flagged `TODO verify` in the source (an animation constant name and the
+surface-lookup API signature) as the most likely things to need a tweak.
+See `serverpack/README.md` for full details.
+
 ## Setup needed beyond load order
 
 Most of the pack is genuinely plug-and-play (subscribe, load, done). These

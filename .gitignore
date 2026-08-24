@@ -13,6 +13,11 @@ ai/cache/
 .serverpack-build/
 .serverpack-keys/
 
+# --- Real DayZ Tools (via Wine) - see src/modSign.ts ---
+daytools/
+.wine-daytools/
+daytools-out/
+
 # --- Editor / OS noise ---
 *.swp
 *~
