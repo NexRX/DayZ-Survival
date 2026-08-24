@@ -189,21 +189,23 @@ export async function tuneMissionDifficulty(): Promise<void> {
 
 // --- InediaInfectedAI infected combat (Inedia/InediaInfectedAIConfig.json) ---
 //
-// Unlike the mods above, InediaInfectedAI's own wiki states its defaults are
-// already "balanced for hardcore gameplay" - confirmed by inspecting the
-// mod's published default config (e.g. DamageToPlayerHealthMultiplier is
-// already 1.2-1.4x, StunToPlayerChancePercent already 25-35%). So this is a
-// light touch: only correct the handful of combat fields below if a host's
-// copy has been reset/edited *below* our floor, never fight the mod's own
-// already-aggressive defaults.
+// The mod's own shipped defaults are tuned for "hardcore" play (e.g.
+// DamageToPlayerHealthMultiplier 1.2-1.4x, StunToPlayerChancePercent
+// 25-35%, and a 4s post-stagger immunity window on zombies) which in
+// practice reads as "infected hit too hard and can never be staggered
+// again mid-fight". So unlike the other AI mods above, this rebalance is a
+// direct target-setter (always overwrites to an exact value) rather than a
+// floor - we're deliberately pulling several fields *below* the mod's own
+// defaults, not just guarding a minimum.
 interface InediaScaledValue {
   all?: number;
+  highstr?: number;
+  mediumstr?: number;
+  lowstr?: number;
   [key: string]: unknown;
 }
 
 interface InediaZombiesConfig {
-  DamageToPlayerHealthMultiplier?: InediaScaledValue;
-  StunToPlayerChancePercent?: InediaScaledValue;
   DamageToZombieHeadRangeMultiplier?: InediaScaledValue;
   [key: string]: unknown;
 }
@@ -213,12 +215,55 @@ interface InediaConfig {
   [key: string]: unknown;
 }
 
-const INEDIA_DAMAGE_TO_PLAYER_FLOOR = 1.15; // hits from infected should sting
-const INEDIA_STUN_CHANCE_FLOOR = 20; // percent
+type InediaTierTargets = Partial<
+  Record<"all" | "highstr" | "mediumstr" | "lowstr", number>
+>;
+
+// Player-facing pain, pulled down from the mod's aggressive defaults to
+// roughly-vanilla-plus-a-bit, scaled by infected "strength" tier.
+const INEDIA_PLAYER_DAMAGE_TARGETS: Record<string, InediaTierTargets> = {
+  DamageToPlayerHealthMultiplier: { all: 1.0, lowstr: 1.0, mediumstr: 1.05, highstr: 1.15 },
+  DamageToPlayerInBlockHealthMultiplier: { all: 0.5, lowstr: 0.5, mediumstr: 0.55, highstr: 0.6 },
+  DamageToPlayerShockMultiplier: { all: 1.0, lowstr: 1.0, mediumstr: 1.05, highstr: 1.15 },
+  DamageToPlayerInBlockShockMultiplier: { all: 0.5, lowstr: 0.5, mediumstr: 0.55, highstr: 0.6 },
+  DamageToPlayerStaminaPercent: { all: 8, lowstr: 8, mediumstr: 10, highstr: 14 },
+  DamageToPlayerInBlockStaminaPercent: { all: 4, lowstr: 4, mediumstr: 5, highstr: 7 },
+  DamageToPlayerBleedingChancePercent: { all: 6, lowstr: 6, mediumstr: 8, highstr: 10 },
+  DamageToPlayerInBlockBleedingChancePercent: { all: 3, lowstr: 3, mediumstr: 4, highstr: 5 },
+  StunToPlayerChancePercent: { all: 12, lowstr: 12, mediumstr: 15, highstr: 20 },
+  StunToPlayerInBlockChancePercent: { all: 6, lowstr: 6, mediumstr: 7.5, highstr: 10 },
+};
+
+// Let players stagger zombies again sooner mid-fight, without making it
+// trivial/spammable (10% ignore-chance on qualifying hits is left as-is).
+const INEDIA_ZOMBIE_STAGGER_TARGETS: Record<string, InediaTierTargets> = {
+  DamageToZombieShockToStunImmunityAfterMeleeHitSeconds: { all: 2.0 },
+  DamageToZombieShockToStunImmunityAfterRangedHitSeconds: { all: 2.0 },
+};
+
 // No bullet sponges: a clean headshot should never be worth *less* than a
 // full-power hit (the mod's own default is already 1.0 - this only guards
 // against a host accidentally nerfing it).
 const INEDIA_HEADSHOT_MULTIPLIER_FLOOR = 1;
+
+const INEDIA_EPSILON = 1e-6;
+
+function setInediaTiers(
+  value: InediaScaledValue | undefined,
+  targets: InediaTierTargets,
+): [InediaScaledValue, boolean] {
+  const v = value ?? {};
+  let changed = false;
+  for (const [tier, target] of Object.entries(targets)) {
+    if (target === undefined) continue;
+    const current = v[tier] as number | undefined;
+    if (current === undefined || Math.abs(current - target) > INEDIA_EPSILON) {
+      v[tier] = target;
+      changed = true;
+    }
+  }
+  return [v, changed];
+}
 
 function raiseInediaFloor(
   value: InediaScaledValue | undefined,
@@ -243,19 +288,21 @@ export async function tuneInediaInfectedAIDifficulty(): Promise<void> {
   const zombies = settings.Zombies ?? (settings.Zombies = {});
   let changed = false;
 
+  for (
+    const [key, targets] of Object.entries({
+      ...INEDIA_PLAYER_DAMAGE_TARGETS,
+      ...INEDIA_ZOMBIE_STAGGER_TARGETS,
+    })
+  ) {
+    let updated: boolean;
+    [zombies[key], updated] = setInediaTiers(
+      zombies[key] as InediaScaledValue | undefined,
+      targets,
+    );
+    changed ||= updated;
+  }
+
   let raised: boolean;
-  [zombies.DamageToPlayerHealthMultiplier, raised] = raiseInediaFloor(
-    zombies.DamageToPlayerHealthMultiplier,
-    INEDIA_DAMAGE_TO_PLAYER_FLOOR,
-  );
-  changed ||= raised;
-
-  [zombies.StunToPlayerChancePercent, raised] = raiseInediaFloor(
-    zombies.StunToPlayerChancePercent,
-    INEDIA_STUN_CHANCE_FLOOR,
-  );
-  changed ||= raised;
-
   [zombies.DamageToZombieHeadRangeMultiplier, raised] = raiseInediaFloor(
     zombies.DamageToZombieHeadRangeMultiplier,
     INEDIA_HEADSHOT_MULTIPLIER_FLOOR,
@@ -264,7 +311,7 @@ export async function tuneInediaInfectedAIDifficulty(): Promise<void> {
 
   if (!changed) return;
   await Deno.writeTextFile(INEDIA_SETTINGS, JSON.stringify(settings, null, 4));
-  ok(`Raised infected combat-difficulty floors in ${INEDIA_SETTINGS}`);
+  ok(`Rebalanced infected combat difficulty in ${INEDIA_SETTINGS}`);
 }
 
 // --- AI-Bandits patrol/sniper accuracy (AI_Bandits/{Dynamic,Static}AIB.json) ---

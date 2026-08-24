@@ -161,6 +161,52 @@ export async function tuneStartingLoadouts(): Promise<void> {
   ok(`Removed loadout(s) [${removed.join(", ")}] from ${TERJE_LOADOUTS}`);
 }
 
+// --- Terje-Start-Screen "survivor" starting kit (TerjeSettings/StartScreen/Loadouts.xml) ---
+//
+// The default "survivor" loadout ships with clothes, a chemlight, a piece of
+// fruit, and a bandage - no way to defend yourself, navigate, or gather
+// materials. We add a basic blunt weapon (a found stick, not a proper
+// weapon - still has to be scavenged/upgraded), a handful of rags (early
+// bandaging/crafting material), and a map (so a fresh spawn isn't totally
+// lost). Deliberately no knife/blade here - butchering tools have to be
+// found or crafted (see the DZSurvivalFindStone addon under serverpack/ for
+// the stone-gathering side of that). Each item is inserted independently
+// into the survivor loadout's <Items> block, the first time it's seen
+// (matched verbatim, so already-added items are never duplicated and an
+// admin's own edits/removals are respected).
+const TERJE_SURVIVOR_ITEMS_CLOSE = /(<Loadout id="survivor"[\s\S]*?)(\s*<\/Items>\s*<\/Loadout>)/;
+const TERJE_STARTING_KIT_ITEMS: string[] = [
+  '<Item classname="WoodenStick" position="@InHands" />',
+  '<Item classname="Rag" count="4" />',
+  '<Item classname="Map" />',
+];
+
+export async function tuneStartingKit(): Promise<void> {
+  if (!(await exists(TERJE_LOADOUTS))) {
+    log(
+      "Terje-Start-Screen's Loadouts.xml not generated yet — the mod will copy its " +
+        "template into the profile on first server start",
+    );
+    return;
+  }
+
+  let text = await Deno.readTextFile(TERJE_LOADOUTS);
+  if (!TERJE_SURVIVOR_ITEMS_CLOSE.test(text)) return; // survivor loadout renamed/removed by an admin - leave it alone
+
+  const added: string[] = [];
+  for (const itemXml of TERJE_STARTING_KIT_ITEMS) {
+    if (text.includes(itemXml)) continue; // already present (this run or a previous one)
+    text = text.replace(TERJE_SURVIVOR_ITEMS_CLOSE, `$1\n\t\t\t${itemXml}$2`);
+    added.push(itemXml.match(/classname="([^"]+)"/)?.[1] ?? itemXml);
+  }
+
+  if (added.length === 0) return;
+  await Deno.writeTextFile(TERJE_LOADOUTS, text);
+  ok(
+    `Added starting kit item(s) [${added.join(", ")}] to the survivor loadout in ${TERJE_LOADOUTS}`,
+  );
+}
+
 // --- Terje-Start-Screen respawn points (TerjeSettings/StartScreen/Respawns.xml) ---
 //
 // Same idea as the loadouts above: prune the shipped template's respawn

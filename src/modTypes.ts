@@ -18,21 +18,32 @@ import { log, ok } from "./ui.ts";
 import { exists } from "./steam.ts";
 import type { Mod } from "./mods.ts";
 
-// Mods confirmed (from their own Steam Workshop pages) to ship a reference
-// types.xml file in their mod folder for admins to merge in by hand. Keyed
-// by the @name used in mods.txt. NCPR is deliberately excluded — its types
-// are published separately on GitHub (https://github.com/N3msi/NCPR)
+// Mods confirmed (either from a real install under server/@ModName, or from
+// their own Steam Workshop pages when not yet installed) to ship a reference
+// economy types file somewhere in their mod folder for admins to merge in by
+// hand. Keyed by the @name used in mods.txt. NCPR is deliberately excluded -
+// its types are published separately on GitHub (https://github.com/N3msi/NCPR)
 // rather than shipped in the workshop download, so there's no local file to
 // discover here; see ncpr.ts instead, which fetches and merges them directly.
 //
-// The two CJ187 money mods are included speculatively: their Steam pages
-// mention bundled example server files but don't spell out a types.xml by
-// name. Harmless either way - findTypesFiles() below only merges what it
-// actually finds, so this is a no-op until the mods are downloaded and
-// confirmed (or corrected) either way. Buddys-BoltZ is included on the same
-// speculative basis (a community-made "types.xml example" thread on its
-// Steam page implies its ammo variants need one, but it's unclear whether
-// the mod ships it itself).
+// Verified against a real install (2026-08, see TODO.md): most of these
+// mods do NOT literally name their file "types.xml" - e.g. Old-Food ships
+// types_chernarus.xml, Nail-Gun ships types/bvp_nailgun_types.xml, and both
+// MBM vehicle mods ship extra/<name>_types.xml. findEconomyTypesFiles()
+// below scans every *.xml file under the mod folder and only merges ones
+// whose root element is literally <types> (not <spawnabletypes>, <events>,
+// etc.), so any filename works and non-economy XML is never touched - this
+// is what actually makes Old-Food/Nail-Gun/the MBM trucks work, since the
+// old exact-filename-only scan found nothing for any of them.
+//
+// The two CJ187 money mods and Buddys-BoltZ are kept in the list on a
+// speculative basis (their Steam pages hint at a bundled example file but
+// don't confirm one) - harmless either way, since the scan below is a no-op
+// if a mod ships nothing matching. DayZ-Horse ships a real root types.xml
+// (Saddle/Bridle/HorseBags/HorseSteakMeat/HorsePelt/Stable_dayz(_kit)) -
+// confirmed on a live install; the Animal_Horse_* creature types it does
+// NOT ship are instead added by wildlifeTerritories.ts, matching the exact
+// boilerplate every other vanilla Animal_* creature type already uses.
 const MOD_TYPES_SOURCES = new Set([
   "@Windstride-Clothing",
   "@DayZ-Dog",
@@ -44,12 +55,30 @@ const MOD_TYPES_SOURCES = new Set([
   "@CJ187-Money-Euros-Only",
   "@Zens-Zippo-Lighter",
   "@Buddys-BoltZ",
+  "@Old-Food",
+  "@Quiver",
+  "@Nail-Gun",
+  "@Gas-Mask-Overhaul",
+  "@MBM-ApocalypseTruck",
+  "@MBM-ApocalypticPAZ",
+  "@Alevarics-Clothing-Overhaul",
+  "@UAZ-31514",
+  "@DayZ-Horse",
 ]);
 
 const TYPE_BLOCK = /<type name="([^"]+)">[\s\S]*?<\/type>/g;
 
-/** Recursively find every file named exactly "types.xml" (case-insensitive) under `dir`. */
-async function findTypesFiles(dir: string): Promise<string[]> {
+// Matches an economy types file's root element (optionally preceded by an
+// XML declaration and/or comments), e.g. `<?xml ...?>` then `<types>`.
+// Deliberately anchored so a *.xml file whose root is <spawnabletypes>
+// (item-in-crate spawn tables, a different schema some mods ship alongside
+// their real types file - e.g. Alevarics-Clothing-Overhaul's own
+// alv_spawnabletypes.xml) is never mistaken for one, even though both use
+// <type name="..."> blocks internally.
+const TYPES_ROOT = /^\uFEFF?\s*(<\?xml[^>]*\?>\s*)?(<!--[\s\S]*?-->\s*)*<types[\s>]/;
+
+/** Recursively find every *.xml file under `dir` whose root element is `<types>`. */
+async function findEconomyTypesFiles(dir: string): Promise<string[]> {
   const found: string[] = [];
   async function walk(d: string): Promise<void> {
     let entries: AsyncIterable<Deno.DirEntry>;
@@ -60,8 +89,12 @@ async function findTypesFiles(dir: string): Promise<string[]> {
     }
     for await (const entry of entries) {
       const p = `${d}/${entry.name}`;
-      if (entry.isDirectory) await walk(p);
-      else if (entry.name.toLowerCase() === "types.xml") found.push(p);
+      if (entry.isDirectory) {
+        await walk(p);
+      } else if (entry.name.toLowerCase().endsWith(".xml")) {
+        const text = await Deno.readTextFile(p).catch(() => "");
+        if (TYPES_ROOT.test(text)) found.push(p);
+      }
     }
   }
   await walk(dir);
@@ -89,9 +122,9 @@ export async function ensureModTypesMerged(mods: Mod[]): Promise<void> {
     const modDir = `${SERVER_DIR}/${mod.name}`;
     if (!(await exists(modDir))) continue; // not installed yet
 
-    const files = await findTypesFiles(modDir);
+    const files = await findEconomyTypesFiles(modDir);
     if (files.length === 0) {
-      log(`${mod.name}: no types.xml found under ${modDir} - nothing to merge`);
+      log(`${mod.name}: no economy types.xml found under ${modDir} - nothing to merge`);
       continue;
     }
 

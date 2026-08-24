@@ -9,11 +9,20 @@ import { ensureAIPatrols } from "./ai.ts";
 import { ensureSpatialAI } from "./spatial.ts";
 import { ensureDynamicMissions } from "./dynamicMissions.ts";
 import { ensureModTypesMerged } from "./modTypes.ts";
+import { ensureMoreCarsTypesMerged } from "./moreCars.ts";
 import { ensureNCPRTypesMerged } from "./ncpr.ts";
+import { ensureVehicle3PPWhitelist } from "./vehicle3pp.ts";
+import { tuneDynamicScavenging } from "./scavenging.ts";
+import { ensureFuelSystemVehicles } from "./fuelSystem.ts";
+import { LIGHTING_PRESET, tuneLightingConfig } from "./lighting.ts";
+import { ensureWildlifeTerritories } from "./wildlifeTerritories.ts";
+import { ensureYuretskiyWired } from "./yuretskiy.ts";
+import { tuneExpansionMarket } from "./market.ts";
 import {
   tuneAirdropLoot,
   tuneMissionRewards,
   tuneRespawnPoints,
+  tuneStartingKit,
   tuneStartingLoadouts,
   tuneStartScreenSettings,
 } from "./loot.ts";
@@ -50,6 +59,7 @@ serverTime                  = "SystemTime";
 serverTimeAcceleration      = 8;
 serverNightTimeAcceleration = 2;
 serverTimePersistent        = 0;
+lightingConfig              = ${LIGHTING_PRESET};
 
 guaranteedUpdates = 1;
 loginQueueConcurrentPlayers = 5;
@@ -116,13 +126,18 @@ export async function doStart(s: Settings): Promise<never> {
   await primeModConfigsIfNeeded(args);
 
   await ensureModTypesMerged(allMods);
+  await ensureMoreCarsTypesMerged(allMods);
   await ensureNCPRTypesMerged(allMods);
+  await ensureVehicle3PPWhitelist(allMods);
+  await ensureWildlifeTerritories(allMods);
+  await ensureYuretskiyWired(allMods);
   await ensureAIPatrols();
   await ensureSpatialAI();
   await ensureDynamicMissions();
   await tuneAirdropLoot();
   await tuneMissionRewards();
   await tuneStartingLoadouts();
+  await tuneStartingKit();
   await tuneRespawnPoints();
   await tuneStartScreenSettings();
   await tuneAIDifficulty();
@@ -133,6 +148,10 @@ export async function doStart(s: Settings): Promise<never> {
   await tuneFoodScarcity();
   await tuneAnimalSpawns();
   await tuneMoneyScarcity();
+  await tuneDynamicScavenging();
+  await tuneExpansionMarket();
+  await tuneLightingConfig();
+  await ensureFuelSystemVehicles(allMods);
 
   log(`Starting DayZ server on UDP ${s.PORT}`);
   log(`Mods: ${mods}`);

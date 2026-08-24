@@ -9,6 +9,10 @@ profiles/
 # --- Fetched-at-runtime third-party content (see src/ncpr.ts) ---
 ai/cache/
 
+# --- Custom mod build output & signing keys (see src/modBuild.ts) ---
+.serverpack-build/
+.serverpack-keys/
+
 # --- Editor / OS noise ---
 *.swp
 *~

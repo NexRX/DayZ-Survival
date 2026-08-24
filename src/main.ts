@@ -11,6 +11,8 @@ import { dynamicMissionsConfigured } from "./dynamicMissions.ts";
 import { doStart } from "./server.ts";
 import { doWipe } from "./wipe.ts";
 import { loadMods, resolveMods, searchMods } from "./mods.ts";
+import { buildServerPack } from "./modBuild.ts";
+import { publishServerPack } from "./modPublish.ts";
 
 function statusLine(label: string, good: boolean, extra = ""): void {
   const mark = good ? c.green("✓") : c.dim("·");
@@ -61,7 +63,9 @@ async function menu(s: Settings): Promise<void> {
     8) Grant admin access (test AI quickly)
     9) Search the Steam Workshop
     10) Wipe server (reset world or reinstall)
-    11) Quit`);
+    11) Build server pack (serverpack/addons/)
+    12) Publish server pack to Steam Workshop
+    13) Quit`);
 
     const choice = await ask("Choice", "1");
     try {
@@ -102,6 +106,12 @@ async function menu(s: Settings): Promise<void> {
           await doWipe();
           break;
         case "11":
+          await buildServerPack();
+          break;
+        case "12":
+          await publishServerPack(s);
+          break;
+        case "13":
           Deno.exit(0);
           break;
         default:
@@ -129,7 +139,11 @@ const HELP = `Usage: deno task dayz [command]
   search <terms> Search the Steam Workshop for DayZ mods (needs a Steam Web API key)
   status        Show setup status
   admin         Grant AI-menu / Community Online Tools admin access
-  wipe          Reset world state, or remove the install entirely`;
+  wipe          Reset world state, or remove the install entirely
+  build-serverpack    Build serverpack/ (this project's own custom addons)
+                      into one publish-ready Workshop mod
+  publish-serverpack  Build and publish/update the server pack as the one
+                      Workshop item bundling all custom addons`;
 
 async function main(): Promise<void> {
   const s = await loadSettings();
@@ -171,6 +185,12 @@ async function main(): Promise<void> {
       break;
     case "wipe":
       await doWipe();
+      break;
+    case "build-serverpack":
+      await buildServerPack();
+      break;
+    case "publish-serverpack":
+      await publishServerPack(s);
       break;
     case "-h":
     case "--help":

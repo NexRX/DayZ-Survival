@@ -9,6 +9,7 @@ import {
   ensureLogin,
   exists,
   findWorkshopItem,
+  forceDepotRelogin,
   hasAddonPbo,
   localManifestId,
   runDepotCapture,
@@ -129,6 +130,7 @@ export async function downloadOne(
 
   const maxTries = 4;
   const backoffMs = [15_000, 30_000, 60_000];
+  let reauthed = false;
   for (let tries = 1;; tries++) {
     log(
       `Downloading ${mod.name} (${mod.id}) via DepotDownloader — ` +
@@ -150,6 +152,21 @@ export async function downloadOne(
       ok(`${mod.name} downloaded (${bytesH(await workshopBytes(mod.id))})`);
       return;
     }
+
+    // A stale/invalid remembered-login token makes DepotDownloader crash
+    // outright instead of failing gracefully - retrying with the same dead
+    // token would just burn through all attempts uselessly, so re-authorize
+    // once and retry immediately instead of following the normal backoff.
+    const staleLogin = /LogOn requires a username and password|Unhandled exception/i
+      .test(output);
+    if (staleLogin && !reauthed) {
+      reauthed = true;
+      warn("DepotDownloader's cached login looks stale/invalid — re-authenticating…");
+      await forceDepotRelogin(s);
+      tries--; // don't count this against maxTries
+      continue;
+    }
+
     if (tries >= maxTries) {
       die(
         `Download of ${mod.name} (${mod.id}) failed after ${maxTries} attempts. ` +

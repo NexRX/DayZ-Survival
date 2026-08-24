@@ -131,6 +131,16 @@
 3237950572  @Old-Food
 3417831913  @Keep-It-Dead-ProjectBR
 
+# --- Loot mechanics: object scavenging (search furniture/wrecks/garbage for
+# extra loot; entirely separate from the vanilla nominal-based economy - it
+# doesn't touch types.xml/CE at all, it's an additive layer on top. Ships
+# with its own weighted-loot JSON (ServerConfig.json, self-generated on first
+# run) that needs tuning so this doesn't make the world's overall loot too
+# generous on top of everything already spawning via types.xml - see
+# TODO.md). Required on BOTH server and client, unlike most other additions
+# here. ---
+3682329748  @Dynamic-Scavenging
+
 # --- Environment/atmosphere/events ---
 3012019528  @Lads-Lighting-Overhaul
 2536780687  @SkyZ-Skybox-Overhaul

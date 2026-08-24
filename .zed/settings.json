@@ -36,5 +36,8 @@
       ],
       "formatter": "language_server",
     },
+    "C": {
+      "language_servers": ["!clangd"],
+    },
   },
 }

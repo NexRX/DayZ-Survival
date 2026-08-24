@@ -170,6 +170,22 @@ the real start). The priming server's own console output is saved to
   Roll) in its own `types.xml`
 - `Dart-Board-Game` - `Types.xml` in the mod folder (everything prefixed
   `DARTS_`)
+- `CJ187-MoreMoney` / `CJ187-Money-Euros-Only` / `Buddys-BoltZ` - included
+  speculatively (see below)
+- `Old-Food` - page explicitly mentions a "Types template for Chernarus"
+  shipped in the mod folder
+- `Quiver` / `Nail-Gun` / `Gas-Mask-Overhaul` - each page mentions an
+  "example types file" for their items
+- `MBM-ApocalypseTruck` / `MBM-ApocalypticPAZ` - each page states the mod
+  ships a `types.xml` in its mod folder (still needs manual `events.xml`
+  spawn points to actually appear in the world - see `TODO.md`)
+- `UAZ-31514` - ships a types file too (confirmed on a live install); same
+  `events.xml` spawn-point caveat as the MBM trucks above applies (both are
+  `<nominal>0</nominal>`, so admin/event-spawn-only by design)
+- `DayZ-Horse` - ships a real root `types.xml` (Saddle/Bridle/HorseBags/
+  HorseSteakMeat/HorsePelt/Stable_dayz(_kit)) - confirmed on a live install.
+  Its wildlife/territory setup (world spawn, `Animal_Horse_*` creature
+  types) is handled separately by `src/wildlifeTerritories.ts` - see below.
 
 `ensureModTypesMerged()` recursively scans each of these mods' installed
 folder under `server/@ModName` for any file literally named `types.xml`
@@ -199,7 +215,12 @@ warning instead of blocking `up`/`start`.
 - `P2P-Trading-Board` - the trading board is a physical object
   (`BTB_TradeBoardNoticeBoard`) that has to be placed somewhere on the map
   with the Editor or an admin object-spawner (Community Online Tools, in
-  our case) before players can use it.
+  our case) before players can use it. Config lives at
+  `profiles/Beetle/tradeboard/config/tradeboard_config.json` (confirmed on a
+  live install) - it's balance/numeric-price based (`MinPrice`/`MaxPrice`,
+  no currency-item concept), ships 2 placeholder-SteamID lot-limit entries
+  that should be replaced with real players, and includes an already-enabled
+  `VehicleTrade` sub-config worth reviewing.
 - `Custom-Keycards` - keycard doors **must** be added via the mod's own
   config files (`CustomKeycards/Locations/` in the profile folder after
   first start) - placing them with the Editor/COT silently turns them back
@@ -208,10 +229,18 @@ warning instead of blocking `up`/`start`.
 **Self-generate a config on first server start, sane defaults, safe to
 leave alone**
 
-`CJ187-RandomMineFields`, `Zens-Repairable-Wells`, `Vehicle3PP`,
-`Fuel-System`, `Keep-It-Dead-ProjectBR`, `AirRaid` (siren/bombers/
-submarine/MiG-21/UFO events, tunable per-event), `Custom-Keycards` (aside
-from door placement above).
+`CJ187-RandomMineFields` (ships with one real default minefield already,
+confirmed on a live install), `Zens-Repairable-Wells`, `Fuel-System`
+(`profiles/iTzMods/FuelSystem/stations.xml` ships fully pre-populated with
+136+ real Chernarus gas station coordinates - confirmed on a live install;
+only per-vehicle fuel-type entries for our custom vehicles are still
+unverified), `Keep-It-Dead-ProjectBR`, `AirRaid` (siren/bombers/submarine/
+MiG-21/UFO events, tunable per-event - confirmed all non-bomber event types
+default to disabled), `Custom-Keycards` (aside from door placement above).
+
+`Vehicle3PP` also self-generates a config
+(`profiles/3PPVehicleWhitelist.json`), but is no longer left alone - see
+"Ensures our custom vehicles/wildlife actually work" below.
 
 **Auto-tuned by the CLI on every start (see `src/difficulty.ts`/`src/loot.ts`)**
 
@@ -247,11 +276,102 @@ from door placement above).
 
 **Needs manual zone placement to do anything**
 
-- `Terje-Radiation` - ships no radiation zones by default. You place them
-  yourself, either statically in
-  `TerjeSettings/ScriptableAreas/ScriptableAreasSpawner.xml`, or
-  dynamically via the mission's normal `events.xml`. Until then it's
-  installed but inert.
+- `Terje-Radiation` - ships with exactly one example zone
+  (`TerjeRadioactiveScriptableArea` in
+  `profiles/TerjeSettings/ScriptableAreas/ScriptableAreasSpawner.xml`,
+  confirmed on a live install) but it's disabled (`Active=0`) - flip it on
+  or author real zones (statically in that file, or dynamically via the
+  mission's normal `events.xml`). Until then it's installed but inert.
+
+**Ensures our custom vehicles/wildlife actually work**
+(automated, runs on every `up`/`start`)
+
+- [`src/vehicle3pp.ts`](src/vehicle3pp.ts) (`ensureVehicle3PPWhitelist()`) -
+  additively merges confirmed real classnames (pulled from each mod's own
+  shipped classname reference file, never guessed) for `UAZ-31514` and both
+  `MBM-Apocalypse*` trucks into `profiles/3PPVehicleWhitelist.json`, so 3rd
+  person view actually extends to them. `MoreCars` is deliberately excluded -
+  it ships no classname reference file, and the mod's own docs warn an
+  invalid classname here can crash the server.
+- [`src/moreCars.ts`](src/moreCars.ts) (`ensureMoreCarsTypesMerged()`) -
+  `MoreCars` ships no types.xml/classname file at all (only a compiled
+  `.pbo`), so this hardcodes and additively merges 165 confirmed `<type>`
+  blocks (author-provided classnames from the mod's pinned Steam
+  Discussions thread, id `1931069341` - see `TODO.md`) into `db/types.xml`:
+  every non-Livonia reskin body across Ada 4x4/Gunter2/Sarka 120 plus their
+  door/hood/trunk spare parts, using vanilla's own
+  `OffroadHatchback`/`Hatchback_02`/`Sedan_02` type templates verbatim.
+  Olga 24 is excluded (author-confirmed broken/WIP). All ship with
+  `<nominal>0</nominal>`, same as `UAZ-31514`/MBM trucks - typed and
+  trader/admin-spawnable, but real in-world population still needs
+  `events.xml`/`cfgeventspawns.xml` entries with chosen map coordinates,
+  tracked in the world-crafting checklist.
+- [`src/fuelSystem.ts`](src/fuelSystem.ts) (`ensureFuelSystemVehicles()`) -
+  `Fuel-System` self-generates `profiles/iTzMods/FuelSystem/vehicles.xml`
+  with only vanilla base-class fuel/consumption entries. The mod's own docs
+  confirm `type` "can be a base class" (inheritance-chain matching), so our
+  custom vehicles likely already inherit sane fuel behavior from
+  `OffroadHatchback`/`Truck_01_Base`/etc. - but a live user report on the
+  mod's Steam page describes base-class DIESEL matching not applying
+  reliably, so this additively merges explicit exact-classname entries for
+  `UAZ-31514`, both MBM trucks, and every `MoreCars` reskin (43 total),
+  reusing the exact fuel type/consumption already shipped for each one's
+  closest vanilla counterpart - a safety net that bypasses any
+  inheritance-matching bug entirely.
+- [`src/scavenging.ts`](src/scavenging.ts) (`tuneDynamicScavenging()`) -
+  forces `searchWhileCombat: 0` in
+  `profiles/DynamicScavenging/DynamicScavenging.json`, enforcing the mod's
+  documented 10s post-damage search lockout (matches "a world that fights
+  back"), and tightens loot generosity to match "hunt/scavenge, don't just
+  loot buildings": `baseFindChance` 0.95 -> 0.65 (a search is a real gamble,
+  not a formality), `diminishingFactor` 0.95 -> 0.5 (restores the mod's own
+  documented "95% -> 47% -> 24%" steep decline on repeat searches), and
+  `enableBuildingExhaustion` 0 -> 1 (a whole building goes "exhausted" after
+  enough furniture searches, rather than every container being
+  independently farmable forever). Everything else (search duration,
+  per-object exhaustion cap, junk/jackpot rates) is left as shipped.
+- [`src/lighting.ts`](src/lighting.ts) (`tuneLightingConfig()`) -
+  `Lads-Lighting-Overhaul` does nothing at all until `lightingConfig` is set
+  to one of its preset values; this force-sets `WorldsData.lightingConfig`
+  in the mission's `cfggameplay.json` to `2222` (Darker Overcast Nights) on
+  every start, and `genConfig()` in `server.ts` writes the matching
+  `lightingConfig` line into the generated `serverDZ.cfg`. Change
+  `LIGHTING_PRESET` in `lighting.ts` to retune.
+- [`src/wildlifeTerritories.ts`](src/wildlifeTerritories.ts)
+  (`ensureWildlifeTerritories()`) - `DayZ-Raven`, `DayZ-Rat`, and
+  `DayZ-Horse` each ship a ready-to-use Chernarus territory file. Raven/Rat
+  ship a readme describing a small, mechanical four-step patch (copy the
+  territory file into the mission's `env/`, register it + a `<territory>`
+  block in `cfgenvironment.xml`, add an `<event>` to `db/events.xml`, add a
+  few `<type>` blocks to `db/types.xml`). Horse ships no readme, but its
+  reference files mark the same additions with paired
+  `<!-- HORSE MOD -->` comments inside otherwise-vanilla-shaped files, plus
+  one extra step: "Herd"-type territories like Horse also need a
+  self-closing `<event name="..." />` stub in `cfgeventspawns.xml`
+  (confirmed by comparison against the vanilla Wolf/Deer/WildBoar entries
+  already there - "Ambient"-type territories like Raven/Rat don't need
+  this). This automates every step for all three mods, additively and
+  idempotently, verified on a live server (no CE "type not found" errors,
+  no duplicate entries on re-run). Horse's own root `types.xml`
+  (Saddle/Bridle/HorseBags/etc.) is merged separately via `modTypes.ts`;
+  the `Animal_Horse_*` creature types it doesn't ship are added here using
+  the same boilerplate every other vanilla `Animal_*` creature type uses.
+- [`src/yuretskiy.ts`](src/yuretskiy.ts) (`ensureYuretskiyWired()`) -
+  `Yuretskiy-Creatures` ships 7 tougher zombie classnames
+  (`YRTSK_ZMB_SWAT`/`Male`/`TShirt`/`Fitness_F`/`Fitness_F_2`/`Fat`/
+  `PartFoot`, confirmed via the mod's own `extras/classname.txt`) that are
+  real, already-compiled `CfgVehicles` entries in its PBO - the mod's
+  `extras/config.cpp` only forward-declares them as base classes for an
+  _optional_ HP-tweak workflow, which only works if they already exist for
+  real. So spawning them at their shipped default stats needed nothing but
+  the same additive `<type>`/`<event>` wiring as every other creature mod
+  here - added as one dedicated `InfectedYuretskiy` event (rather than
+  folded into an existing vanilla infected event) so its rarity is
+  independently tunable. Confirmed live: the CE actually spawns them
+  (`InfectedYuretskiy :: ... YRTSK_ZMB_PartFoot :: 9, ...` in the server
+  log), no "type does not exist" errors. Customizing their HP still isn't
+  automated - see `TODO.md` - that genuinely requires hand-editing
+  `extras/config.cpp` and re-packing your own PBO.
 
 **Partial feature loss without a mod we didn't add**
 
@@ -274,6 +394,18 @@ intends.)
 - `HeliWreckNoLoot` only adds inert Editor-placeable models (no-loot heli
   wrecks, a wagon, some tools) - it doesn't touch the vanilla heli-crash
   system our Dynamic AI Missions "Downed Helicopter" mission uses.
+- `DayZ-Expansion-Market` works fully out of the box on this mission -
+  confirmed on a live install: category/price files self-populate under
+  `profiles/ExpansionMod/Market/`, matching trader definitions under
+  `profiles/ExpansionMod/Traders/`, and 6 real trader zones already exist
+  under `server/mpmissions/dayzOffline.chernarusplus/expansion/traderzones/`
+  (Svetloyarsk, BalotaAircrafts, KamenkaBoats, GreenMountain, Kamenka,
+  Krasnostav). Still worth reviewing prices/stock for our hardcore economy,
+  but nothing needs fixing to make it work at all.
+- `Terje-Medicine`'s "Advanced knockout system" (coma instead of outright
+  death) is already enabled by default - confirmed via
+  `profiles/TerjeSettings/Medicine.cfg` on a live install
+  (`EnableMedicalComa`/`EnableKnockoutToComa` both `true`).
 
 See `mods.txt` for the full, dependency-ordered list and load order.
 
@@ -430,12 +562,15 @@ Mission `Position` coordinates are a starting point, not verified in-engine -
 if AI or static objects look off (floating, clipped into terrain), open the
 file and adjust, same as with the patrol waypoints above.
 
-If you install `Dynamic-AI-Missions-Extended`, its 3 extra per-mission fields
-(`Forced_Reward_ClassName`, `Faction`, `Skip_Random_Loot` per its Steam page)
-aren't included in the template - we couldn't find a real example config
-using them to confirm their exact structure, so add them by hand to specific
-missions in `MainConfig.json` if you want to use that mod's features; leaving
-them out is safe ("100% safe defaults" per the mod's own description).
+If you install `Dynamic-AI-Missions-Extended`, each curated mission in the
+template already sets `Faction: "Raiders"` (matching the same faction used by
+the roaming-bandit patrols and spatial-AI groups above, so mission defenders
+read as part of the same bandit presence). The other two extra fields
+(`Forced_Reward_ClassName`, `Skip_Random_Loot` per its Steam page) are left
+unset - we couldn't find a real example config using them to confirm their
+exact structure, so add them by hand to specific missions in `MainConfig.json`
+if you want to force a particular reward; leaving them out is safe ("100%
+safe defaults" per the mod's own description).
 
 ## Hardcore rebalance (loot + AI difficulty)
 
@@ -561,6 +696,31 @@ transparently re-apply if a Steam update wipes the file (and its marker)
 back to vanilla - verified directly against a real generated `types.xml`/
 `events.xml` (34 food items, 8 animal species; diffed to confirm only the
 intended tags changed, and re-running is idempotent).
+
+### Trader stock: not everything can be bought ([`src/market.ts`](src/market.ts))
+
+`DayZ-Expansion-Market` ships one flat default for every single category
+regardless of what it sells - confirmed live in every generated
+`profiles/ExpansionMod/Market/*.json`: `InitStockPercent: 75.0` and
+`MaxStockThreshold: 100` per item (500 for `Ammo`, 250 for `Ammo_Boxes` -
+still just as generous), meaning a trader can start already stocked with
+dozens of assault rifles. `tuneExpansionMarket()` deliberately tightens only
+the categories that represent "earned power" - full weapons capped to 5
+max stock, ammo/magazines/optics/attachments/vehicle parts to 15, whole
+vehicles (already naturally rarer, 3-10 shipped) to 2 - and drops
+`InitStockPercent` to 10% across those categories so a trader starts nearly
+empty rather than half-stocked. Survival essentials (food, medical, tools,
+clothing, backpacks, etc.) are deliberately left at Expansion's generous
+defaults - matches "hardcore, but respects your time": we want power to be
+hard to buy, not everyday survival gear to be scarce from traders too.
+
+Unlike economy.ts's marker-comment approach, this is idempotent via an
+absolute cap (`min(existing, cap)`) rather than a relative multiplier or
+marker - re-running never shrinks an already-capped value further.
+Confirmed live: 20 category files changed on first run (e.g. assault rifles
+100 -> 5, ammo 500 -> 15, helicopters 10 -> 2), a second run is a total
+no-op, and the server's own `ExpansionMarketSettings::LoadCategories` log
+lines confirm every category still loads cleanly afterward.
 
 ## Server-only mods (`-servermod=`)
 

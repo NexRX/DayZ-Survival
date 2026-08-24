@@ -130,8 +130,8 @@ async function onPath(bin: string): Promise<boolean> {
 }
 
 /** Ensure the external tools the CLI shells out to are available. */
-export async function requireTools(): Promise<void> {
-  const needed = ["steamcmd", "steam-run", "DepotDownloader"];
+export async function requireTools(extra: string[] = []): Promise<void> {
+  const needed = ["steamcmd", "steam-run", "DepotDownloader", ...extra];
   const missing: string[] = [];
   for (const t of needed) if (!(await onPath(t))) missing.push(t);
   if (missing.length) {

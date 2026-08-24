@@ -34,9 +34,21 @@ export async function exists(p: string): Promise<boolean> {
 const homeEnv = () => ({ HOME: STEAMCMD_DIR });
 
 /** SteamCMD with project-local HOME + inherited stdio (for interactive login). */
-async function runSteamcmd(args: string[]): Promise<number> {
+export async function runSteamcmd(args: string[]): Promise<number> {
   await Deno.mkdir(STEAMCMD_DIR, { recursive: true });
   return runInherit("steamcmd", args, { env: homeEnv() });
+}
+
+/**
+ * SteamCMD with project-local HOME, streaming output live while also
+ * returning the full combined text - used by modPublish.ts to scrape the
+ * `publishedfileid` steamcmd prints after `+workshop_build_item`.
+ */
+export async function runSteamcmdCapture(
+  args: string[],
+): Promise<{ code: number; output: string }> {
+  await Deno.mkdir(STEAMCMD_DIR, { recursive: true });
+  return runInheritCapture("steamcmd", args, { env: homeEnv() });
 }
 
 /** SteamCMD, but with benign Linux log spam filtered (non-interactive ops). */
@@ -223,6 +235,17 @@ export async function ensureServer(s: Settings): Promise<void> {
  */
 export async function ensureDepotLogin(s: Settings): Promise<void> {
   if (await exists(DD_LOGIN_MARKER)) return;
+  await forceDepotRelogin(s);
+}
+
+/**
+ * Same as `ensureDepotLogin`, but always re-authorizes even if the marker
+ * says we're already logged in - used when a download attempt crashes in a
+ * way that indicates the remembered token itself has gone stale/invalid
+ * (Steam periodically expires these), rather than a transient network/rate
+ * limit failure that a plain retry would fix.
+ */
+export async function forceDepotRelogin(s: Settings): Promise<void> {
   await ensureConfig(s);
   const mods = await loadMods();
   log("Authorizing DepotDownloader for workshop access (one-time)");

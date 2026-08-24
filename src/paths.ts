@@ -33,6 +33,19 @@ export const AI_PATROL_SETTINGS = `${MISSION_DIR}/expansion/settings/AIPatrolSet
 export const ECONOMY_TYPES_FILE = `${MISSION_DIR}/db/types.xml`;
 export const ECONOMY_EVENTS_FILE = `${MISSION_DIR}/db/events.xml`;
 
+// Fixed-position event spawn point registry, shipped as part of the mission
+// itself. "Herd"-type animal territories (Wolf/Deer/WildBoar/... and now
+// WildHorse) each need a matching self-closing <event name="..." /> stub
+// here even though their actual positions come from the territory/zone file,
+// not a <pos> list - confirmed by the vanilla entries already present.
+// "Ambient"-type territories (Hen/Fox/Hare/Raven/Rat) do NOT need an entry
+// here at all (confirmed absent for all of them) - see wildlifeTerritories.ts.
+export const MISSION_EVENT_SPAWNS_FILE = `${MISSION_DIR}/cfgeventspawns.xml`;
+
+// DayZ-Expansion-Market's per-category trader stock/price files, generated
+// under PROFILE_DIR on first server start (see market.ts).
+export const EXPANSION_MARKET_DIR = `${PROFILE_DIR}/ExpansionMod/Market`;
+
 // Search For Loot (Improved)'s persistent "area flags" cache: a binary index
 // of loot-searchable areas/buildings, built once and reused across restarts
 // for performance. It is NOT part of storage_1, so a world wipe won't touch
@@ -100,3 +113,48 @@ export const TERJE_START_SCREEN_CFG = `${PROFILE_DIR}/TerjeSettings/StartScreen.
 // each player connects, e.g.:
 //   Player "Nex" (id=XZ3FQuGVspzzW43W9S3B5Bmm0NSRqFosQwmYTk5kdnY=) is connecting
 export const COT_PLAYERS_DIR = `${PROFILE_DIR}/PermissionsFramework/Players`;
+
+// Dynamic Scavenging (@Dynamic-Scavenging) self-generates this on first
+// world load - confirmed on a live server run. It's a single flat JSON file
+// mixing real settings with _xxxFieldName_info documentation keys.
+export const DYNAMIC_SCAVENGING_SETTINGS =
+  `${PROFILE_DIR}/DynamicScavenging/DynamicScavenging.json`;
+
+// Vehicle3PP (@Vehicle3PP) self-generates this flat classname whitelist on
+// first world load - confirmed on a live server run. Ships with only 5
+// vanilla classnames; any modded vehicle not listed here doesn't get
+// forced/allowed 3rd-person camera treatment by the mod.
+export const VEHICLE_3PP_WHITELIST = `${PROFILE_DIR}/3PPVehicleWhitelist.json`;
+
+// Vanilla mission file (shipped as part of the mission itself, not
+// mod-generated) that Lads-Lighting-Overhaul (@Lads-Lighting-Overhaul)
+// hooks into via WorldsData.lightingConfig - confirmed on a live install
+// (ships with lightingConfig: 0, i.e. vanilla lighting, until set to one of
+// the mod's preset values). See lighting.ts.
+export const CFG_GAMEPLAY_FILE = `${MISSION_DIR}/cfggameplay.json`;
+
+// Fuel-System (@Fuel-System) self-generates this on first world load -
+// confirmed on a live server run. Matches vehicle fuel type/consumption by
+// classname, and the mod's own Steam page confirms `type` "can be a base
+// class" (inheritance-chain matching), not just an exact classname. See
+// fuelSystem.ts.
+export const FUEL_SYSTEM_VEHICLES = `${PROFILE_DIR}/iTzMods/FuelSystem/vehicles.xml`;
+
+// This project's own custom DayZ addons, bundled into a single Workshop
+// mod ("server pack") so there's only ever one Workshop item to maintain -
+// built/signed with armake2 rather than Windows DayZ Tools (see
+// src/modBuild.ts). Each immediate subdirectory of SERVERPACK_ADDONS_DIR
+// containing a config.cpp becomes its own PBO inside the one mod; adding a
+// new addon needs no build-tooling changes, just a new folder there.
+export const SERVERPACK_DIR = `${ROOT}/serverpack`;
+export const SERVERPACK_ADDONS_DIR = `${SERVERPACK_DIR}/addons`;
+// Must match the CfgMods class name / `dir` in serverpack/mod.cpp.
+export const SERVERPACK_NAME = "DZSurvivalServerPack";
+export const SERVERPACK_WORKSHOP_ID_FILE = `${SERVERPACK_DIR}/.workshop_id`;
+
+// Generated, machine-local, and never committed: the server pack's shared
+// armake2 signing keypair and its assembled @<SERVERPACK_NAME>/ PBO build
+// output, ready to be published or symlinked into a local test server's mod
+// path.
+export const SERVERPACK_KEYS_DIR = `${ROOT}/.serverpack-keys`;
+export const SERVERPACK_BUILD_DIR = `${ROOT}/.serverpack-build`;
