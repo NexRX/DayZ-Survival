@@ -97,19 +97,33 @@ order worth tackling once that's true:
        whatever safe zones/hazard zones were placed in steps 1-2 above
        (ships with one real example entry each already, plus a default
        `requireToolInHand` tool list currently disabled).
-9. [ ] **Author `MoreMaterials` loot economy + recipes from scratch** - its
-       own page states outright that it ships **no types file at all** for
-       its 350+ raw materials, and adds no crafting recipes of its own
-       either - it's a raw crafting-material pack with zero built-in use.
-       This is pure creative/design work, not a mechanical port job: decide
-       which of the 350+ materials are worth keeping at all, where they fit
-       in the loot economy (rarity/nominal/location tags matching the rest
-       of the hardcore loot table), and - the actually hard part - design
-       and author real crafting recipes that consume them (likely via
-       `Crowwolfie-Recipes` or CE `cfgcraftingaction`, whichever is already
-       set up for other custom recipes here) so they're not just inert
-       clutter. Best tackled once the base loot economy/difficulty already
-       feels right, so new recipes can be balanced against it.
+9. [ ] **Author `DayZ-Dynamic-AI-Addon` `Spatial_Audio` noise-trigger
+       zones** - `Audio_Enabled` is currently `0` in
+       `profiles/ExpansionMod/AI/Spatial/SpatialSettings.json`, so no
+       `Audio` zone has ever fired; there's nothing to test until it's
+       turned on. Unlike roaming `Group` AI (proximity/timer-based), these
+       are fixed locations that specifically listen for noise (gunfire
+       always triggers the zone; other sounds trigger once loud enough per
+       `Spatial_Sensitivity`) - useful for punishing noise at specific
+       high-value spots (bases, crash sites, event zones) even when no
+       roaming AI happens to be nearby. Once enabled and at least one zone
+       is authored, needs a live test pass per
+       [`TESTS.md`](TESTS.md)'s existing `Spatial_MaxAccuracy` item (fire a
+       weapon inside the zone's `Spatial_TriggerRadius` and watch for AI
+       script errors tied to `Audio` entries).
+10. [ ] **Author `MoreMaterials` loot economy + recipes from scratch** - its
+        own page states outright that it ships **no types file at all** for
+        its 350+ raw materials, and adds no crafting recipes of its own
+        either - it's a raw crafting-material pack with zero built-in use.
+        This is pure creative/design work, not a mechanical port job: decide
+        which of the 350+ materials are worth keeping at all, where they fit
+        in the loot economy (rarity/nominal/location tags matching the rest
+        of the hardcore loot table), and - the actually hard part - design
+        and author real crafting recipes that consume them (likely via
+        `Crowwolfie-Recipes` or CE `cfgcraftingaction`, whichever is already
+        set up for other custom recipes here) so they're not just inert
+        clutter. Best tackled once the base loot economy/difficulty already
+        feels right, so new recipes can be balanced against it.
 
 ## Nice-to-have companion mods surfaced by this research (not currently installed)
 
