@@ -89,7 +89,8 @@ deno run dayz --help
 `deno run dayz <command>` also works for any subcommand (e.g.
 `deno run dayz up`), since Deno forwards trailing arguments to the task.
 
-See [`MODS.md`](MODS.md) for mod details and features
+See [`MODS.md`](MODS.md) for mod details and features, and [`TESTS.md`](TESTS.md)
+for the live/manual server test checklist an admin should run through.
 
 ## Networking
 

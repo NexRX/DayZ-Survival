@@ -13,55 +13,10 @@ completed - see `MODS.md` and git history if you need that context again.
 Config-level decisions and hand-authoring that don't depend on the server
 having a stable, populated world yet - these can be done any time.
 
-- [ ] **`DayZ-Expansion-Market` pricing** - stock levels are now
-      automatically capped for "power" categories (weapons/ammo/
-      attachments/vehicles) via `src/market.ts`'s `tuneExpansionMarket()` -
-      confirmed live (`InitStockPercent` 75%->10%, e.g. assault rifles
-      100->5 max stock, ammo 500->15, helicopters 10->2), everyday
-      categories (food/medical/tools/clothing) left at Expansion's shipped
-      defaults. What's left is purely a pricing/zone judgment call, not
-      something to automate blindly: whether the 6 existing trader zones
-      (Svetloyarsk, BalotaAircrafts, KamenkaBoats, GreenMountain, Kamenka,
-      Krasnostav under
-      `server/mpmissions/dayzOffline.chernarusplus/expansion/traderzones/`)
-      fit the intended safe-haven layout, and whether individual item
-      prices need rebalancing against the currency-scarcity tuning already
-      in `src/economy.ts`.
 - [ ] **Compatibility/risk items** worth a live-testing pass (vehicle keys
       resetting with Terje-Core+Expansion, Spatial_MaxAccuracy on
       DayZ-Dynamic-AI-Addon, COT's weather panel, Keep-It-Dead + AI mods) -
-      see the dedicated section below for details.
-- [ ] **DZSurvivalFindStone addon (serverpack/)** - a hold-to-search action
-      that lets players find a Stone while standing on gravel/dirt/rail-
-      ballast surfaces (train tracks, dirt trails), no tool required. Built
-      and published as this project's single "server pack" Workshop mod
-      (`deno task build-serverpack` / `deno task publish-serverpack`, packed
-      by armake2, signed by the real `DSSignFile.exe` (DayZ Tools, via Wine - see `src/modSign.ts`) with a 1024-bit key - see `src/modBuild.ts` /
-      `src/modPublish.ts` / `flake.nix`, Workshop id `3789404408`). Getting
-      this working took nine real, stacked bugs (weak signing keys, a
-      misplaced `.bisign` output path, a case-sensitive signature lookup
-      broken by `lowercaseTree()`, a wrong `mod.cpp`/`config.cpp` schema, a
-      doubled internal PBO path from a redundant `4_World/` source folder,
-      several guessed/non-existent scripting APIs cross-checked and fixed
-      against vanilla's own unpacked `server/dta/scripts.pbo`, wrong-case
-      `Addons`/`Keys` folder names, a `$PBOPREFIX$` that collided with
-      vanilla's own reserved `4_World` namespace, and finally - the actual
-      root cause of the client-side kick surviving all eight of the above -
-      BiSignUtils' signer producing `.bisign` files that pass its own
-      `checkAll` but that the real `DSCheckSignatures.exe` rejects as
-      "wrong", confirmed by downloading the real DayZ Tools and
-      cross-checking both tools' output directly against each other. All
-      nine are now fixed and confirmed working end-to-end: a real client
-      has successfully connected without being kicked. See
-      `serverpack/README.md` for the full bug-by-bug writeup.
-      **What's left:** the find-stone action itself doesn't appear as an
-      option while standing on a railway - the surface-type check in
-      `ActionFindStoneOnPath.c` likely doesn't include the real vanilla
-      surface name(s) for rail ballast; needs the actual value(s) confirmed
-      (e.g. via `GetGame().SurfaceGetType()` logging in a live session) and
-      the check updated. Also still unconfirmed: whether `StoneKnife`'s
-      actual crafting recipe wants `Stone` or `SmallStone` (swap the spawn
-      calls in `ActionFindStoneOnPath.c` if not).
+      see [`TESTS.md`](TESTS.md) for the full test procedures.
 
 ## World-crafting checklist (do not start until the server has a stable base)
 
@@ -78,10 +33,15 @@ order worth tackling once that's true:
        2 fictitious placeholder `IndividualLotLimits` SteamID entries that
        need replacing with real player SteamIDs, and a `VehicleTrade`
        sub-config already enabled with sane-looking defaults worth tuning).
-       Also review `DayZ-Expansion-Market`'s 6 existing trader zones
-       (Svetloyarsk, BalotaAircrafts, KamenkaBoats, GreenMountain, Kamenka,
-       Krasnostav) to confirm they fit the intended safe-haven layout before
-       opening the server up.
+       Also decide on `DayZ-Expansion-Market`'s 6 existing stock trader
+       zones (Svetloyarsk, BalotaAircrafts, KamenkaBoats, GreenMountain,
+       Kamenka, Krasnostav under
+       `server/mpmissions/dayzOffline.chernarusplus/expansion/traderzones/`)
+       once **custom traders** (planned down the road) are designed -
+       whether to keep/relocate/replace these zones, and whether individual
+       item prices need rebalancing against the currency-scarcity tuning
+       already in `src/economy.ts`, are all decisions that should follow the
+       custom-trader design rather than precede it.
 2. [ ] **Author hazard/danger zones** - `Terje-Radiation` ships exactly one
        example zone (`TerjeRadioactiveScriptableArea` at `341 0 9401` in
        `profiles/TerjeSettings/ScriptableAreas/ScriptableAreasSpawner.xml`)
@@ -150,36 +110,6 @@ order worth tackling once that's true:
        set up for other custom recipes here) so they're not just inert
        clutter. Best tackled once the base loot economy/difficulty already
        feels right, so new recipes can be balanced against it.
-
-## Compatibility / risk items worth testing before going live
-
-- [ ] **`Terje-Core` + `DayZ-Expansion`** - user reports (Terje-Core's own
-      Steam comments) of vehicle keys resetting and camo-netted vehicles
-      becoming unrecoverable the first time Terje mods load without a full
-      wipe. We already document backing up `storage_1/` before adding Terje - this adds a specific vehicle-related failure mode to watch for on
-      that first boot.
-- [ ] **`DayZ-Dynamic-AI-Addon`** - a 1.28-compatibility note on its page
-      says to delete the `Spatial_MaxAccuracy` line from the `Audio` array
-      in `SpatialSettings.json` as a temporary fix. Worth confirming our
-      server's DayZ version and whether `tuneSpatialAIDifficulty()` needs to
-      special-case the `Audio` array instead of just raising floors on it.
-- [ ] **`Community-Online-Tools`** - a couple of user reports describe its
-      in-game "Weather Behavior" panel periodically reapplying its own
-      presets. We don't currently do any weather tuning, so this is
-      low-risk, but worth knowing about if weather ever becomes something we
-      tune.
-- [ ] **`Keep-It-Dead-ProjectBR`** - a reported crash when AI mods (e.g.
-      Expansion AI) trigger its corpse-to-zombie conversion. Worth watching
-      for in logs given we run several AI mods on top of it.
-- [ ] **`Fuel-System`** - a user comment on the mod's own Steam page reports
-      DIESEL fuel-type matching by base vehicle class not applying
-      correctly in practice, even though the author's own docs explicitly
-      say `vehicles.xml`'s `type` field "can be a base class". We've added
-      explicit exact-classname entries for all our custom vehicles
-      (`src/fuelSystem.ts`) specifically to route around this - worth
-      confirming in a live test that DIESEL actually applies correctly to
-      UAZ-31514/MBM trucks/MoreCars Ada 4x4 variants once fuel is actually
-      used in-game.
 
 ## Nice-to-have companion mods surfaced by this research (not currently installed)
 

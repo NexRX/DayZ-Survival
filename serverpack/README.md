@@ -147,22 +147,54 @@ generic over whatever it finds under `addons/`.
 ## Current addons
 
 - **`DZSurvivalFindStone`** - a hold-to-search action that lets players find
-  a `Stone` while standing on gravel/dirt/rail-ballast surfaces (train
-  tracks, dirt trails) - no tool required. Meant to pair with a
-  stone-crafted sharp/butchering tool (vanilla `StoneKnife`) rather than
-  handing one out at spawn.
+  a `SmallStone` while looking down at gravel/dirt/rail-ballast surfaces
+  (train tracks, dirt trails), no tool required. Hands must be empty, and a
+  `SharpenSmallStone` crafting recipe (see below) lets two `SmallStone`s be
+  combined to sharpen one into a `SharpStone` (a cosmetic/scope-only variant
+  of vanilla's `StoneKnife`).
 
-  **Status: confirmed working end-to-end** - builds, signs (with the real
-  `DSSignFile.exe`), publishes to Workshop (`3789404408`), downloads back
-  down through the normal mod-install pipeline, boots cleanly, and a real
-  client has successfully connected without being kicked.
+  **Status: confirmed working end-to-end**, including in live multi-session
+  testing - builds, signs (with the real `DSSignFile.exe`), publishes to
+  Workshop (`3789404408`), downloads back down through the normal
+  mod-install pipeline, boots cleanly, and a real client has connected,
+  found the action available (including standing directly on railway
+  ballast, not just the dirt at its base), held it to completion, and
+  crafted a `SharpStone`. Getting here also surfaced two more real bugs
+  worth knowing about if a similar action/recipe is ever added to this pack:
 
-  **Known issue**: standing on a railway did not surface a "find stone"
-  action option - see the surface-type check in
-  [`addons/DZSurvivalFindStone/scripts/4_world/Actions/ActionFindStoneOnPath/ActionFindStoneOnPath.c`](addons/DZSurvivalFindStone/scripts/4_world/Actions/ActionFindStoneOnPath/ActionFindStoneOnPath.c)
-  - needs the actual vanilla surface name(s) for rail ballast confirmed
-    (`GetGame().SurfaceGetType()`'s return value for that terrain), since the
-    current list was a best guess.
+  - **Self-target actions need explicit `PlayerBase.SetActions()`
+    registration.** Inserting an action into `ActionConstructor
+.RegisterActions()` alone (see `DZSurvivalFindStone_ActionManager.c`)
+    only builds a global singleton - it does not make the action a
+    candidate for any player. Confirmed fixed by also adding a
+    `modded class PlayerBase { override void SetActions(...) { ...
+AddAction(...); } }` (see `DZSurvivalFindStone_PlayerBase.c`), the same
+    pattern vanilla uses for its own self-actions like `ActionUncoverHeadSelf`.
+  - **Client/server state divergence on a per-instance cooldown.**
+    `ActionCondition()` runs independently on both the client (to decide
+    whether to show the menu option) and the server (to actually validate
+    the action) - each side has its own separate instance of the action
+    class. A cooldown timestamp only updated via `OnFinishProgressServer()`
+    (server-only) never reached the client's own copy, so the client kept
+    showing the option as available throughout the whole cooldown while the
+    server correctly rejected every attempt, which looked like an instant
+    self-cancel. This is why the action ended up with no cooldown at all
+    (just a 20-second hold time) rather than fixing the mirroring - simpler
+    and avoids the class of bug entirely.
+  - Also worth knowing: `CCTSurface` (vanilla's normal "is the crosshair on
+    bare ground" target condition) silently rejects any crosshair hit that
+    resolves to a real placed Object - which is exactly what raised terrain
+    features like railway ballast beds are modelled as. A custom
+    `CCTGroundOrObjectSurface` component (same file) fixes this by dropping
+    just that one restriction.
+
+- **`SharpenSmallStone` recipe** - combines two `SmallStone`s, consuming one
+  and sharpening the other in place into a `SharpStone`. Registered via a
+  `modded class PluginRecipesManager` (see
+  `DZSurvivalFindStone_RecipesManager.c`) - the same "defining the class
+  isn't enough, it must be explicitly registered" lesson as the action
+  above, this time against a real published mod's own source
+  (`@Search-For-Charcoal`) confirming the pattern.
 
 ## Building
 
