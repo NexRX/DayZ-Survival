@@ -24,6 +24,12 @@ Knock Knock Zombies - https://steamcommunity.com/sharedfiles/filedetails/?id=349
 
 BMM Chimical Zombie - https://steamcommunity.com/sharedfiles/filedetails/?id=3510772253 (but make these zombies rarer if possible)
 
+TP_Apoc_SUV - https://steamcommunity.com/sharedfiles/filedetails/?id=3738839427
+
+TP_Apoc_M1025 - https://steamcommunity.com/sharedfiles/filedetails/?id=3737385977
+
+TP_Apoc_Pickup - https://steamcommunity.com/sharedfiles/filedetails/?id=3738834788
+
 ## Longer Term
 
 ### Zens ExpansionAI Audio

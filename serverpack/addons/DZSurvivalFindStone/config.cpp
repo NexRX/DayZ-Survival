@@ -7,6 +7,22 @@ class CfgPatches {
   };
 };
 
+// SharpStone: a crude cutting tool crafted by sharpening one SmallStone
+// against another (see SharpenSmallStone.c). Inherits from vanilla's own
+// StoneKnife so it reuses its model/textures/knife behaviour wholesale -
+// this project has no custom 3D assets, and "a stone knapped into an
+// edge" is StoneKnife's own real-world basis anyway. Only cosmetic
+// properties are overridden; scope = 2 keeps it out of vanilla loot
+// tables/central economy so it's obtainable only via the new recipe.
+class CfgVehicles {
+  class StoneKnife;
+  class SharpStone : StoneKnife {
+    scope = 2;
+    displayName = "Sharp Stone";
+    descriptionShort = "A stone chipped to a sharp edge - crude, but it cuts.";
+  };
+};
+
 // Registers this addon's own scripts/4_world/ folder as its world script
 // module. Cross-checked against several real, working Workshop mods'
 // unpacked config.bin (@Dynamic-Scavenging, @Search-For-Charcoal's
