@@ -68,3 +68,7 @@ I dont know if its what i want, i just want more cool looking zombies arround
 ### hSF Zombie Horde Event- ttps://steamcommunity.com/sharedfiles/filedetails/?id=3689174025
 
 Must give solo players a fair chance and not spawn directly on them just near them
+
+### Anti Cheat
+
+Ensure anti dup and anti cheat server side mods are setup if required, battleye might not pickup stuff that the modding community is alreayd aware of.
