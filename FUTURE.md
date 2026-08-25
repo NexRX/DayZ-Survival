@@ -65,6 +65,6 @@ Once i know where my traders are gonna be and other things i would like a touris
 
 I dont know if its what i want, i just want more cool looking zombies arround
 
-### [Zens Zombie Door Bangers](https://steamcommunity.com/sharedfiles/filedetails/?id=2932842394)
+### hSF Zombie Horde Event- ttps://steamcommunity.com/sharedfiles/filedetails/?id=3689174025
 
-Reference server had a mod that did this, if we dont have a mod that adds the ability for zombies to knock down doors then we want it otherwise nah
+Must give solo players a fair chance and not spawn directly on them just near them
