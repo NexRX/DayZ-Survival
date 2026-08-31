@@ -8,15 +8,24 @@ open items are listed here. Everything that's been fully automated or
 confirmed to need no action has been removed from this file as it's
 completed - see `MODS.md` and git history if you need that context again.
 
+## Dayz Editor Assets Added
+
+Map Assets - MutatedMods https://steamcommunity.com/sharedfiles/filedetails/?id=3077629858
+
+Land_R22R_Base_Fortifications_Assets - https://steamcommunity.com/sharedfiles/filedetails/?id=2961092390
+
 ## Not auto-fixed - manual decisions and one-time actions
 
 Config-level decisions and hand-authoring that don't depend on the server
 having a stable, populated world yet - these can be done any time.
 
 - [ ] **Compatibility/risk items** worth a live-testing pass (vehicle keys
-      resetting with Terje-Core+Expansion, Spatial_MaxAccuracy on
-      DayZ-Dynamic-AI-Addon, COT's weather panel, Keep-It-Dead + AI mods) -
-      see [`TESTS.md`](TESTS.md) for the full test procedures.
+      resetting with Terje-Core+Expansion, COT's weather panel) - see
+      [`TESTS.md`](TESTS.md) for the full test procedures.
+- [ ] **Install the missing `CrashReporter` binary** in `server/` so future
+      crashes produce a real `.mdmp` minidump instead of just RPT logs
+      (surfaced while investigating the Keep-It-Dead-ProjectBR crash - `sh:
+CrashReporter: No such file or directory` on server exit).
 
 ## World-crafting checklist (do not start until the server has a stable base)
 
@@ -26,22 +35,32 @@ once mods are verified working, the loot economy/AI difficulty is tuned to
 taste, and the "Not auto-fixed" section above is resolved. Roughly in the
 order worth tackling once that's true:
 
-1. [ ] **Place the safe-zone/economy anchors** - `P2P-Trading-Board`'s
-       notice board object (`BTB_TradeBoardNoticeBoard`, via Editor or
-       Community Online Tools) somewhere on the map, plus review
+1. [ ] **Build the trader town's props/structures first, then the NPCs.**
+       `@DayZ-Editor-Loader` is now in `mods.txt` for this (see MODS.md's
+       "Building the trader town itself" section for the full workflow:
+       subscribe to `@DayZ-Editor` + deps directly via Steam, build offline
+       in a local `dayzOffline.chernarusplus` session, export a `.dze`,
+       drop it in the live mission's `EditorFiles/` folder). Once the
+       physical town/location is chosen: `src/traders.ts`
+       (`ensureCustomTrader()`) already removes all 6 of
+       `DayZ-Expansion-Market`'s stock Chernarus trader zones and will
+       author a replacement custom trader zone + a small starting NPC
+       roster (one "Everything" general store, one "Vehicle" dealer - more
+       specific/themed traders referencing the untouched 17 default trader
+       identities can be added later), but deliberately refuses to guess
+       _where_ - `CUSTOM_POSITION` in that file is still `null`. Fly to the
+       built town as admin (COT free cam + position readout, see MODS.md's
+       "Admin tools" section), fill in the
+       `[x, y, z]`, and re-run. Once real prices are live, also revisit
+       whether they need rebalancing against the currency-scarcity tuning
+       already in `src/economy.ts`.
+       Also still open: `P2P-Trading-Board`'s notice board object
+       (`BTB_TradeBoardNoticeBoard`, via Editor or Community Online Tools)
+       needs placing somewhere on the map, plus review
        `profiles/Beetle/tradeboard/config/tradeboard_config.json` (it ships
        2 fictitious placeholder `IndividualLotLimits` SteamID entries that
        need replacing with real player SteamIDs, and a `VehicleTrade`
        sub-config already enabled with sane-looking defaults worth tuning).
-       Also decide on `DayZ-Expansion-Market`'s 6 existing stock trader
-       zones (Svetloyarsk, BalotaAircrafts, KamenkaBoats, GreenMountain,
-       Kamenka, Krasnostav under
-       `server/mpmissions/dayzOffline.chernarusplus/expansion/traderzones/`)
-       once **custom traders** (planned down the road) are designed -
-       whether to keep/relocate/replace these zones, and whether individual
-       item prices need rebalancing against the currency-scarcity tuning
-       already in `src/economy.ts`, are all decisions that should follow the
-       custom-trader design rather than precede it.
 2. [ ] **Author hazard/danger zones** - `Terje-Radiation` ships exactly one
        example zone (`TerjeRadioactiveScriptableArea` at `341 0 9401` in
        `profiles/TerjeSettings/ScriptableAreas/ScriptableAreasSpawner.xml`)
@@ -97,33 +116,19 @@ order worth tackling once that's true:
        whatever safe zones/hazard zones were placed in steps 1-2 above
        (ships with one real example entry each already, plus a default
        `requireToolInHand` tool list currently disabled).
-9. [ ] **Author `DayZ-Dynamic-AI-Addon` `Spatial_Audio` noise-trigger
-       zones** - `Audio_Enabled` is currently `0` in
-       `profiles/ExpansionMod/AI/Spatial/SpatialSettings.json`, so no
-       `Audio` zone has ever fired; there's nothing to test until it's
-       turned on. Unlike roaming `Group` AI (proximity/timer-based), these
-       are fixed locations that specifically listen for noise (gunfire
-       always triggers the zone; other sounds trigger once loud enough per
-       `Spatial_Sensitivity`) - useful for punishing noise at specific
-       high-value spots (bases, crash sites, event zones) even when no
-       roaming AI happens to be nearby. Once enabled and at least one zone
-       is authored, needs a live test pass per
-       [`TESTS.md`](TESTS.md)'s existing `Spatial_MaxAccuracy` item (fire a
-       weapon inside the zone's `Spatial_TriggerRadius` and watch for AI
-       script errors tied to `Audio` entries).
-10. [ ] **Author `MoreMaterials` loot economy + recipes from scratch** - its
-        own page states outright that it ships **no types file at all** for
-        its 350+ raw materials, and adds no crafting recipes of its own
-        either - it's a raw crafting-material pack with zero built-in use.
-        This is pure creative/design work, not a mechanical port job: decide
-        which of the 350+ materials are worth keeping at all, where they fit
-        in the loot economy (rarity/nominal/location tags matching the rest
-        of the hardcore loot table), and - the actually hard part - design
-        and author real crafting recipes that consume them (likely via
-        `Crowwolfie-Recipes` or CE `cfgcraftingaction`, whichever is already
-        set up for other custom recipes here) so they're not just inert
-        clutter. Best tackled once the base loot economy/difficulty already
-        feels right, so new recipes can be balanced against it.
+9. [ ] **Author `MoreMaterials` loot economy + recipes from scratch** - its
+       own page states outright that it ships **no types file at all** for
+       its 350+ raw materials, and adds no crafting recipes of its own
+       either - it's a raw crafting-material pack with zero built-in use.
+       This is pure creative/design work, not a mechanical port job: decide
+       which of the 350+ materials are worth keeping at all, where they fit
+       in the loot economy (rarity/nominal/location tags matching the rest
+       of the hardcore loot table), and - the actually hard part - design
+       and author real crafting recipes that consume them (likely via
+       `Crowwolfie-Recipes` or CE `cfgcraftingaction`, whichever is already
+       set up for other custom recipes here) so they're not just inert
+       clutter. Best tackled once the base loot economy/difficulty already
+       feels right, so new recipes can be balanced against it.
 
 ## Nice-to-have companion mods surfaced by this research (not currently installed)
 

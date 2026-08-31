@@ -13,6 +13,9 @@ import { doWipe } from "./wipe.ts";
 import { loadMods, resolveMods, searchMods } from "./mods.ts";
 import { buildServerPack } from "./modBuild.ts";
 import { publishServerPack } from "./modPublish.ts";
+import { verifyServerPackScripts } from "./modVerify.ts";
+import { doSyncEditor } from "./editorSync.ts";
+import { auditMarket } from "./marketAudit.ts";
 
 function statusLine(label: string, good: boolean, extra = ""): void {
   const mark = good ? c.green("✓") : c.dim("·");
@@ -65,7 +68,10 @@ async function menu(s: Settings): Promise<void> {
     10) Wipe server (reset world or reinstall)
     11) Build server pack (serverpack/addons/)
     12) Publish server pack to Steam Workshop
-    13) Quit`);
+    13) Sync DayZ-Editor save into the mission (EditorFiles/)
+    14) Verify server pack scripts actually compile (no publish)
+    15) Audit trader economy (find missing/mispriced items)
+    16) Quit`);
 
     const choice = await ask("Choice", "1");
     try {
@@ -112,6 +118,15 @@ async function menu(s: Settings): Promise<void> {
           await publishServerPack(s);
           break;
         case "13":
+          await doSyncEditor();
+          break;
+        case "14":
+          await verifyServerPackScripts(await buildServerPack());
+          break;
+        case "15":
+          await auditMarket();
+          break;
+        case "16":
           Deno.exit(0);
           break;
         default:
@@ -142,8 +157,20 @@ const HELP = `Usage: deno task dayz [command]
   wipe          Reset world state, or remove the install entirely
   build-serverpack    Build serverpack/ (this project's own custom addons)
                       into one publish-ready Workshop mod
-  publish-serverpack  Build and publish/update the server pack as the one
-                      Workshop item bundling all custom addons`;
+  publish-serverpack  Build, verify (boots the real server briefly to catch
+                      script compile errors), then publish/update the
+                      server pack as the one Workshop item bundling all
+                      custom addons
+  verify-serverpack   Build the server pack and verify its scripts actually
+                      compile, without publishing (same check publish-
+                      serverpack runs automatically first)
+  sync-editor   Copy the newest DayZ-Editor .dze save into the mission's
+                EditorFiles/ folder, ready for @DayZ-Editor-Loader to load
+                on next server start
+  audit-market  Cross-reference the mission's full item economy against
+                what's actually sellable, and sanity-check prices/stock
+                caps on everything that is - writes a full report to
+                profiles/market-audit-report.txt`;
 
 async function main(): Promise<void> {
   const s = await loadSettings();
@@ -191,6 +218,15 @@ async function main(): Promise<void> {
       break;
     case "publish-serverpack":
       await publishServerPack(s);
+      break;
+    case "verify-serverpack":
+      await verifyServerPackScripts(await buildServerPack());
+      break;
+    case "sync-editor":
+      await doSyncEditor();
+      break;
+    case "audit-market":
+      await auditMarket();
       break;
     case "-h":
     case "--help":

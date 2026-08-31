@@ -135,6 +135,11 @@ export async function buildServerPack(): Promise<string> {
   const outRoot = `${SERVERPACK_BUILD_DIR}/@${SERVERPACK_NAME}`;
   const addonsOut = `${outRoot}/addons`;
   const keysOut = `${outRoot}/keys`;
+  // Wipe any previous build first - otherwise an addon removed from
+  // serverpack/addons/ (or renamed) leaves its old .pbo/.bisign orphaned
+  // here forever, silently getting bundled into every future build/publish
+  // even though its source is gone.
+  await Deno.remove(outRoot, { recursive: true }).catch(() => {});
   await Deno.mkdir(addonsOut, { recursive: true });
   await Deno.mkdir(keysOut, { recursive: true });
 

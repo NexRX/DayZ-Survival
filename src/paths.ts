@@ -27,6 +27,25 @@ export const MISSION_TEMPLATE = "dayzOffline.chernarusplus";
 export const MISSION_DIR = `${SERVER_DIR}/mpmissions/${MISSION_TEMPLATE}`;
 export const AI_PATROL_SETTINGS = `${MISSION_DIR}/expansion/settings/AIPatrolSettings.json`;
 
+// DayZ-Expansion-Core's SafeZone module config - like AIPatrolSettings.json,
+// self-generated (with Chernarus' own default city safe zones already in
+// it) the first time the mission loads. src/traders.ts's
+// ensureCustomTraderSafeZone() adds one more CircleZones entry for the
+// custom trader city, without touching the existing defaults.
+export const SAFE_ZONE_SETTINGS = `${MISSION_DIR}/expansion/settings/SafeZoneSettings.json`;
+
+// DayZ-Expansion-Market's own global config - self-generated (with 5-6
+// default LandSpawnPositions/AirSpawnPositions/WaterSpawnPositions entries
+// already in it, all clustered near the vanilla trader city) the first
+// time the mission loads. src/traders.ts's
+// ensureCustomVehicleSpawnPositions() adds more entries near the custom
+// trader city's own Vehicle Dealer, without touching the existing
+// defaults - confirmed via ExpansionTraderBase.HasVehicleSpawnPosition()
+// (unpacked from market_scripts.pbo) that vehicle purchases can only spawn
+// at a position listed here, within MaxVehicleDistanceToTrader of the
+// buying trader's own NPC.
+export const MARKET_SETTINGS = `${MISSION_DIR}/expansion/settings/MarketSettings.json`;
+
 // Vanilla loot economy, shipped as part of the mission itself (not
 // mod-generated) - re-downloaded/validated by steamcmd on every `install`,
 // so any tuning here must be re-applied every start (see economy.ts).
@@ -45,6 +64,33 @@ export const MISSION_EVENT_SPAWNS_FILE = `${MISSION_DIR}/cfgeventspawns.xml`;
 // DayZ-Expansion-Market's per-category trader stock/price files, generated
 // under PROFILE_DIR on first server start (see market.ts).
 export const EXPANSION_MARKET_DIR = `${PROFILE_DIR}/ExpansionMod/Market`;
+
+// DayZ-Expansion-Market's trader *identity* files (which categories/items
+// each named trader sells) - ships 17 defaults, self-generated alongside
+// EXPANSION_MARKET_DIR on first server start. src/traders.ts adds its own
+// custom identities here (e.g. a single "Everything" trader) alongside the
+// untouched defaults.
+export const EXPANSION_TRADERS_DIR = `${PROFILE_DIR}/ExpansionMod/Traders`;
+
+// DayZ-Expansion-Core's gear "loadout" preset files (referenced by name from
+// the `loadout:<Name>` token in a trader NPC's `.map` Gear field - see
+// src/traders.ts). Confirmed via DayZ-Expansion-Core's own script source
+// (ExpansionConstants.c: EXPANSION_LOADOUT_FOLDER = "$profile:ExpansionMod\\
+// Loadouts\\"; ExpansionPrefab.c's GetPath()). Unlike EXPANSION_TRADERS_DIR
+// above, this directory is NOT pre-populated with defaults on first server
+// start, so files here are safe to write unconditionally.
+export const EXPANSION_LOADOUTS_DIR = `${PROFILE_DIR}/ExpansionMod/Loadouts`;
+
+// DayZ-Expansion-Core's generic placed-object mapping folder (confirmed live
+// - auto-created empty alongside traderzones/traders on first world load).
+// Same plain-text pipe-delimited format as the trader `.map` files (see
+// traders.ts's traderMapLine()), but for arbitrary decorative/static
+// objects: `<ClassName>|<Position>|<Orientation>|<Special>|<Takeable>|<Attachments>`
+// (confirmed via DayZ-Expansion-Core's own ExpansionWorldObjectsModule.c,
+// GetObjectFromFile()). Used to place the trader restock status board
+// (see traders.ts's ensureCustomTraderBoard()) without needing a manual
+// DayZ-Editor placement step.
+export const EXPANSION_OBJECTS_DIR = `${MISSION_DIR}/expansion/objects`;
 
 // Search For Loot (Improved)'s persistent "area flags" cache: a binary index
 // of loot-searchable areas/buildings, built once and reused across restarts
@@ -158,6 +204,17 @@ export const SERVERPACK_WORKSHOP_ID_FILE = `${SERVERPACK_DIR}/.workshop_id`;
 // path.
 export const SERVERPACK_KEYS_DIR = `${ROOT}/.serverpack-keys`;
 export const SERVERPACK_BUILD_DIR = `${ROOT}/.serverpack-build`;
+
+// DayZ-Editor (the offline client-side building tool) saves its .dze files
+// here, inside the client's Proton prefix - confirmed by locating an actual
+// save on this machine. EDITOR_FILES_DIR is where @DayZ-Editor-Loader reads
+// them from on the server side (auto-created under the mission root once
+// that mod is active) - see editorSync.ts, which copies the newest save
+// from one to the other.
+export const DAYZ_EDITOR_SAVE_DIR = `${
+  Deno.env.get("HOME")
+}/.local/share/Steam/steamapps/compatdata/${DAYZ_CLIENT_APPID}/pfx/drive_c/users/steamuser/Documents/DayZ/Editor`;
+export const EDITOR_FILES_DIR = `${MISSION_DIR}/EditorFiles`;
 
 // Real Bohemia DayZ Tools (Steam app 830640, Windows-only) run via Wine -
 // needed only for `DSSignFile.exe`. armake2's packing is fine, but its

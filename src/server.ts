@@ -15,9 +15,12 @@ import { ensureVehicle3PPWhitelist } from "./vehicle3pp.ts";
 import { tuneDynamicScavenging } from "./scavenging.ts";
 import { ensureFuelSystemVehicles } from "./fuelSystem.ts";
 import { LIGHTING_PRESET, tuneLightingConfig } from "./lighting.ts";
+import { tuneMapAccess } from "./mapAccess.ts";
 import { ensureWildlifeTerritories } from "./wildlifeTerritories.ts";
 import { ensureYuretskiyWired } from "./yuretskiy.ts";
 import { tuneExpansionMarket } from "./market.ts";
+import { ensureMarketGapFill } from "./marketGapFill.ts";
+import { ensureCustomTrader } from "./traders.ts";
 import {
   tuneAirdropLoot,
   tuneMissionRewards,
@@ -150,7 +153,10 @@ export async function doStart(s: Settings): Promise<never> {
   await tuneMoneyScarcity();
   await tuneDynamicScavenging();
   await tuneExpansionMarket();
+  await ensureMarketGapFill();
+  await ensureCustomTrader();
   await tuneLightingConfig();
+  await tuneMapAccess();
   await ensureFuelSystemVehicles(allMods);
 
   log(`Starting DayZ server on UDP ${s.PORT}`);

@@ -22,6 +22,40 @@
 2545327648  @Dabs_Framework
 1564026768  @Community-Online-Tools
 
+# --- World-building: DayZ-Editor-Loader is the server-side companion to
+# @DayZ-Editor, used to design/build the custom trader town (see
+# src/traders.ts, TODO.md, and MODS.md's "Building the trader town itself"
+# section for the full workflow). It reads whatever .dze build file(s) an
+# admin drops into this mission's own EditorFiles/ folder (auto-created at
+# the mission root on first load once this mod is active) and spawns those
+# objects on every mission load - data-driven, not persistence-based, so it
+# survives `deno run wipe`.
+#
+# @DayZ-Editor itself is deliberately NOT listed here - it's an
+# OFFLINE-ONLY editing tool (its own author's restriction), used in a
+# separate local/offline singleplayer session on the admin's own machine
+# (subscribe to it directly via Steam, independent of this server's mod
+# list) - it plays no part in the live multiplayer server, so adding it
+# here would only force every real player to download 151MB of a tool
+# they'd never be able to use. ---
+2276010135  @DayZ-Editor-Loader          server
+
+# --- Land_R22R_Base_Fortifications_Assets: placeable prop pack (walls,
+# sandbags, spikes, walkways, etc. under the Land_R22R_ class prefix) used
+# while building the trader town in DayZ-Editor. Unlike @DayZ-Editor-Loader
+# above, this is NOT an editor tool - it's real world content referenced by
+# class name in the saved .dze, so it must load on both server AND client
+# (players need it too, to see/render the placed props; the author's own
+# instructions say to install it "as a client side mod so other players can
+# see the items you placed"). ---
+2961092390  @R22R-Fortifications-Assets
+
+# --- NeonMurder's LIGHTS: static/permanent light-source prop pack, used to
+# actually light up the trader town (the DayZ-Editor NetworkLight/
+# NetworkSpotLight helper objects placed earlier turned out not to render
+# in the live mission - these are real always-on lamp props instead). ---
+2822125184  @NeonMurder-Lights
+
 # --- DayZ Expansion, modular set (matches RemnantZ; replaces the old
 # all-in-one "DayZ-Expansion-Bundle" to avoid double-downloading/duplicating
 # the same content under two different mods) ---
@@ -129,7 +163,18 @@
 # release.
 3263494703  @Search-For-Charcoal
 3237950572  @Old-Food
-3417831913  @Keep-It-Dead-ProjectBR
+
+# NOTE: @Keep-It-Dead-ProjectBR (3417831913) was removed here. Its
+# corpse-to-zombie conversion feature (SpawnZombieOnPlayersDeath) fires for
+# AI-mod bots too (they're PlayerBase-derived internally, and the mod has no
+# way to distinguish real players from AI), and reproducibly crashed the
+# server with a NULL pointer to instance VM exception in
+# ZmbF_CitizenANormal_LT_Base::HandleDeath (5-mod override chain: Keep-It-
+# Dead -> vanilla -> Terje-Radiation -> DayZExpansion-Core -> DayZExpansion-
+# AI) after an AI died in combat during heavy AI-mod activity. The mod's own
+# Workshop page has other users reporting the same AI-triggered crash with
+# no config option to disable it for AI specifically. Revisit only if the
+# author ships a fix for AI-triggered corpse conversion.
 
 # --- This project's own custom content (serverpack/ - a single Workshop
 # mod bundling every addon we write ourselves; see serverpack/README.md for

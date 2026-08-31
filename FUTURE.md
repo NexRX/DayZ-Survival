@@ -4,7 +4,9 @@ Future ambitions to add in the future, not while the server is still a work in p
 
 At the moment we still need to make traders but other mods for future considering are ntoed here
 
-## Maybe Quicker Wins
+## Want sooner Wins
+
+SLP Realistic Survival v2.0 - https://steamcommunity.com/sharedfiles/filedetails/?id=3729052290
 
 [Zens Fire Sticks](https://steamcommunity.com/sharedfiles/filedetails/?id=3498006019)
 
@@ -30,6 +32,26 @@ TP_Apoc_M1025 - https://steamcommunity.com/sharedfiles/filedetails/?id=373738597
 
 TP_Apoc_Pickup - https://steamcommunity.com/sharedfiles/filedetails/?id=3738834788
 
+(event) [SobrMods] Signal Overnight Stay - https://steamcommunity.com/sharedfiles/filedetails/?id=3703298145
+
+Necromutant - https://steamcommunity.com/sharedfiles/filedetails/?id=3693114761
+
+## Gear
+
+m107 (should be very very very very rare) - https://steamcommunity.com/sharedfiles/filedetails/?id=3703298145
+
+Survivor backpack - https://steamcommunity.com/sharedfiles/filedetails/?id=2926289548
+
+Optics - https://steamcommunity.com/sharedfiles/filedetails/?id=3571068454
+
+Paragon Storage (Items from this should be rare/expensive) - https://steamcommunity.com/sharedfiles/filedetails/?id=3010267444
+
+Hunter Bow (Should be craftable) - https://steamcommunity.com/sharedfiles/filedetails/?id=3464752232
+
+TGK WeaponPack (High end weapons mostly but not all)- https://steamcommunity.com/sharedfiles/filedetails/?id=3444350187
+
+survival clothing - https://steamcommunity.com/sharedfiles/filedetails/?id=3311622303
+
 ## Longer Term
 
 ### Zens ExpansionAI Audio
@@ -42,6 +64,8 @@ https://github.com/ZenarchistCode/ZenExpansionAudioAI/wiki/
 ### Moving AI Convoy
 
 https://steamcommunity.com/sharedfiles/filedetails/?id=3767913539
+
+### Airborne AI - https://steamcommunity.com/sharedfiles/filedetails/?id=3472298147
 
 ## Maybes?
 
@@ -72,3 +96,7 @@ Must give solo players a fair chance and not spawn directly on them just near th
 ### Anti Cheat
 
 Ensure anti dup and anti cheat server side mods are setup if required, battleye might not pickup stuff that the modding community is alreayd aware of.
+
+### AnimatedDynamicHelicopters - https://steamcommunity.com/sharedfiles/filedetails/?id=3382463948
+
+Want if can be balanced loot and doesnt conflict with pre existing mods

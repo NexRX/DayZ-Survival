@@ -144,7 +144,7 @@ new `serverpack/addons/<Name>/` folder plus `deno task publish-serverpack`
 - it updates the same Workshop item, so there's only ever one entry to
   maintain in `mods.txt`.
 
-Currently ships one addon:
+Currently ships two addons:
 
 - **`DZSurvivalFindStone`** - a hold-to-search action that lets players
   reliably find a `Stone` while standing on gravel/dirt/rail-ballast
@@ -152,12 +152,18 @@ Currently ships one addon:
   materials for a butchering tool, since no knife/blade is handed out at
   spawn (see `src/loot.ts`'s `tuneStartingKit()`).
 
-**Status: published, not yet verified in-game.** It builds and packs
-cleanly (config rapifies without errors), but watch `profiles/*.RPT` and
-`profiles/script.log` on the first boot with this mod loaded - two spots
-are flagged `TODO verify` in the source (an animation constant name and the
-surface-lookup API signature) as the most likely things to need a tweak.
-See `serverpack/README.md` for full details.
+  **Status: confirmed working end-to-end**, including live multi-session
+  testing (see `serverpack/README.md` for the full story).
+
+- **`DZSurvivalMapGate`** - requires a player to have **both** an `ItemMap`
+  and a GPS device (`GPSReceiver`) in inventory before the M-key map-toggle
+  shortcut opens the map (vanilla/Expansion only support requiring either
+  one alone). Overrides vanilla's own `MissionGameplay`; needs
+  `src/mapAccess.ts`'s `tuneMapAccess()` (see below) to also be applied.
+  See `serverpack/README.md` for the full trace of how this was found.
+
+See `serverpack/README.md` for full build/publish details and lessons
+learned.
 
 ## Setup needed beyond load order
 
@@ -261,7 +267,7 @@ confirmed on a live install), `Zens-Repairable-Wells`, `Fuel-System`
 (`profiles/iTzMods/FuelSystem/stations.xml` ships fully pre-populated with
 136+ real Chernarus gas station coordinates - confirmed on a live install;
 only per-vehicle fuel-type entries for our custom vehicles are still
-unverified), `Keep-It-Dead-ProjectBR`, `AirRaid` (siren/bombers/submarine/
+unverified), `AirRaid` (siren/bombers/submarine/
 MiG-21/UFO events, tunable per-event - confirmed all non-bomber event types
 default to disabled), `Custom-Keycards` (aside from door placement above).
 
@@ -364,6 +370,12 @@ default to disabled), `Custom-Keycards` (aside from door placement above).
   every start, and `genConfig()` in `server.ts` writes the matching
   `lightingConfig` line into the generated `serverDZ.cfg`. Change
   `LIGHTING_PRESET` in `lighting.ts` to retune.
+- [`src/mapAccess.ts`](src/mapAccess.ts) (`tuneMapAccess()`) - force-sets
+  `MapData.ignoreMapOwnership = true` in the mission's `cfggameplay.json` on
+  every start, which is required for vanilla's own M-key map-toggle
+  shortcut to be reachable at all. Paired with the `DZSurvivalMapGate`
+  serverpack addon, which then requires the player to have both an
+  `ItemMap` and a GPS device before that shortcut actually opens the map.
 - [`src/wildlifeTerritories.ts`](src/wildlifeTerritories.ts)
   (`ensureWildlifeTerritories()`) - `DayZ-Raven`, `DayZ-Rat`, and
   `DayZ-Horse` each ship a ready-to-use Chernarus territory file. Raven/Rat
@@ -537,6 +549,24 @@ faction:
 
 - `Spatial_RoamingBandits` - 1-3 AI, common (`Spatial_Chance: 0.5`).
 - `Spatial_RoamingBanditSquad` - 2-4 AI, tougher accuracy, rarer (`Spatial_Chance: 0.25`).
+
+`ensureSpatialAI()` also merges in one curated `Audio` zone, `Audio_NWAF` -
+a real, positioned noise-trigger zone at the NWAF hotspot (same trigger
+coordinates as `Roaming_Bandits_NWAF`/`NWAF_Weapons_Cache` above), replacing
+the addon's own placeholder `Audio1`/`Audio2` zones (which sit at
+`[0, 1, 0]` and can never fire). Its `Spatial_SpawnPosition` is spread
+across 4 points roughly 200m out from the trigger center (not the trigger
+point itself), so AI approach from a distance instead of spawning right on
+top of whoever tripped the zone. The addon's own `Audio_Enabled` flag
+defaults to `0` out of the box - since a real `Audio` zone is useless while
+that's off, the merge flips it to `1` the same run it adds `Audio_NWAF`.
+`Points_Enabled`/`Locations_Enabled` are left alone (still `0`) since we
+haven't authored real `Point`/`Location` zones yet.
+
+Live-tested (2026-08-25): fired repeatedly inside `Audio_NWAF`'s 300m
+trigger radius - bandits spawned and engaged, no crash, no AI/`Audio`
+script errors in the RPT. See `TESTS.md`'s `Spatial_MaxAccuracy` item for
+the full test note.
 
 The addon's own global settings (`MinDistance`/`MaxDistance`, spawn timers,
 `MaxAI` cap) aren't touched by the merge - they govern our added groups too,
@@ -748,6 +778,86 @@ Confirmed live: 20 category files changed on first run (e.g. assault rifles
 100 -> 5, ammo 500 -> 15, helicopters 10 -> 2), a second run is a total
 no-op, and the server's own `ExpansionMarketSettings::LoadCategories` log
 lines confirm every category still loads cleanly afterward.
+
+### Custom trader city ([`src/traders.ts`](src/traders.ts))
+
+`DayZ-Expansion-Market` self-generates 6 stock trader zones for Chernarus
+into `server/mpmissions/dayzOffline.chernarusplus/expansion/traderzones/`
+on first world load (Svetloyarsk, BalotaAircrafts, KamenkaBoats,
+GreenMountain, Kamenka, Krasnostav) - `ensureCustomTrader()` removes all 6
+in favor of one custom-designed trader city, per this project's own
+design rather than the stock locations.
+
+It also authors the replacement: one trader-zone JSON (safe buy/sell
+radius) plus one `.map` file under `expansion/traders/` (Expansion's plain-
+text NPC placement format - one line per NPC:
+`<TraderEntityClassName>.<TraderFileName>|<Position>|<Orientation>|<Gear>`).
+The starting roster is deliberately small: one "Everything" general-store
+NPC (food, medical, tools/base-building, clothing/gear, and weapons/ammo -
+all in one) and one "Vehicle" dealer NPC (cars, boats, helicopters, parts).
+Neither is one of DayZ-Expansion-Market's 17 default trader identities
+(Weapons, Clothing, Consumables, etc.) - those ship untouched under
+`profiles/ExpansionMod/Traders/` for later use once more specific/themed
+traders are wanted (just add more `.map` lines referencing them by name).
+`ensureCustomTraderIdentities()` writes the two custom identity JSON files
+(`Everything.json`, `Vehicle.json`) alongside the untouched defaults - same
+schema/currency as the defaults, and their `Categories` still reference the
+same `profiles/ExpansionMod/Market/*.json` category files individually
+stock-capped by `src/market.ts`, so lumping everything onto one NPC doesn't
+bypass the "not everything can be bought" tuning.
+
+The one thing this deliberately does **not** guess is the actual world
+position - `CUSTOM_POSITION` starts `null`, and until it's filled in with a
+real scouted coordinate the function only removes the 6 defaults and warns
+rather than writing NPCs to a possibly-underground guess. Get a real
+position by walking/flying there as admin (`deno run admin`, then COT's
+free cam - `INSERT` - and its position readout; see "Admin tools" below),
+plug the `[x, y, z]` into `CUSTOM_POSITION` in `src/traders.ts`, and
+re-run - every other NPC's position is just an offset from that one point,
+so only one coordinate ever needs scouting per trader city.
+
+### Building the trader town itself (props/structures, before the NPCs)
+
+Placing NPCs (above) is only the _vendors_ - actually building out a town
+around them (walls, market stalls, containers, tents, lighting, decorative
+statics) needs real 3D object placement, which `@DayZ-Editor` is for.
+Only its server-side companion, `@DayZ-Editor-Loader`, is in `mods.txt`
+(marked `server`, sharing the `@CF`/`@Dabs_Framework` dependencies already
+loaded for Community Online Tools) - `@DayZ-Editor` itself is deliberately
+**not** in this project's mod list, since it's an offline-only editing tool
+(see step 1) that plays no part in the live multiplayer server; adding it
+there would just force every real player to download 151MB of a tool
+they'd never be able to use. Subscribe to it directly via Steam instead,
+for your own local editing session. Workflow:
+
+1. **Build offline, not on the live server.** DayZ-Editor's own author
+   restricts it to offline/singleplayer sessions - launch DayZ from Steam
+   (works fine under Proton on Linux, same as any other DayZ Workshop mod;
+   no separate Windows tool needed), subscribe to `@CF`/`@Dabs_Framework`/
+   `@DayZ-Editor` (and ideally the rest of `mods.txt`, so you're placing
+   objects against the same loot economy/mod content the real server
+   runs) directly via the Steam Workshop, then choose "Play Offline" and
+   load `dayzOffline.chernarusplus` locally with those mods enabled.
+2. **Place your town.** DayZ-Editor gives you a full in-game 3D placement
+   UI - any object in any loaded mod, drag/rotate/snap-to-surface, undo,
+   etc. Build out the town shell (walls, stalls, containers, lighting,
+   decoration) around wherever you're planning the trader zone.
+3. **Export.** DayZ-Editor saves your build as a `.dze` file under your
+   client's own `profiles/Editor/` folder.
+4. **Deploy to the real server.** Copy that `.dze` file into the live
+   mission's `EditorFiles/` folder
+   (`server/mpmissions/dayzOffline.chernarusplus/EditorFiles/` - auto-
+   created there once `@DayZ-Editor-Loader` has loaded at least once).
+   It's loaded fresh on every mission start - a plain data file, not part
+   of persistent world state (`storage_1`), so it survives `deno run wipe`
+   without needing to be rebuilt.
+5. **Then place the trader NPCs** (previous section) at the same spot once
+   the town shell is in place and you can see exactly where the vendors
+   should stand.
+
+`@DayZ-Editor-Loader` is marked `server` in `mods.txt` (players never need
+it - it only reads `.dze` files server-side, and never appears in-game
+itself).
 
 ## Server-only mods (`-servermod=`)
 

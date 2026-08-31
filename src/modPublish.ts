@@ -15,6 +15,7 @@ import { die, hint, log, ok, warn } from "./ui.ts";
 import type { Settings } from "./config.ts";
 import { ensureLogin, exists, runSteamcmdCapture } from "./steam.ts";
 import { buildServerPack } from "./modBuild.ts";
+import { verifyServerPackScripts } from "./modVerify.ts";
 import { fetchContentIds } from "./mods.ts";
 
 async function cachedWorkshopId(): Promise<string> {
@@ -68,6 +69,7 @@ export async function publishServerPack(s: Settings): Promise<void> {
   await ensureLogin(s);
 
   const outRoot = await buildServerPack();
+  await verifyServerPackScripts(outRoot);
 
   const previewFile = `${SERVERPACK_DIR}/preview.png`;
   if (!(await exists(previewFile))) {
