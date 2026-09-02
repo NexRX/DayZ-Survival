@@ -14,6 +14,7 @@ import { loadMods, resolveMods, searchMods } from "./mods.ts";
 import { buildServerPack } from "./modBuild.ts";
 import { publishServerPack } from "./modPublish.ts";
 import { verifyServerPackScripts } from "./modVerify.ts";
+import { SERVERPACK_SERVERONLY } from "./paths.ts";
 import { doSyncEditor } from "./editorSync.ts";
 import { auditMarket } from "./marketAudit.ts";
 
@@ -71,7 +72,9 @@ async function menu(s: Settings): Promise<void> {
     13) Sync DayZ-Editor save into the mission (EditorFiles/)
     14) Verify server pack scripts actually compile (no publish)
     15) Audit trader economy (find missing/mispriced items)
-    16) Quit`);
+    16) Build server-only pack (serverpack-serveronly/addons/) [local only, never published]
+    17) Verify server-only pack scripts actually compile (no publish)
+    18) Quit`);
 
     const choice = await ask("Choice", "1");
     try {
@@ -127,6 +130,15 @@ async function menu(s: Settings): Promise<void> {
           await auditMarket();
           break;
         case "16":
+          await buildServerPack(SERVERPACK_SERVERONLY);
+          break;
+        case "17":
+          await verifyServerPackScripts(
+            await buildServerPack(SERVERPACK_SERVERONLY),
+            SERVERPACK_SERVERONLY,
+          );
+          break;
+        case "18":
           Deno.exit(0);
           break;
         default:
@@ -170,7 +182,15 @@ const HELP = `Usage: deno task dayz [command]
   audit-market  Cross-reference the mission's full item economy against
                 what's actually sellable, and sanity-check prices/stock
                 caps on everything that is - writes a full report to
-                profiles/market-audit-report.txt`;
+                profiles/market-audit-report.txt
+  build-serverpack-serveronly    Build serverpack-serveronly/ (server-only
+                      custom addons with zero client-visible behavior, e.g.
+                      DZSurvivalBaseDecay) - LOCAL ONLY, never published to
+                      Steam Workshop; staged directly into the running
+                      server's own mod folder via -servermod= on every start
+                      (see localServerPacks.ts), so nobody ever downloads it
+  verify-serverpack-serveronly   Build the server-only pack and verify its
+                      scripts actually compile, without publishing`;
 
 async function main(): Promise<void> {
   const s = await loadSettings();
@@ -227,6 +247,15 @@ async function main(): Promise<void> {
       break;
     case "audit-market":
       await auditMarket();
+      break;
+    case "build-serverpack-serveronly":
+      await buildServerPack(SERVERPACK_SERVERONLY);
+      break;
+    case "verify-serverpack-serveronly":
+      await verifyServerPackScripts(
+        await buildServerPack(SERVERPACK_SERVERONLY),
+        SERVERPACK_SERVERONLY,
+      );
       break;
     case "-h":
     case "--help":

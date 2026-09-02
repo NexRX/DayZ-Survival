@@ -17,7 +17,7 @@
 // match src/market.ts's MERGED_CATEGORIES, minus Ghillies/Vehicle_Parts/
 // Batteries, which are deliberately never auto-restocked - see that file's
 // header comment) and buckets each item into a rarity tier purely from its
-// own live MaxStockThreshold (TierForCap() - <=1 Legendary, <=4 Rare, <=10
+// own live MaxStockThreshold (TierForCap() - <=1 Legendary, <=3 Rare, <=8
 // Uncommon, else Common - kept in sync with src/market.ts's
 // TIER_MAX_STOCK, no separate classname lookup table needed here). Each
 // tier has its own per-item restock cooldown (TierCooldownHours) and
@@ -26,9 +26,10 @@
 // so "how coveted an item is" (set via its MaxStockThreshold in
 // src/market.ts) directly drives how rarely it trickles back into stock.
 // This is deliberately probabilistic, not an exact "1 per Xh" guarantee -
-// e.g. a Legendary item (168h cooldown, lowest pick weight) will average
-// out to roughly once a week, competing against every other tier-eligible
-// item for that tick's picks, but won't land on a precise schedule.
+// e.g. a Legendary item (336h cooldown, lowest pick weight) will average
+// out to roughly once every two weeks, competing against every other
+// tier-eligible item for that tick's picks, but won't land on a precise
+// schedule.
 //
 // Each real tick picks a budget of items (weighted, without replacement -
 // see TickInternal()) sized as a FRACTION of the currently-eligible pool
@@ -86,7 +87,7 @@ class DZSurvivalTraderRestock
 	protected static const string STATE_DIR = "$profile:DZSurvivalServerPack";
 	protected static const string STATE_PATH = STATE_DIR + "\\TraderRestock.json";
 
-	// Real hourly granularity is fine even for a 168h ("1 helicopter/week")
+	// Real hourly granularity is fine even for a 336h ("1 helicopter/2 weeks")
 	// cooldown - it just means the actual restock can land up to ~1h later
 	// than the exact cooldown, which doesn't matter here. CALL_CATEGORY_SYSTEM
 	// matches how DayZExpansion_Market itself schedules its own delayed
@@ -106,7 +107,8 @@ class DZSurvivalTraderRestock
 	// MaxStockThreshold (TierForCap()), not a separate classname table, so
 	// this stays in sync with src/market.ts's TIER_MAX_STOCK automatically
 	// as long as the numeric bands below match that file's tier caps
-	// (Common 25, Uncommon 10, Rare 4, Legendary 1).
+	// (Common 20, Uncommon 8, Rare 3, Legendary 1 - tightened 2026-08, was
+	// 25/10/4/1).
 	protected static const int TIER_COMMON = 0;
 	protected static const int TIER_UNCOMMON = 1;
 	protected static const int TIER_RARE = 2;
@@ -117,11 +119,12 @@ class DZSurvivalTraderRestock
 	// catalog never needs re-tuning by hand again. MIN_RESTOCKS_PER_TICK is a
 	// floor for when the eligible pool is small (e.g. right after a full
 	// manual reset); RESTOCK_FRACTION_DIVISOR controls what fraction of the
-	// eligible pool gets picked otherwise (1/20 = ~5% per hour) - see this
+	// eligible pool gets picked otherwise (1/25 = 4% per hour) - see this
 	// file's header comment for why this is still probabilistic per item,
-	// not an exact schedule.
-	protected static const int MIN_RESTOCKS_PER_TICK = 15;
-	protected static const int RESTOCK_FRACTION_DIVISOR = 20;
+	// not an exact schedule. Slowed 2026-08 (was 15/20 = ~5%/hour) as part of
+	// the hardcore-survival economy pass - see serverpack/README.md.
+	protected static const int MIN_RESTOCKS_PER_TICK = 10;
+	protected static const int RESTOCK_FRACTION_DIVISOR = 25;
 	// '/restock now' (see DZSurvivalTraderRestock_COTCommand.c) ignores
 	// cooldowns entirely; TickInternal() gives it a budget covering every
 	// eligible item so a manual trigger visibly tops things up immediately
@@ -156,9 +159,9 @@ class DZSurvivalTraderRestock
 	{
 		if (cap <= 1)
 			return TIER_LEGENDARY;
-		if (cap <= 4)
+		if (cap <= 3)
 			return TIER_RARE;
-		if (cap <= 10)
+		if (cap <= 8)
 			return TIER_UNCOMMON;
 		return TIER_COMMON;
 	}
@@ -166,11 +169,11 @@ class DZSurvivalTraderRestock
 	protected static int TierCooldownHours(int tier)
 	{
 		if (tier == TIER_LEGENDARY)
-			return 168; // ~1 week
+			return 336; // ~2 weeks
 		if (tier == TIER_RARE)
-			return 24; // ~1 day
+			return 48; // ~2 days
 		if (tier == TIER_UNCOMMON)
-			return 6;
+			return 12;
 		return 0; // Common - no cooldown, only gated by the weighted pick itself
 	}
 

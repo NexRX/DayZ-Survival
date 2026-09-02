@@ -1,26 +1,40 @@
 // serverDZ.cfg generation and launching the server under steam-run.
 
 import { MISSION_TEMPLATE, PROFILE_DIR, SERVER_DIR } from "./paths.ts";
-import { log, ok } from "./ui.ts";
-import { requireTools, runInherit } from "./proc.ts";
+import { log, ok, warn } from "./ui.ts";
+import { requireTools } from "./proc.ts";
 import { ensureServer, serverBinary } from "./steam.ts";
 import { ensureMods } from "./install.ts";
+import { backupWorldState, pruneOldLogs } from "./maintenance.ts";
 import { ensureAIPatrols } from "./ai.ts";
+import { ensureAIBanditsDensity } from "./aiBanditsDensity.ts";
 import { ensureSpatialAI } from "./spatial.ts";
 import { ensureDynamicMissions } from "./dynamicMissions.ts";
 import { ensureModTypesMerged } from "./modTypes.ts";
+import { ensureNamalskClothingMerged } from "./namalskClothing.ts";
 import { ensureMoreCarsTypesMerged } from "./moreCars.ts";
 import { ensureNCPRTypesMerged } from "./ncpr.ts";
 import { ensureVehicle3PPWhitelist } from "./vehicle3pp.ts";
-import { tuneDynamicScavenging } from "./scavenging.ts";
+import { ensureCustomVehicleSpawns } from "./vehicleSpawns.ts";
+
 import { ensureFuelSystemVehicles } from "./fuelSystem.ts";
 import { LIGHTING_PRESET, tuneLightingConfig } from "./lighting.ts";
 import { tuneMapAccess } from "./mapAccess.ts";
+import { tuneWeather } from "./weather.ts";
+import { tuneHazardZones } from "./hazards.ts";
+import { tuneNoBuildZones } from "./noBuildZones.ts";
 import { ensureWildlifeTerritories } from "./wildlifeTerritories.ts";
 import { ensureYuretskiyWired } from "./yuretskiy.ts";
+import { ensureBmmChemicalZombieWired } from "./bmmChemicalZombie.ts";
+import { ensureCustomZombiesTchcWired } from "./customZombiesTchc.ts";
+import { ensureNecromutantWired } from "./necromutant.ts";
+import { ensureOpticsWired } from "./optics.ts";
+import { ensureTgkWeaponPackWired } from "./tgkWeaponPack.ts";
+import { ensureMilitaryMonsterGarrisons } from "./militaryMonsters.ts";
 import { tuneExpansionMarket } from "./market.ts";
 import { ensureMarketGapFill } from "./marketGapFill.ts";
 import { ensureCustomTrader } from "./traders.ts";
+import { tuneNewAIEventMods } from "./aiWorldEvents.ts";
 import {
   tuneAirdropLoot,
   tuneMissionRewards,
@@ -40,6 +54,8 @@ import { tuneAnimalSpawns, tuneFoodScarcity, tuneMoneyScarcity } from "./economy
 import { loadMods, modParam, serverModParam } from "./mods.ts";
 import { ensureConfig, type Settings } from "./config.ts";
 import { primeModConfigsIfNeeded } from "./prime.ts";
+import { ensureLocalServerPack } from "./localServerPacks.ts";
+import { SERVERPACK_SERVERONLY } from "./paths.ts";
 
 export async function genConfig(s: Settings): Promise<void> {
   const cfg = `${SERVER_DIR}/serverDZ.cfg`;
@@ -99,16 +115,121 @@ adminLogPlayerList     = 1;
   ok(`Wrote ${cfg}`);
 }
 
-export async function doStart(s: Settings): Promise<never> {
+// Crash-recovery watchdog for the actual server launch (the very last step
+// of doStart()). Previously the server ran once via runInherit() and, on
+// ANY exit - a clean admin shutdown or a genuine crash - the whole CLI
+// process exited with it, so an unattended crash (e.g. overnight) just left
+// the server down until someone noticed and reran the CLI by hand. This
+// wraps the launch in a loop that auto-restarts on an unexpected exit, with
+// a short backoff, while still stopping cleanly (no restart) on an
+// intentional Ctrl-C/SIGTERM.
+const CRASH_LOG = `${PROFILE_DIR}/crashes.log`;
+// Below this much runtime, an exit counts as a "fast crash" for the
+// give-up logic below rather than a normal shutdown after a real play
+// session.
+const FAST_CRASH_THRESHOLD_MS = 60_000;
+const RESTART_BACKOFF_MS = 15_000;
+const MAX_CONSECUTIVE_FAST_CRASHES = 5;
+
+let stopRequested = false;
+let currentChild: Deno.ChildProcess | null = null;
+
+function requestStop(): void {
+  if (stopRequested) {
+    warn("Second stop signal received - killing the server immediately.");
+    try {
+      currentChild?.kill("SIGKILL");
+    } catch {
+      // already exited - nothing to kill
+    }
+    Deno.exit(1);
+  }
+  stopRequested = true;
+  log(
+    "Stop requested - waiting for the server to shut down gracefully " +
+      "(Ctrl-C again to force-kill)...",
+  );
+  try {
+    currentChild?.kill("SIGTERM");
+  } catch {
+    // already exited - the watchdog loop will notice via child.status
+  }
+}
+
+async function logCrash(code: number, ranMs: number): Promise<void> {
+  const line = `${new Date().toISOString()}  exit=${code}  ranMs=${ranMs}\n`;
+  await Deno.writeTextFile(CRASH_LOG, line, { append: true }).catch(() => {});
+}
+
+async function runServerWithWatchdog(args: string[]): Promise<never> {
+  Deno.addSignalListener("SIGINT", requestStop);
+  Deno.addSignalListener("SIGTERM", requestStop);
+
+  let consecutiveFastCrashes = 0;
+  while (true) {
+    const startedAt = Date.now();
+    currentChild = new Deno.Command("steam-run", {
+      args,
+      cwd: SERVER_DIR,
+      env: {
+        LD_LIBRARY_PATH: `${SERVER_DIR}:${Deno.env.get("LD_LIBRARY_PATH") ?? ""}`,
+      },
+      stdin: "inherit",
+      stdout: "inherit",
+      stderr: "inherit",
+    }).spawn();
+    const { code } = await currentChild.status;
+    const ranMs = Date.now() - startedAt;
+    currentChild = null;
+
+    if (stopRequested) Deno.exit(code);
+
+    if (code === 0) {
+      warn("Server exited cleanly (code 0) without a stop request - restarting anyway.");
+    } else {
+      warn(`Server crashed (exit code ${code}) after running for ${Math.round(ranMs / 1000)}s.`);
+    }
+    await logCrash(code, ranMs);
+
+    if (ranMs < FAST_CRASH_THRESHOLD_MS) {
+      consecutiveFastCrashes++;
+      if (consecutiveFastCrashes >= MAX_CONSECUTIVE_FAST_CRASHES) {
+        warn(
+          `${consecutiveFastCrashes} crashes in a row within ` +
+            `${FAST_CRASH_THRESHOLD_MS / 1000}s of starting each time - giving up rather than ` +
+            `crash-looping. Check ${CRASH_LOG} and the latest profiles/DayZServer_*.RPT for the ` +
+            `real error before restarting manually.`,
+        );
+        Deno.exit(code || 1);
+      }
+    } else {
+      consecutiveFastCrashes = 0;
+    }
+
+    log(`Restarting in ${RESTART_BACKOFF_MS / 1000}s...`);
+    await new Promise<void>((resolve) => setTimeout(resolve, RESTART_BACKOFF_MS));
+  }
+}
+
+export async function doStart(s: Settings): Promise<void> {
   await requireTools();
   await ensureConfig(s);
   await ensureServer(s);
   await ensureMods(s);
+  // DZSurvivalServerOnly (server-side-only custom logic, e.g. base decay) is
+  // deliberately never published to Steam Workshop - it's built and signed
+  // locally, then staged straight into the server's own mod folder every
+  // start, so it's never listed in mods.txt and never downloaded by anyone,
+  // including this server itself. See localServerPacks.ts.
+  await ensureLocalServerPack(SERVERPACK_SERVERONLY);
   const allMods = await loadMods();
   await genConfig(s);
 
   const mods = modParam(allMods);
-  const serverMods = serverModParam(allMods);
+  let serverMods = serverModParam(allMods);
+  serverMods = serverMods
+    ? `${serverMods};@${SERVERPACK_SERVERONLY.name}`
+    : `@${SERVERPACK_SERVERONLY.name}`;
   await Deno.mkdir(PROFILE_DIR, { recursive: true });
   const extra = s.EXTRA_PARAMS.trim() ? s.EXTRA_PARAMS.trim().split(/\s+/) : [];
   const args = [
@@ -129,12 +250,21 @@ export async function doStart(s: Settings): Promise<never> {
   await primeModConfigsIfNeeded(args);
 
   await ensureModTypesMerged(allMods);
+  await ensureNamalskClothingMerged(allMods);
   await ensureMoreCarsTypesMerged(allMods);
+  await ensureCustomVehicleSpawns(allMods);
   await ensureNCPRTypesMerged(allMods);
   await ensureVehicle3PPWhitelist(allMods);
   await ensureWildlifeTerritories(allMods);
   await ensureYuretskiyWired(allMods);
+  await ensureBmmChemicalZombieWired(allMods);
+  await ensureCustomZombiesTchcWired(allMods);
+  await ensureNecromutantWired(allMods);
+  await ensureOpticsWired(allMods);
+  await ensureTgkWeaponPackWired(allMods);
+  await ensureMilitaryMonsterGarrisons(allMods);
   await ensureAIPatrols();
+  await ensureAIBanditsDensity();
   await ensureSpatialAI();
   await ensureDynamicMissions();
   await tuneAirdropLoot();
@@ -151,24 +281,24 @@ export async function doStart(s: Settings): Promise<never> {
   await tuneFoodScarcity();
   await tuneAnimalSpawns();
   await tuneMoneyScarcity();
-  await tuneDynamicScavenging();
   await tuneExpansionMarket();
   await ensureMarketGapFill();
   await ensureCustomTrader();
   await tuneLightingConfig();
   await tuneMapAccess();
+  await tuneWeather();
+  await tuneHazardZones();
+  await tuneNoBuildZones();
   await ensureFuelSystemVehicles(allMods);
+  await tuneNewAIEventMods();
+
+  await pruneOldLogs();
+  await backupWorldState();
 
   log(`Starting DayZ server on UDP ${s.PORT}`);
   log(`Mods: ${mods}`);
   if (serverMods) log(`Server-only mods: ${serverMods}`);
 
   // steam-run provides the prebuilt DayZServer an FHS environment on NixOS.
-  const code = await runInherit("steam-run", args, {
-    cwd: SERVER_DIR,
-    env: {
-      LD_LIBRARY_PATH: `${SERVER_DIR}:${Deno.env.get("LD_LIBRARY_PATH") ?? ""}`,
-    },
-  });
-  Deno.exit(code);
+  await runServerWithWatchdog(args);
 }

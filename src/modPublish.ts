@@ -1,15 +1,9 @@
-// Publishes the server pack (see modBuild.ts) - this project's single
-// Workshop mod bundling every custom addon - via SteamCMD's
+// Publishes a server pack (see modBuild.ts) - one of this project's own
+// Workshop mods bundling a subset of our custom addons - via SteamCMD's
 // `+workshop_build_item`, reusing this project's existing SteamCMD
 // session-cache/login pattern (see steam.ts).
 
-import {
-  DAYZ_CLIENT_APPID,
-  SERVERPACK_DIR,
-  SERVERPACK_NAME,
-  SERVERPACK_WORKSHOP_ID_FILE,
-  STEAMCMD_DIR,
-} from "./paths.ts";
+import { DAYZ_CLIENT_APPID, SERVERPACK, type ServerPackConfig, STEAMCMD_DIR } from "./paths.ts";
 import { requireTools } from "./proc.ts";
 import { die, hint, log, ok, warn } from "./ui.ts";
 import type { Settings } from "./config.ts";
@@ -18,21 +12,24 @@ import { buildServerPack } from "./modBuild.ts";
 import { verifyServerPackScripts } from "./modVerify.ts";
 import { fetchContentIds } from "./mods.ts";
 
-async function cachedWorkshopId(): Promise<string> {
-  if (await exists(SERVERPACK_WORKSHOP_ID_FILE)) {
-    return (await Deno.readTextFile(SERVERPACK_WORKSHOP_ID_FILE)).trim();
+async function cachedWorkshopId(pack: ServerPackConfig): Promise<string> {
+  if (await exists(pack.workshopIdFile)) {
+    return (await Deno.readTextFile(pack.workshopIdFile)).trim();
   }
   return "0"; // 0 = first-time publish (Steam assigns a new id)
 }
 
 async function upload(
   s: Settings,
+  pack: ServerPackConfig,
   outRoot: string,
   publishedFileId: string,
   visibility: 0 | 2,
   previewFile: string,
 ): Promise<{ code: number; output: string }> {
-  const vdfPath = `${STEAMCMD_DIR}/serverpack.workshop.vdf`;
+  // Named per-pack so two packs can never clobber each other's vdf if a
+  // publish is ever run for both in quick succession.
+  const vdfPath = `${STEAMCMD_DIR}/${pack.name}.workshop.vdf`;
   await Deno.mkdir(STEAMCMD_DIR, { recursive: true });
   const vdf = [
     '"workshopitem"',
@@ -57,21 +54,23 @@ async function upload(
 }
 
 /**
- * Build the server pack, then upload/update it as the one Workshop item
- * that bundles every custom addon.
+ * Build a server pack, then upload/update it as its own Workshop item.
  *
  * First publish creates a *private* Workshop item (visibility 2) - change
  * it to public yourself from the item's Steam page once you're happy with
  * it, to avoid accidentally shipping untested addons.
  */
-export async function publishServerPack(s: Settings): Promise<void> {
+export async function publishServerPack(
+  s: Settings,
+  pack: ServerPackConfig = SERVERPACK,
+): Promise<void> {
   await requireTools(["armake2"]);
   await ensureLogin(s);
 
-  const outRoot = await buildServerPack();
-  await verifyServerPackScripts(outRoot);
+  const outRoot = await buildServerPack(pack);
+  await verifyServerPackScripts(outRoot, pack);
 
-  const previewFile = `${SERVERPACK_DIR}/preview.png`;
+  const previewFile = `${pack.dir}/preview.png`;
   if (!(await exists(previewFile))) {
     warn(
       `No preview.png found at ${previewFile} - publishing without a preview image. ` +
@@ -79,7 +78,7 @@ export async function publishServerPack(s: Settings): Promise<void> {
     );
   }
 
-  const existingId = await cachedWorkshopId();
+  const existingId = await cachedWorkshopId(pack);
   const firstPublish = existingId === "0";
 
   // Captured *before* uploading so the post-upload poll below can detect
@@ -88,11 +87,18 @@ export async function publishServerPack(s: Settings): Promise<void> {
   // be true of a stale one left over from the previous publish).
   const previousManifest = firstPublish
     ? null
-    : (await fetchContentIds([{ id: existingId, name: SERVERPACK_NAME, serverOnly: false }]))
+    : (await fetchContentIds([{ id: existingId, name: pack.name, serverOnly: pack.serverOnly }]))
       .get(existingId) ?? null;
 
-  log(`${firstPublish ? "Publishing new" : "Updating"} Workshop item for the server pack`);
-  const { code, output } = await upload(s, outRoot, existingId, firstPublish ? 2 : 0, previewFile);
+  log(`${firstPublish ? "Publishing new" : "Updating"} Workshop item for '${pack.name}'`);
+  const { code, output } = await upload(
+    s,
+    pack,
+    outRoot,
+    existingId,
+    firstPublish ? 2 : 0,
+    previewFile,
+  );
   if (code !== 0) {
     die("steamcmd workshop_build_item failed - see output above.");
   }
@@ -107,19 +113,19 @@ export async function publishServerPack(s: Settings): Promise<void> {
       warn(
         "Could not detect the new publishedfileid from steamcmd's output - " +
           "check the Workshop items page for your account and save it manually to " +
-          `${SERVERPACK_WORKSHOP_ID_FILE} so future updates target the same item.`,
+          `${pack.workshopIdFile} so future updates target the same item.`,
       );
       return;
     }
     id = newId;
-    await Deno.writeTextFile(SERVERPACK_WORKSHOP_ID_FILE, `${id}\n`);
-    ok(`Published as new Workshop item ${id} (visibility: Friends-only/private).`);
+    await Deno.writeTextFile(pack.workshopIdFile, `${id}\n`);
+    ok(`Published '${pack.name}' as new Workshop item ${id} (visibility: Friends-only/private).`);
     hint(
       `Visit https://steamcommunity.com/sharedfiles/filedetails/?id=${id} to add a ` +
         "description, tags, and flip it to Public once you're ready.",
     );
   } else {
-    ok(`Updated Workshop item ${id}.`);
+    ok(`Updated Workshop item ${id} ('${pack.name}').`);
   }
 
   // meta.cpp's `timestamp` field is the Workshop item's manifest id (see
@@ -141,13 +147,13 @@ export async function publishServerPack(s: Settings): Promise<void> {
   let rebuilt: string | null = null;
   for (let attempt = 1; attempt <= 6; attempt++) {
     await new Promise<void>((resolve) => setTimeout(resolve, attempt === 1 ? 8_000 : 20_000));
-    rebuilt = await buildServerPack();
+    rebuilt = await buildServerPack(pack);
     const meta = await Deno.readTextFile(`${rebuilt}/meta.cpp`).catch(() => "");
     const m = /timestamp\s*=\s*(\d+)/.exec(meta);
     if (m && m[1] !== previousManifest) break;
     warn(`Steam hasn't reflected this upload's manifest yet (attempt ${attempt}/6) - retrying…`);
   }
-  const second = await upload(s, rebuilt!, id, firstPublish ? 2 : 0, previewFile);
+  const second = await upload(s, pack, rebuilt!, id, firstPublish ? 2 : 0, previewFile);
   if (second.code !== 0) {
     warn(
       "Re-upload with an up-to-date meta.cpp failed - run 'deno task publish-serverpack' " +
@@ -155,5 +161,5 @@ export async function publishServerPack(s: Settings): Promise<void> {
     );
     return;
   }
-  ok(`Re-uploaded Workshop item ${id} with an up-to-date meta.cpp.`);
+  ok(`Re-uploaded Workshop item ${id} ('${pack.name}') with an up-to-date meta.cpp.`);
 }

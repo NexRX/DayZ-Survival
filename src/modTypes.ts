@@ -44,6 +44,22 @@ import type { Mod } from "./mods.ts";
 // confirmed on a live install; the Animal_Horse_* creature types it does
 // NOT ship are instead added by wildlifeTerritories.ts, matching the exact
 // boilerplate every other vanilla Animal_* creature type already uses.
+// @BMM-Chemical-Zombie ships a root extra/types.xml with 3 skinning-
+// byproduct entries (BMM_ChimicalZombie_Head/Hand/Foot) - confirmed on a
+// live install; the creature classname itself (BMM_Chimical_Zombies) is NOT
+// in that file and is instead wired up by bmmChemicalZombie.ts, matching
+// the yuretskiy.ts pattern.
+// @TP-Apoc-SUV/@TP-Apoc-M1025/@TP-Apoc-Pickup each ship a real root
+// extras/*_types.xml (nominal=0 stubs for the vehicle body + every color
+// variant) - confirmed on a live install. Their own shipped Expansion-
+// trader JSON fragment (tp_apoc_m1025.json) confirms "Offroad_02_Wheel" as
+// the spare wheel part, i.e. Offroad_02 is the intended closest vanilla
+// counterpart - see vehicleSpawns.ts/fuelSystem.ts. @AnimatedDynamic
+// Helicopters ships a root extras/adh_types.xml, but it only contains smoke-
+// grenade/flare ammo types (Ammo_40mm_Smoke_AirStrike, M18SmokeGrenade_*) -
+// confirmed it adds crash/flight scripting to DayZ-Expansion's EXISTING
+// helicopter classnames rather than shipping any new vehicle of its own, so
+// no separate market/vehicle-trader wiring is needed for it.
 const MOD_TYPES_SOURCES = new Set([
   "@Windstride-Clothing",
   "@DayZ-Dog",
@@ -64,6 +80,15 @@ const MOD_TYPES_SOURCES = new Set([
   "@Alevarics-Clothing-Overhaul",
   "@UAZ-31514",
   "@DayZ-Horse",
+  "@BMM-Chemical-Zombie",
+  "@Survival-Clothing",
+  "@Survivor-Backpack",
+  "@Paragon-Storage",
+  "@Hunter-Bow",
+  "@TP-Apoc-SUV",
+  "@TP-Apoc-M1025",
+  "@TP-Apoc-Pickup",
+  "@AnimatedDynamicHelicopters",
 ]);
 
 const TYPE_BLOCK = /<type name="([^"]+)">[\s\S]*?<\/type>/g;

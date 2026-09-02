@@ -16,7 +16,7 @@
 // "world that fights back" philosophy - nights should be genuinely
 // threatening. Easy to change: just edit the constant below.
 //
-// Like difficulty.ts/scavenging.ts, this deliberately force-overwrites the
+// Like difficulty.ts, this deliberately force-overwrites the
 // field on every start rather than only setting it once, so it keeps
 // winning over the mod's own default (0, vanilla lighting) or any other
 // mod/update that might reset it. Trade-off: an admin who manually sets

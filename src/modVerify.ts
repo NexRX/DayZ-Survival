@@ -26,7 +26,7 @@
 // installed, other mods downloaded, mission/config generated) - if not, it
 // skips with a warning rather than trying to bootstrap a whole install here.
 
-import { PROFILE_DIR, SERVER_DIR, SERVERPACK_NAME } from "./paths.ts";
+import { PROFILE_DIR, SERVER_DIR, SERVERPACK, type ServerPackConfig } from "./paths.ts";
 import { die, log, ok, warn } from "./ui.ts";
 import { runCapture } from "./proc.ts";
 import { ensureServer, exists, serverBinary, serverInstalled } from "./steam.ts";
@@ -132,7 +132,10 @@ const isCrashLog = (name: string) => name.startsWith("crash_") && name.endsWith(
  * found, printing the actual offending log lines. No-ops with a warning if
  * this machine's server isn't installed/configured yet.
  */
-export async function verifyServerPackScripts(outRoot: string): Promise<void> {
+export async function verifyServerPackScripts(
+  outRoot: string,
+  pack: ServerPackConfig = SERVERPACK,
+): Promise<void> {
   const s = await ensureConfig(await loadSettings());
 
   if (
@@ -149,18 +152,44 @@ export async function verifyServerPackScripts(outRoot: string): Promise<void> {
     "Verifying the freshly built server pack actually compiles (booting the real server briefly)…",
   );
 
-  // Deliberately bypass install.ts's ensureMods() - see file header.
-  const dst = `${SERVER_DIR}/@${SERVERPACK_NAME}`;
+  // Deliberately bypass install.ts's ensureMods() - see file header. Reuses
+  // the same stage-locally-and-register-key logic this project's local-only
+  // packs use for real starts (see localServerPacks.ts) - for a pack that's
+  // already been through at least one real Workshop install, the key is
+  // already registered and this is a no-op; for a brand new, never-yet-
+  // published pack, nothing has ever copied its key into server/keys/ before,
+  // and a dedicated server given a -servermod=/-mod= entry signed with a
+  // completely unregistered key hangs indefinitely at startup with no RPT
+  // output and no crash log at all (confirmed live: 3 separate boots all
+  // stopped dead after only the fixed banner lines, vs. a normal boot which
+  // logs many more lines within the same second).
+  const dst = `${SERVER_DIR}/@${pack.name}`;
   await Deno.remove(dst, { recursive: true }).catch(() => {});
   const copy = await runCapture("cp", ["-r", outRoot, dst]);
   if (copy.code !== 0) {
     die(`Failed to stage the built server pack into ${dst} for verification:\n${copy.stderr}`);
   }
+  const serverKeyFile = `${SERVER_DIR}/keys/${pack.name}.bikey`;
+  if (!(await exists(serverKeyFile))) {
+    await Deno.mkdir(`${SERVER_DIR}/keys`, { recursive: true });
+    await Deno.copyFile(`${pack.keysDir}/${pack.name}.bikey`, serverKeyFile);
+    log(`Registered ${pack.name}'s signing key into ${SERVER_DIR}/keys/ for verification.`);
+  }
 
   await ensureServer(s);
   const allMods = await loadMods();
-  const mods = modParam(allMods);
-  const serverMods = serverModParam(allMods);
+  let mods = modParam(allMods);
+  let serverMods = serverModParam(allMods);
+  // A brand new pack (not published yet) won't be in mods.txt at all - it
+  // still needs to be included in the boot args so this verification run
+  // actually loads it (staged above at `dst`), since mods.txt is normally
+  // what maps a Workshop id to a local @name for downloading, not what this
+  // pre-publish check should depend on. Once the pack IS in mods.txt (after
+  // a real first publish), this is a no-op - the entry there is used as-is.
+  if (!allMods.some((m) => m.name === `@${pack.name}`)) {
+    if (pack.serverOnly) serverMods = serverMods ? `${serverMods};@${pack.name}` : `@${pack.name}`;
+    else mods = mods ? `${mods};@${pack.name}` : `@${pack.name}`;
+  }
   await Deno.mkdir(PROFILE_DIR, { recursive: true });
 
   const rptBefore = await currentLogNames(isRpt);

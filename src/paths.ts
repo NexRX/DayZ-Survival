@@ -52,6 +52,24 @@ export const MARKET_SETTINGS = `${MISSION_DIR}/expansion/settings/MarketSettings
 export const ECONOMY_TYPES_FILE = `${MISSION_DIR}/db/types.xml`;
 export const ECONOMY_EVENTS_FILE = `${MISSION_DIR}/db/events.xml`;
 
+// Weather pattern config, shipped as part of the mission itself (same
+// re-validation caveat as the economy files above - see weather.ts). Ships
+// disabled (enable="0") by default, meaning none of its own values do
+// anything until it's turned on.
+export const CFG_WEATHER_FILE = `${MISSION_DIR}/cfgweather.xml`;
+
+// Terje-Radiation self-generates this on first world load - confirmed on a
+// live server run. Ships with exactly one example zone (a
+// TerjeRadioactiveScriptableArea), disabled (Active=0) by default - see
+// hazards.ts.
+export const TERJE_SCRIPTABLE_AREAS =
+  `${PROFILE_DIR}/TerjeSettings/ScriptableAreas/ScriptableAreasSpawner.xml`;
+
+// No-Build-Zones self-generates this flat profile-root JSON on first world
+// load (per the mod's own Steam Workshop page - "Included in the 'Others'
+// folder", not a subfolder) - see noBuildZones.ts.
+export const NO_BUILD_ZONES_SETTINGS = `${PROFILE_DIR}/NoBuildZone.json`;
+
 // Fixed-position event spawn point registry, shipped as part of the mission
 // itself. "Herd"-type animal territories (Wolf/Deer/WildBoar/... and now
 // WildHorse) each need a matching self-closing <event name="..." /> stub
@@ -160,12 +178,6 @@ export const TERJE_START_SCREEN_CFG = `${PROFILE_DIR}/TerjeSettings/StartScreen.
 //   Player "Nex" (id=XZ3FQuGVspzzW43W9S3B5Bmm0NSRqFosQwmYTk5kdnY=) is connecting
 export const COT_PLAYERS_DIR = `${PROFILE_DIR}/PermissionsFramework/Players`;
 
-// Dynamic Scavenging (@Dynamic-Scavenging) self-generates this on first
-// world load - confirmed on a live server run. It's a single flat JSON file
-// mixing real settings with _xxxFieldName_info documentation keys.
-export const DYNAMIC_SCAVENGING_SETTINGS =
-  `${PROFILE_DIR}/DynamicScavenging/DynamicScavenging.json`;
-
 // Vehicle3PP (@Vehicle3PP) self-generates this flat classname whitelist on
 // first world load - confirmed on a live server run. Ships with only 5
 // vanilla classnames; any modded vehicle not listed here doesn't get
@@ -179,6 +191,26 @@ export const VEHICLE_3PP_WHITELIST = `${PROFILE_DIR}/3PPVehicleWhitelist.json`;
 // the mod's preset values). See lighting.ts.
 export const CFG_GAMEPLAY_FILE = `${MISSION_DIR}/cfggameplay.json`;
 
+// Knock Knock Zombies (@Knock-Knock-Zombies) self-generates this on first
+// world load - confirmed on a live server run (default chanceToSpawn 15,
+// maxZombiePerEvent 1). See aiWorldEvents.ts.
+export const KNOCK_KNOCK_ZOMBIES_SETTINGS =
+  `${PROFILE_DIR}/KnockKnockZombies/KnockKnockZombies_Settings.json`;
+
+// Airborne AI (@Airborne-AI) self-generates this on first world load -
+// confirmed on a live server run. See aiWorldEvents.ts.
+export const AIRBORNE_AI_SETTINGS = `${PROFILE_DIR}/AirborneAI/AirborneAI_Settings.json`;
+
+// AI War Zones (@Ai-Warzone) self-generates this on first world load, with
+// 3 example zones (Berezino/Vybor/Krasnostav PD) already pre-populated -
+// confirmed on a live server run. See aiWorldEvents.ts.
+export const AI_WARZONES_SETTINGS = `${PROFILE_DIR}/AIWarZones/AIWarZones_Settings.json`;
+
+// hSF Zombie Horde Event (@hSF-Zombie-Horde-Event) self-generates these on
+// first world load - confirmed on a live server run. See aiWorldEvents.ts.
+export const ZOMBIE_HORDE_GENERAL_SETTINGS =
+  `${PROFILE_DIR}/ZombieHorde/Settings/GeneralSettings.json`;
+
 // Fuel-System (@Fuel-System) self-generates this on first world load -
 // confirmed on a live server run. Matches vehicle fuel type/consumption by
 // classname, and the mod's own Steam page confirms `type` "can be a base
@@ -186,24 +218,92 @@ export const CFG_GAMEPLAY_FILE = `${MISSION_DIR}/cfggameplay.json`;
 // fuelSystem.ts.
 export const FUEL_SYSTEM_VEHICLES = `${PROFILE_DIR}/iTzMods/FuelSystem/vehicles.xml`;
 
-// This project's own custom DayZ addons, bundled into a single Workshop
-// mod ("server pack") so there's only ever one Workshop item to maintain -
-// built/signed with armake2 rather than Windows DayZ Tools (see
-// src/modBuild.ts). Each immediate subdirectory of SERVERPACK_ADDONS_DIR
-// containing a config.cpp becomes its own PBO inside the one mod; adding a
-// new addon needs no build-tooling changes, just a new folder there.
-export const SERVERPACK_DIR = `${ROOT}/serverpack`;
-export const SERVERPACK_ADDONS_DIR = `${SERVERPACK_DIR}/addons`;
-// Must match the CfgMods class name / `dir` in serverpack/mod.cpp.
-export const SERVERPACK_NAME = "DZSurvivalServerPack";
-export const SERVERPACK_WORKSHOP_ID_FILE = `${SERVERPACK_DIR}/.workshop_id`;
+// This project's own custom DayZ addons, bundled into Workshop mods
+// ("server packs") - built/signed with armake2 rather than Windows DayZ
+// Tools (see src/modBuild.ts). Each immediate subdirectory of a pack's
+// addonsDir containing a config.cpp becomes its own PBO inside that pack;
+// adding a new addon needs no build-tooling changes, just a new folder
+// there.
+//
+// Two packs exist, split by whether an addon has ANY client-visible/
+// client-required behavior (UI, self-actions, board interactions, input
+// overrides):
+//   - SERVERPACK ( DZSurvivalServerPack) - loaded via -mod= (players must
+//     download it). Holds DZSurvivalFindStone (hold-action UI),
+//     DZSurvivalMapGate (overrides the client's own M-key handler), and
+//     DZSurvivalTraderRestock (the board's ActionCheckTraderBoard is a
+//     player-facing proximity action).
+//   - SERVERPACK_SERVERONLY (DZSurvivalServerOnly) - LOCAL ONLY, never
+//     published to Steam Workshop at all (see localServerPacks.ts's
+//     ensureLocalServerPack() - staged directly into the server's own mod
+//     folder and loaded via -servermod= on every start, so nobody -
+//     including this server itself - ever needs to download it). Holds
+//     DZSurvivalBaseDecay, which only hooks *Server()/OnStartServer-suffixed
+//     methods and adds no new client-visible action/UI/board of its own -
+//     confirmed safe to keep off the client entirely.
+export interface ServerPackConfig {
+  /** Must match the CfgMods class name / `dir` in this pack's mod.cpp. */
+  name: string;
+  /** Source dir - contains addons/, mod.cpp, .workshop_id, preview.png. */
+  dir: string;
+  addonsDir: string;
+  /** Generated, machine-local, never committed: this pack's own armake2 signing keypair. */
+  keysDir: string;
+  /** Generated, machine-local, never committed: this pack's assembled @<name>/ PBO build output. */
+  buildDir: string;
+  workshopIdFile: string;
+  /** meta.cpp's `name` field / this pack's Workshop item title. */
+  displayName: string;
+  /** Whether this pack is meant to be loaded via -servermod= (mods.txt's "server" column). */
+  serverOnly: boolean;
+  /** True if this pack is never published to Steam Workshop at all (see localServerPacks.ts). */
+  localOnly: boolean;
+}
 
-// Generated, machine-local, and never committed: the server pack's shared
-// armake2 signing keypair and its assembled @<SERVERPACK_NAME>/ PBO build
-// output, ready to be published or symlinked into a local test server's mod
-// path.
-export const SERVERPACK_KEYS_DIR = `${ROOT}/.serverpack-keys`;
-export const SERVERPACK_BUILD_DIR = `${ROOT}/.serverpack-build`;
+function serverPackConfig(opts: {
+  name: string;
+  dirName: string;
+  keysDirName: string;
+  buildDirName: string;
+  displayName: string;
+  serverOnly: boolean;
+  localOnly: boolean;
+}): ServerPackConfig {
+  const dir = `${ROOT}/${opts.dirName}`;
+  return {
+    name: opts.name,
+    dir,
+    addonsDir: `${dir}/addons`,
+    keysDir: `${ROOT}/${opts.keysDirName}`,
+    buildDir: `${ROOT}/${opts.buildDirName}`,
+    workshopIdFile: `${dir}/.workshop_id`,
+    displayName: opts.displayName,
+    serverOnly: opts.serverOnly,
+    localOnly: opts.localOnly,
+  };
+}
+
+export const SERVERPACK: ServerPackConfig = serverPackConfig({
+  name: "DZSurvivalServerPack",
+  dirName: "serverpack",
+  keysDirName: ".serverpack-keys",
+  buildDirName: ".serverpack-build",
+  displayName: "DayZ Survival - Server Pack",
+  serverOnly: false,
+  localOnly: false,
+});
+
+export const SERVERPACK_SERVERONLY: ServerPackConfig = serverPackConfig({
+  name: "DZSurvivalServerOnly",
+  dirName: "serverpack-serveronly",
+  keysDirName: ".serverpack-serveronly-keys",
+  buildDirName: ".serverpack-serveronly-build",
+  displayName: "DayZ Survival - Server-Only Pack",
+  serverOnly: true,
+  localOnly: true,
+});
+
+export const SERVER_PACKS: ServerPackConfig[] = [SERVERPACK, SERVERPACK_SERVERONLY];
 
 // DayZ-Editor (the offline client-side building tool) saves its .dze files
 // here, inside the client's Proton prefix - confirmed by locating an actual

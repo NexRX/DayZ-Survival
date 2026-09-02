@@ -1,7 +1,13 @@
 // Downloading workshop mods (via DepotDownloader) and installing them + their
 // signing keys into the server directory.
 
-import { DAYZ_CLIENT_APPID, SERVER_DIR, SERVERPACK_NAME, WORKSHOP_SUBPATH } from "./paths.ts";
+import {
+  DAYZ_CLIENT_APPID,
+  PROFILE_DIR,
+  SERVER_DIR,
+  SERVER_PACKS,
+  WORKSHOP_SUBPATH,
+} from "./paths.ts";
 import { die, log, ok, warn } from "./ui.ts";
 import { requireTools, runCapture } from "./proc.ts";
 import {
@@ -80,7 +86,7 @@ export async function installOneMod(
   // consistent casing throughout, so it doesn't need the Linux-compatibility
   // lowercase pass at all - but it still gets copied like every other mod
   // (never symlinked), so it's installed identically to everything else.
-  const skipLowercase = mod.name === `@${SERVERPACK_NAME}`;
+  const skipLowercase = SERVER_PACKS.some((p) => mod.name === `@${p.name}`);
   if (lowercase) {
     await runCapture("cp", ["-a", src, dst]);
     if (!skipLowercase) await lowercaseTree(dst);
@@ -198,18 +204,48 @@ export async function downloadOne(
  * than what we last validated (see `localManifestId`) - a single, login-free
  * Web API call, so this is cheap enough to run on every `up`/`mods`
  * invocation. Anything not yet downloaded, or where the check itself fails
- * (offline, API hiccup), is left out rather than forced.
+ * (offline, API hiccup), is left out rather than forced. Keyed by mod id;
+ * values carry the old/new content ids so callers can log what changed.
  */
-async function staleModIds(mods: Mod[]): Promise<Set<string>> {
+async function staleModIds(mods: Mod[]): Promise<Map<string, { ours: string; theirs: string }>> {
   const remote = await fetchContentIds(mods);
-  const stale = new Set<string>();
+  const stale = new Map<string, { ours: string; theirs: string }>();
   for (const mod of mods) {
     const theirs = remote.get(mod.id);
     if (!theirs) continue; // API didn't return this one - don't guess
     const ours = await localManifestId(mod.id);
-    if (ours && ours !== theirs) stale.add(mod.id);
+    if (ours && ours !== theirs) stale.set(mod.id, { ours, theirs });
   }
   return stale;
+}
+
+// A persistent, append-only record of every auto-update `ensureMods`/`doMods`
+// has ever silently applied (by design, this project never prompts before
+// re-validating an updated mod - see doMods/ensureMods below) - previously
+// there was no way to tell what changed or when after the fact. Logged once,
+// from `doMods` only (not `staleModIds`'s other caller, `ensureMods`'s
+// pre-check), since `ensureMods` always re-runs `doMods` - which recomputes
+// staleness itself - whenever it finds anything stale, so logging in both
+// places would double up every entry.
+const MOD_UPDATE_LOG = `${PROFILE_DIR}/mod-updates.log`;
+
+async function logModUpdates(
+  mods: Mod[],
+  stale: Map<string, { ours: string; theirs: string }>,
+): Promise<void> {
+  if (stale.size === 0) return;
+  const lines: string[] = [];
+  for (const mod of mods) {
+    const info = stale.get(mod.id);
+    if (!info) continue;
+    lines.push(
+      `${new Date().toISOString()}  ${mod.name} (${mod.id})  ${info.ours} -> ${info.theirs}`,
+    );
+  }
+  if (lines.length === 0) return;
+  await Deno.writeTextFile(MOD_UPDATE_LOG, lines.join("\n") + "\n", { append: true }).catch(
+    () => {},
+  );
 }
 
 /**
@@ -224,7 +260,8 @@ export async function doMods(s: Settings, extraRefreshIds?: Set<string>): Promis
   const mods = await loadMods();
 
   const stale = await staleModIds(mods);
-  const refresh = new Set([...(extraRefreshIds ?? []), ...stale]);
+  await logModUpdates(mods, stale);
+  const refresh = new Set([...(extraRefreshIds ?? []), ...stale.keys()]);
   if (stale.size > 0) {
     log(`${stale.size} mod(s) updated on Steam since last check - will re-validate.`);
   }
@@ -271,5 +308,5 @@ export async function ensureMods(s: Settings): Promise<void> {
   log(
     `${stale.size} mod(s) have been updated on Steam since we last checked — re-validating…`,
   );
-  await doMods(s, stale);
+  await doMods(s, new Set(stale.keys()));
 }

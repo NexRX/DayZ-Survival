@@ -67,6 +67,12 @@
 2572328470  @DayZ-Expansion-Market
 2792982069  @DayZ-Expansion-AI
 
+# Zens ExpansionAI Audio: ambient audio/voice/footstep cues layered onto the
+# DayZ-Expansion-AI patrols above - same author as Zens-Repairable-Wells/
+# Zens-Zippo-Lighter/Zens-COT-Plus-Fix (all already trusted here). Live
+# verification tracked in TESTS.md.
+3321340470  @Zens-ExpansionAI-Audio
+
 # --- Terje suite (Core first; Skills before Medicine, since Medicine's
 # Immunity/Medicine skills require it; Compatibility-COT needs Terje-Core +
 # Community-Online-Tools, both already above) ---
@@ -103,6 +109,64 @@
 2990236173  @InediaStamina
 1866298408  @CreepyZombies
 3628006769  @AI-Bandits
+2394804821  @Zombie-Sound
+3499461862  @Knock-Knock-Zombies
+3510772253  @BMM-Chemical-Zombie
+
+# Custom Zombies - The Astronaut, The Butcher & The Zombie Bear
+# (OldGuyFrags, id 3557687387). 3 custom zombie models. Has 2 live bug
+# reports on its own Comments tab: "astronauts are invincible" (6 Nov 2025)
+# and "Client has pbo that is not part of the server" (25 Oct 2025) -
+# neither was ever directly acknowledged by the author. A later "Fixed"
+# reply (8 Dec 2025) appears (by comment ordering/reply nesting) to address
+# a DIFFERENT report - a mod-not-loading/folder-naming issue from "Tempest"
+# (7 Dec 2025) - not either of the two above, so treat both as UNCONFIRMED
+# either way. Project owner wants to playtest live regardless - see
+# TESTS.md for what to check. Real classnames confirmed via the author's
+# own comment (5 Jan): TCHCAI_TheAstronaut_Zombie_1/_2, TCHC_TheButcher_Zombie,
+# TCHC_ZombieBear.
+3557687387  @Custom-Zombies
+
+# InediaTerjeCompatibility: rebalances several Terje-Skills perks (HeavyWeight,
+# StrongBones, HeavyAttacksForce, ExperiencedHunter, KnowledgeAnatomy) that
+# otherwise stack with InediaStamina/InediaPain/InediaMovement/InediaInfectedAI
+# to trivialize weight/stamina/fracture mechanics. Author's own load-order
+# guidance: doesn't matter relative to the other mods above.
+3471553607  @InediaTerjeCompatibility
+
+# --- Additional AI events, layered on top of the zombie/bandit AI above -
+# a mobile convoy patrol, airborne troop insertions, a broader "warzone"
+# density mod (capped to maxConcurrentZones=2 via src/aiWorldEvents.ts for
+# FPS safety), and an occasional zombie-horde event (its SafeZones config
+# is patched via src/aiWorldEvents.ts to exclude the trader city). Live
+# verification (overlap with @AirRaid/@AI-Bandits, FPS impact, point-blank
+# horde spawns) tracked in TESTS.md. ---
+3767913539  @Moving-AI-Convoy
+
+# Admiral's Parachute Mod: hard requirement of @Airborne-AI below (confirmed via
+# its own Steam page - "Yes you need Admirals Parachute Mod"; without it the
+# whole World script module fails to compile at all - ADM_ParachuteBag_Base
+# is undefined - and the server can't start). Must load before Airborne-AI.
+2912241382  @Admirals-Parachute-Mod
+3472298147  @Airborne-AI
+3521304609  @Ai-Warzone
+3689174025  @hSF-Zombie-Horde-Event
+
+# Sector 31 - Dynamic Hordes: persistent, roaming (not one-off event) infected
+# hordes that travel between weighted POIs, react to gunfire/explosions/
+# engine noise, and hunt players - distinct from the one-shot hSF-Zombie-
+# Horde-Event above. 100% server-side (confirmed via Steam Web API
+# GetPublishedFileDetails: result=1, banned=0, visibility=0/public - its own
+# Community page renders a stale "removed for guideline violation" banner
+# alongside live comments/stats, which is misleading; the API is
+# authoritative and says it's live). Self-generates Settings.json and
+# Maps/dayzOffline.chernarusplus.json in the profile folder on first start
+# with a built-in Chernarus waypoint network, so no manual waypoint setup is
+# needed. The "move PBO from optional to addons" step in its own
+# instructions is Namalsk-only and doesn't apply to our Chernarus mission.
+# Live verification (actual horde spawns/roaming, FPS impact, overlap with
+# the other AI/zombie mods above) tracked in TESTS.md.
+3777397357  @Sector31-DynamicHordes       server
 
 # --- Vehicles ---
 3160244059  @UAZ-31514
@@ -113,10 +177,27 @@
 2048694610  @JunkYardDog
 3533929661  @Fuel-System
 
+# --- "Apocalypse" styled vehicles (same theme as the MBM trucks above) and
+# a helicopter mod. TP-Apoc-SUV/M1025/Pickup are fully wired: typed via
+# modTypes.ts, fueled via fuelSystem.ts, 3rd-person-whitelisted via
+# vehicle3pp.ts, priced/stocked at the Vehicle Dealer via
+# src/data/marketGapFill.json (SUV=Rare, Pickup=Uncommon, the armed M1025
+# Humvee=Legendary/trader-only by design), and SUV+Pickup (not the M1025 -
+# see vehicleSpawns.ts's own comment) also world-spawn on the vanilla
+# VehicleOffroad02 event. AnimatedDynamicHelicopters only adds crash/flight
+# scripting to DayZ-Expansion's EXISTING helicopters (confirmed: its own
+# types.xml ships zero new vehicle classnames, just smoke-grenade ammo) -
+# no separate market wiring needed for it. ---
+3738839427  @TP-Apoc-SUV
+3737385977  @TP-Apoc-M1025
+3738834788  @TP-Apoc-Pickup
+3382463948  @AnimatedDynamicHelicopters
+
 # --- Animals/creatures ---
 2959526520  @DayZ-Raven
 3295021220  @DayZ-Horse
 2901480106  @Yuretskiy-Creatures
+3693114761  @Necromutant
 2950280649  @DayZ-Rat
 2471347750  @DayZ-Dog
 
@@ -130,6 +211,11 @@
 1646187754  @Code-Lock
 3647777793  @Peek-Doors
 2860643107  @BoomLays-Things
+3010267444  @Paragon-Storage
+
+# --- No-Build-Zones: blocks construction around high-value/high-loot spots
+# (currently just NWAF - see src/noBuildZones.ts and TODO.md item 10/11) ---
+2371483403  @No-Build-Zones
 
 # --- Weapons/equipment ---
 2449234595  @Mag-Obfuscation
@@ -139,15 +225,28 @@
 3149798901  @MoreMaterials
 3311720441  @Gas-Mask-Overhaul
 2891614133  @Hardcore-Backpack
+2926289548  @Survivor-Backpack
+3571068454  @Optics
+3464752232  @Hunter-Bow
+# TGK-WeaponPack (~280 Russian-special-forces-themed weapons/attachments/
+# melee items, aka "SOBR"/"SM_" pack) is fully wired: typed via
+# tgkWeaponPack.ts as nominal=0 trader-only stubs (never spawn in the
+# world, same pattern as @Optics - see that file's own comment) and priced/
+# stocked via src/data/marketGapFill.json - ammo/boxes/crates into Gun_Ammo
+# (Common/Uncommon/Rare), magazines/furniture/optics/suppressors into
+# Gun_Attachments_Military (Uncommon, Rare for suppressors specifically),
+# melee into Tools_And_Melee (Rare), and the guns themselves into
+# Guns_Military split Rare (standard rifles/SMGs/shotguns/pistols) vs
+# Legendary (heavy MGs, dedicated sniper rifles, the 40mm grenade
+# launcher).
+3444350187  @TGK-WeaponPack
 
 # --- Clothing ---
 1797720064  @Windstride-Clothing
 3354931239  @Alevarics-Clothing-Overhaul
+3311622303  @Survival-Clothing
 
-# --- Economy (Euros-Only + MoreMoney are a matched pair: currency skin +
-# loot-amount tuning, not competing systems) ---
-2859892388  @CJ187-Money-Euros-Only
-2018887948  @CJ187-MoreMoney
+# --- Economy ---
 3728619225  @P2P-Trading-Board
 
 # --- Food/survival mechanics ---
@@ -163,6 +262,7 @@
 # release.
 3263494703  @Search-For-Charcoal
 3237950572  @Old-Food
+3498006019  @Zens-Fire-Sticks
 
 # NOTE: @Keep-It-Dead-ProjectBR (3417831913) was removed here. Its
 # corpse-to-zombie conversion feature (SpawnZombieOnPlayersDeath) fires for
@@ -188,16 +288,6 @@
 # "TODO verify" notes if anything fails to compile. ---
 3789404408  @DZSurvivalServerPack
 
-# --- Loot mechanics: object scavenging (search furniture/wrecks/garbage for
-# extra loot; entirely separate from the vanilla nominal-based economy - it
-# doesn't touch types.xml/CE at all, it's an additive layer on top. Ships
-# with its own weighted-loot JSON (ServerConfig.json, self-generated on first
-# run) that needs tuning so this doesn't make the world's overall loot too
-# generous on top of everything already spawning via types.xml - see
-# TODO.md). Required on BOTH server and client, unlike most other additions
-# here. ---
-3682329748  @Dynamic-Scavenging
-
 # --- Environment/atmosphere/events ---
 3012019528  @Lads-Lighting-Overhaul
 2536780687  @SkyZ-Skybox-Overhaul
@@ -205,6 +295,9 @@
 2065443797  @AirRaid
 2975514806  @CJ187-RandomMineFields
 2002754349  @HeliWreckNoLoot
+3788476225  @Zens-Shooting-Stars
+3726714048  @IronhordeLighting
+3659550946  @Signal-Overnight-Stay
 
 # --- Misc/QoL ---
 3690267695  @Admirals-Advanced-Hologram-Mod

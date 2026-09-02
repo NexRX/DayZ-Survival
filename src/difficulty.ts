@@ -84,6 +84,25 @@ export async function tuneAIDifficulty(): Promise<void> {
 // Each Group/Point/Location/Audio entry carries its own accuracy + trigger
 // chance, so unlike AISettings.json there's no single global knob — we raise
 // every entry's floor instead of guessing at one number for all of them.
+//
+// `Group` entries are the one type that spawns purely based on proximity to
+// *any* player, anywhere on the map (see spatial.ts) - governed globally by
+// `HuntMode`/`MinDistance`/`MaxDistance`/`Spatial_MinTimer`/
+// `Spatial_MaxTimer`/`CleanupTimer` below, not per-entry. Per the mod's own
+// docs (server/@DayZ-Dynamic-AI-Addon/files/spatialsettings
+// descriptions.txt), `HuntMode: 1` already means "ai pathing/aggression
+// setting: hunt player aggressively" and ships as the mod's own default -
+// so TODO.md item 9 ("a player is constantly hunted by AI, even in the
+// wilderness, every hour or two, not point-blank/unfair") turns out to
+// already be *mostly* covered out of the box: confirmed on a live install,
+// `Spatial_MinTimer`/`MaxTimer` (20-40 real-world minutes between
+// encounters) and `MinDistance`/`MaxDistance` (140-220m spawn distance -
+// never point-blank) already satisfy the letter of the ask. The one gap:
+// `CleanupTimer` (how long a spawned hunting group survives before being
+// despawned) shipped at just 6 minutes - barely enough time for a
+// `HuntMode: 1` group to actually close the distance and threaten the
+// player before vanishing. Floored below so a hunt has time to actually
+// happen.
 interface SpatialEntry {
   Spatial_MinAccuracy?: number;
   Spatial_MaxAccuracy?: number;
@@ -96,12 +115,20 @@ interface SpatialSettings {
   Point?: SpatialEntry[];
   Location?: SpatialEntry[];
   Audio?: SpatialEntry[];
+  HuntMode?: number;
+  MinDistance?: number;
+  CleanupTimer?: number;
   [key: string]: unknown;
 }
 
 const SPATIAL_ACCURACY_MIN_FLOOR = 0.35;
 const SPATIAL_ACCURACY_MAX_FLOOR = 0.75;
 const SPATIAL_CHANCE_FLOOR = 0.65; // when an encounter triggers, it should usually happen
+
+// Global ambient-hunting knobs - see the comment above.
+const SPATIAL_HUNT_MODE = 1; // "hunt player aggressively" - re-asserted in case a future update resets it
+const SPATIAL_MIN_DISTANCE_FLOOR = 140; // never spawn closer than this - no unfair point-blank ambushes
+const SPATIAL_CLEANUP_TIMER_FLOOR = 20; // minutes - give a hunt group time to actually close in
 
 function raiseSpatialFloors(entry: SpatialEntry): boolean {
   let changed = false;
@@ -132,6 +159,19 @@ export async function tuneSpatialAIDifficulty(): Promise<void> {
     for (const entry of list ?? []) {
       if (raiseSpatialFloors(entry)) changed = true;
     }
+  }
+
+  if (settings.HuntMode !== SPATIAL_HUNT_MODE) {
+    settings.HuntMode = SPATIAL_HUNT_MODE;
+    changed = true;
+  }
+  if ((settings.MinDistance ?? 0) < SPATIAL_MIN_DISTANCE_FLOOR) {
+    settings.MinDistance = SPATIAL_MIN_DISTANCE_FLOOR;
+    changed = true;
+  }
+  if ((settings.CleanupTimer ?? 0) < SPATIAL_CLEANUP_TIMER_FLOOR) {
+    settings.CleanupTimer = SPATIAL_CLEANUP_TIMER_FLOOR;
+    changed = true;
   }
 
   if (!changed) return;

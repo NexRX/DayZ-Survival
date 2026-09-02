@@ -256,7 +256,9 @@ export async function auditMarket(): Promise<void> {
     warn(`${bucketA.length} likely-missing sellable item(s) - see ${REPORT_FILE} (Bucket A)`);
   }
   if (bucketC.length > 0) {
-    warn(`${bucketC.length} price/stock anomaly(ies) on existing items - see ${REPORT_FILE} (Bucket C)`);
+    warn(
+      `${bucketC.length} price/stock anomaly(ies) on existing items - see ${REPORT_FILE} (Bucket C)`,
+    );
   }
   ok(`Full report written to ${REPORT_FILE}`);
 }

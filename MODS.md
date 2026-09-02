@@ -51,6 +51,14 @@ A few notes on choices made while porting that list over:
   are complementary to, not replacements for, the roaming human patrols from
   `DayZ-Expansion-AI` described below - they add infected behavior and extra
   standalone bandit spawns on top.
+- **`InediaTerjeCompatibility`** patches several `Terje-Skills` perks
+  (`Strength -> HeavyWeight`, `Athletic -> StrongBones`,
+  `Strength -> HeavyAttacksForce`, `Hunting -> ExperiencedHunter`/
+  `KnowledgeAnatomy`) that otherwise stack with `InediaStamina`/`InediaPain`/
+  `InediaMovement`/`InediaInfectedAI` to make weight, stamina, fracture
+  chance, and hunting/melee damage bonuses nearly meaningless at high skill
+  levels. Same author as the `Inedia*` mods; load order doesn't matter per
+  the author's own guidance.
 - **`GameLabs` was deliberately left out**, even though it sits next to the
   `s`-suite (`sFramework`/`sGunplay`/`sVisual`) on some server lists. It's
   unrelated to those - it's CFTools Cloud's own reporting/anti-cheat plugin,
@@ -132,19 +140,33 @@ Five were left out, for concrete reasons rather than just "already have it":
   workshop ID in `mods.txt` like every other mod here, so it doesn't affect
   us, but don't fold their actual `.pbo`s into some other redistributable.
 
-## This project's own custom content ([`serverpack/`](serverpack/))
+## This project's own custom content ([`serverpack/`](serverpack/), [`serverpack-serveronly/`](serverpack-serveronly/))
 
 `3789404408  @DZSurvivalServerPack` in `mods.txt` (Loot mechanics section)
 is **our own** mod, not a third-party one - a single Workshop item bundling
-every from-scratch addon this project writes itself, built/signed on Linux
-with armake2 (no Windows/DayZ Tools needed - see `serverpack/README.md` and
+every from-scratch addon this project writes itself that has ANY
+client-visible/client-required behavior (UI, self-actions, board
+interactions, input overrides), built/signed on Linux with armake2 (no
+Windows/DayZ Tools needed - see `serverpack/README.md` and
 `src/modBuild.ts`/`src/modPublish.ts`). Adding a new addon to it is just a
 new `serverpack/addons/<Name>/` folder plus `deno task publish-serverpack`
 
 - it updates the same Workshop item, so there's only ever one entry to
   maintain in `mods.txt`.
 
-Currently ships two addons:
+A second, separate pack lives at `serverpack-serveronly/` and is
+**deliberately never published to Steam Workshop at all** - it's built and
+signed locally, then staged directly into the running server's own mod
+folder (and loaded via `-servermod=`) on every single start, so nobody -
+not even this server itself - ever downloads it (see
+`src/localServerPacks.ts`'s `ensureLocalServerPack()`, called from
+`src/server.ts`'s `doStart()`). It only ever holds addons confirmed to have
+**zero** client-visible behavior at all - currently just
+`DZSurvivalBaseDecay` (see below). `deno task build-serverpack-serveronly`/
+`verify-serverpack-serveronly` exist for manually building/testing it; there
+is intentionally no `publish-serverpack-serveronly` task.
+
+Currently `serverpack/` ships:
 
 - **`DZSurvivalFindStone`** - a hold-to-search action that lets players
   reliably find a `Stone` while standing on gravel/dirt/rail-ballast
@@ -161,6 +183,24 @@ Currently ships two addons:
   one alone). Overrides vanilla's own `MissionGameplay`; needs
   `src/mapAccess.ts`'s `tuneMapAccess()` (see below) to also be applied.
   See `serverpack/README.md` for the full trace of how this was found.
+
+- **`DZSurvivalTraderRestock`** - real-time scheduled restocking for the
+  custom trader city, plus a physical in-game board (`ActionCheckTraderBoard`)
+  players can look at to see live stock/next-restock status, and admin-only
+  Community-Online-Tools commands (`/restock now`, `/restock reset`). See
+  `serverpack/README.md`'s "Current addons" section for the full design.
+
+`serverpack-serveronly/` ships:
+
+- **`DZSurvivalBaseDecay`** - force-unlocks (and thus frees up) any
+  `Code-Lock`-secured base that's gone 30 days without any real
+  owner/guest activity (opening, entering a code, claiming/changing a
+  passcode) - purely server-side bookkeeping with no new client-visible
+  action/UI of its own, which is exactly why it lives in the local-only
+  pack instead of `serverpack/`. See `serverpack/README.md`'s "Current
+  addons" section for the full design (its addon folder physically moved
+  there, but the writeup stayed in one place to keep this project's
+  addon history in a single document).
 
 See `serverpack/README.md` for full build/publish details and lessons
 learned.
@@ -210,11 +250,11 @@ the real start). The priming server's own console output is saved to
 - `Quiver` / `Nail-Gun` / `Gas-Mask-Overhaul` - each page mentions an
   "example types file" for their items
 - `MBM-ApocalypseTruck` / `MBM-ApocalypticPAZ` - each page states the mod
-  ships a `types.xml` in its mod folder (still needs manual `events.xml`
-  spawn points to actually appear in the world - see `TODO.md`)
+  ships a `types.xml` in its mod folder (world spawn points now handled by
+  `src/vehicleSpawns.ts` - see below)
 - `UAZ-31514` - ships a types file too (confirmed on a live install); same
-  `events.xml` spawn-point caveat as the MBM trucks above applies (both are
-  `<nominal>0</nominal>`, so admin/event-spawn-only by design)
+  world-spawn handling as the MBM trucks above (both shipped
+  `<nominal>0</nominal>`, admin/event-spawn-only, until `vehicleSpawns.ts`)
 - `DayZ-Horse` - ships a real root `types.xml` (Saddle/Bridle/HorseBags/
   HorseSteakMeat/HorsePelt/Stable_dayz(_kit)) - confirmed on a live install.
   Its wildlife/territory setup (world spawn, `Animal_Horse_*` creature
@@ -288,7 +328,12 @@ default to disabled), `Custom-Keycards` (aside from door placement above).
   fire real ammunition through normal engine ballistics, so "no bullet
   sponges" is automatic in both directions. Per-map example configs still
   live in `@AI Bandits/Doc` if you want to hand-place patrol routes/waypoints
-  instead of the auto-generated default.
+  instead of the auto-generated default. [`src/aiBanditsDensity.ts`](src/aiBanditsDensity.ts)
+  (`ensureAIBanditsDensity()`) additively merges the mod's own
+  Chernarus-specific example patrol set (6 real routes: NWAF x2, Tisy x2,
+  Petrovka, Severograd - copied into [`ai/AIBanditsDynamic.json`](ai/AIBanditsDynamic.json))
+  into that self-generated default, since it otherwise ships with just one
+  generic example patrol.
 - `Terje-Start-Screen` - self-generates
   `profiles/TerjeSettings/StartScreen/{Loadouts,Respawns}.xml` from the mod's
   template. The CLI removes the "multiselect" demo loadout (trades all
@@ -336,9 +381,25 @@ default to disabled), `Custom-Keycards` (aside from door placement above).
   `OffroadHatchback`/`Hatchback_02`/`Sedan_02` type templates verbatim.
   Olga 24 is excluded (author-confirmed broken/WIP). All ship with
   `<nominal>0</nominal>`, same as `UAZ-31514`/MBM trucks - typed and
-  trader/admin-spawnable, but real in-world population still needs
-  `events.xml`/`cfgeventspawns.xml` entries with chosen map coordinates,
-  tracked in the world-crafting checklist.
+  trader/admin-spawnable; real in-world population is handled next by
+  `vehicleSpawns.ts`.
+- [`src/vehicleSpawns.ts`](src/vehicleSpawns.ts)
+  (`ensureCustomVehicleSpawns()`) - actually places `UAZ-31514`, both MBM
+  trucks, and every `MoreCars` body variant (25 total; spare parts don't
+  need this, they're loot items) into the live world. Rather than
+  hand-picking ~165 brand new Chernarus coordinates blind, each vehicle is
+  added as an extra `<child>` of the closest matching _existing_ vanilla
+  vehicle event in `db/events.xml` (`UAZ-31514` and the Ada 4x4 reskins
+  under `VehicleOffroadHatchback`, Gunter2 under `VehicleHatchback02`,
+  Sarka 120 under `VehicleSedan02`, both MBM trucks under
+  `VehicleTruck01`) - reusing that event's own already-shipped,
+  already-safe, already-on-road `<pos>` list in `cfgeventspawns.xml`
+  completely untouched, the same "closest vanilla counterpart" mapping
+  `fuelSystem.ts` already uses. Each event's own `nominal`/`min`/`max` gets
+  a modest one-time bump (not 1:1 per new variant) so the added variety
+  doesn't just cannibalize the existing vanilla population's spawn budget -
+  kept deliberately small per this project's hardcore-scarcity design. See
+  `TESTS.md` for the live spawn-rate sanity check this still needs.
 - [`src/fuelSystem.ts`](src/fuelSystem.ts) (`ensureFuelSystemVehicles()`) -
   `Fuel-System` self-generates `profiles/iTzMods/FuelSystem/vehicles.xml`
   with only vanilla base-class fuel/consumption entries. The mod's own docs
@@ -351,18 +412,55 @@ default to disabled), `Custom-Keycards` (aside from door placement above).
   reusing the exact fuel type/consumption already shipped for each one's
   closest vanilla counterpart - a safety net that bypasses any
   inheritance-matching bug entirely.
-- [`src/scavenging.ts`](src/scavenging.ts) (`tuneDynamicScavenging()`) -
-  forces `searchWhileCombat: 0` in
-  `profiles/DynamicScavenging/DynamicScavenging.json`, enforcing the mod's
-  documented 10s post-damage search lockout (matches "a world that fights
-  back"), and tightens loot generosity to match "hunt/scavenge, don't just
-  loot buildings": `baseFindChance` 0.95 -> 0.65 (a search is a real gamble,
-  not a formality), `diminishingFactor` 0.95 -> 0.5 (restores the mod's own
-  documented "95% -> 47% -> 24%" steep decline on repeat searches), and
-  `enableBuildingExhaustion` 0 -> 1 (a whole building goes "exhausted" after
-  enough furniture searches, rather than every container being
-  independently farmable forever). Everything else (search duration,
-  per-object exhaustion cap, junk/jackpot rates) is left as shipped.
+- **TP-Apoc-SUV / TP-Apoc-M1025 / TP-Apoc-Pickup / AnimatedDynamicHelicopters**
+  - each of the three TP-Apoc vehicles ships its own root `types.xml`
+    (auto-merged by `modTypes.ts`), so unlike `MoreCars` these needed no
+    hand-typed classname list. Fueled (diesel, matching the mod's own shipped
+    `Offroad_02` spare-part reference) via `fuelSystem.ts`, 3rd-person-
+    whitelisted via `vehicle3pp.ts`, and SUV+Pickup (not the armed M1025 -
+    kept trader-only/Legendary by design) added as extra `VehicleOffroad02`
+    `<child>`ren via `vehicleSpawns.ts`, same "closest vanilla counterpart"
+    pattern as the other custom vehicles above. `AnimatedDynamicHelicopters`
+    ships no new vehicle at all - confirmed its own `adh_types.xml` only
+    contains smoke-grenade/flare ammo types - it just adds crash/flight
+    scripting to DayZ-Expansion's existing helicopters, so it needs no
+    further wiring anywhere.
+- [`src/optics.ts`](src/optics.ts) (`ensureOpticsWired()`) - `@Optics` adds
+  scope/sight attachments with no shipped `<types>` root economy file
+  (its `cfgspawnabletypes.xml` root is `<spawnabletypes>`, not `<types>`, so
+  `modTypes.ts`'s generic merger correctly skips it) - every classname is
+  authored from scratch here as a `nominal=0` trader-only stub (never
+  spawns in the world, only reachable via the trader's stock/restock
+  system), priced/tiered via `src/data/marketGapFill.json`.
+- [`src/tgkWeaponPack.ts`](src/tgkWeaponPack.ts)
+  (`ensureTgkWeaponPackWired()`) - `@TGK-WeaponPack` (~280
+  Russian-special-forces-themed weapons/attachments/melee items, aka
+  "SOBR"/"SM_") follows the exact same nominal=0 trader-only-stub pattern
+  as `@Optics` above rather than hand-tuning ~280 individual spawn rates -
+  "mostly but not all high-end weapons wanted" is achieved entirely via
+  `marketGapFill.json`'s tier assignment (Rare for standard rifles/SMGs/
+  shotguns/pistols, Legendary for heavy machine guns/dedicated sniper
+  rifles/the 40mm grenade launcher), the same "hard to get, not physically
+  absent" lever used everywhere else in this project.
+- [`src/necromutant.ts`](src/necromutant.ts) (`ensureNecromutantWired()`) /
+  [`src/bmmChemicalZombie.ts`](src/bmmChemicalZombie.ts)
+  (`ensureBmmChemicalZombieWired()`) / [`src/customZombiesTchc.ts`](src/customZombiesTchc.ts)
+  (`ensureCustomZombiesTchcWired()`) - three more single-creature/item
+  content mods, each folded into their own dedicated, independently-tunable
+  event (`NecromutantBook`, `InfectedBMMChemical`,
+  `InfectedTCHCCustom`/`TCHCZombieBear`) rather than an existing zombie/loot
+  event, same reasoning as `yuretskiy.ts`. Necromutant's only economy entry
+  is the trigger book itself (`JVDS_Book_darkness`) - the mutant and its
+  reward are `CreateObject()`'d directly by the mod's own script, never
+  CE-registered, so they're deliberately left untyped. Custom-Zombies-TCHC
+  splits its 4 classnames across two events since one
+  (`TCHC_ZombieBear`) is actually `Animal_UrsusArctos`-derived, not
+  `ZombieBase`-derived like the other three - kept out of vanilla's own
+  `AnimalBear` event (which has a real bear-habitat `<pos>` list) for the
+  same "don't touch a real population budget for a novelty reskin" reason.
+  Has two unresolved live bug reports on its own Workshop Comments tab
+  (astronaut invincibility, a PBO-signing complaint) - added anyway per the
+  project owner's own request; see TESTS.md.
 - [`src/lighting.ts`](src/lighting.ts) (`tuneLightingConfig()`) -
   `Lads-Lighting-Overhaul` does nothing at all until `lightingConfig` is set
   to one of its preset values; this force-sets `WorldsData.lightingConfig`
@@ -376,25 +474,77 @@ default to disabled), `Custom-Keycards` (aside from door placement above).
   shortcut to be reachable at all. Paired with the `DZSurvivalMapGate`
   serverpack addon, which then requires the player to have both an
   `ItemMap` and a GPS device before that shortcut actually opens the map.
+- [`src/weather.ts`](src/weather.ts) (`tuneWeather()`) - the mission's own
+  `cfgweather.xml` ships with `enable="0"`, meaning none of its values do
+  anything at all (the engine falls back to its own baked-in default
+  pattern instead) - confirmed on a live install. Turns it on and re-tunes
+  it for a colder/damper baseline: overcast floor raised (skies are never
+  fully clear), fog thickened and made far more frequent, the overcast
+  threshold needed to trigger rain lowered (so it actually rains more given
+  the raised overcast baseline), and a wind-magnitude floor added (air is
+  never fully still, so there's always some wind chill). Snowfall stays
+  forced to 0 and wind direction/storm density are untouched - no map
+  asset or texture is touched, this only changes weather-pattern frequency/
+  intensity. Re-applied on every start via a marker comment (same pattern
+  as `economy.ts`), since this file ships with the mission and can be
+  silently reset back to vanilla by `deno task install`'s steamcmd
+  validation.
+- [`src/hazards.ts`](src/hazards.ts) (`tuneHazardZones()`) -
+  `Terje-Radiation` self-generates its `ScriptableAreasSpawner.xml` with
+  exactly one example `TerjeRadioactiveScriptableArea` zone, shipped with
+  `Active="0"` (confirmed on a live install - it does nothing at all until
+  enabled). Flips it to `Active="1"` on every start, trusting the mod
+  author's own position/radius/power rather than guessing new Chernarus
+  coordinates blind. `CJ187-RandomMineFields`'s `RandomMineFields.json` has
+  no separate on/off switch in its schema - its two shipped minefield/
+  claymore-field entries are already live by default, so nothing to wire up
+  there.
+- [`src/noBuildZones.ts`](src/noBuildZones.ts) (`tuneNoBuildZones()`) -
+  `No-Build-Zones` self-generates an empty `profiles/NoBuildZone.json`.
+  Additively seeds one curated zone by name (currently just `NWAF`, 300m
+  radius) reusing the exact coordinate already used for its roaming-patrol
+  waypoint, never touching an admin's own hand-added zones. More zones can
+  be added the same way once other military bases' coordinates are
+  confirmed - see TODO.md item 10/11.
+- [`src/namalskClothing.ts`](src/namalskClothing.ts)
+  (`ensureNamalskClothingMerged()`) - `Namalsk-Survival` ships two complete
+  alternate mission economies (its own map, not ours), so rather than merge
+  either wholesale, this diffs every `<category name="clothes"/>` `<type>`
+  in its hardcore variant's `db/types.xml` against our own and cherry-picks
+  only the genuinely new ones. Confirmed (2026) that the
+  Gorka/Ghillie/ManSuit/WomanSuit/TrackSuit sets people usually associate
+  with Namalsk are already vanilla DayZ items on Chernarus (added in a past
+  game update) - only 12 items were actually new: `BDUpants`,
+  `GorkaHelmet_Black`, `Headtorch_Black`/`Grey`, `HipPack_Black`/`Green`/
+  `Medical`/`Party`, `NVGHeadstrap`, `NylonKnifeSheath`, `OMKJacket_Navy`,
+  `OMKPants_Navy`. Namalsk's own file ships all 12 with an empty, name-less
+  `<usage/>` (no location group at all, so they'd never spawn via normal
+  loot economy) - each is merged in with real `<usage>` tags derived from
+  that same item's own `<tag>` hints instead. Additive/name-deduped, same
+  pattern as `modTypes.ts`/`wildlifeTerritories.ts`.
 - [`src/wildlifeTerritories.ts`](src/wildlifeTerritories.ts)
-  (`ensureWildlifeTerritories()`) - `DayZ-Raven`, `DayZ-Rat`, and
-  `DayZ-Horse` each ship a ready-to-use Chernarus territory file. Raven/Rat
+  (`ensureWildlifeTerritories()`) - `DayZ-Raven`, `DayZ-Rat`, `DayZ-Horse`,
+  and `DayZ-Dog` each ship a ready-to-use Chernarus territory file. Raven/Rat
   ship a readme describing a small, mechanical four-step patch (copy the
   territory file into the mission's `env/`, register it + a `<territory>`
   block in `cfgenvironment.xml`, add an `<event>` to `db/events.xml`, add a
-  few `<type>` blocks to `db/types.xml`). Horse ships no readme, but its
-  reference files mark the same additions with paired
-  `<!-- HORSE MOD -->` comments inside otherwise-vanilla-shaped files, plus
-  one extra step: "Herd"-type territories like Horse also need a
+  few `<type>` blocks to `db/types.xml`). Horse and Dog ship no readme, but
+  their reference files (Horse: paired `<!-- HORSE MOD -->` comments inside
+  otherwise-vanilla-shaped files; Dog: standalone `cfgenvironment.xml`/
+  `events.xml`/`cfgeventspawns.xml` snippets under
+  `dog_territories/`) mark/contain the same additions, plus one extra
+  step: "Herd"-type territories like Horse and Dog also need a
   self-closing `<event name="..." />` stub in `cfgeventspawns.xml`
   (confirmed by comparison against the vanilla Wolf/Deer/WildBoar entries
   already there - "Ambient"-type territories like Raven/Rat don't need
-  this). This automates every step for all three mods, additively and
+  this). This automates every step for all four mods, additively and
   idempotently, verified on a live server (no CE "type not found" errors,
-  no duplicate entries on re-run). Horse's own root `types.xml`
-  (Saddle/Bridle/HorseBags/etc.) is merged separately via `modTypes.ts`;
-  the `Animal_Horse_*` creature types it doesn't ship are added here using
-  the same boilerplate every other vanilla `Animal_*` creature type uses.
+  no duplicate entries on re-run). Horse's and Dog's own root `types.xml`
+  files (Saddle/Bridle/HorseBags/etc.; dog collars/vests/gasmask/sheds) are
+  merged separately via `modTypes.ts`; the `Animal_Horse_*`/`Doggo_Wild*`
+  creature types neither mod ships are added here using the same
+  boilerplate every other vanilla `Animal_*` creature type uses (Dog uses
+  the wolf's shape specifically, since it shares `DZWolfGroupBeh`).
 - [`src/yuretskiy.ts`](src/yuretskiy.ts) (`ensureYuretskiyWired()`) -
   `Yuretskiy-Creatures` ships 7 tougher zombie classnames
   (`YRTSK_ZMB_SWAT`/`Male`/`TShirt`/`Fitness_F`/`Fitness_F_2`/`Fat`/
@@ -478,10 +628,11 @@ admin AI menu) or manual edits are preserved.
 
 ### Map-wide coverage
 
-The template defines 12 `ROAMING`-behaviour bandit patrols spread across most
+The template defines 14 `ROAMING`-behaviour bandit patrols spread across most
 of Chernarus's coastline and central/northern hotspots (Chernogorsk, Balota,
 Elektrozavodsk, Solnechny, Berezino, Svetlojarsk, Novodmitrovsk, NW Airfield,
-Stary Sobor, Tisy, Zelenogorsk, Kamenka) instead of just a couple of towns.
+Stary Sobor, Tisy, Zelenogorsk, Kamenka, Vybor, Green Mountain) instead of
+just a couple of towns.
 
 A few mechanics make this add up to "encounterable almost anywhere" rather
 than just a dozen fixed camps:
@@ -500,7 +651,52 @@ Coordinates are approximate town centers, sourced from general Chernarus map
 knowledge rather than verified in-engine. If any patrol looks off in-game
 (e.g. spawning in water or on a cliff), nudge its `Waypoints` entry - the
 admin AI menu described below is the easiest way to get an exact, verified
-position.
+position. `Vybor` and `Green Mountain` are the two newest additions and
+haven't been checked in-game yet at all - see `TESTS.md`.
+
+### Military-area coverage floor
+
+Five of the fourteen patrols (`NWAF`, `Balota`, `Tisy`, `Vybor`, and
+`Green Mountain`) are tagged with a dedicated `MilitaryPatrols`
+`LoadBalancingCategory` instead of the shared `RoamingBandits` one the nine
+town patrols compete for. This guarantees a floor of 6 concurrent military
+patrols even at 0-10 players (scaling up to 9 at 51+) - so looting a
+military base is never risk-free just because the server is quiet,
+addressing TODO.md item 11. `RoamingBandits` was raised the same pass (7 at
+0-10 players, up to 14 at 51+, from an original 5/8/10/12) for a more
+generally "alive" world at low population. More bases (Devil's Castle,
+etc.) can be added the same way once their coordinates are confirmed.
+`src/ai.ts` reconciles this `LoadBalancingCategory` field on every start
+even for a patrol that was already merged into a live mission under the
+old category in an earlier run - including raising a category's
+`MaxPatrols` thresholds if a later project update bumps them (never
+lowering a value an admin may have hand-tuned higher).
+
+### Military garrisons (Yuretskiy monsters)
+
+On top of the roaming patrols above, [`src/militaryMonsters.ts`](src/militaryMonsters.ts)
+(`ensureMilitaryMonsterGarrisons()`) adds a fixed `InfectedYuretskiyMilitary`
+event to `db/events.xml`/`cfgeventspawns.xml` (gated on `@Yuretskiy-Creatures`
+being installed) that stations the mod's 7 tougher zombie variants
+(`YRTSK_ZMB_SWAT`/`Male`/`TShirt`/`Fitness_F`/`Fitness_F_2`/`Fat`/`PartFoot` -
+already typed by `src/yuretskiy.ts`) at the same 5 confirmed military
+coordinates as the `MilitaryPatrols` above, rather than inventing new
+locations. It's `position=fixed`/`limit=mixed` (nominal 15, min 5, max 20,
+lifetime 1800), with radius/lifetime values reused from vanilla's own
+`StaticMilitaryConvoy`/`StaticPoliceSituation` events - the closest vanilla
+precedent for "a dangerous fixed encounter at a real military-flavoured
+coordinate". This is on top of, not instead of, Yuretskiy's own ambient
+`InfectedYuretskiy` event (`position=player`, spawns anywhere as players
+roam) - the military event adds extra, tougher, location-biased infected on
+top of that ambient baseline. Purely additive: skipped entirely if the
+event name already exists in either file.
+
+`Burning-Mutant`/`Freezing-Mutant` were considered too, but excluded: their
+self-generated config (once it exists - confirmed absent from a fresh
+`profiles/` install) only documents damage/wound/protection tuning per
+their own Steam pages, nothing about spawn location/frequency, so there's
+no confirmed way to bias them toward military bases specifically without
+guessing an undocumented schema.
 
 ### Keeping performance in check as coverage grows
 
@@ -692,7 +888,15 @@ sponges:
 - `tuneSpatialAIDifficulty()` raises the accuracy and trigger-chance floors on
   every `Group`/`Point`/`Location`/`Audio` entry in the Dynamic-AI-Addon's
   `SpatialSettings.json`, since (unlike Expansion) each entry carries its own
-  values rather than inheriting from one global setting.
+  values rather than inheriting from one global setting. It also re-asserts
+  three _global_ settings that govern `Group`-type spawns (proximity-based to
+  any player anywhere on the map, including the wilderness - see
+  TODO.md item 9): `HuntMode=1` ("hunt player aggressively", the mod's own
+  default, re-applied in case a future update resets it), a `MinDistance`
+  floor of 140m (never an unfair point-blank spawn), and - the one real gap
+  found versus the shipped defaults - a `CleanupTimer` floor of 20 minutes
+  (up from 6), long enough for a hunting group to actually close the
+  distance on the player before despawning.
 - `tuneMissionDifficulty()` raises `Bots_Accuracy` (floor `0.65`) and
   `Bots_Damage_Done_Multiplier` (`1.15x`) on every mission in
   `profiles/AIMissions/MainConfig.json`, while pinning
@@ -778,6 +982,45 @@ Confirmed live: 20 category files changed on first run (e.g. assault rifles
 100 -> 5, ammo 500 -> 15, helicopters 10 -> 2), a second run is a total
 no-op, and the server's own `ExpansionMarketSettings::LoadCategories` log
 lines confirm every category still loads cleanly afterward.
+
+### Closing market gaps ([`src/marketGapFill.ts`](src/marketGapFill.ts))
+
+`DayZ-Expansion-Market`'s per-category files under
+`profiles/ExpansionMod/Market/` are generated once, on first mission load -
+a snapshot, never re-scanned against the mod list afterward. A classname
+that wasn't present at that moment (a mod added/updated later, or a
+color/skin reskin the snapshot simply never included) never gets
+backfilled, no matter how many times `tuneExpansionMarket()`'s merge
+re-runs. `ensureMarketGapFill()` fixes this from a hand-reviewed manifest
+(`src/data/marketGapFill.json`) that either clones an existing sibling
+item's exact price/tier (`template`) or clones the first item in a
+destination `category` at a given `tier` for a whole new item family with no
+real sibling. Additive/idempotent only - never touches a classname once
+present, so it never resets a category a player's already traded in. Must
+run after `tuneExpansionMarket()`.
+
+`deno task audit-market` (`src/main.ts`'s `audit-market` command) is the
+tool that originally found (and keeps re-checking for) these gaps: it
+cross-references every `<type>` in the mission's merged `db/types.xml`
+against every classname currently sellable across all
+`profiles/ExpansionMod/Market/*.json` files, and reports three buckets to
+`profiles/market-audit-report.txt` - Bucket A (a real `<category>` tag but
+not sellable anywhere - high-confidence real gaps), Bucket B (no
+`<category>` tag - usually creatures, vehicle wrecks, or non-purchasable
+base-form classnames, needs manual review before trusting it), and Bucket C
+(price/stock anomalies on already-sellable items, e.g. a stale tier cap).
+Run it any time a new mod is added to sanity-check nothing fell through.
+
+One real bug this caught (2026-09): `marketGapFill.ts` keeps its own copy
+of `market.ts`'s `TIER_MAX_STOCK` (Common/Uncommon/Rare/Legendary -> max
+stock), and it had drifted out of sync after `market.ts`'s own tiers were
+tightened in an earlier pass (25/10/4/1 -> 20/8/3/1) - silently freezing
+every already-added gap-fill item at the old, looser cap forever (this
+module only ever adds a missing item, never revisits one already present).
+Fixed by updating the constant and adding a one-time reconciliation pass in
+`ensureMarketGapFill()` that remaps any item still sitting at an old tier
+cap to its new equivalent. If `market.ts`'s tiers are ever retuned again,
+remember this second copy needs updating too.
 
 ### Custom trader city ([`src/traders.ts`](src/traders.ts))
 
@@ -940,3 +1183,68 @@ It refuses to run while a `DayZServer` process is detected, then offers:
    so you won't need `deno task login` again afterwards.
 
 Both paths ask for confirmation (default "no") before deleting anything.
+
+## Operational reliability
+
+A handful of small, always-on pieces of housekeeping and self-healing that
+run automatically on every `deno task up`/`start` - none of these need any
+setup or manual intervention, and none of them are visible unless something
+actually goes wrong (or you go looking at the logs listed below).
+
+### Crash-recovery watchdog ([`src/server.ts`](src/server.ts))
+
+Previously, the server launch was a single one-shot process: any exit at
+all - a genuine crash, an OOM kill, or even a clean admin `#shutdown` - took
+the whole CLI down with it, so an unattended crash (e.g. overnight, or while
+you're away) just left the server down until someone noticed and reran the
+CLI by hand.
+
+`doStart()`'s final launch now runs the server in a supervised loop instead:
+
+- On an unexpected exit, it logs the exit code and runtime to
+  `profiles/crashes.log`, waits 15s, and restarts automatically.
+- If 5 restarts in a row each run for less than 60s, it gives up rather than
+  crash-looping forever - check `profiles/crashes.log` and the latest
+  `profiles/DayZServer_*.RPT` for the real error before restarting manually.
+- A normal Ctrl-C/SIGTERM to the CLI (or a clean in-game `#shutdown`) is
+  detected as an intentional stop and does **not** trigger a restart. A
+  second Ctrl-C force-kills immediately if the server is slow to exit.
+
+### Log rotation ([`src/maintenance.ts`](src/maintenance.ts))
+
+Every server start writes a fresh, uniquely-timestamped RPT/ADM (+
+occasional script/error logs from mod crash reports) into `profiles/` with
+no cleanup of its own - left alone, this grows forever (confirmed live: 194
+RPT + 144 ADM files, 673MB, before this existed). `pruneOldLogs()` runs at
+the start of every `doStart()` and keeps only the newest 20 files per log
+type, deleting the rest. Best-effort - a read/delete error here is logged
+and skipped rather than blocking startup.
+
+The same function also prunes a handful of mods' own per-run log
+directories under `profiles/` the same way (`ExpansionMod/Logs`,
+`CommunityOnlineTools/Logs`, `CodeLock/Logs`, `CustomKeycards/0_Logs`,
+`EventManagerLog`, `WebApiLog`, `sUDE/logs`, `Beetle/tradeboard/logs`,
+`CJ_RandomMineFields/Logs`) - each individually much smaller than the main
+RPT/ADM problem, but every one of them was found growing unbounded too
+(100-185 files apiece after only ~10 days, confirmed live).
+
+### World-state backups ([`src/maintenance.ts`](src/maintenance.ts))
+
+`backupWorldState()` also runs at the start of every `doStart()`, and takes
+a `tar.gz` snapshot of `mpmissions/<mission>/storage_1` (characters, bases,
+vehicles, persistent trader stock) into `backups/` (gitignored) _before_
+anything touches it that run. The newest 10 backups are kept, older ones
+pruned automatically. This is the only recovery path for a bad `wipe`, disk
+corruption, or a mod bug trashing the save - restore by stopping the
+server, extracting the desired `backups/storage_1-<timestamp>.tar.gz` back
+into `mpmissions/<mission>/`, and starting up again.
+
+### Mod-update visibility ([`src/install.ts`](src/install.ts))
+
+`ensureMods()`/`doMods()` already silently re-validate any mod Steam has
+updated since we last checked, every time the CLI runs (by design - no
+manual intervention needed). That process previously left no record of what
+changed or when. Every detected update now appends a line to
+`profiles/mod-updates.log` (mod name, id, and the old/new content ids)
+before re-downloading it, so you can always answer "did a mod update
+recently, and which one" after the fact.

@@ -20,22 +20,44 @@
       {
         "MinPlayers": 0,
         "MaxPlayers": 10,
-        "MaxPatrols": 5
+        "MaxPatrols": 7
       },
       {
         "MinPlayers": 11,
         "MaxPlayers": 25,
-        "MaxPatrols": 8
+        "MaxPatrols": 10
       },
       {
         "MinPlayers": 26,
         "MaxPlayers": 50,
-        "MaxPatrols": 10
+        "MaxPatrols": 12
       },
       {
         "MinPlayers": 51,
         "MaxPlayers": 255,
-        "MaxPatrols": 12
+        "MaxPatrols": 14
+      }
+    ],
+    "MilitaryPatrols": [
+      {
+        "MinPlayers": 0,
+        "MaxPlayers": 10,
+        "MaxPatrols": 6
+      },
+      {
+        "MinPlayers": 11,
+        "MaxPlayers": 25,
+        "MaxPatrols": 7
+      },
+      {
+        "MinPlayers": 26,
+        "MaxPlayers": 50,
+        "MaxPatrols": 8
+      },
+      {
+        "MinPlayers": 51,
+        "MaxPlayers": 255,
+        "MaxPatrols": 9
       }
     ]
   },
@@ -122,7 +144,7 @@
       "Chance": 0.75,
       "DespawnTime": -1.0,
       "RespawnTime": 1800.0,
-      "LoadBalancingCategory": "RoamingBandits",
+      "LoadBalancingCategory": "MilitaryPatrols",
       "ObjectClassName": "",
       "WaypointInterpolation": "",
       "UseRandomWaypointAsStartPoint": 0,
@@ -518,7 +540,7 @@
       "Chance": 0.75,
       "DespawnTime": -1.0,
       "RespawnTime": 1800.0,
-      "LoadBalancingCategory": "RoamingBandits",
+      "LoadBalancingCategory": "MilitaryPatrols",
       "ObjectClassName": "",
       "WaypointInterpolation": "",
       "UseRandomWaypointAsStartPoint": 0,
@@ -562,11 +584,99 @@
       "Chance": 0.75,
       "DespawnTime": -1.0,
       "RespawnTime": 1800.0,
-      "LoadBalancingCategory": "RoamingBandits",
+      "LoadBalancingCategory": "MilitaryPatrols",
       "ObjectClassName": "",
       "WaypointInterpolation": "",
       "UseRandomWaypointAsStartPoint": 0,
       "Waypoints": [[4800.0, 2.0, 2400.0]]
+    },
+    {
+      "Name": "Roaming_Bandits_Vybor",
+      "Persist": 1,
+      "Faction": "Raiders",
+      "Formation": "RANDOM",
+      "FormationScale": -1.0,
+      "FormationLooseness": 0.5,
+      "Loadout": "BanditLoadout",
+      "Units": [],
+      "NumberOfAI": -4,
+      "Behaviour": "ROAMING",
+      "LootingBehaviour": "DEFAULT | UPGRADE",
+      "Speed": "RANDOM_NONSTATIC",
+      "UnderThreatSpeed": "SPRINT",
+      "DefaultStance": "STANDING",
+      "DefaultLookAngle": 0.0,
+      "CanBeLooted": 1,
+      "UnlimitedReload": 0,
+      "SniperProneDistanceThreshold": 100.0,
+      "AccuracyMin": -1.0,
+      "AccuracyMax": -1.0,
+      "ThreatDistanceLimit": -1.0,
+      "NoiseInvestigationDistanceLimit": -1.0,
+      "MaxFlankingDistance": -1.0,
+      "EnableFlankingOutsideCombat": -1,
+      "DamageMultiplier": -1.0,
+      "DamageReceivedMultiplier": -1.0,
+      "HeadshotResistance": 0.0,
+      "CanSpawnInContaminatedArea": 0,
+      "CanBeTriggeredByAI": 1,
+      "MinDistRadius": 150.0,
+      "MaxDistRadius": 2500.0,
+      "DespawnRadius": 500.0,
+      "MinSpreadRadius": 0.0,
+      "MaxSpreadRadius": 0.0,
+      "Chance": 0.75,
+      "DespawnTime": -1.0,
+      "RespawnTime": 1800.0,
+      "LoadBalancingCategory": "MilitaryPatrols",
+      "ObjectClassName": "",
+      "WaypointInterpolation": "",
+      "UseRandomWaypointAsStartPoint": 0,
+      "Waypoints": [[4400.0, 100.0, 8850.0]]
+    },
+    {
+      "Name": "Roaming_Bandits_GreenMountain",
+      "Persist": 1,
+      "Faction": "Raiders",
+      "Formation": "RANDOM",
+      "FormationScale": -1.0,
+      "FormationLooseness": 0.5,
+      "Loadout": "BanditLoadout",
+      "Units": [],
+      "NumberOfAI": -4,
+      "Behaviour": "ROAMING",
+      "LootingBehaviour": "DEFAULT | UPGRADE",
+      "Speed": "RANDOM_NONSTATIC",
+      "UnderThreatSpeed": "SPRINT",
+      "DefaultStance": "STANDING",
+      "DefaultLookAngle": 0.0,
+      "CanBeLooted": 1,
+      "UnlimitedReload": 0,
+      "SniperProneDistanceThreshold": 100.0,
+      "AccuracyMin": -1.0,
+      "AccuracyMax": -1.0,
+      "ThreatDistanceLimit": -1.0,
+      "NoiseInvestigationDistanceLimit": -1.0,
+      "MaxFlankingDistance": -1.0,
+      "EnableFlankingOutsideCombat": -1,
+      "DamageMultiplier": -1.0,
+      "DamageReceivedMultiplier": -1.0,
+      "HeadshotResistance": 0.0,
+      "CanSpawnInContaminatedArea": 0,
+      "CanBeTriggeredByAI": 1,
+      "MinDistRadius": 150.0,
+      "MaxDistRadius": 2500.0,
+      "DespawnRadius": 500.0,
+      "MinSpreadRadius": 0.0,
+      "MaxSpreadRadius": 0.0,
+      "Chance": 0.75,
+      "DespawnTime": -1.0,
+      "RespawnTime": 1800.0,
+      "LoadBalancingCategory": "MilitaryPatrols",
+      "ObjectClassName": "",
+      "WaypointInterpolation": "",
+      "UseRandomWaypointAsStartPoint": 0,
+      "Waypoints": [[7650.0, 400.0, 11150.0]]
     }
   ]
 }

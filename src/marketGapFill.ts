@@ -54,12 +54,38 @@ import manifest from "./data/marketGapFill.json" with { type: "json" };
 
 type Tier = "Common" | "Uncommon" | "Rare" | "Legendary";
 
-// Keep in sync with market.ts's own TIER_MAX_STOCK.
+// Keep in sync with market.ts's own TIER_MAX_STOCK. Was 25/10/4/1 until
+// market.ts's 2026-08 hardcore-survival pass tightened it to 20/8/3/1 (see
+// that file's own comment) - this constant drifted out of sync with it,
+// which silently froze every already-added manifest item at the OLD, looser
+// cap forever (this module only ever adds a missing item, never revisits
+// one already present - see the main loop below), while every ordinary
+// source-derived item got the new tighter cap on every boot via
+// market.ts's buildMergedItems(). Fixed 2026-09 (found via a full market
+// audit flagging ~885 items still sitting at 25/10/4). See
+// reconcileStaleTierCaps() below for the one-time correction of everything
+// this drift already added before the fix.
 const TIER_MAX_STOCK: Record<Tier, number> = {
-  Common: 25,
-  Uncommon: 10,
-  Rare: 4,
+  Common: 20,
+  Uncommon: 8,
+  Rare: 3,
   Legendary: 1,
+};
+
+// One-time (well, every-boot, but a no-op once converged) correction for the
+// drift described above: any item's MaxStockThreshold sitting at exactly an
+// OLD tier cap gets remapped to the equivalent NEW cap. Safe as a blanket
+// rule (not scoped to MANIFEST classnames specifically) because this always
+// runs after tuneExpansionMarket() has already rewritten every ordinary
+// source-derived item to a currently-correct value (one of 20/8/3/1, or a
+// RARE_CATEGORIES/VEHICLE_PARTS_CATEGORIES fixed cap that never overlaps
+// these numbers) - so by the time this reads categories, anything still
+// showing 25/10/4 can only be a manifest-added leftover from before this
+// constant was fixed.
+const OLD_TO_NEW_TIER_MAX_STOCK: Record<number, number> = {
+  25: TIER_MAX_STOCK.Common,
+  10: TIER_MAX_STOCK.Uncommon,
+  4: TIER_MAX_STOCK.Rare,
 };
 
 // Ghillies/Vehicle_Parts/Batteries sit outside the tier system entirely
@@ -224,6 +250,11 @@ const MANUAL_EXCLUSIONS = new Set<string>(
     "witchhat", // Halloween decor prop - the real wearable version is WitchHood_Black/Brown/Red (already sellable)
     "deadfox", // decor/animal-carcass prop, not a real skinned-meat item
     "easteregg", // Farm-usage decor/spawn marker, not a real item
+    "gold", // world-decor gold pile/prop (count_in_map only) - was wrongly
+    // sellable in Utility.json (has no <category> tag, so marketAudit.ts's
+    // Bucket A/B logic never flagged it either) - confirmed via types.xml
+    // it can't actually be handed to a player (count_in_cargo="0"
+    // count_in_player="0"), so buying it would be broken/no-op in-game.
     "undergroundstashsnow", // the dug-out stash hole itself, not a portable container
 
     // Built/placed base-building structures - these are the FINAL,
@@ -264,6 +295,92 @@ const MANUAL_EXCLUSIONS = new Set<string>(
     "staticobj_train_wagon_flat_industrial_barrels_de",
     "staticobj_train_wagon_flat_industrial_planks_de",
     "static_frozenscientist_de",
+
+    // @CJ187-MoreMoney: NOT currently in mods.txt (considered as the trader
+    // currency - its "Coin"/"Gold Coin" item - then dropped again: derapifying
+    // cj187_money.pbo's CfgVehicles confirmed varStackMax=50, which floods a
+    // player's inventory with dozens of stacks for any serious sum; Expansion
+    // Core's own ExpansionGoldNugget, used instead - see traders.ts's
+    // GOLD_CURRENCY_CLASSNAME - has a 50,000 stack cap and needs no extra mod
+    // at all). Every item this mod ships (including "Coin" itself) is listed
+    // here anyway, purely as defense-in-depth in case it's
+    // ever reinstalled for some other reason - same no-op-if-absent basis as
+    // every other classname in this set. All confirmed via the mod's own
+    // binary configs (cj187_money.pbo: Special/Ruble/Dollar/Euro/DMark/
+    // Wallets_* config.bin) - and, in fact, all were already found sitting in
+    // Utility.json as normal purchasable items from an earlier session when
+    // this mod was briefly active, which is why an active removal pass (not
+    // just a future-add denylist) matters here.
+    "coin",
+    "bitcoin",
+    "ring_ruby",
+    "ring_emerald",
+    "ring_saphire",
+    "wallet_clip",
+    "wallet_large_red",
+    "wallet_large_green",
+    "wallet_large_blue",
+    "wallet_large_black",
+    "wallet_large_grey",
+    "wallet_large_white",
+    "wallet_large_leather",
+    "wallet_large_dayz",
+    "wallet_large_dragonballz",
+    "wallet_medium_red",
+    "wallet_medium_green",
+    "wallet_medium_blue",
+    "wallet_medium_black",
+    "wallet_medium_grey",
+    "wallet_medium_white",
+    "wallet_small_red",
+    "wallet_small_green",
+    "wallet_small_blue",
+    "wallet_small_black",
+    "wallet_small_grey",
+    "wallet_small_white",
+    "wallet_small_leather",
+    "wallet_women_blue",
+    "wallet_women_brown",
+    "wallet_women_green",
+    "wallet_women_pink",
+    "money_dmark1",
+    "money_dmark2",
+    "money_dmark5",
+    "money_dmark10",
+    "money_dmark20",
+    "money_dmark50",
+    "money_dmark100",
+    "money_dmark200",
+    "money_dmark500",
+    "money_dmark1000",
+    "money_dollar1",
+    "money_dollar2",
+    "money_dollar5",
+    "money_dollar10",
+    "money_dollar20",
+    "money_dollar50",
+    "money_dollar100",
+    "money_euro1",
+    "money_euro2",
+    "money_euro5",
+    "money_euro10",
+    "money_euro20",
+    "money_euro50",
+    "money_euro100",
+    "money_euro200",
+    "money_euro500",
+    "money_ruble1",
+    "money_ruble2",
+    "money_ruble5",
+    "money_ruble10",
+    "money_ruble50",
+    "money_ruble100",
+    "money_ruble200",
+    "money_ruble500",
+    "money_ruble1000",
+    "money_ruble2000",
+    "money_ruble5000",
+    "money_wad_ruble50",
   ].map((s) => s.toLowerCase()),
 );
 
@@ -285,6 +402,37 @@ export function isExcluded(key: string): boolean {
 const DEPOSIT_CONTAINER_CLASSNAME = "bl_deposit_container";
 const DEPOSIT_CONTAINER_MIN_PRICE = 9_000_000;
 const DEPOSIT_CONTAINER_MAX_PRICE = 11_000_000;
+
+// Custom-Keycards' room keycards (TODO.md item 2) - the generic gap-fill
+// clone logic priced these like whatever the "Utility" category's first
+// item happened to be (a wallet, a few hundred at most), which is nowhere
+// near what a guaranteed-access key to an entire military keycard-loot room
+// should cost on a hardcore server (bypasses actually finding/fighting for
+// that loot). Now split into their own Legendary-tier manifest group (see
+// marketGapFill.json - caps stock at 1) and explicitly re-priced here, same
+// pattern as bl_deposit_container above. `evg_keycards_All` (opens every
+// room) is priced well above the single-location cards.
+const KEYCARD_MIN_PRICE = 250_000;
+const KEYCARD_MAX_PRICE = 400_000;
+const MASTER_KEYCARD_CLASSNAME = "evg_keycards_all";
+const MASTER_KEYCARD_MIN_PRICE = 800_000;
+const MASTER_KEYCARD_MAX_PRICE = 1_200_000;
+const KEYCARD_CLASSNAMES = [
+  "evg_keycards_Blue",
+  "evg_keycards_Green",
+  "evg_keycards_NWAF01",
+  "evg_keycards_NWAF02",
+  "evg_keycards_NWAF03",
+  "evg_keycards_Red",
+  "evg_keycards_Tisy01",
+  "evg_keycards_Tisy02",
+  "evg_keycards_Tisy03",
+  "evg_keycards_Tisy04",
+  "evg_keycards_Tisy05",
+  "evg_keycards_Violet",
+  "evg_keycards_White",
+  "evg_keycards_Yellow",
+].map((c) => c.toLowerCase());
 
 async function listCategoryFiles(): Promise<string[]> {
   const names: string[] = [];
@@ -314,10 +462,20 @@ export async function ensureMarketGapFill(): Promise<void> {
     const data: MarketCategory = JSON.parse(await Deno.readTextFile(path));
     categories.set(fileName, data);
 
+    // IsExchange files (Exchange.json) aren't a normal sellable category -
+    // they're the currency-conversion definition traders.ts's
+    // ensureGoldCoinCurrency() manages (see GOLD_CURRENCY_CLASSNAME there).
+    // Should that classname ever also be a permanently-denylisted one below
+    // (it currently isn't - ExpansionGoldNugget was never added to
+    // MANUAL_EXCLUSIONS), this keeps the removal loop from
+    // stripping it out of Exchange.json and fighting
+    // ensureGoldCoinCurrency() for it on every run.
+    const isExchangeFile = Boolean(data.IsExchange);
+
     const kept: MarketItem[] = [];
     for (const item of data.Items ?? []) {
       const key = item.ClassName?.toLowerCase();
-      if (key && isExcluded(key)) {
+      if (key && isExcluded(key) && !isExchangeFile) {
         // Permanently denylisted - drop it every run, even if it was added
         // by a previous run of this same module.
         removedTotal++;
@@ -433,6 +591,50 @@ export async function ensureMarketGapFill(): Promise<void> {
         `Market gap-fill: re-priced ${DEPOSIT_CONTAINER_CLASSNAME} to its 10M "personal box" tier`,
       );
     }
+  }
+
+  let keycardsRepriced = 0;
+  for (const key of [...KEYCARD_CLASSNAMES, MASTER_KEYCARD_CLASSNAME]) {
+    const item = classNameItem.get(key);
+    const owner = classNameOwner.get(key);
+    if (!item || !owner) continue;
+
+    const isMaster = key === MASTER_KEYCARD_CLASSNAME;
+    const minPrice = isMaster ? MASTER_KEYCARD_MIN_PRICE : KEYCARD_MIN_PRICE;
+    const maxPrice = isMaster ? MASTER_KEYCARD_MAX_PRICE : KEYCARD_MAX_PRICE;
+
+    let touched = false;
+    if (item.MinPriceThreshold !== minPrice) {
+      item.MinPriceThreshold = minPrice;
+      touched = true;
+    }
+    if (item.MaxPriceThreshold !== maxPrice) {
+      item.MaxPriceThreshold = maxPrice;
+      touched = true;
+    }
+    if (touched) {
+      dirty.add(owner);
+      keycardsRepriced++;
+    }
+  }
+  if (keycardsRepriced > 0) {
+    ok(`Market gap-fill: re-priced ${keycardsRepriced} Custom-Keycards keycard(s)`);
+  }
+
+  let staleTierCapsFixed = 0;
+  for (const [key, item] of classNameItem) {
+    const owner = classNameOwner.get(key);
+    if (!owner || typeof item.MaxStockThreshold !== "number") continue;
+    const corrected = OLD_TO_NEW_TIER_MAX_STOCK[item.MaxStockThreshold];
+    if (corrected === undefined) continue;
+    item.MaxStockThreshold = corrected;
+    dirty.add(owner);
+    staleTierCapsFixed++;
+  }
+  if (staleTierCapsFixed > 0) {
+    ok(
+      `Market gap-fill: corrected ${staleTierCapsFixed} item(s) still using the old 25/10/4 tier stock caps (now 20/8/3, matching market.ts's TIER_MAX_STOCK)`,
+    );
   }
 
   if (dirty.size === 0) return;

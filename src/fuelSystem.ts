@@ -100,11 +100,73 @@ const MORE_CARS: VehicleFuel[] = [
   ].map((type) => ({ type, fuel: "GASOLINE" as const, consumption: 1.13 })),
 ];
 
+// TP-Apoc-SUV/M1025/Pickup - closest vanilla counterpart is Offroad_02
+// (DIESEL, 1.24 - reused verbatim from vehicles.xml), confirmed by
+// TP-Apoc-M1025's own shipped trader JSON fragment listing
+// "Offroad_02_Wheel" as its spare wheel part (see modTypes.ts's comment).
+const TP_APOC_SUV: VehicleFuel[] = [
+  "TP_Apoc_Suv",
+  "TP_Apoc_Black_Suv",
+  "TP_Apoc_Blue_Suv",
+  "TP_Apoc_Camo_Suv",
+  "TP_Apoc_Green_Suv",
+  "TP_Apoc_Grey_Suv",
+  "TP_Apoc_Red_Suv",
+  "TP_Apoc_Yellow_Suv",
+  "TP_Apoc_Suv_Auto",
+  "TP_Apoc_Suv_Black_Auto",
+  "TP_Apoc_Suv_Blue_Auto",
+  "TP_Apoc_Suv_Camo_Auto",
+  "TP_Apoc_Suv_Green_Auto",
+  "TP_Apoc_Suv_Grey_Auto",
+  "TP_Apoc_Suv_Red_Auto",
+  "TP_Apoc_Suv_Yellow_Auto",
+].map((type) => ({ type, fuel: "DIESEL", consumption: 1.24 }));
+
+const TP_APOC_M1025: VehicleFuel[] = [
+  "TP_Apoc_M1025",
+  "TP_Apoc_M1025_Black",
+  "TP_Apoc_M1025_Camo",
+  "TP_Apoc_M1025_Tan",
+  "TP_Apoc_M1025_NoGun",
+  "TP_Apoc_M1025_NoGun_Black",
+  "TP_Apoc_M1025_NoGun_Camo",
+  "TP_Apoc_M1025_NoGun_Tan",
+  "TP_Apoc_M1025_StaticGun",
+  "TP_Apoc_M1025_StaticGun_Black",
+  "TP_Apoc_M1025_StaticGun_Camo",
+  "TP_Apoc_M1025_StaticGun_Tan",
+].map((type) => ({ type, fuel: "DIESEL", consumption: 1.24 }));
+
+const TP_APOC_PICKUP: VehicleFuel[] = [
+  "TP_ApocPickup_Truck",
+  "TP_ApocPickup_Truck_Black",
+  "TP_ApocPickup_Truck_Red",
+  "TP_ApocPickup_Truck_Blue",
+  "TP_ApocPickup_Truck_Yellow",
+  "TP_ApocPickup_Truck_Green",
+  "TP_ApocPickup_Truck_Camo",
+  "TP_ApocPickup_Truck_BlackCamo",
+  "TP_ApocPickup_Truck_Bloody",
+  "TP_ApocPickup_Truck_Auto",
+  "TP_ApocPickup_Truck_Black_Auto",
+  "TP_ApocPickup_Truck_Red_Auto",
+  "TP_ApocPickup_Truck_Blue_Auto",
+  "TP_ApocPickup_Truck_Yellow_Auto",
+  "TP_ApocPickup_Truck_Green_Auto",
+  "TP_ApocPickup_Truck_Camo_Auto",
+  "TP_ApocPickup_Truck_BlackCamo_Auto",
+  "TP_ApocPickup_Truck_Bloody_Auto",
+].map((type) => ({ type, fuel: "DIESEL", consumption: 1.24 }));
+
 const VEHICLE_FUEL_SOURCES: Record<string, VehicleFuel[]> = {
   "@UAZ-31514": UAZ_31514,
   "@MBM-ApocalypseTruck": MBM_TRUCKS.filter((v) => v.type.startsWith("MBM_Apocalypse_Truck")),
   "@MBM-ApocalypticPAZ": MBM_TRUCKS.filter((v) => v.type.startsWith("MBM_ApocalypticPAZ")),
   "@MoreCars": MORE_CARS,
+  "@TP-Apoc-SUV": TP_APOC_SUV,
+  "@TP-Apoc-M1025": TP_APOC_M1025,
+  "@TP-Apoc-Pickup": TP_APOC_PICKUP,
 };
 
 const VEHICLE_TYPE = /<vehicle\s+type="([^"]+)"/g;

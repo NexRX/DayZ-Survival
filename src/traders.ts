@@ -72,7 +72,7 @@ const CUSTOM_ZONE_NAME = "CustomTrader";
 // TODO: fill in with a real, scouted position ([x, y, z] - y is elevation,
 // not optional) before this zone/its NPCs will be generated. e.g.:
 //   const CUSTOM_POSITION: [number, number, number] | null = [7500, 20, 9600];
-const CUSTOM_POSITION: [number, number, number] | null = [7991.59, 221.09, 11312.5];
+export const CUSTOM_POSITION: [number, number, number] | null = [7991.59, 221.09, 11312.5];
 const CUSTOM_RADIUS = 150;
 
 // A DayZ-Expansion-Core SafeZone (no PvP damage/vehicle damage) centered on
@@ -81,8 +81,45 @@ const CUSTOM_RADIUS = 150;
 // CUSTOM_RADIUS above (which only governs Market buy/sell pricing/stock,
 // nothing to do with combat). Also the radius serverpack/addons/
 // DZSurvivalTraderRestock's ActionCheckTraderBoard.c uses for its own
-// trader-proximity check - keep both in sync if this is ever changed.
-const CUSTOM_SAFE_ZONE_RADIUS = 175;
+// trader-proximity check - keep both in sync if this is ever changed. Also
+// reused by aiWorldEvents.ts to keep the various AI-mod "safe zone" fields
+// (Knock Knock Zombies/Airborne AI/hSF Zombie Horde) from spawning threats
+// on top of the trader city.
+export const CUSTOM_SAFE_ZONE_RADIUS = 175;
+
+// Real, physical gold currency used as the trader city's (and ATM's) only
+// currency - DayZ-Expansion-Core's own ExpansionGoldNugget. No new mod
+// needed (Core is already required for the whole Expansion Market/trader
+// system). Earlier considered @CJ187-MoreMoney's "Coin" item instead (a
+// real gold-coin model) but its varStackMax is only 50 - not what "feel
+// free to stack this up for convenience" needs - so that mod was dropped
+// again; its items stay in marketGapFill.ts's MANUAL_EXCLUSIONS regardless,
+// on the same defense-in-depth basis as every other permanently-denylisted
+// classname there (harmless no-op unless the mod is ever reinstalled).
+// Like the stock expansionbanknotehryvnia it replaces, this item has no
+// types.xml entry - it's created purely from its own mod config on demand
+// for trader/ATM purchases, not spawned via the CE.
+//
+// IMPORTANT - do NOT use ExpansionGoldNugget_InsanityStack here (its
+// "_InsanityStack" variant bumps varStackMax/varQuantityMax from 50,000 to
+// 16,777,216 and was tried first for that reason): confirmed via unpacking
+// market_scripts.pbo that this variant is actually broken as an
+// Exchange.json denomination. ExpansionMarketModule.LoadMoneyPrice() keys
+// its classname->price map using the *unstripped* classname straight from
+// Exchange.json, but GetMoneyPrice() unconditionally strips any
+// "_insanitystack" suffix (MapInsanityStackToMoneyType()) before every
+// lookup - so a denomination whose own configured classname already ends
+// in "_InsanityStack" can never find its own price (always resolves to 0).
+// SpawnMoneyInCurrency() then computes remainingAmount/0 for that
+// denomination and skips spawning entirely - the sale/purchase still
+// completes (stock/notification fire normally) but zero currency is ever
+// actually created. Confirmed by reading the source, not simulated. Plain
+// ExpansionGoldNugget's own native 50,000 stack cap (ExpansionMoneyNugget_
+// Base, confirmed via core_objects_currencies.pbo) is still more than
+// enough headroom for any realistic payout in this project's economy (a
+// handful of stacks at most even for a Legendary-tier sale) without the
+// InsanityStack lookup bug.
+const GOLD_CURRENCY_CLASSNAME = "ExpansionGoldNugget";
 
 interface TraderIdentity {
   fileName: string;
@@ -375,9 +412,16 @@ async function ensureCustomTraderIdentities(): Promise<void> {
         RequiredFaction: "",
         RequiredCompletedQuestID: -1,
         TraderIcon: identity.icon,
-        Currencies: ["expansionbanknotehryvnia"],
+        // Real, physical currency (see GOLD_CURRENCY_CLASSNAME/
+        // ensureGoldCoinCurrency() below) - DayZ-Expansion-Core ships this
+        // item out of the box (core_objects_currencies.pbo, confirmed via
+        // its own wiki: "gold/silver bars and nuggets we provide by default
+        // with the Expansion Core mod"), so no extra mod/risk was needed.
+        // Matches MarketSettings.json's own CurrencyIcon, a gold coin stack
+        // graphic (coinstack2_64x64.edds).
+        Currencies: [GOLD_CURRENCY_CLASSNAME],
         DisplayCurrencyValue: 1,
-        DisplayCurrencyName: "",
+        DisplayCurrencyName: "Gold Coin",
         UseCategoryOrder: 0,
         Categories: identity.categories,
         Items: {},
@@ -633,6 +677,109 @@ async function ensureCustomVehicleSpawnPositions(): Promise<void> {
   }
 }
 
+// Exchange.json (profiles/ExpansionMod/Market/) is DayZ-Expansion-Market's
+// dedicated currency category (IsExchange: 1 - see market.ts's
+// writeMergedCategory(), which always sets IsExchange: 0 for every *other*
+// managed category, deliberately leaving this one alone) - self-generated
+// with expansionbanknotehryvnia as its sole item on first server start,
+// same timing as everything else under EXPANSION_MARKET_DIR/MARKET_SETTINGS
+// (see tuneExpansionMarket()/ensureCustomVehicleSpawnPositions()).
+interface ExchangeCategory {
+  m_Version: number;
+  DisplayName: string;
+  Icon: string;
+  Color: string;
+  IsExchange: number;
+  InitStockPercent: number;
+  Items: {
+    ClassName: string;
+    MaxPriceThreshold: number;
+    MinPriceThreshold: number;
+    SellPricePercent: number;
+    MaxStockThreshold: number;
+    MinStockThreshold: number;
+    QuantityPercent: number;
+    SpawnAttachments: unknown[];
+    Variants: unknown[];
+  }[];
+}
+
+const EXCHANGE_FILE = `${EXPANSION_MARKET_DIR}/Exchange.json`;
+
+// Makes GOLD_CURRENCY_CLASSNAME the one and only currency, both at the
+// trader (Exchange.json - what the market system will mint/accept as
+// change) and at the ATM (MarketSettings.json's own separate Currencies
+// list - confirmed via DayZ-Expansion-Scripts' own wiki, "[Server Hosting]
+// Setting up Custom Market Currencies": trader currency and ATM currency are
+// two independently-configured lists, not derived from each other).
+async function ensureGoldCoinCurrency(): Promise<void> {
+  if (await exists(EXCHANGE_FILE)) {
+    const data: ExchangeCategory = JSON.parse(await Deno.readTextFile(EXCHANGE_FILE));
+    const alreadyGold = data.Items.length === 1 &&
+      data.Items[0].ClassName === GOLD_CURRENCY_CLASSNAME;
+    if (!alreadyGold) {
+      data.Items = [
+        {
+          ClassName: GOLD_CURRENCY_CLASSNAME,
+          MaxPriceThreshold: 1,
+          MinPriceThreshold: 1,
+          SellPricePercent: -1,
+          MaxStockThreshold: 1,
+          MinStockThreshold: 1,
+          QuantityPercent: -1,
+          SpawnAttachments: [],
+          Variants: [],
+        },
+      ];
+      await Deno.writeTextFile(EXCHANGE_FILE, JSON.stringify(data, null, 4));
+      ok(`Switched trader currency to ${GOLD_CURRENCY_CLASSNAME} in ${EXCHANGE_FILE}`);
+    }
+  } else {
+    log(
+      `${EXCHANGE_FILE} not generated yet - DayZ-Expansion-Market will create it (with its ` +
+        `own defaults) on first server start; re-run after that to switch it to ` +
+        `${GOLD_CURRENCY_CLASSNAME}`,
+    );
+  }
+
+  if (await exists(MARKET_SETTINGS)) {
+    const settings: MarketSettings = JSON.parse(await Deno.readTextFile(MARKET_SETTINGS));
+    const currencies = Array.isArray(settings.Currencies) ? settings.Currencies as string[] : [];
+    const alreadyGold = currencies.length === 1 && currencies[0] === GOLD_CURRENCY_CLASSNAME;
+    if (!alreadyGold) {
+      settings.Currencies = [GOLD_CURRENCY_CLASSNAME];
+      await Deno.writeTextFile(MARKET_SETTINGS, JSON.stringify(settings, null, 4));
+      ok(`Switched ATM currency to ${GOLD_CURRENCY_CLASSNAME} in ${MARKET_SETTINGS}`);
+    }
+  }
+}
+
+// How much of an item's sale price a player actually gets when selling to
+// the trader (ExpansionMarketModule.c's sell path multiplies the
+// stock-interpolated price by this / 100 - confirmed via unpacking
+// market_scripts.pbo). Buying is completely unaffected by this setting (the
+// buy path always uses a fixed 1.0 modifier) - so this is the "earning
+// money should be hard" lever, paired with market.ts's BUY_PRICE_MULTIPLIER
+// for the "spending money should be hard" side. DayZ-Expansion-Market's own
+// default is 75 (sell for 75% of value); dropped to 20 for the 2026-08
+// hardcore-survival pass - see serverpack/README.md. (A later pass briefly
+// tried 12, but the project owner asked to keep this at 20 and instead
+// raise rarer items' sell percentage individually - see market.ts's
+// SELL_PRICE_PERCENT_OVERRIDE, which layers on top of this global value
+// via DayZ-Expansion-Market's own item > zone > global fallback chain.)
+const HARDCORE_SELL_PRICE_PERCENT = 20;
+
+async function ensureHardcoreSellPricePercent(): Promise<void> {
+  if (!(await exists(MARKET_SETTINGS))) return;
+
+  const settings: MarketSettings = JSON.parse(await Deno.readTextFile(MARKET_SETTINGS));
+  if (settings.SellPricePercent === HARDCORE_SELL_PRICE_PERCENT) return;
+
+  settings.SellPricePercent = HARDCORE_SELL_PRICE_PERCENT;
+  await Deno.writeTextFile(MARKET_SETTINGS, JSON.stringify(settings, null, 4));
+  ok(`Set global SellPricePercent to ${HARDCORE_SELL_PRICE_PERCENT} in ${MARKET_SETTINGS}`);
+}
+
 export async function ensureCustomTrader(): Promise<void> {
   await removeDefaultZones();
   await ensureCustomTraderIdentities();
@@ -640,6 +787,8 @@ export async function ensureCustomTrader(): Promise<void> {
   await ensureCustomZone();
   await ensureCustomTraderSafeZone();
   await ensureCustomVehicleSpawnPositions();
+  await ensureGoldCoinCurrency();
+  await ensureHardcoreSellPricePercent();
   await clampTraderStockToMarketCaps();
 }
 

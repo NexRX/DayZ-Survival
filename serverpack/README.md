@@ -1,9 +1,23 @@
 # DZSurvivalServerPack
 
 This project's own **single Workshop mod** bundling all of its custom
-from-scratch DayZ addons (Enforce Script), so there's only one Workshop item
-to maintain, subscribe to, and add to `mods.txt` - regardless of how many
-custom features live inside it.
+from-scratch DayZ addons (Enforce Script) that have ANY client-visible or
+client-required behavior (UI, self-actions, board interactions, input
+overrides), so there's only one Workshop item to maintain, subscribe to, and
+add to `mods.txt` for those - regardless of how many custom features live
+inside it.
+
+> **A second, separate pack lives at
+> [`../serverpack-serveronly/`](../serverpack-serveronly/)** for addons
+> confirmed to have ZERO client-visible behavior at all (currently just
+> `DZSurvivalBaseDecay`, which used to live here). That pack is
+> **deliberately never published to Steam Workshop** - see
+> [`../src/localServerPacks.ts`](../src/localServerPacks.ts). Everything
+> below in this file (build tooling, signing, the nine-bugs pitfalls list,
+> and each addon's own design writeup) applies equally to both packs - only
+> the physical folder and publish step differ. Addon writeups were kept in
+> this one file rather than split across two READMEs, to keep this
+> project's addon history/lessons-learned in a single place.
 
 Built on Linux with [armake2](https://github.com/KoffeinFlummi/armake2)
 (packs/rapifies) and signed with the **real Bohemia `DSSignFile.exe`** (from
@@ -823,6 +837,20 @@ s/xs`, `bl_pallet_box_1-4`, `bl_pallet_bed_m/s`, `bl_painting_1-9`,
     constants in `src/marketGapFill.ts`). One physically placed in the
     trader city via DayZ-Editor + `deno task sync-editor` at
     `<7984.02, 221.09, 11303.8>` / orientation `<85.0887, 0, -0>`.
+  - **Custom-Keycards' room keycards priced as real, hard-earned access,
+    not a spare wallet (TODO.md item 2).** The generic gap-fill clone logic
+    put all 15 `evg_keycards_*` room-access keycards in the same
+    "Utility"/Uncommon bucket as wallets/gold/rings, pricing them at a few
+    hundred - dirt cheap for a guaranteed-access key to an entire military
+    keycard-loot room. Split into their own Legendary-tier manifest group
+    (`src/data/marketGapFill.json`, caps stock at 1) plus an explicit
+    re-price every run (`KEYCARD_*`/`MASTER_KEYCARD_*` constants in
+    `src/marketGapFill.ts`): 250,000-400,000 for single-location cards
+    (`NWAF01-03`, `Tisy01-05`, and the colored `Blue`/`Green`/`Red`/
+    `Violet`/`White`/`Yellow` cards), 800,000-1,200,000 for
+    `evg_keycards_All` (opens every room). The two keycard _holders_
+    (`evg_keycard_holder_camo`/`_leather` - just carrying pouches, not
+    access) were left at their original Uncommon tier.
   - **Bug found and fixed: dead catch-all Market files blocked their own
     contents from ever reaching a live category.** DayZ-Expansion-Market
     ships both granular per-slot category files (`Backpacks.json`,
@@ -1407,6 +1435,277 @@ Fill.ts`'s `DEAD_MARKET_FILES` set is now exported and folded into the
     are only read once at boot) - the fix has already been applied
     directly to the live profile on disk this session, so the very next
     `deno task up` restart is sufficient; no extra manual step needed.
+
+  **Follow-up session: hardcore-survival economy pass - buying and earning
+  money were both made deliberately harder, on top of everything above.**
+  With no realistic ability to playtest (this is mostly a solo/rarely-
+  played server), the ask was "make it harder to make money whatever it
+  takes... I don't want the option to buy stuff just because I got money" -
+  addressed with 3 independent levers, confirmed via the same
+  `market_scripts.pbo` source read as the sell-price research above:
+
+  - **Selling loot to the trader now pays out far less.**
+    `ExpansionMarketSettings`' own global `SellPricePercent` (in
+    `MarketSettings.json`) is the sell-side payout multiplier - confirmed
+    it's the _only_ place `CalculatePrice()`'s sell path applies a
+    less-than-1.0 modifier (buying always uses a fixed 1.0 modifier, so
+    this setting has **zero** effect on prices when buying). DayZ-
+    Expansion-Market's own default is 75 (75% of an item's computed
+    value); dropped to **20**. New idempotent `ensureHardcoreSellPrice
+Percent()` in `src/traders.ts` (same read-check-write pattern as
+    `ensureGoldCoinCurrency()` right above it), wired into
+    `ensureCustomTrader()`.
+  - **Buying now costs more, scaled by how coveted the item is.** Since
+    `SellPricePercent` has no effect on buying, a separate lever was
+    needed for "hard to buy even with money in hand". New
+    `BUY_PRICE_MULTIPLIER` in `src/market.ts` (Common 1.0x/Uncommon
+    1.5x/Rare 2.0x/Legendary 2.5x), applied in `buildMergedItems()` on
+    top of each item's own `MinPriceThreshold`/`MaxPriceThreshold` (either
+    its raw DayZ-Expansion-Market default, or this file's own
+    `priceOverrides` correction where one exists) before writing the
+    merged category out. Common tier is deliberately left at 1.0x since
+    it covers the baseline survival loop (ammo/food/meds/basic clothing) -
+    not the thing this pass is trying to gate.
+  - **Stock caps tightened and restocking slowed further**, so even
+    "cheap" items can't be bought in bulk repeatedly. `src/market.ts`'s
+    `TIER_MAX_STOCK` dropped from Common 25/Uncommon 10/Rare 4/Legendary 1
+    to **20/8/3/1**. `DZSurvivalTraderRestock_Module.c`'s `TierForCap()`
+    band thresholds updated to match (mandatory - both files carry
+    explicit "keep in sync" comments), `TierCooldownHours()` roughly
+    doubled (Legendary 168h->336h/~2 weeks, Rare 24h->48h, Uncommon
+    6h->12h, Common stays uncooled/weight-gated only so basic ammo/food
+    don't get starved), and the overall drip rate for Common-tier items
+    (which have no cooldown and rely entirely on the per-tick fraction)
+    slowed slightly: `RESTOCK_FRACTION_DIVISOR` 20->25 (~5%/hour ->
+    ~4%/hour), `MIN_RESTOCKS_PER_TICK` 15->10.
+  - Combined effect by tier: Common items are ~3.75x harder to earn back
+    (sell payout cut alone; buy price unchanged) - Legendary items are
+    roughly **9.4x** harder overall (2.5x higher buy price, times ~3.75x
+    worse sell payout for anything sold to afford it), with Uncommon/Rare
+    landing in between. Deliberately left `RARE_CATEGORIES` (`Ghillies`)
+    and `VEHICLE_PARTS_CATEGORIES` (`Vehicle_Parts`/`Batteries`) untouched -
+    both are already special-cased outside the tier system for functional
+    reasons (see `src/market.ts`'s own header comment on those constants)
+    and weren't part of this ask.
+  - **Requires republishing the addon** (`deno task publish-serverpack`,
+    which verifies automatically) for the `.c` changes to take effect, in
+    addition to the normal server restart needed for the `market.ts`/
+    `MarketSettings.json` changes to be re-applied. `deno check`/
+    `deno lint` both clean on the touched TypeScript files.
+
+  **Follow-up session: real bug found and fixed - selling to the trader
+  silently paid out nothing.** Reported live: "it said it gave me gold coin
+  but it didn't give me anything." Root-caused via two independent
+  findings, both confirmed by reading real source (not guessed):
+
+  - **`profiles/ExpansionMod/Market/Exchange.json` (the actual currency
+    price/denomination definition) had silently never been updated away
+    from DayZ-Expansion-Market's own default `expansionbanknotehryvnia`**,
+    even though `MarketSettings.json`'s ATM `Currencies` and both trader
+    identities' own `Currencies` field correctly said
+    `ExpansionGoldNugget_InsanityStack` (from the earlier currency-switch
+    session). Likely cause: `Exchange.json` doesn't exist until
+    DayZ-Expansion-Market itself first generates it, so an earlier
+    `ensureGoldCoinCurrency()` run most likely hit its "not generated yet"
+    branch before the mod created the file with its own default - and
+    nothing re-ran `ensureGoldCoinCurrency()` since. Net effect: the trader
+    was configured to _pay in_ a currency that had no valid price
+    definition anywhere, so `ExpansionMarketModule.SpawnMoneyInCurrency()`
+    could never find an eligible denomination to spawn - the sale still
+    completed (item removed, notification shown) but zero currency was
+    ever created.
+  - **Separately, and more importantly: `ExpansionGoldNugget_InsanityStack`
+    itself is fundamentally broken as an Exchange denomination in
+    DayZ-Expansion-Market's own code**, regardless of the bug above -
+    confirmed by unpacking `market_scripts.pbo` and reading
+    `ExpansionMarketModule.c` directly. `LoadMoneyPrice()` keys its
+    classname->price map using the _unstripped_ classname straight from
+    Exchange.json, but `GetMoneyPrice()` unconditionally strips any
+    `_insanitystack` suffix (`MapInsanityStackToMoneyType()`) before every
+    lookup - so a denomination whose own configured classname already ends
+    in `_InsanityStack` can never find its own price (always resolves to
+    0), and `SpawnMoneyInCurrency()`'s `remainingAmount / denomPrice` then
+    never spawns anything for it. This means simply fixing the stale
+    `Exchange.json` above would NOT have been enough on its own - the
+    `_InsanityStack` variant needed to be dropped entirely.
+  - **Fix**: `GOLD_CURRENCY_CLASSNAME` (`src/traders.ts`) changed from
+    `ExpansionGoldNugget_InsanityStack` to plain `ExpansionGoldNugget`.
+    Its native 50,000 stack cap (`ExpansionMoneyNugget_Base`, confirmed via
+    `core_objects_currencies.pbo`) is still more than enough headroom for
+    any realistic payout in this project's economy without the
+    `_InsanityStack` lookup bug. `ensureGoldCoinCurrency()`'s existing
+    idempotent read-check-write logic needed no other changes - it now
+    correctly rewrites `Exchange.json`/`MarketSettings.json`/both trader
+    identities to the plain classname on every run.
+  - **Applied directly to the live profile this session** (not just a
+    source change waiting on the next restart): ran `tuneExpansionMarket()`
+    - `ensureCustomTrader()` directly via a one-off script against the real
+      running profile. Confirmed output: `Exchange.json` switched to
+      `ExpansionGoldNugget`, ATM `Currencies` switched in `MarketSettings.json`,
+      both trader identity files rewritten, and 598 live trader stock entries
+      clamped down to the tightened tier caps from the hardcore-rebalance
+      pass above. Nothing else to clean up - since the sale never actually
+      produced any currency, there's no bugged item sitting in anyone's
+      inventory to remove. A normal server restart is still needed for the
+      already-running game process to pick up these on-disk JSON changes.
+
+  **Ninth follow-up session: further tightened buy/sell economics -
+  Rare/Legendary buying costs more, and selling pays out even less.**
+  Solo/unsupervised pass, no new bugs - just pushing the existing hardcore-
+  economy levers (see the earlier "hardcore-survival economy pass" and
+  "peer-price balance pass" entries above) further in the same direction,
+  per a standing "make it harder to make money whatever it takes" request:
+
+  - `src/traders.ts`'s `HARDCORE_SELL_PRICE_PERCENT` dropped **20 -> 12**
+    (DayZ-Expansion-Market's own default is 75), then reverted back to 20
+    in a follow-up session - see below. Applies globally via
+    `MarketSettings.json`'s `SellPricePercent`, same as before - only
+    affects the sell side, per the same `CalculatePrice()` behavior
+    confirmed in earlier sessions.
+  - `src/market.ts`'s `BUY_PRICE_MULTIPLIER` bumped for the top two tiers
+    only: Rare **2.0x -> 2.5x**, Legendary **2.5x -> 3.5x**. Common (1.0x)
+    and Uncommon (1.5x) deliberately left untouched so the baseline
+    survival loop (ammo/food/meds/basic clothes) doesn't get any harder -
+    this specifically targets "money alone shouldn't buy real power"
+    (rare/legendary gear, vehicles, optics) without also taxing basic
+    survival shopping.
+  - Stock caps/restock cadence (`TIER_MAX_STOCK`,
+    `DZSurvivalTraderRestock_Module.c`'s tier cooldowns/weights) were left
+    as-is this pass - already tightened twice in prior sessions and
+    reviewed again here; no further changes made.
+  - `deno check`/`deno lint` clean on both touched files (same pre-existing
+    2 exceptions as always - `modVerify.ts`'s unused import,
+    `steam.ts`'s missing-await lint). Requires a normal server restart
+    (`MarketSettings.json`/category templates only re-applied at boot) -
+    no addon republish needed, this is TypeScript/JSON-only.
+
+  **Tenth follow-up session: global sell percent reverted back to 20, with
+  a new per-tier sell-percent override so rarer finds still pay out more.**
+  The project owner's own feedback: 12 was too harsh globally, but rarer
+  items should sell for a higher percentage than common ones - just not
+  anywhere near DayZ-Expansion-Market's own 75 default. Discovered (by
+  unpacking `market_scripts.pbo` again, specifically
+  `ExpansionMarketTrader.GetSellPricePercent()`) that DayZ-Expansion-Market
+  already supports exactly this: each item's own `SellPricePercent` field
+  takes priority over the trader zone's own `SellPricePercent`, which takes
+  priority over the global `MarketSettings.json` value - all three use
+  `-1` as an "inherit the next level up" sentinel. This project's custom
+  zone already leaves its own `SellPricePercent` at `-1` (see
+  `ensureCustomZone()`), so this was a clean lever to add:
+
+  - `src/traders.ts`'s `HARDCORE_SELL_PRICE_PERCENT` reverted **12 -> 20**
+    (back to the original 2026-08 hardcore-survival pass value) - this is
+    still the effective percentage for anything that doesn't get an
+    override below.
+  - New `SELL_PRICE_PERCENT_OVERRIDE` in `src/market.ts` (`Record<Tier,
+number>`, same tier keys as `TIER_MAX_STOCK`/`BUY_PRICE_MULTIPLIER`):
+    Common/Uncommon left at `-1` (inherit the 20% global - no change for
+    the bulk of ordinary trading volume), Rare **40%**, Legendary **60%**.
+    Applied in `buildMergedItems()` on every item pushed to a merged
+    category - both the normal re-priced branch and the self-merging
+    (Boats/Medical) branch, which is safe to do unconditionally here
+    (unlike `MinPriceThreshold`/`MaxPriceThreshold`, `SellPricePercent` is
+    an absolute value overwritten identically every boot, not a multiplier
+    that compounds - no risk of repeating the Boats int32-overflow bug
+    from the eighth follow-up session above).
+  - `deno check`/`deno lint` clean on both touched files (same 2
+    pre-existing exceptions as always). Requires a normal server restart
+    for both the `MarketSettings.json` change and the regenerated category
+    templates to take effect; no addon republish needed.
+
+- **`DZSurvivalBaseDecay`** - abandonment cleanup for this server's
+  vanilla-style bases (fence-kit/tent bases secured with a `Code-Lock`
+  `CodeLock` item). Neither vanilla DayZ nor Code-Lock itself has any
+  time-based decay at all - a locked base persists forever with no upkeep
+  unless something physically destroys it (see `TODO.md`'s original
+  "Base decay/raiding" writeup for the full survey of what was checked
+  before building this: `DayZ-Expansion-Core`'s separate Territory Flag
+  system was ruled out as a disruptive model change rather than a drop-in
+  decay layer, and no well-reviewed drop-in Workshop decay mod was found).
+  Implemented as its own tiny addon rather than touching Code-Lock's own
+  save format at all: activity is tracked in a **separate JSON file**
+  (`$profile:DZSurvivalServerPack\BaseDecay.json`, same directory as
+  `TraderRestock.json`), keyed by each lock's own position rounded to the
+  nearest meter (`DZSurvivalBaseDecay.PositionKey()`) - stable across
+  restarts since a lock attached to a fence/tent never moves. **Per the
+  project owner's explicit requirement, a locked base decays
+  (force-unlocked and dropped) after 30 real days with no recorded
+  activity.**
+
+  Getting the activity signal right took real reverse-engineering of
+  Code-Lock's own unpacked source (`armake2 unpack` against
+  `server/@Code-Lock/addons/codelock.pbo`), because the obvious approaches
+  both turned out to be wrong:
+
+  - **Hooking `CodeLock`'s own methods alone misses the single most common
+    real activity**: an owner/guest opening a gate/tent they already know
+    the code for goes through `ActionInteractLockOnFence.OnStartServer` /
+    `ActionInteractLockOnTent.OnStartServer`, which call `fence.OpenFence()`
+    / `tent.ToggleAnimation("entrancec")` **directly** - the `CodeLock`
+    object itself is only read (`GetLockState`/`IsOwner`/`IsGuest`), never
+    mutated, on that path. Fixed by also hooking those two Action classes
+    (`DZSurvivalBaseDecay_Actions.c`), re-deriving the same
+    `isOwner||isGuest` condition the vanilla body already checks (there's
+    no side effect to key off through a `super()` call that returns
+    `void`).
+  - **Hooking `Fence.OpenFence()`/the tent equivalent directly (instead of
+    the Action classes) was tried and rejected**: vanilla's own
+    `Fence.AfterStoreLoad()` calls `OpenFence()` again on every server
+    restart if the gate was left open last session - hooking that
+    directly would falsely record "activity" for every open-gate base on
+    every single restart, defeating the whole point of decay.
+  - **`CodeLockServerRPC.EnterCode()`** (a stranger successfully entering
+    the passcode) **is a private method and can't be overridden at all**
+    - but it always calls `codelock.ServerSetOwner(id)` right before
+      opening, on both the fresh-claim and stranger-becomes-guest paths, so
+      hooking `ServerSetOwner()` instead covers this case with no loss of
+      coverage.
+  - `CodeLock.LockServer()` (initial claim / passcode changes) is also
+    hooked directly - unambiguous, deliberate activity.
+  - Between `LockServer`/`ServerSetOwner` (`DZSurvivalBaseDecay_CodeLock.c`)
+    and the two Action-class hooks (`DZSurvivalBaseDecay_Actions.c`),
+    every real way a legitimate user interacts with a lock is covered.
+
+  A runtime registry of every currently-spawned `CodeLock` (rebuilt fresh
+  every boot via `EEInit()`/`EEDelete()`, never persisted itself) is
+  scanned once a day (`TICK_INTERVAL_MS` - daily granularity is plenty of
+  precision for a 30-day window). Any lock that's currently locked and has
+  gone `>= 30` days without a recorded activity timestamp gets force-
+  unlocked via `lock.NewUnlockServer(null, parent)` - **the exact same
+  "force-unlock with no player" pattern Code-Lock's own `Fence.c` already
+  uses internally** (`OnPartDestroyedServer` calls
+  `codelock.NewUnlockServer(null, this)` when a connected fence part is
+  destroyed with no player attribution) - a mod-author-sanctioned way to
+  unlock and drop a lock with nobody holding it, making the base freely
+  enterable/raidable without this addon deleting or damaging any objects
+  itself. A lock with no recorded activity yet (never seen before this
+  addon existed) is baselined to "now" the first time it's checked, not
+  treated as already overdue - so deploying this addon doesn't instantly
+  decay every pre-existing base in the world.
+
+  Same observability precedent as `DZSurvivalTraderRestock`: every daily
+  tick logs a heartbeat via `GetGame().AdminLog()` (checked/decayed
+  counts) regardless of outcome, plus one line per actual decay event -
+  both visible live via Community-Online-Tools' admin log viewer. Two
+  matching COT chat commands exist for on-demand checks/testing (same
+  `JMModuleBase`/`JMModuleConstructor` extension point as
+  `DZSurvivalTraderRestock`'s own `/restock` commands, gated by a separate
+  `Admin.DZSurvivalBaseDecay.Trigger` permission):
+
+  - `/basedecay status` - reports how many locked bases are currently
+    tracked and how many days remain until the closest one would decay.
+  - `/basedecay now` - runs a real decay pass immediately (identical logic
+    to the daily tick), for testing without waiting up to 24h.
+
+  See `DZSurvivalBaseDecay_COTCommand.c`.
+
+  **Status: confirmed a clean compile via `deno task verify-serverpack`**
+  (boots the real server, no script errors/warnings attributable to this
+  addon in the RPT). **Not yet confirmed live over a real 30-day window**
+  (obviously can't be tested in one sitting) - see `TESTS.md` for a
+  suggested faster smoke test (temporarily lowering `DECAY_DAYS`, or
+  hand-editing `BaseDecay.json` with an old timestamp to force a decay on
+  the next tick).
 
 ## Building
 

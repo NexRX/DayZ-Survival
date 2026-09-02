@@ -1,4 +1,4 @@
-// DayZ-Raven, DayZ-Rat, and DayZ-Horse each ship a Chernarus-specific
+// DayZ-Raven, DayZ-Rat, DayZ-Horse, and DayZ-Dog each ship a Chernarus-specific
 // "territory" file plus a short readme (server/@DayZ-Raven/raven_territories/
 // ambient_ravens_readme.txt, server/@DayZ-Rat/rat_territories/
 // ambient_rats_readme.txt) or, for Horse, an equivalent set of reference
@@ -31,6 +31,18 @@
 // (confirmed by direct comparison, e.g. Animal_CanisLupus_Grey) - Horse's
 // own root types.xml (Saddle/Bridle/HorseBags/etc.) is merged separately by
 // modTypes.ts, since it's a literal types.xml file at the mod's root.
+//
+// DayZ-Dog is the same shape as Horse: server/@DayZ-Dog/dog_territories/
+// ships ready-made cfgenvironment.xml/events.xml/cfgeventspawns.xml snippets
+// (copied verbatim below) plus per-map territory files (including
+// dog_territories_cherno.xml) and a root types.xml, but that root file only
+// covers gear (collars/vests/gasmask/sheds) - confirmed by grepping it for
+// "Doggo", which is the creature classname prefix used in its own
+// events.xml (Doggo_Wild1..35) - so, exactly like Horse's Animal_Horse_*,
+// the 35 Doggo_Wild<N> creature <type> blocks below are synthesized from
+// the same vanilla Animal_CanisLupus_Grey boilerplate (dogs use
+// behavior="DZWolfGroupBeh", the same wolf AI, so the wolf's types.xml
+// shape is the correct template).
 
 import {
   ECONOMY_EVENTS_FILE,
@@ -271,6 +283,53 @@ const TERRITORIES: WildlifeTerritory[] = [
     </type>`
     ),
     eventSpawnsBlock: `    <event name="AnimalWildHorse" />`,
+  },
+  {
+    modName: "@DayZ-Dog",
+    sourceFile: "dog_territories/dog_territories_cherno.xml",
+    envFileName: "dog_territories.xml",
+    territoryBlock: `\t\t<!-- DOG -->
+\t\t<territory type="Herd" name="WildDog" behavior="DZWolfGroupBeh">
+\t\t\t<file usable="dog_territories" />
+\t\t</territory>`,
+    eventBlock: `    <event name="AnimalWildDog">
+        <nominal>6</nominal>
+        <min>1</min>
+        <max>5</max>
+        <lifetime>180</lifetime>
+        <restock>0</restock>
+        <saferadius>350</saferadius>
+        <distanceradius>0</distanceradius>
+        <cleanupradius>0</cleanupradius>
+        <flags deletable="0" init_random="0" remove_damaged="0"/>
+        <position>fixed</position>
+        <limit>mixed</limit>
+        <active>1</active>
+        <children>
+${
+      Array.from(
+        { length: 35 },
+        (_, i) =>
+          `            <child lootmax="0" lootmin="0" max="1" min="0" type="Doggo_Wild${i + 1}"/>`,
+      ).join("\n")
+    }
+        </children>
+    </event>`,
+    typeBlocks: Array.from(
+      { length: 35 },
+      (_, i) =>
+        `    <type name="Doggo_Wild${i + 1}">
+        <nominal>0</nominal>
+        <lifetime>1800</lifetime>
+        <restock>0</restock>
+        <min>0</min>
+        <quantmin>-1</quantmin>
+        <quantmax>-1</quantmax>
+        <cost>100</cost>
+        <flags count_in_cargo="0" count_in_hoarder="0" count_in_map="1" count_in_player="0" crafted="0" deloot="0"/>
+    </type>`,
+    ),
+    eventSpawnsBlock: `    <event name="AnimalWildDog" />`,
   },
 ];
 

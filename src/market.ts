@@ -28,6 +28,12 @@
 //      MaxStockThreshold (<=1 Legendary, <=4 Rare, <=10 Uncommon, else
 //      Common - see that addon's TierForCap()). Keep TIER_MAX_STOCK below
 //      and that addon's thresholds in sync if either ever changes.
+//   4. Same tier assignment also drives BUY_PRICE_MULTIPLIER (buying rarer
+//      tiers costs proportionally more) and SELL_PRICE_PERCENT_OVERRIDE
+//      (rarer tiers pay out a higher percentage on sale than the 20%
+//      global default - a per-item override DayZ-Expansion-Market itself
+//      supports, see that constant's own comment for how the fallback
+//      chain works).
 //
 // Merging is done by reading each source category's still-pristine,
 // Expansion-generated JSON (Assault_Rifles.json, Helmets.json, etc. - these
@@ -101,11 +107,58 @@ type Tier = "Common" | "Uncommon" | "Rare" | "Legendary";
 // Absolute stock cap per tier. Also what the companion restock addon
 // reverse-engineers an item's tier from at runtime (see this file's header
 // comment) - keep these thresholds and that addon's TierForCap() in sync.
+// Tightened 2026-08 for the hardcore-survival pass (was 25/10/4/1) - see
+// serverpack/README.md's "hardcore economy rebalance" section.
 export const TIER_MAX_STOCK: Record<Tier, number> = {
-  Common: 25,
-  Uncommon: 10,
-  Rare: 4,
+  Common: 20,
+  Uncommon: 8,
+  Rare: 3,
   Legendary: 1,
+};
+
+// Buy-price multiplier applied on top of whatever price
+// (DayZ-Expansion-Market's own shipped default, or this file's own
+// priceOverride) an item would otherwise land on - part of the same
+// 2026-08 hardcore-survival pass as TIER_MAX_STOCK above. Buying is
+// completely unaffected by MarketSettings.json's SellPricePercent
+// (confirmed via ExpansionMarketItem.CalculatePrice() - the buy path
+// always uses modifier=1.0), so this is the only lever for "buying stuff
+// should be hard even with money" as opposed to "earning money should be
+// hard) - that side is MarketSettings.json's SellPricePercent - see
+// traders.ts's ensureHardcoreSellPricePercent()). Common stays at 1.0x
+// since that tier covers the baseline survival loop (ammo/food/meds/basic
+// clothes) - deliberately not penalized. Rare/Legendary bumped further
+// (2.0->2.5, 2.5->3.5) in a later hardcore pass - the whole point of those
+// tiers is that money alone shouldn't buy real power; Common/Uncommon left
+// untouched so the basic survival loop doesn't get harder too.
+export const BUY_PRICE_MULTIPLIER: Record<Tier, number> = {
+  Common: 1.0,
+  Uncommon: 1.5,
+  Rare: 2.5,
+  Legendary: 3.5,
+};
+
+// Per-item sell-price-percent override, layered on top of the global
+// SellPricePercent (MarketSettings.json, see traders.ts's
+// HARDCORE_SELL_PRICE_PERCENT). Confirmed via unpacking market_scripts.pbo
+// (ExpansionMarketTrader.GetSellPricePercent()): each item's own
+// SellPricePercent takes priority over the trader zone's own
+// SellPricePercent, which takes priority over the global setting - all
+// three use -1 as an "inherit the next level up" sentinel. This project's
+// custom zone already leaves its own SellPricePercent at -1 (see
+// ensureCustomZone() in traders.ts), so setting a real value here is the
+// only thing that can make one item sell for a different percentage than
+// another. Rarer tiers sell for a higher percentage than Common/Uncommon -
+// a lucky rare/legendary find should be worth cashing in, without going
+// anywhere near DayZ-Expansion-Market's own 75 default (money should still
+// be hard to make in bulk). Common/Uncommon are left at -1 (inherit the
+// 20 global default) since those tiers are the bulk of ordinary trading
+// volume and shouldn't get any easier to profit from.
+export const SELL_PRICE_PERCENT_OVERRIDE: Record<Tier, number> = {
+  Common: -1,
+  Uncommon: -1,
+  Rare: 40,
+  Legendary: 60,
 };
 
 interface SourceGroup {
@@ -791,11 +844,22 @@ const ORPHAN_SUFFIX = ".orphaned-source";
 
 async function readCategory(name: string): Promise<MarketCategory | null> {
   const orphanPath = `${EXPANSION_MARKET_DIR}/${name}${ORPHAN_SUFFIX}`;
-  const path = (await exists(orphanPath))
-    ? orphanPath
-    : `${EXPANSION_MARKET_DIR}/${name}.json`;
+  const path = (await exists(orphanPath)) ? orphanPath : `${EXPANSION_MARKET_DIR}/${name}.json`;
   if (!(await exists(path))) return null;
   return JSON.parse(await Deno.readTextFile(path));
+}
+
+// Defense-in-depth hard ceiling on any computed price. The Enforce script
+// engine's JSON loader parses MinPriceThreshold/MaxPriceThreshold as int32
+// (max ~2.147 billion) - anything above that hard-crashes the whole server
+// on next load with "Cannot convert to int", not just a bad price for one
+// item (confirmed live, 2026-09 - see buildMergedItems()'s own comment on
+// the Boats self-merge compounding bug that first triggered this). Kept
+// comfortably below the true int32 ceiling.
+const MAX_SAFE_PRICE = 2_000_000_000;
+
+function clampPrice(value: number): number {
+  return Math.min(value, MAX_SAFE_PRICE);
 }
 
 async function buildMergedItems(def: MergedCategory): Promise<MarketItem[] | null> {
@@ -806,6 +870,22 @@ async function buildMergedItems(def: MergedCategory): Promise<MarketItem[] | nul
     const source = await readCategory(group.source);
     if (!source) continue;
 
+    // Self-merging categories (Boats, Medical - source name equals their
+    // own fileName) read AND write the exact same live file, unlike every
+    // other group here which reads an untouched, quarantined-away pristine
+    // copy (see quarantineConsumedSourceCategories()). Applying the price
+    // multiplier here would re-multiply an already-multiplied price on
+    // every single server boot, compounding forever - confirmed live
+    // (2026-09): Boats' Legendary-tier expansionlhd went 600M -> 58.59
+    // BILLION after 5 boots (2.5^5), overflowing the Enforce script
+    // engine's int32 and hard-crashing the server on every subsequent
+    // start ("File Boats.json: JSON ERROR ... Cannot convert to int").
+    // Self-merging groups therefore never re-price - tier assignment still
+    // fully controls MaxStockThreshold (the actual reason Boats/Medical use
+    // tiers at all: capping expansionlhd to 1 in stock, etc.), just never
+    // touches price again after whatever's already on disk.
+    const selfMerging = group.source === def.fileName;
+
     for (const item of source.Items ?? []) {
       const className = item.ClassName;
       if (!className) continue;
@@ -815,13 +895,33 @@ async function buildMergedItems(def: MergedCategory): Promise<MarketItem[] | nul
       seen.add(className);
 
       const tier = group.overrides?.[className] ?? group.tier;
+
+      if (selfMerging) {
+        const clamped: MarketItem = {
+          ...item,
+          MaxStockThreshold: TIER_MAX_STOCK[tier],
+          SellPricePercent: SELL_PRICE_PERCENT_OVERRIDE[tier],
+        };
+        if (typeof clamped.MinPriceThreshold === "number") {
+          clamped.MinPriceThreshold = clampPrice(clamped.MinPriceThreshold);
+        }
+        if (typeof clamped.MaxPriceThreshold === "number") {
+          clamped.MaxPriceThreshold = clampPrice(clamped.MaxPriceThreshold);
+        }
+        items.push(clamped);
+        continue;
+      }
+
       const priceOverride = group.priceOverrides?.[className];
+      const multiplier = BUY_PRICE_MULTIPLIER[tier];
+      const baseMin = priceOverride ? priceOverride.min : Number(item.MinPriceThreshold);
+      const baseMax = priceOverride ? priceOverride.max : Number(item.MaxPriceThreshold);
       items.push({
         ...item,
         MaxStockThreshold: TIER_MAX_STOCK[tier],
-        ...(priceOverride
-          ? { MinPriceThreshold: priceOverride.min, MaxPriceThreshold: priceOverride.max }
-          : {}),
+        MinPriceThreshold: clampPrice(Math.round(baseMin * multiplier)),
+        MaxPriceThreshold: clampPrice(Math.round(baseMax * multiplier)),
+        SellPricePercent: SELL_PRICE_PERCENT_OVERRIDE[tier],
       });
     }
   }
@@ -977,8 +1077,12 @@ export async function tuneExpansionMarket(): Promise<void> {
       (quarantinedCount === 1 ? "y" : "ies") + " so DayZ-Expansion-Market stops double-loading them"
     : "";
   ok(
-    `Rebuilt ${mergedCount} merged DayZ-Expansion-Market categor${mergedCount === 1 ? "y" : "ies"} ` +
-      `and tuned ${tunedCount} other categor${tunedCount === 1 ? "y" : "ies"} in ${EXPANSION_MARKET_DIR}` +
+    `Rebuilt ${mergedCount} merged DayZ-Expansion-Market categor${
+      mergedCount === 1 ? "y" : "ies"
+    } ` +
+      `and tuned ${tunedCount} other categor${
+        tunedCount === 1 ? "y" : "ies"
+      } in ${EXPANSION_MARKET_DIR}` +
       quarantineNote,
   );
 }

@@ -1,28 +1,22 @@
-// Builds this project's server pack (serverpack/) - a single Workshop mod
-// bundling every custom addon under serverpack/addons/ - into signed,
-// publish-ready PBOs. Packing/rapifying uses armake2, a Linux-native
-// reimplementation of Bohemia's AddonBuilder. Signing uses the *real*
-// `DSSignFile.exe` (DayZ Tools, via Wine - see modSign.ts) - BiSignUtils
-// (a reimplementation) was tried first and produces `.bisign` files that
-// pass its own `checkAll` but that the real DayZ engine rejects at
-// connect-time as "not part of the server". See modSign.ts's header for
-// the full story.
+// Builds one of this project's server packs (see paths.ts's ServerPackConfig
+// - SERVERPACK for the client+server pack, SERVERPACK_SERVERONLY for the
+// server-only one) - each a single Workshop mod bundling every custom addon
+// under its own addons/ folder - into signed, publish-ready PBOs.
+// Packing/rapifying uses armake2, a Linux-native reimplementation of
+// Bohemia's AddonBuilder. Signing uses the *real* `DSSignFile.exe` (DayZ
+// Tools, via Wine - see modSign.ts) - BiSignUtils (a reimplementation) was
+// tried first and produces `.bisign` files that pass its own `checkAll` but
+// that the real DayZ engine rejects at connect-time as "not part of the
+// server". See modSign.ts's header for the full story.
 //
 // One quirk worth knowing if this ever needs touching again: the `.bisign`
 // filename's key-name suffix must match the exact original case of the
-// signing authority name (embedded in the key/signature itself, from
-// SERVERPACK_NAME) - so this pack's mod folder must never be run through
+// signing authority name (embedded in the key/signature itself, from the
+// pack's own `name`) - so a pack's mod folder must never be run through
 // `src/install.ts`'s `lowercaseTree()` (see the `skipLowercase` check in
 // `installOneMod()` there).
 
-import {
-  SERVERPACK_ADDONS_DIR,
-  SERVERPACK_BUILD_DIR,
-  SERVERPACK_DIR,
-  SERVERPACK_KEYS_DIR,
-  SERVERPACK_NAME,
-  SERVERPACK_WORKSHOP_ID_FILE,
-} from "./paths.ts";
+import { SERVERPACK, type ServerPackConfig } from "./paths.ts";
 import { requireTools, runInherit } from "./proc.ts";
 import { die, hint, log, ok, warn } from "./ui.ts";
 import { exists } from "./steam.ts";
@@ -31,29 +25,29 @@ import { ensureDayZTools, ensureWinePrefix, signPboReal } from "./modSign.ts";
 import { ensureConfig, loadSettings } from "./config.ts";
 
 export interface ServerPackAddon {
-  /** Folder name under serverpack/addons/ - also the built PBO's name. */
+  /** Folder name under the pack's addons/ - also the built PBO's name. */
   name: string;
-  /** serverpack/addons/<name> - contains config.cpp and $PBOPREFIX$. */
+  /** <pack addonsDir>/<name> - contains config.cpp and $PBOPREFIX$. */
   srcDir: string;
 }
 
-/** Every subfolder of serverpack/addons/ that looks like a PBO source (has a config.cpp). */
-export async function listAddons(): Promise<ServerPackAddon[]> {
+/** Every subfolder of a pack's addons/ that looks like a PBO source (has a config.cpp). */
+export async function listAddons(pack: ServerPackConfig = SERVERPACK): Promise<ServerPackAddon[]> {
   const addons: ServerPackAddon[] = [];
-  if (!(await exists(SERVERPACK_ADDONS_DIR))) return addons;
-  for await (const entry of Deno.readDir(SERVERPACK_ADDONS_DIR)) {
+  if (!(await exists(pack.addonsDir))) return addons;
+  for await (const entry of Deno.readDir(pack.addonsDir)) {
     if (!entry.isDirectory) continue;
-    const srcDir = `${SERVERPACK_ADDONS_DIR}/${entry.name}`;
+    const srcDir = `${pack.addonsDir}/${entry.name}`;
     if (!(await exists(`${srcDir}/config.cpp`))) continue;
     addons.push({ name: entry.name, srcDir });
   }
   return addons;
 }
 
-function keyPaths(): { priv: string; pub: string } {
+function keyPaths(pack: ServerPackConfig): { priv: string; pub: string } {
   return {
-    priv: `${SERVERPACK_KEYS_DIR}/${SERVERPACK_NAME}.biprivatekey`,
-    pub: `${SERVERPACK_KEYS_DIR}/${SERVERPACK_NAME}.bikey`,
+    priv: `${pack.keysDir}/${pack.name}.biprivatekey`,
+    pub: `${pack.keysDir}/${pack.name}.bikey`,
   };
 }
 
@@ -73,55 +67,55 @@ function keyPaths(): { priv: string; pub: string } {
  */
 const KEY_LENGTH_BITS = 1024;
 
-/** Generate the server pack's shared signing keypair if it doesn't exist yet. */
-export async function ensurePackKeys(): Promise<void> {
-  const { priv } = keyPaths();
+/** Generate a server pack's own signing keypair if it doesn't exist yet. */
+export async function ensurePackKeys(pack: ServerPackConfig = SERVERPACK): Promise<void> {
+  const { priv } = keyPaths(pack);
   if (await exists(priv)) return;
   await requireTools(["bisignutils"]);
-  await Deno.mkdir(SERVERPACK_KEYS_DIR, { recursive: true });
-  log(`Generating a new ${KEY_LENGTH_BITS}-bit signing keypair for '${SERVERPACK_NAME}'`);
+  await Deno.mkdir(pack.keysDir, { recursive: true });
+  log(`Generating a new ${KEY_LENGTH_BITS}-bit signing keypair for '${pack.name}'`);
   const code = await runInherit("bisignutils", [
     "generate",
-    SERVERPACK_NAME,
+    pack.name,
     "--length",
     String(KEY_LENGTH_BITS),
   ], {
-    cwd: SERVERPACK_KEYS_DIR,
+    cwd: pack.keysDir,
   });
   if (code !== 0 || !(await exists(priv))) {
-    die(`bisignutils generate failed for '${SERVERPACK_NAME}'.`);
+    die(`bisignutils generate failed for '${pack.name}'.`);
   }
   ok(
-    `Keypair generated: ${SERVERPACK_KEYS_DIR}/${SERVERPACK_NAME}.bikey (public), ${priv} (private, keep safe).`,
+    `Keypair generated: ${pack.keysDir}/${pack.name}.bikey (public), ${priv} (private, keep safe).`,
   );
   hint(
     "Back up the .biprivatekey somewhere safe - losing it means future " +
-      "updates to the server pack can't be signed with the same key.",
+      "updates to this pack can't be signed with the same key.",
   );
 }
 
 /**
- * Build every addon under serverpack/addons/ into one publish-ready
- * `@<SERVERPACK_NAME>/` folder: a single `mod.cpp`, one `addons/<name>.pbo`
- * per addon (packed + rapified by armake2, then signed by the real
- * `DSSignFile.exe` via Wine - see modSign.ts - with the pack's shared key),
- * and one `keys/<SERVERPACK_NAME>.bikey`. Adding a new addon needs no
- * changes here - it's picked up automatically from serverpack/addons/.
+ * Build every addon under a pack's addons/ into one publish-ready
+ * `@<pack.name>/` folder: a single `mod.cpp`, one `addons/<name>.pbo` per
+ * addon (packed + rapified by armake2, then signed by the real
+ * `DSSignFile.exe` via Wine - see modSign.ts - with the pack's own key), and
+ * one `keys/<pack.name>.bikey`. Adding a new addon needs no changes here -
+ * it's picked up automatically from the pack's addons/ folder.
  */
-export async function buildServerPack(): Promise<string> {
+export async function buildServerPack(pack: ServerPackConfig = SERVERPACK): Promise<string> {
   await requireTools(["armake2", "bisignutils"]);
   const s = await ensureConfig(await loadSettings());
   await ensureDayZTools(s);
   await ensureWinePrefix();
-  const addons = await listAddons();
+  const addons = await listAddons(pack);
   if (addons.length === 0) {
-    die(`No addons found under ${SERVERPACK_ADDONS_DIR} (expected a config.cpp in each).`);
+    die(`No addons found under ${pack.addonsDir} (expected a config.cpp in each).`);
   }
-  if (!(await exists(`${SERVERPACK_DIR}/mod.cpp`))) {
-    die(`Missing ${SERVERPACK_DIR}/mod.cpp`);
+  if (!(await exists(`${pack.dir}/mod.cpp`))) {
+    die(`Missing ${pack.dir}/mod.cpp`);
   }
-  await ensurePackKeys();
-  const { priv, pub } = keyPaths();
+  await ensurePackKeys(pack);
+  const { priv, pub } = keyPaths(pack);
 
   // Lowercase "addons"/"keys" - matches every real, working mod we've
   // unpacked to check (@AI-Bandits, @Dynamic-Scavenging, @Terje-Skills all
@@ -132,13 +126,13 @@ export async function buildServerPack(): Promise<string> {
   // Workshop item's raw folder structure as-is (no such normalization) -
   // matching real-world convention removes this as a possible cause of the
   // persistent "Client has a PBO which is not part of the server" kick.
-  const outRoot = `${SERVERPACK_BUILD_DIR}/@${SERVERPACK_NAME}`;
+  const outRoot = `${pack.buildDir}/@${pack.name}`;
   const addonsOut = `${outRoot}/addons`;
   const keysOut = `${outRoot}/keys`;
-  // Wipe any previous build first - otherwise an addon removed from
-  // serverpack/addons/ (or renamed) leaves its old .pbo/.bisign orphaned
-  // here forever, silently getting bundled into every future build/publish
-  // even though its source is gone.
+  // Wipe any previous build first - otherwise an addon removed from the
+  // pack's addons/ (or renamed) leaves its old .pbo/.bisign orphaned here
+  // forever, silently getting bundled into every future build/publish even
+  // though its source is gone.
   await Deno.remove(outRoot, { recursive: true }).catch(() => {});
   await Deno.mkdir(addonsOut, { recursive: true });
   await Deno.mkdir(keysOut, { recursive: true });
@@ -174,14 +168,14 @@ export async function buildServerPack(): Promise<string> {
     // the target PBO path - no cwd trick needed (unlike BiSignUtils, which
     // wrote next to its *current working directory* instead).
     await signPboReal(priv, pboTarget);
-    if (!(await exists(`${pboTarget}.${SERVERPACK_NAME}.bisign`))) {
+    if (!(await exists(`${pboTarget}.${pack.name}.bisign`))) {
       die(`Signing failed for addon '${addon.name}' - see output above.`);
     }
   }
 
-  await Deno.copyFile(`${SERVERPACK_DIR}/mod.cpp`, `${outRoot}/mod.cpp`);
-  await Deno.copyFile(pub, `${keysOut}/${SERVERPACK_NAME}.bikey`);
-  await writeMeta(outRoot);
+  await Deno.copyFile(`${pack.dir}/mod.cpp`, `${outRoot}/mod.cpp`);
+  await Deno.copyFile(pub, `${keysOut}/${pack.name}.bikey`);
+  await writeMeta(outRoot, pack);
 
   ok(
     `Built ${outRoot} (${addons.length} addon${addons.length === 1 ? "" : "s"}: ` +
@@ -211,17 +205,23 @@ export async function buildServerPack(): Promise<string> {
  * right after a first publish specifically so this file gets embedded with
  * the now-known id.
  */
-async function writeMeta(outRoot: string): Promise<void> {
-  if (!(await exists(SERVERPACK_WORKSHOP_ID_FILE))) {
+async function writeMeta(outRoot: string, pack: ServerPackConfig): Promise<void> {
+  // Local-only packs (see paths.ts's ServerPackConfig.localOnly) are never
+  // published to Steam Workshop at all, so they never have a real
+  // publishedid - meta.cpp is simply skipped, silently, every build (not a
+  // one-time "before the first publish" warning, since there will never be
+  // one).
+  if (pack.localOnly) return;
+  if (!(await exists(pack.workshopIdFile))) {
     warn(
-      `No cached Workshop id yet (${SERVERPACK_WORKSHOP_ID_FILE} not found) - building without ` +
+      `No cached Workshop id yet (${pack.workshopIdFile} not found) - building without ` +
         "meta.cpp. This is expected before the very first publish only.",
     );
     return;
   }
-  const id = (await Deno.readTextFile(SERVERPACK_WORKSHOP_ID_FILE)).trim();
+  const id = (await Deno.readTextFile(pack.workshopIdFile)).trim();
 
-  const contentIds = await fetchContentIds([{ id, name: SERVERPACK_NAME, serverOnly: false }]);
+  const contentIds = await fetchContentIds([{ id, name: pack.name, serverOnly: pack.serverOnly }]);
   const timestamp = contentIds.get(id);
   if (!timestamp) {
     warn(
@@ -234,7 +234,7 @@ async function writeMeta(outRoot: string): Promise<void> {
   const lines = [
     "protocol = 1;",
     `publishedid = ${id};`,
-    `name = "DayZ Survival - Server Pack";`,
+    `name = "${pack.displayName}";`,
     ...(timestamp ? [`timestamp = ${timestamp};`] : []),
   ];
   await Deno.writeTextFile(`${outRoot}/meta.cpp`, lines.join("\r\n") + "\r\n");
