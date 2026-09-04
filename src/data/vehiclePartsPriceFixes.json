@@ -1,0 +1,2298 @@
+{
+  "battery9v": {
+    "max": 1000,
+    "min": 1000
+  },
+  "carbattery": {
+    "max": 2025,
+    "min": 1212
+  },
+  "carradiator": {
+    "max": 2538,
+    "min": 1525
+  },
+  "civsedandoors_backleft": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedandoors_backleft_black": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedandoors_backleft_blackrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedandoors_backleft_whiterust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedandoors_backleft_wine": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedandoors_backleft_winerust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedandoors_backright": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedandoors_backright_black": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedandoors_backright_blackrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedandoors_backright_whiterust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedandoors_backright_wine": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedandoors_backright_winerust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedandoors_codriver": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedandoors_codriver_black": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedandoors_codriver_blackrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedandoors_codriver_whiterust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedandoors_codriver_wine": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedandoors_codriver_winerust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedandoors_driver": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedandoors_driver_black": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedandoors_driver_blackrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedandoors_driver_whiterust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedandoors_driver_wine": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedandoors_driver_winerust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedanhood": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedanhood_black": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedanhood_blackrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedanhood_whiterust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedanhood_wine": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedanhood_winerust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedantrunk": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedantrunk_black": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedantrunk_blackrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedantrunk_whiterust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedantrunk_wine": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedantrunk_winerust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "civsedanwheel": {
+    "max": 2000,
+    "min": 1200
+  },
+  "civsedanwheel_ruined": {
+    "max": 2000,
+    "min": 1200
+  },
+  "expansion_landrover_codriverdoor": {
+    "max": 2500,
+    "min": 1250
+  },
+  "expansion_landrover_driverdoor": {
+    "max": 2500,
+    "min": 1250
+  },
+  "expansion_landrover_hood": {
+    "max": 2000,
+    "min": 1000
+  },
+  "expansion_landrover_left": {
+    "max": 2500,
+    "min": 1250
+  },
+  "expansion_landrover_right": {
+    "max": 2500,
+    "min": 1250
+  },
+  "expansion_landrover_trunk": {
+    "max": 2000,
+    "min": 1000
+  },
+  "expansion_landrover_wheel": {
+    "max": 3000,
+    "min": 1500
+  },
+  "expansion_mh6_door_1_1": {
+    "max": 2500,
+    "min": 1250
+  },
+  "expansion_mh6_door_1_2": {
+    "max": 2500,
+    "min": 1250
+  },
+  "expansion_mh6_door_2_1": {
+    "max": 2500,
+    "min": 1250
+  },
+  "expansion_mh6_door_2_2": {
+    "max": 2500,
+    "min": 1250
+  },
+  "expansionbuswheel": {
+    "max": 3000,
+    "min": 1500
+  },
+  "expansionbuswheeldouble": {
+    "max": 3000,
+    "min": 1500
+  },
+  "expansioncarkey": {
+    "max": 1250,
+    "min": 1000
+  },
+  "expansionhelicopterbattery": {
+    "max": 2738,
+    "min": 1838
+  },
+  "expansionhydraulicfluid": {
+    "max": 1250,
+    "min": 1000
+  },
+  "expansionhydraulichoses": {
+    "max": 2538,
+    "min": 1525
+  },
+  "expansionigniterplug": {
+    "max": 2838,
+    "min": 1700
+  },
+  "expansionkeychain_red": {
+    "max": 1000,
+    "min": 1000
+  },
+  "expansionmerlinbackwheel": {
+    "max": 3000,
+    "min": 1500
+  },
+  "expansionmerlinfrontwheel": {
+    "max": 3000,
+    "min": 1500
+  },
+  "expansiontractorbackwheel": {
+    "max": 2500,
+    "min": 1250
+  },
+  "expansiontractordoorscodriver": {
+    "max": 2000,
+    "min": 1000
+  },
+  "expansiontractordoorsdriver": {
+    "max": 2000,
+    "min": 1000
+  },
+  "expansiontractorfrontwheel": {
+    "max": 2500,
+    "min": 1250
+  },
+  "expansionuazdoorcargo1": {
+    "max": 2500,
+    "min": 1250
+  },
+  "expansionuazdoorcargo2": {
+    "max": 2500,
+    "min": 1250
+  },
+  "expansionuazdoorcodriver": {
+    "max": 2500,
+    "min": 1250
+  },
+  "expansionuazdoordriver": {
+    "max": 2500,
+    "min": 1250
+  },
+  "expansionuazdoorhood": {
+    "max": 2000,
+    "min": 1000
+  },
+  "expansionuazwheel": {
+    "max": 3000,
+    "min": 1500
+  },
+  "expansionuh1hdoor_1_1": {
+    "max": 2500,
+    "min": 1250
+  },
+  "expansionuh1hdoor_1_2": {
+    "max": 2500,
+    "min": 1250
+  },
+  "expansionuh1hdoor_2_1": {
+    "max": 2500,
+    "min": 1250
+  },
+  "expansionuh1hdoor_2_2": {
+    "max": 2500,
+    "min": 1250
+  },
+  "expansionvodnikdoorcodriver": {
+    "max": 2500,
+    "min": 1250
+  },
+  "expansionvodnikdoordriver": {
+    "max": 2500,
+    "min": 1250
+  },
+  "expansionvodnikwheel": {
+    "max": 3000,
+    "min": 1500
+  },
+  "glowplug": {
+    "max": 2838,
+    "min": 1700
+  },
+  "hatchback_02_cab_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchback_02_door_1_1": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_1_black": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_1_blackrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_1_blue": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_1_bluerust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_1_cab": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_1_cab_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchback_02_door_1_1_cat": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_1_fat": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_1_fat_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchback_02_door_1_1_icegem": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_1_mtconstruction": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_1_mtconstruction_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchback_02_door_1_1_pizzapresto": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_1_purplebomb": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_1_purplesmoke": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_1_redrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_1_rustbeige": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_1_stripes1": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_1_stripes1_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchback_02_door_1_2": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_2_black": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_2_blackrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_2_blue": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_2_bluerust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_2_cab": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_2_cab_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchback_02_door_1_2_cat": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_2_fat": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_2_fat_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchback_02_door_1_2_icegem": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_2_mtconstruction": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_2_mtconstruction_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchback_02_door_1_2_pizzapresto": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_2_purplebomb": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_2_purplesmoke": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_2_redrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_2_rustbeige": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_2_stripes1": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_1_2_stripes1_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchback_02_door_2_1": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_1_black": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_1_blackrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_1_blue": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_1_bluerust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_1_cab": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_1_cab_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchback_02_door_2_1_cat": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_1_fat": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_1_fat_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchback_02_door_2_1_icegem": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_1_mtconstruction": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_1_mtconstruction_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchback_02_door_2_1_pizzapresto": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_1_purplebomb": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_1_purplesmoke": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_1_redrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_1_rustbeige": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_1_stripes1": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_1_stripes1_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchback_02_door_2_2": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_2_black": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_2_blackrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_2_blue": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_2_bluerust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_2_cab": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_2_cab_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchback_02_door_2_2_cat": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_2_fat": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_2_fat_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchback_02_door_2_2_icegem": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_2_mtconstruction": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_2_mtconstruction_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchback_02_door_2_2_pizzapresto": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_2_purplebomb": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_2_purplesmoke": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_2_redrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_2_rustbeige": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_2_stripes1": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_door_2_2_stripes1_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchback_02_fat_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchback_02_hood": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_hood_black": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_hood_blackrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_hood_blue": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_hood_bluerust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_hood_cab": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_hood_cab_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchback_02_hood_cat": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_hood_cat2": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_hood_crack": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_hood_cupcake": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_hood_fat": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_hood_fat_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchback_02_hood_icegem": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_hood_kindchoc": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_hood_mtconstruction": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_hood_mtconstruction_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchback_02_hood_pizzapresto": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_hood_purplebomb": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_hood_purplesmoke": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_hood_redrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_hood_rustbeige": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_hood_stripes1": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_hood_stripes1_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchback_02_hood_vw": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_mtconstruction_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchback_02_stripes1_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchback_02_trunk": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_trunk_black": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_trunk_blackrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_trunk_blue": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_trunk_bluerust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_trunk_cab": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_trunk_cab_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchback_02_trunk_cat": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_trunk_fat": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_trunk_fat_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchback_02_trunk_icegem": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_trunk_mtconstruction": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_trunk_mtconstruction_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchback_02_trunk_pizzapresto": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_trunk_purplebomb": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_trunk_purplesmoke": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_trunk_redrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_trunk_rustbeige": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_trunk_stripes1": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchback_02_trunk_stripes1_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchback_02_wheel": {
+    "max": 2000,
+    "min": 1200
+  },
+  "hatchback_02_wheel_ruined": {
+    "max": 2000,
+    "min": 1200
+  },
+  "hatchbackdoors_codriver": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackdoors_codriver_5000ca": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackdoors_codriver_5000ca_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchbackdoors_codriver_blue": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackdoors_codriver_bluerust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackdoors_codriver_cab": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackdoors_codriver_chernarusarmy": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackdoors_codriver_chernarusarmy_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchbackdoors_codriver_firefighter": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackdoors_codriver_greenrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackdoors_codriver_policerus": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackdoors_codriver_white": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackdoors_codriver_whiterust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackdoors_codriver_wineblue": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackdoors_codriver_wineblue_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchbackdoors_driver": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackdoors_driver_blue": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackdoors_driver_bluerust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackdoors_driver_cab": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackdoors_driver_firefighter": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackdoors_driver_greenrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackdoors_driver_policerus": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackdoors_driver_white": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackdoors_driver_whiterust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackdoors_driver_wineblue": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackdoors_driver_wineblue_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchbackhood": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackhood_5000ca": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackhood_5000ca_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchbackhood_blue": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackhood_bluerust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackhood_cab": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackhood_chernarusarmy": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackhood_chernarusarmy_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchbackhood_firefighter": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackhood_greenrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackhood_policerus": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackhood_white": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackhood_whiterust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackhood_wineblue": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbackhood_wineblue_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchbacktrunk": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbacktrunk_5000ca": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbacktrunk_5000ca_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchbacktrunk_blue": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbacktrunk_bluerust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbacktrunk_cab": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbacktrunk_chernarusarmy": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbacktrunk_chernarusarmy_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchbacktrunk_firefighter": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbacktrunk_greenrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbacktrunk_policerus": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbacktrunk_white": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbacktrunk_whiterust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbacktrunk_wineblue": {
+    "max": 2175,
+    "min": 1300
+  },
+  "hatchbacktrunk_wineblue_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "hatchbackwheel": {
+    "max": 2000,
+    "min": 1200
+  },
+  "hatchbackwheel_ruined": {
+    "max": 2000,
+    "min": 1200
+  },
+  "headlighth7": {
+    "max": 2462,
+    "min": 1500
+  },
+  "headlighth7_box": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypse_truck": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypse_truck_doors_cargo1": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypse_truck_doors_codriver": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypse_truck_doors_driver": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypse_truck_doors_trunk": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypse_truck_doors_trunk1": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypse_truck_wheel_front": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypse_truck_wheel_front_destroyed": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypse_truck_wheel_rear": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypse_truck_wheel_rear_destroyed": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_black": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_blue": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_camo": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_doors_cargo1_1_black": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_doors_cargo1_1_blue": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_doors_cargo1_1_camo": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_doors_cargo1_1_green": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_doors_cargo1_1_white": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_doors_cargo1_1_yellow": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_doors_cargo1_black": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_doors_cargo1_blue": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_doors_cargo1_camo": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_doors_cargo1_green": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_doors_cargo1_white": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_doors_cargo1_yellow": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_doors_cargo2_black": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_doors_cargo2_blue": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_doors_cargo2_camo": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_doors_cargo2_green": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_doors_cargo2_white": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_doors_cargo2_yellow": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_doors_driver_black": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_doors_driver_blue": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_doors_driver_camo": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_doors_driver_green": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_doors_driver_white": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_doors_driver_yellow": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_green": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_wheel": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_wheel_destroyed": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_white": {
+    "max": 2538,
+    "min": 1525
+  },
+  "mbm_apocalypticpaz_yellow": {
+    "max": 2538,
+    "min": 1525
+  },
+  "offroad_02_door_1_1": {
+    "max": 9000,
+    "min": 5400
+  },
+  "offroad_02_door_1_1_rust": {
+    "max": 9000,
+    "min": 5400
+  },
+  "offroad_02_door_1_2": {
+    "max": 9000,
+    "min": 5400
+  },
+  "offroad_02_door_1_2_rust": {
+    "max": 9000,
+    "min": 5400
+  },
+  "offroad_02_door_2_1": {
+    "max": 9000,
+    "min": 5400
+  },
+  "offroad_02_door_2_1_rust": {
+    "max": 9000,
+    "min": 5400
+  },
+  "offroad_02_door_2_2": {
+    "max": 9000,
+    "min": 5400
+  },
+  "offroad_02_door_2_2_rust": {
+    "max": 9000,
+    "min": 5400
+  },
+  "offroad_02_hood": {
+    "max": 1200,
+    "min": 1000
+  },
+  "offroad_02_trunk": {
+    "max": 9000,
+    "min": 5400
+  },
+  "offroad_02_trunk_rust": {
+    "max": 9000,
+    "min": 5400
+  },
+  "offroad_02_wheel": {
+    "max": 28525,
+    "min": 17112
+  },
+  "offroadhatchback_5000ca_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "offroadhatchback_chernarusarmy_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "offroadhatchback_wineblue_rust": {
+    "max": 2538,
+    "min": 1525
+  },
+  "sedan_02_door_1_1": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_1_1_graffiti1": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_1_1_grey": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_1_1_greyrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_1_1_medic01": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_1_1_peacebird": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_1_1_red": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_1_1_redrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_1_1_yellowrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_1_2": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_1_2_chdkz": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_1_2_grey": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_1_2_greyrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_1_2_medic01": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_1_2_peacebird": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_1_2_red": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_1_2_redrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_1_2_yellowrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_2_1": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_2_1_grey": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_2_1_greyrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_2_1_medic01": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_2_1_peacebird": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_2_1_red": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_2_1_redrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_2_1_yellowrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_2_2": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_2_2_grey": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_2_2_greyrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_2_2_medic01": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_2_2_peacebird": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_2_2_red": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_2_2_redrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_door_2_2_yellowrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_hood": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_hood_chdkz": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_hood_graffiti1": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_hood_graffiti2": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_hood_grey": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_hood_greyrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_hood_medic01": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_hood_peacebird": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_hood_red": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_hood_redrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_hood_yellowrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_trunk": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_trunk_graffiti1": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_trunk_graffiti2": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_trunk_grey": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_trunk_greyrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_trunk_medic01": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_trunk_peacebird": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_trunk_red": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_trunk_redrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_trunk_yellowrust": {
+    "max": 2175,
+    "min": 1300
+  },
+  "sedan_02_wheel": {
+    "max": 1000,
+    "min": 1000
+  },
+  "sedan_02_wheel_ruined": {
+    "max": 1000,
+    "min": 1000
+  },
+  "sparkplug": {
+    "max": 2538,
+    "min": 1525
+  },
+  "tirerepairkit": {
+    "max": 2538,
+    "min": 1525
+  },
+  "tp_apoc_m1025_black_hood_body": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apoc_m1025_camo_hood_body": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apoc_m1025_door_1_1": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apoc_m1025_door_1_1_black": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apoc_m1025_door_1_1_camo": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apoc_m1025_door_1_1_tan": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apoc_m1025_door_1_2": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apoc_m1025_door_1_2_black": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apoc_m1025_door_1_2_camo": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apoc_m1025_door_1_2_tan": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apoc_m1025_door_2_1": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apoc_m1025_door_2_1_black": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apoc_m1025_door_2_1_camo": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apoc_m1025_door_2_1_tan": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apoc_m1025_door_2_2": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apoc_m1025_door_2_2_black": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apoc_m1025_door_2_2_camo": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apoc_m1025_door_2_2_tan": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apoc_m1025_hood": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apoc_m1025_hood_black": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apoc_m1025_hood_body": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apoc_m1025_hood_camo": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apoc_m1025_hood_tan": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apoc_m1025_tan_hood_body": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apoc_m1025_trunk": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apoc_m1025_trunk_black": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apoc_m1025_trunk_camo": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apoc_m1025_trunk_tan": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickup_trunk": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickup_trunk_black": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickup_trunk_blackcamo": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickup_trunk_bloody": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickup_trunk_blue": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickup_trunk_camo": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickup_trunk_green": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickup_trunk_red": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickup_trunk_yellow": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickup_wheel": {
+    "max": 2000,
+    "min": 1200
+  },
+  "tp_apocpickupdoors_codriver": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickupdoors_codriver_black": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickupdoors_codriver_blackcamo": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickupdoors_codriver_bloody": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickupdoors_codriver_blue": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickupdoors_codriver_camo": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickupdoors_codriver_green": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickupdoors_codriver_red": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickupdoors_codriver_yellow": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickupdoors_driver": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickupdoors_driver_black": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickupdoors_driver_blackcamo": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickupdoors_driver_bloody": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickupdoors_driver_blue": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickupdoors_driver_camo": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickupdoors_driver_green": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickupdoors_driver_red": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickupdoors_driver_yellow": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickuphood": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickuphood_blackcamo": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickuphood_bloody": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickuphood_blue": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickuphood_camo": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickuphood_green": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickuphood_red": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocpickuphood_yellow": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuv_black_hood": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuv_black_trunk": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuv_blue_hood": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuv_blue_trunk": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuv_camo_hood": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuv_camo_trunk": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuv_green_hood": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuv_green_trunk": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuv_grey_hood": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuv_grey_trunk": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuv_hood": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuv_red_hood": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuv_red_trunk": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuv_trunk": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuv_wheel": {
+    "max": 2000,
+    "min": 1200
+  },
+  "tp_apocsuv_yellow_hood": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuv_yellow_trunk": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_black_cargo1": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_black_cargo2": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_black_codriver": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_black_driver": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_blue_cargo1": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_blue_cargo2": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_blue_codriver": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_blue_driver": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_camo_cargo1": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_camo_cargo2": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_camo_codriver": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_camo_driver": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_cargo1": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_cargo2": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_codriver": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_driver": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_green_cargo1": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_green_cargo2": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_green_codriver": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_green_driver": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_grey_cargo1": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_grey_cargo2": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_grey_codriver": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_grey_driver": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_red_cargo1": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_red_cargo2": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_red_codriver": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_red_driver": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_yellow_cargo1": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_yellow_cargo2": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_yellow_codriver": {
+    "max": 2175,
+    "min": 1300
+  },
+  "tp_apocsuvdoors_yellow_driver": {
+    "max": 2175,
+    "min": 1300
+  },
+  "truck_01_door_1_1": {
+    "max": 1612,
+    "min": 1000
+  },
+  "truck_01_door_1_1_blue": {
+    "max": 1612,
+    "min": 1000
+  },
+  "truck_01_door_1_1_bluerust": {
+    "max": 1612,
+    "min": 1000
+  },
+  "truck_01_door_1_1_greenrust": {
+    "max": 1612,
+    "min": 1000
+  },
+  "truck_01_door_1_1_orange": {
+    "max": 1612,
+    "min": 1000
+  },
+  "truck_01_door_1_1_orangerust": {
+    "max": 1612,
+    "min": 1000
+  },
+  "truck_01_door_2_1": {
+    "max": 1612,
+    "min": 1000
+  },
+  "truck_01_door_2_1_blue": {
+    "max": 1612,
+    "min": 1000
+  },
+  "truck_01_door_2_1_bluerust": {
+    "max": 1612,
+    "min": 1000
+  },
+  "truck_01_door_2_1_greenrust": {
+    "max": 1612,
+    "min": 1000
+  },
+  "truck_01_door_2_1_orange": {
+    "max": 1612,
+    "min": 1000
+  },
+  "truck_01_door_2_1_orangerust": {
+    "max": 1612,
+    "min": 1000
+  },
+  "truck_01_hood": {
+    "max": 1612,
+    "min": 1000
+  },
+  "truck_01_hood_blue": {
+    "max": 1612,
+    "min": 1000
+  },
+  "truck_01_hood_bluerust": {
+    "max": 1612,
+    "min": 1000
+  },
+  "truck_01_hood_greenrust": {
+    "max": 1612,
+    "min": 1000
+  },
+  "truck_01_hood_orange": {
+    "max": 1612,
+    "min": 1000
+  },
+  "truck_01_hood_orangerust": {
+    "max": 1612,
+    "min": 1000
+  },
+  "truck_01_wheel": {
+    "max": 1475,
+    "min": 1000
+  },
+  "truck_01_wheel_ruined": {
+    "max": 1475,
+    "min": 1000
+  },
+  "truck_01_wheeldouble": {
+    "max": 1000,
+    "min": 1000
+  },
+  "truck_01_wheeldouble_ruined": {
+    "max": 1000,
+    "min": 1000
+  },
+  "truckbattery": {
+    "max": 2238,
+    "min": 1338
+  },
+  "uaz_31514": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_blackout_fog": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_blackout_front": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_blackout_roof": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_blue": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_cargo2": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_cargo2_blue": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_cargo2_tdc": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_cargo2_yellow": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_codriverdoor": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_codriverdoor_blue": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_codriverdoor_camos": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_codriverdoor_camow": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_codriverdoor_yellow": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_door_cargo1": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_door_cargo1_blue": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_door_cargo1_camos": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_door_cargo1_camow": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_door_cargo1_yellow": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_door_cargo2": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_door_cargo2_blue": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_door_cargo2_camos": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_door_cargo2_camow": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_door_cargo2_yellow": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_door_cargo3": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_door_cargo3_blue": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_door_cargo3_camos": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_door_cargo3_camow": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_door_cargo3_yellow": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_door_hood": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_door_hood_blue": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_door_hood_hunter": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_door_hood_hunter_camos": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_door_hood_hunter_camow": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_door_hood_yellow": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_door_trunk": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_door_trunk_blue": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_door_trunk_camos": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_door_trunk_camow": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_door_trunk_yellow": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_driverdoor": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_driverdoor_blue": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_driverdoor_camos": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_driverdoor_camow": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_driverdoor_yellow": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_hunter": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_hunter_camos": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_hunter_camow": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_hunter_wheel": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_tdc": {
+    "max": 2538,
+    "min": 1525
+  },
+  "uaz_31514_yellow": {
+    "max": 2538,
+    "min": 1525
+  }
+}

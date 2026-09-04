@@ -166,18 +166,32 @@ class DZSurvivalBaseDecay
 
 	// Called from every hook point that represents real, legitimate use of
 	// a lock (see this file's header comment for the full list of hook
-	// points and why each one was chosen).
+	// points and why each one was chosen). All existing call sites are
+	// engine-guaranteed server-only already (*Server()-suffixed methods),
+	// but guarded here too for defense-in-depth alongside RegisterLock/
+	// UnregisterLock above.
 	static void RecordActivity(CodeLock lock)
 	{
-		if (!lock)
+		if (!lock || !GetGame().IsServer())
 			return;
 
 		s_State.LastActivityUnix.Set(PositionKey(lock.GetPosition()), NowUnix());
 	}
 
+	// EEInit()/EEDelete() (see DZSurvivalBaseDecay_CodeLock.c) are generic
+	// entity lifecycle callbacks that fire on every machine a CodeLock is
+	// visible to (including remote clients' own local proxy of it), unlike
+	// the *Server()-suffixed methods elsewhere in this addon which the
+	// engine itself only ever invokes on the authoritative server. The
+	// IsServer() guard here is what actually keeps this addon's runtime
+	// state/behavior server-only now that its scripts live in the shared
+	// client+server pack (see this addon's own move history/comments in
+	// paths.ts) - the class itself must stay defined identically on both
+	// sides so its COT module/permission registration (see
+	// DZSurvivalBaseDecay_COTCommand.c) matches between client and server.
 	static void RegisterLock(CodeLock lock)
 	{
-		if (!lock)
+		if (!lock || !GetGame().IsServer())
 			return;
 		if (s_LiveLocks.Find(lock) == -1)
 			s_LiveLocks.Insert(lock);
@@ -185,6 +199,8 @@ class DZSurvivalBaseDecay
 
 	static void UnregisterLock(CodeLock lock)
 	{
+		if (!GetGame().IsServer())
+			return;
 		int idx = s_LiveLocks.Find(lock);
 		if (idx > -1)
 			s_LiveLocks.Remove(idx);

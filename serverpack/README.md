@@ -9,15 +9,24 @@ inside it.
 
 > **A second, separate pack lives at
 > [`../serverpack-serveronly/`](../serverpack-serveronly/)** for addons
-> confirmed to have ZERO client-visible behavior at all (currently just
-> `DZSurvivalBaseDecay`, which used to live here). That pack is
-> **deliberately never published to Steam Workshop** - see
-> [`../src/localServerPacks.ts`](../src/localServerPacks.ts). Everything
-> below in this file (build tooling, signing, the nine-bugs pitfalls list,
-> and each addon's own design writeup) applies equally to both packs - only
-> the physical folder and publish step differ. Addon writeups were kept in
-> this one file rather than split across two READMEs, to keep this
-> project's addon history/lessons-learned in a single place.
+> confirmed to have ZERO client-visible behavior _and_ zero
+> Community-Online-Tools module/permission integration (COT requires
+> permission trees to match structurally between client and server - a
+> permission registered only server-side corrupts every connecting
+> client's copy of the tree, silently breaking COT's own admin UI/keybinds
+>
+> - this happened for real to `DZSurvivalBaseDecay`, which used to live
+>   there and was moved back here because of it; see that addon's own
+>   "Current addons" writeup below and `../src/paths.ts`'s comment on
+>   `SERVERPACK_SERVERONLY` for the full incident). That pack is
+>   **currently empty** and **deliberately never published to Steam
+>   Workshop** when it does hold something - see
+>   [`../src/localServerPacks.ts`](../src/localServerPacks.ts). Everything
+>   below in this file (build tooling, signing, the nine-bugs pitfalls list,
+>   and each addon's own design writeup) applies equally to both packs - only
+>   the physical folder and publish step differ. Addon writeups were kept in
+>   this one file rather than split across two READMEs, to keep this
+>   project's addon history/lessons-learned in a single place.
 
 Built on Linux with [armake2](https://github.com/KoffeinFlummi/armake2)
 (packs/rapifies) and signed with the **real Bohemia `DSSignFile.exe`** (from
@@ -845,12 +854,12 @@ s/xs`, `bl_pallet_box_1-4`, `bl_pallet_bed_m/s`, `bl_painting_1-9`,
     keycard-loot room. Split into their own Legendary-tier manifest group
     (`src/data/marketGapFill.json`, caps stock at 1) plus an explicit
     re-price every run (`KEYCARD_*`/`MASTER_KEYCARD_*` constants in
-    `src/marketGapFill.ts`): 250,000-400,000 for single-location cards
-    (`NWAF01-03`, `Tisy01-05`, and the colored `Blue`/`Green`/`Red`/
-    `Violet`/`White`/`Yellow` cards), 800,000-1,200,000 for
-    `evg_keycards_All` (opens every room). The two keycard _holders_
+    `src/marketGapFill.ts`). **Superseded by the Twelfth follow-up session
+    below**: these were later made find-only/sell-only entirely, so the
+    prices this bullet originally described are no longer the buy price -
+    see that entry for the current design. The two keycard _holders_
     (`evg_keycard_holder_camo`/`_leather` - just carrying pouches, not
-    access) were left at their original Uncommon tier.
+    access) were left at their original Uncommon tier and are unaffected.
   - **Bug found and fixed: dead catch-all Market files blocked their own
     contents from ever reaching a live category.** DayZ-Expansion-Market
     ships both granular per-slot category files (`Backpacks.json`,
@@ -1613,6 +1622,599 @@ number>`, same tier keys as `TIER_MAX_STOCK`/`BUY_PRICE_MULTIPLIER`):
     for both the `MarketSettings.json` change and the regenerated category
     templates to take effect; no addon republish needed.
 
+  **Eleventh follow-up session: briefly flattened to 66% globally, then
+  reverted straight back to the Tenth session's 20/40/60 tiered design.**
+  The project owner asked for "all sell prices to 66% of the buy price"
+  while doing an unrelated food-pricing pass - `HARDCORE_SELL_PRICE_PERCENT`
+  was bumped to 66 and `SELL_PRICE_PERCENT_OVERRIDE` flattened to `-1` across
+  every tier so nothing overrode that one flat number (this change itself
+  was never written up here - found only via its own code comments while
+  starting the next session). Immediately walked back the same day ("I
+  think sell percentage was fine at 20 actually and rarer items should sell
+  for more percentage if possible but not up to 75"): `HARDCORE_SELL_PRICE_
+PERCENT` back to **20**, `SELL_PRICE_PERCENT_OVERRIDE` back to Common/
+  Uncommon `-1` (inherit 20%), Rare **40%**, Legendary **60%** - i.e. byte-
+  for-byte the same values the Tenth session originally landed on. No new
+  mechanism needed, both levers already existed from that session.
+
+  **Twelfth follow-up session: deep headgear/backpack/base-building/
+  explosives/medical price-and-category audit, plus keycards made find-
+  only.** A long, itemized project-owner audit request covering several
+  categories at once - see `src/marketGapFill.ts` for the full itemized
+  comments (`HEADGEAR_AND_ARMOR_PRICE_FIXES`, `BACKPACK_PRICE_FIXES`,
+  `BASE_BUILDING_PRICE_FIXES`, `EXPLOSIVES_PRICE_FIXES`,
+  `MEDICAL_PRICE_FIXES`, `CATEGORY_REASSIGNMENTS`) - summarized:
+
+  - **Headgear/armor**: `MilitaryCap_BDU/Desert/Woodland` had inherited a
+    full ballistic helmet's price (17613-29363) via the same category-
+    clones-`Items[0]` bug documented throughout this file - now a flat 6000. `ALV_TacCap_Black/Snow/Tan` were sitting in Clothing Head -
+    Civilian's generic ALV bucket despite being unambiguously military gear
+    - moved into Clothing Head - Military (new `CATEGORY_REASSIGNMENTS`
+      mechanism, for items with no `template` sibling to auto-detect the
+      drift the way `staleTemplatePlacementsFixed` does). Chainmail armor
+      (`chainmail`/`_coif`/`_leggings`) and every WasteLandZ Survival Clothing
+      civilian piece (pants/hoodies/waist packs) were priced at the Common-
+      tier gap-fill floor (355-595 and 640-1090 respectively) despite being
+      real armor/mid-tier gear - both bumped.
+  - **Backpacks**: most of Clothing_Back_Civilian shared one Common-tier
+    floor (1148-1920) regardless of actual bag size/quality - bumped ~2.2x,
+    with `SurvivorBackpack_*`/`WasteLandZ_backpack*` (genuinely large/good
+    packs) given their own higher band. Every already-differentiated
+    Civilian/Military backpack got a further ~1.5x bump on its own existing
+    price. Also fixed a real bug found along the way:
+    `AssaultBag_Winter`/`CoyoteBag_Winter` (Military) were priced far below
+    their own same-model color siblings (2975-4950 vs 15488-38740) -
+    re-aligned before applying the bump. All target values are absolute
+    (not a runtime multiplier), so re-running this stays idempotent.
+  - **Base Building**: code locks (`CombinationLock`/`4`) were far too
+    cheap for a real security item - bumped. Big safes got a moderate bump
+    (small/regular safes deliberately left alone). A cluster of
+    unmistakably military-themed storage props (gun racks/cases/walls/
+    crates/lockers, the compound gate/wall, the helipad kit) shared the
+    generic gap-fill floor with everything else - bumped as a group.
+    `AmmoBox` (a small lootable storage prop, NOT gun ammunition) had
+    accidentally cloned the same price as the `BarrelHoles_*` storage props
+    (51675-86130, absurd for "a tiny box") - corrected down, as was
+    `bl_coffee_mug` (a literal mug, also stuck at the generic floor).
+    `TerritoryFlag` (the raw, already-built flag pole) is now excluded
+    entirely (`MANUAL_EXCLUSIONS`) - only `TerritoryFlagKit` is
+    purchasable, now the project owner's requested flat 10,000 (was 23-45).
+    `Plant_Pepper/Potato/Pumpkin/Tomato/Zucchini` (immobile growing-stage
+    crop props, not portable items - only their seed packets are real
+    purchasable items) are now excluded too. `bl_candy_toffee/dark/milk/
+nutty` and `bl_potatochips_*`/`bl_coffee_bag` were gap-filled into Base
+    Building purely because that's where their `bl_` siblings live - these
+    are food, moved into Consumables via the same new
+    `CATEGORY_REASSIGNMENTS` mechanism.
+  - **Explosives**: `M67Grenade`/`RGD5Grenade` (33125-55213) and every
+    `M18SmokeGrenade_*`/`RDG2SmokeGrenade_*` variant (4138-8625) were far
+    too expensive for common, disposable throwables on a hardcore server -
+    all six now a flat 1500. Every other explosive (flashbang, remote/
+    tripwire charges, plastic explosive, chemgas, landmine, claymore) was
+    confirmed fine and left untouched.
+  - **Medical**: real display names confirmed via `dta/languagecore.pbo`'s
+    stringtable (`str_cfgvehicles_*0`) before touching anything -
+    `bloodbagfull` is the actual "Blood Bag" (was 350-580, far too cheap -
+    now 2500); `bloodbagempty` is "Blood Collection Kit" (was priced like a
+    rare auto-injector at 27360-45600 - now 1250, half of Blood Bag's new
+    price); `bloodtestkit` is "Blood Test Kit" (was 6803-11318 for a
+    disposable single-use strip - now 500); `painkillertablets` is
+    "Codeine Pills" (was 350-580 - now 1000).
+  - **Keycards made find-only, sell-only.** The project owner decided
+    `evg_keycards_*` (see the Ninth/Tenth entries' keycard writeup above)
+    should never be purchasable at any price, only found in loot (already
+    spawning naturally - see `modTypes.ts`) and sellable back for a modest
+    amount. Unpacking `market_scripts.pbo` further
+    (`ExpansionMarketModule.c`) confirmed `CanBuyItem()`/`CanSellItem()` are
+    checked completely independently of each other and of stock - driven by
+    each trader identity's own `Items` map
+    (`ExpansionMarketTraderBuySell`: `CanOnlyBuy`=0, `CanBuyAndSell`=1,
+    `CanOnlySell`=2, `CanBuyAndSellAsAttachmentOnly`=3), not by manipulating
+    `MaxStockThreshold`/`MinStockThreshold` at all. `src/traders.ts`'s
+    `TraderIdentity` gained an optional `items` field, populated for the
+    General Store with every keycard classname set to `CanOnlySell`.
+    `KEYCARD_MIN_PRICE`/`MAX_PRICE`/`MASTER_KEYCARD_MIN_PRICE`/`MAX_PRICE`
+    (in `src/marketGapFill.ts`) dropped from 250k-400k/800k-1.2M down to
+    15,000-25,000/48,000-52,000 - now purely a SELL-price basis (no longer
+    a buy price), sized so the Legendary tier's 60% sell cut lands the
+    master key around the project owner's requested ~30,000.
+  - Verified via a full dry-run against a scratch copy of the live
+    `profiles/ExpansionMod/Market`/`Traders` data (not the live server's own
+    files) rather than a real boot: every re-price/move landed on the
+    exact expected classname and value, a second consecutive run was a
+    clean no-op (confirms idempotency), and `bl_deposit_container`/
+    `StoneKnife`/`Stable_dayz_Kit`/every other untouched item was
+    confirmed unaffected. `deno check`/`deno lint`/`deno fmt --check` clean
+    across the whole project (same 2 pre-existing exceptions as always).
+    Requires a normal server restart; no addon republish needed.
+
+  **Thirteenth follow-up session: pelts repriced, plus a real systematic
+  (not reactive) audit found ~270 more un-reviewed gap-fill items.** The
+  project owner asked for two things in one go: bump pelt prices ("maybe
+  900"), and "have another pass at the economy, I feel like you miss
+  things quite easily... I want confidence there aren't things incorrectly
+  priced." Rather than repeating the same "react to one reported item"
+  pattern as every prior session, this pass grouped every item in every
+  `profiles/ExpansionMod/Market/*.json` by identical `(MinPriceThreshold,
+MaxPriceThreshold)` pair to systematically surface un-reviewed "category
+  clones Items[0]" gap-fill bugs - the same root cause behind every fix in
+  this file, just never hunted for exhaustively before.
+  - Found two large offending clusters: `Base_Building.json` had **178
+    items** still sitting at its generic 4590-7658 gap-fill floor, and
+    `Utility.json` had **92 items** at its own 533-893 floor (including all
+    12 pelts).
+  - `Base_Building.json`'s cluster turned out to be mostly
+    `@Paragon-Storage`'s ~100 `StorageBox_*` kits (never priced by tier -
+    a safe/container/door/crate/locker/rack/tent all shared one price),
+    plus real vanilla items (`FenceKit`/`WatchtowerKit`/`PartyTent_*`/
+    `ShelterKit`/garden seeds) and `@BoomLays-Things` (`bl_`) furniture/
+    decor, none of which had ever been individually reviewed. Confirmed
+    via the Paragon mod's own shipped `extras/traderconfig.txt` and
+    `extras/class names.txt` that every bare `Paragon_*` classname
+    (BigSafe/GunRack/Locker/Container/...) is the ALREADY-DEPLOYED raw prop
+    form - the mod's own reference config prices these at `-1/-1` ("not for
+    sale") and only the separate `StorageBox_*` classname is the real
+    portable/purchasable kit. Added a `paragon_` prefix rule to
+    `isExcluded()` (same pattern as the existing `nm_` rule) rather than a
+    ~100-line hand-picked list, then tiered every `StorageBox_*` kit by
+    real function/value (crates/racks cheap, safes/doors/containers/tents
+    pricier, the already-fixed military-storage/big-safe clusters from the
+    Twelfth session left untouched).
+  - Also found and excluded a batch of real BUILT/placed structures and
+    dead-freebie props that had been silently gap-filled as if sellable:
+    `GardenPlot`/`GardenPlotGreenhouse`/`GardenPlotPolytunnel` (confirmed
+    via `languagecore.pbo` - the tilled-soil result of a hoe action, not an
+    item), `ShelterSite`/`ShelterFabric`/`ShelterLeather`/`ShelterStick`
+    (confirmed via their real display names "Tarp Shelter"/"Leather
+    Shelter"/"Improvised Shelter" - each is the BUILT shelter itself, not a
+    raw material; only `ShelterKit`, "used to plot the position", is the
+    real portable item), `UndergroundStash` (displays as plain "Mound" -
+    "a mound that can be dug up with a suitable tool", same as the
+    already-excluded `UndergroundStashSnow`), `Fireplace`/`FireplaceIndoor`/
+    `FireplaceFireBarrel`/`OvenIndoor` (built cooking structures, same
+    reasoning as the already-excluded `Bonfire`/`Cauldron`), `AnniversaryBox`
+    ("Anniversary T-Shirt Box" - "Take a t-shirt! It's free!"), every
+    `GiftBox_Large/Medium/Small_*` (Christmas event decor, same family as
+    the already-excluded `EasterEgg`), `HandcuffsLocked` (a live restraint
+    state marker, not an item), and `ShippingContainerKeys_Blue/Orange/
+Yellow` (each tied to one specific already-placed container instance -
+    meaningless to hand out generically). Also excluded Dart-Board-Game's
+    `*_KIT_PLACED` deployed props (only the `DARTS_PlacingKit_*` forms are
+    real, confirmed via the mod's own `classnames.txt`) and
+    `dog_shed_big`/`dog_shed_small` (+`_static`) deployed doghouse forms
+    (only the `_kit` siblings are real).
+  - `Utility.json`'s cluster: the 12 pelts got tiered pricing (small -
+    Rabbit/Fox/Goat/Sheep - 800-950; standard - Pig/Deer/Cow/Wildboar/
+    Reindeer - 900-1050; predator/large - Wolf/Bear/Horse - 1000-1200),
+    matching the project owner's "maybe 900" ask with a bit of realistic
+    spread instead of one flat number. The other ~80 items (crafting
+    materials, traps, lighters, crossbow-building parts, horse tack, the
+    `ScientificBriefcase` lore item) got tiered pricing by real value
+    instead of sharing one flat 533-893 price - see `TESTS.md` for the
+    full breakdown.
+  - Also found and excluded two "Bucket A" false-positive gaps that would
+    otherwise keep re-flagging on every future audit run despite having a
+    real `<category>` tag: `@AirRaid`'s own scripted event-marker smoke
+    items (`M18SmokeGrenade_AirStrike`/`_CH_47_Helicopter_*`/`_MI_8_
+Helicopter_Crash`/`_UH_1_Helicopter_Crash`, `Ammo_40mm_Smoke_AirStrike`)
+    and TGK-WeaponPack's `SM_Ammo_Empty_Crate`.
+  - Separately, a full audit of the ~113 real spawnable inventory items
+    that had never been sellable ANYWHERE (not just mispriced) found:
+    `@TP-Apoc-SUV`/`@TP-Apoc-Pickup`/`@TP-Apoc-M1025`'s ~110 spare parts
+    (hoods/trunks/doors/wheels) had zero market wiring despite the
+    vehicles themselves being fully sellable - added to `Vehicle_Parts` via
+    a new `src/data/marketGapFill.json` manifest group (grouped by part
+    type, each cloning an existing generic vehicle part's price/stock tier
+    - e.g. every hood clones `hatchbackhood`'s 520-870). Also found three
+      genuine non-item creature families that `marketAudit.ts` had no pattern
+      for yet (`Doggo_Wild1`-`35` from `@DayZ-Dog`, `BMM_ChimicalZombie_*`
+      from `@BMM-Chemical-Zombie`, `TCHCAI_TheAstronaut_Zombie_*`/
+      `TCHC_TheButcher_Zombie`/`TCHC_ZombieBear` from `@Custom-Zombies`) -
+      added matching prefix patterns to `NEVER_SELLABLE_PATTERNS` (same
+      treatment as the existing `Animal_`/`Zmb`/`YRTSK_ZMB` patterns) so
+      these stop cluttering the audit's manual-review bucket forever, not
+      just this one run.
+  - **Result: `deno task audit-market` now reports 0 high-confidence gaps,
+    0 items needing manual review, 0 price/stock anomalies** - down from
+    8/282/0 at the start of this session (the "282" is not a regression
+    from the Eighth follow-up session's earlier 0/0/0 claim - a lot of
+    Workshop content, mainly `@Paragon-Storage`/`@TP-Apoc-*`/
+    `@Custom-Zombies`, was added to the mod list in sessions since then).
+  - Verified via the same scratch-copy dry-run method as every prior
+    session (not the live server's own files): a full run showed the
+    expected exclusion/re-price/add counts, a second consecutive run was a
+    clean no-op (idempotency confirmed), and the audit tool itself
+    confirmed 0/0/0 both immediately after and unchanged after the no-op
+    second run. `deno check`/`deno lint`/`deno fmt --check` clean across
+    the whole project (same 2 pre-existing exceptions as always). Requires
+    a normal server restart; no addon republish needed.
+
+  **Fourteenth follow-up session: four more narrow economy asks - lock
+  tiering, raw material prices, a hard food price floor, and gun
+  attachment sell%.** `deno task audit-market` still reports 0/0/0
+  afterwards - this was a set of targeted corrections, not another
+  systematic sweep like the Thirteenth session above.
+  - **`CombinationLock` (3-dial) vs `CombinationLock4` (4-dial) no longer
+    share an identical price.** Both had cloned the same
+    `BASE_BUILDING_CODE_LOCK_PRICE` constant (3500-5500) - split into
+    `BASE_BUILDING_LOCK3_PRICE` (2500-4000) and `BASE_BUILDING_LOCK4_PRICE`
+    (5500-8000), the 4-dial lock now meaningfully pricier as the more
+    secure option.
+  - **`Nail`/`WoodenPlank`/the junk-material trio bumped off the trader's
+    absolute price floor.** `Nail` was still at DayZ-Expansion-Market's own
+    default (5-10) - trivially cheap next to `NailBox` (450-750, a full box
+    of many nails) - now 40-70. `WoodenPlank` (a real base-building
+    material, distinct from the already-fixed `PileOfWoodenPlanks`) was
+    50-250, now 120-220. `bl_extension_cable_reel`/`bl_pallet`/
+    `bl_pallet_frame_solo` (the shared `BASE_BUILDING_JUNK_MATERIAL_PRICE`
+    band) went from 50-150 to 90-180.
+  - **A hard 300 minimum on every plain food item, plus a whole Hen/
+    Rooster bumped to 1000+.** The project owner: "minimum food price
+    should be 300, even the mushroom" and "why is a whole Hen 45!!!! that
+    should be at least 1000." `src/marketGapFill.ts`'s `FOOD_PRICE_FIXES`
+    map (previously only covering Bitterlings/DeadChicken_*/Old_ cans/a
+    couple of one-off items) was extended with two new bands:
+    `FOOD_WILD_FORAGE_PRICE` (300-450 - every raw fruit/vegetable/
+    mushroom, `Waterbottle`, `Lard`, and the small-critter trio that used
+    to sit at 10-18) and `FOOD_BAKED_GOODS_PRICE` (320-520 - the
+    `Expansion` bread/cheese loaves). `DeadChicken_Brown`/`_Spotted`/
+    `_White`/`DeadRooster`/`DeadRabbit` moved from the old
+    `FOOD_UNCLEANED_CARCASS_PRICE` (45-75) to a new `FOOD_WHOLE_GAME_PRICE`
+    (1000-1500). Along the way, found a genuine anomaly during the same
+    pass: `CrabCan`/`CrabCan_Opened` were sitting at 175-290 while every
+    other fresh canned good in the category (`SardinesCan`, `TunaCan`,
+    `BakedBeansCan`, etc.) sits at 700-2000+ - corrected to 700-1200 to
+    match that sibling tier instead of just clearing the bare 300 floor.
+  - **Steaks/fillets doubled again; whole raw fish floored instead of
+    doubled.** "Double the price of the steaks and fish" - `market.ts`'s
+    Meat/Fish `priceOverrides` (both already 180-280 from an earlier
+    session) doubled to 360-560. Whole/uncleaned raw fish (`Carp`/
+    `Sardines`/`Mackerel`/`SteelheadTrout`/`WalleyePollock`/`RedCaviar`/
+    `Shrimp`, previously 70-120) did NOT get a plain double (which would
+    have landed at 140-240) - the new 300 food floor takes priority, so
+    these now match the `FOOD_WILD_FORAGE_PRICE` band (300-450) instead,
+    still below a cleaned fillet since filleting work remains.
+  - **Every `Old_` (moldy/expired) canned food item made find-only.** "Old
+    food... maybe don't let people buy those" - all 42 `Old_*` classnames
+    (exported as `OLD_FOOD_CLASSNAMES` from `marketGapFill.ts`, reused by
+    both the price-fix map and this override so the two can never drift
+    out of sync) are now `CanOnlySell` at the General Store - same
+    find-only-but-sellable mechanism already used for the Custom-Keycards
+    room keys (`traders.ts`'s `OLD_FOOD_BUYSELL_OVERRIDES`). Sell price
+    (120-250) is untouched, since only the buy side changed.
+  - **Gun_Attachments_Military/Civilian now sell for a flat 50% of buy
+    price, regardless of rarity tier.** "Make attachments only sell for
+    half of their buy price" - these two categories are entirely Uncommon/
+    Rare/Legendary internally, whose per-tier sell percents (20/40/60)
+    can't express a single flat category-wide rule, so `market.ts`'s
+    `MergedCategory` gained an optional `sellPricePercent` field that
+    overrides the per-tier lookup entirely when set, applied to both
+    attachment categories. Also reviewed the cheapest attachment buy
+    prices directly (TGK-WeaponPack's cosmetic grips/foregrips/flashlights
+    at 150-400, vanilla low-end magazines at 180-360+) - these are
+    deliberately low-value/cosmetic items already documented as such in an
+    earlier session's `TGK_PRICE_FIXES` writeup, not a further pricing bug.
+  - Verified via the same scratch-copy dry-run method as every prior
+    session: a full run produced the expected re-price/exclusion counts, a
+    second consecutive run converged to the same final values (the
+    Consumables/Base_Building food and material fixes always re-log every
+    run by design - `tuneExpansionMarket()` rebuilds those merged category
+    files from their raw, un-overridden sources on every boot, so
+    `FOOD_PRICE_FIXES`/`BASE_BUILDING_PRICE_FIXES` are a repair pass that
+    necessarily re-applies every time, exactly like every pre-existing
+    entry in those same maps already did before this session), and
+    `deno task audit-market` reported 0/0/0 both times. `deno check`/
+    `deno lint`/`deno fmt --check` clean across the whole project (same 2
+    pre-existing exceptions as always). Requires a normal server restart;
+    no addon republish needed.
+
+  **Fifteenth follow-up session: magazine prices normalized by capacity,
+  not by host weapon.** Project owner report: "a KA mag for almost
+  8K!!!!". Direct comparison confirmed every real vanilla magazine's
+  price had been cloned from its compatible weapon's own price, not
+  priced by magazine value - `mag_ssg82_5rnd` (5940-9900) was identical
+  to the `ssg82` rifle itself; `mag_cz550_10rnd` (4988-8310) was ~89% of
+  the `cz550` rifle (5588-9315); `mag_akm_drum75rnd` (17625-29370) cost
+  MORE than the entire `akm` rifle (16788-27975).
+  - **`market.ts` gained capacity-based magazine price bands** -
+    `MAGAZINE_PRICE_OVERRIDES` now assigns every real vanilla magazine
+    classname (~47 total, both military and civilian) a final price
+    purely by round count: <=10rnd 300-550, 11-20rnd 450-750, 21-30rnd
+    600-1000, 31-45rnd 800-1300, 46-64rnd 1100-1800, 65rnd+ drums
+    1500-2500. TGK-WeaponPack's own `Sobr_Mag_*`/`SM_Magazine_*`/
+    `SM_Mag_*` reskins were deliberately left untouched (already
+    correctly flat-priced via `TGK_MAGAZINE_PRICE` in
+    `marketGapFill.ts`). Since `Gun_Attachments_Military/Civilian` are
+    tier `Uncommon` (1.5x buy multiplier), the constants are defined as
+    the target final price divided by 1.5 so the displayed price lands
+    exactly on the intended band.
+  - **A related anomaly found in the same pass:
+    `m4_suppressor`/`ak_suppressor` (the plain vanilla suppressors) were
+    priced at 7283-12135 - MORE than every one of their own
+    TGK-WeaponPack reskinned variants (already 3500-6000).** Added
+    `MUZZLE_PRICE_OVERRIDES` so both now match their reskins at
+    3500-6000.
+  - Both override maps are wired into the `Magazines`/`Muzzles` group
+    entries inside both `Gun_Attachments_Military` and
+    `Gun_Attachments_Civilian` category defs.
+  - Verified via the same scratch-copy dry-run method as every prior
+    session: final displayed prices land exactly on the target bands
+    (e.g. `mag_akm_drum75rnd` now 1500-2501, `mag_val_20rnd`/
+    `mag_vss_10rnd` now 300-551, `m4_suppressor`/`ak_suppressor` now
+    3501-6000), a second consecutive run converges identically, and
+    `deno task audit-market` reported 0/0/0 both times. `deno check`/
+    `deno lint`/`deno fmt --check` clean. Requires a normal server
+    restart; no addon republish needed.
+
+  **Sixteenth follow-up session: a batch of specific project-owner-
+  flagged prices - drinks, fish/meat/corpse sell%, and medical.**
+  - **`filteringbottle`/`expansionmilkbottle` re-priced.** "The
+    filtering Bottle is too cheap, should be 1K" / "Milk bottle should
+    also be about 500" - `market.ts`'s Consumables `Drinks` group gained
+    a `priceOverrides` map: `filteringbottle` flat 1000 (was 145-240),
+    `expansionmilkbottle` flat 500 (was 130-220).
+  - **Fish and meat now sell for a flat 75% of buy price, tiered by
+    difficulty instead of one flat band per group.** "All fish i.e.
+    Carp should sell for 75% of its actual price and the lowest tier
+    fish should sell for 400, and get progressively more valuable for
+    other fish" / "I want the same thing for steak, 75% sell and
+    increasingly higher prices for harder animals to kill". Added a new
+    group-level `SourceGroup.sellPricePercent` field (`market.ts`) that
+    takes priority over both the category-wide `sellPricePercent` and
+    the normal per-tier lookup - needed since Consumables mixes
+    Food/Drinks/Fruit_And_Vegetables (still the normal 20% global rate)
+    with Meat/Fish (now a flat 75%) in one category. Both groups'
+    `priceOverrides` were re-tiered into 4 difficulty bands each: Tier 1
+    (easy/common - rabbit/chicken/goat/sheep meat, sardines/shrimp) buys
+    at 534-700 (sells 400-525, the requested 400 floor); Tier 2
+    (moderate - pig/cow/deer/fox meat, mackerel/carp) 700-900 (sells
+    525-675); Tier 3 (harder wild game - boar/mouflon/reindeer meat,
+    steelhead trout/walleye pollock) 900-1150 (sells 675-863); Tier 4
+    (apex predators/rarest - bear/wolf meat, red caviar) 1150-1450
+    (sells 863-1088). Fillets (carp/mackerel/steelhead trout) are priced
+    above their species' whole-fish tier, same relationship steaks
+    already have over a raw carcass.
+  - **Chicken/hare whole carcasses also sell for a flat 75%, rat corpses
+    deliberately excluded.** "Same for chicken and hare corpses, not rat
+    corpse tho" - `DeadChicken_Brown/Spotted/White`/`DeadRooster`/
+    `DeadRabbit` aren't managed by a `market.ts` group (see the Twelfth
+    session's writeup on why they needed a direct `FOOD_PRICE_FIXES`
+    entry in the first place), so a new `marketGapFill.ts` map,
+    `FOOD_SELL_PERCENT_FIXES`, sets their `SellPricePercent` directly to
+    75, applied in its own small repair loop right after
+    `FOOD_PRICE_FIXES`'s. `DeadRat_Grey`/`DeadRat_White` intentionally
+    left untouched at the normal 20% rate.
+  - **Six more Medical.json items re-priced.** Medical is a self-merging
+    category (`market.ts`'s tier overrides there only ever touch
+    `SellPricePercent`/`MaxStockThreshold`, never price - see
+    `buildMergedItems()`'s own comment), so these needed direct
+    `MEDICAL_PRICE_FIXES` entries in `marketGapFill.ts`, same mechanism
+    as the existing Blood Bag/Blood Collection Kit/Blood Test
+    Kit/Codeine Pills fixes: `vitaminbottle` ("Multivitamins") "too
+    cheap, 40... should be 600" - now flat 600; `disinfectantalcohol`
+    ("Alcohol Tincture") "should be double the price" - now 210-340 (was
+    105-170); `morphine`/`startkitiv`/`salinebag`/`epinephrine`
+    (Morphine Auto-Injector/IV Starter Kit/Saline Bag/Epinephrine
+    Auto-Injector) "morphin injector should be 9k not 20k, same with IV
+    starter kit and saline bag and epipinephrine injector" - all now
+    flat 9000 (were 27360-46880); `bloodbagfull` ("Blood Bag") "should
+    probably be bought at 5k" - now flat 5000 (was a flat 2500 from an
+    earlier session).
+  - Verified via the same scratch-copy dry-run method as every prior
+    session: every price above lands exactly on target, a second
+    consecutive run converges identically, and `deno task audit-market`
+    reported 0/0/0 both times. `deno check`/`deno lint`/
+    `deno fmt --check` clean. Requires a normal server restart; no
+    addon republish needed.
+
+- **Seventeenth follow-up session: starting weapon bug fix, per-zone
+  keycard sell prices, a gun-cabinet price fix, and a backpack economy
+  pass (buy-price parity + sell-price cap).**
+  - **Real bug found and fixed: the starting loadout's "random blunt
+    weapon" selector never actually applied - every new spawn always got
+    a `WoodenStick` no matter what.** `Loadouts.xml` had an orphaned,
+    unconditional `WoodenStick` item (leftover from an older, no-longer-
+    in-`git`-history version of `tuneStartingKit()`) sitting _before_ the
+    real `Selector type="RANDOM"` in the same `@InHands` slot - Bohemia's
+    loadout parser takes the _first_ claim on a slot, so the random
+    selector's roll was silently discarded every time. Per the project
+    owner ("change the starting weapon from a shortstick to a Baseball
+    bat"), replaced the whole 4-way random selector with one deterministic
+    `BaseballBat` item, and `tuneStartingKit()` (`src/loot.ts`) now also
+    detects and strips the legacy orphaned stick _and_ the legacy selector
+    string on every run, so a live server self-heals to exactly one
+    `@InHands` claim. Verified via a scratch-copy dry-run against the real,
+    live `Loadouts.xml` (never touched directly) - both legacy patterns
+    correctly stripped, exactly one `BaseballBat` left, second run a no-op.
+  - **Tisy/NWAF zone keycards and the all-access card now sell for an
+    exact, fixed amount instead of the generic keycard range.** "Tisy
+    military cards should start selling from 1k for level 1 and go up to
+    5k for level 5. same for NWAF zone 1-3. All access card should sell
+    for 7K" - a new `KEYCARD_ZONE_PRICE_FIXES` map (`marketGapFill.ts`)
+    sets each of the 9 zone/master keycards' `Min`/`MaxPriceThreshold` to
+    the exact target and forces their own `SellPricePercent` to 100, so
+    the flat value _is_ the payout - independent of the global sell
+    percent. Every other single-location keycard (Blue/Green/Red/Violet/
+    White/Yellow) is untouched, still on the original ranged pricing.
+  - **Wooden gun cabinet kits re-priced out of the generic furniture
+    band.** "Wooden gun cabinet is also too cheap, 401 should be more than
+    that" - the 5 `bl_pallet_cabinet_*_Kit` classnames were sharing
+    `BASE_BUILDING_MEDIUM_FURNITURE_KIT_PRICE` (400-900) with the barrel/
+    prefab stove kits. Split into their own new `BASE_BUILDING_GUN_CABINET_
+KIT_PRICE` band (1500-2400 - still well under the dedicated military
+    gun-storage cluster's 8500-13500) so it doesn't drag the stove kits up
+    with it.
+  - **Backpack buy-price "cheap off-brand color" exploit closed - 15
+    reskins across 7 families re-aligned to their canonical sibling's
+    price.** "Some better packs are priced less than worse ones" - closer
+    inspection found the _same physical backpack_ (DayZ-Expansion-Market
+    lists the color siblings in the canonical item's own `Variants[]`)
+    had two separate market entries at very different prices - e.g.
+    `alicebag_green` (Legendary, 18400-30660) vs. its own listed variants
+    `AliceBag_Black`/`AliceBag_Camo` (7885-13140, ~43% of that) - letting a
+    player buy the identical bag for less by picking the cheaper color.
+    Same bug hit `armypouch_beige`/`assaultbag_black`/`attack2bag_black`/
+    `coyotebag_brown`/`duffelbagsmall_camo`, plus civilian `taloonbag_blue`.
+    All 15 reskin entries in `BACKPACK_PRICE_FIXES` (`marketGapFill.ts`)
+    now match their canonical sibling exactly.
+  - **Backpack sell prices capped to a computed 1,000-5,000 range instead
+    of scaling uncapped with the tier system.** "They should sell decently
+    since they're bulky but you should probably only be selling them
+    between 1k-5k for the best one" - backpack buy prices span too wide a
+    range (1,360 to 48,860) for one flat `SellPricePercent` to make sense
+    at both ends, so a new repair loop (`marketGapFill.ts`, right after the
+    price fixes above) computes each backpack's own percent from its own
+    final `MaxPriceThreshold`: target payout = `MaxPriceThreshold * 15%`,
+    clamped to 1,000-5,000, then `SellPricePercent = target / MaxPriceThreshold
+    - 100`. Applies to every item in `Clothing_Back_Military`/
+`Clothing_Back_Civilian` directly (no per-classname list to maintain),
+so it stays correct even if buy prices change again later. Result: the
+cheapest civilian bag (`waterproofbag_green`, 1,360 buy) sells up to
+1,000 (74%); the priciest military bags (`coyotebag_brown`/`winter`,
+      48,860 buy) sell up to 5,000 (10%) - everything else scales smoothly
+      between.
+  - Verified via the same scratch-copy dry-run method as every prior
+    session: all four fixes land exactly on target, a second consecutive
+    run converges identically, and `deno task audit-market` reported
+    0/0/0 both times. `deno check`/`deno lint`/`deno fmt --check` clean
+    (only the 2 known pre-existing, unrelated warnings remain). Requires a
+    normal server restart for all four; no addon republish needed.
+
+- **Eighteenth follow-up session: another batch of specific project-
+  owner-flagged prices, plus a full vehicle economy overhaul (car prices,
+  vehicle-part scarcity, and a new daily vehicle-parts restock trickle).**
+  - **Gas masks re-priced to an exact buy/sell split.** "Gas masks should
+    sell for 2000 and buy for 15k" - both were still at their Legendary-
+    tier computed price (`gasmask` 10745-17920, `gp5gasmask` 24868-41458).
+    Buy price pinned flat to 15000 (`HEADGEAR_AND_ARMOR_PRICE_FIXES`,
+    `marketGapFill.ts`); since a flat buy price and a different flat sell
+    price can't both be one absolute `{min,max}` field, the sell side is
+    a separate `GASMASK_SELL_PERCENT_FIXES` map forcing `SellPricePercent`
+    to 13.33% of that 15000 basis (roughly 2000).
+  - **Medical: two more corrections.** `BloodBagIV` ("IV blood bag" - a
+    genuine vanilla classname, distinct from the Terje-Medicine mod's own
+    lowercase `salinebag`/`startkitiv`/etc.) was still at DayZ-Expansion-
+    Market's own untouched default (350-580) - now a flat 7300 per "IV
+    blood bag should buy for 7.3k". `startkitiv` ("IV Start Kit") is now
+    a flat 1200 - "should buy for 1.2K", which reverses the flat 9000 an
+    earlier session set it to; `salinebag`/`morphine`/`epinephrine` are
+    untouched, still 9000 per that same earlier session.
+  - **Frying pan flat-priced.** "Frying pan should be 2k" - was 405-675
+    (`Tools_And_Melee`'s generic Uncommon-tier default); added to the same
+    `hardcorePricesFixed` repair loop as everything else above.
+  - **Burlap sack and GPS receiver re-priced.** `burlapsack` "should buy
+    for 1271" (was 675-1125). `gpsreceiver` "should be double its current
+    price" - was 1283-2138, now exactly 2566-4276.
+  - **Wooden logs and firewood: sell-only, no longer purchasable at any
+    price.** "Wooden logs shouldn't be purchasable, buy should be
+    sellable for 100 a log. Same for firewood but firewood should sell
+    for 50." Same `CanOnlySell` mechanism as the keycards/old food (new
+    `WOOD_SELL_ONLY_CLASSNAMES`/`WOOD_SELL_ONLY_PRICE_FIXES` in
+    `marketGapFill.ts`, wired into `traders.ts`'s "Everything" trader
+    identity's `items` override map) - flat 100/50 sell price,
+    `SellPricePercent` forced to 100 so the flat number is the exact
+    payout.
+  - **"Lumber Pile" (`PileOfWoodenPlanks`) removed from the trader
+    entirely - not buyable or sellable at any price.** This is the raw
+    base-building resource-pile prop (construction-site map decor and a
+    lootable pile, not a real portable inventory item), previously
+    lumped into `UTILITY_PRICE_FIXES`' shared 80-180 basic-material band
+    alongside genuinely-portable materials. Added to `MANUAL_EXCLUSIONS`
+    (same permanent-denylist mechanism as the flag pole/growing plants/
+    raw sticks-and-stones) - its own crafted/loose materials (`WoodenLog`,
+    above, and `WoodenPlank`) stay independently sellable.
+  - **Two real category-placement bugs found and fixed: weapon-mounted
+    flashlights and standalone NVG goggles were both sitting in the
+    civilian Utility category.** "There are some gun flashlights in the
+    Utility category. NVG in utility but want it in military top with
+    helmets." `universallight`/`tlrlight` (real rail-mounted flashlight/
+    laser attachments - not handheld tools like the flashlight/torches
+    that correctly stay in Utility) moved from Utility's `Lights` group
+    into `Gun_Attachments_Military` (Uncommon tier, covered by that
+    category's existing flat 50%-of-buy sell rule). `nvgoggles`
+    (standalone night-vision goggles) moved from Utility's `Electronics`
+    group into `Clothing_Head_Military`'s existing `Eyewear` group,
+    Legendary tier - same tier and location as its sibling
+    `nvgheadstrap`, which was already correctly placed there.
+  - **Full vehicle (car) price ladder rebuilt from scratch - "some
+    better vehicles were the same price as lower tier cars."** All 85
+    `Vehicles_Cars` classnames were clustered within one narrow 36000-
+    96000 buy band regardless of real capability, except the two already-
+    confirmed-correct endpoints: `expansiontractor` (25000-50000, lowest
+    tier) and `expansionvodnik` (250000-500000, top tier) - both left
+    untouched. Every other family now has its own explicit price band,
+    climbing smoothly between those two endpoints: basic hatchback
+    (32000-56000), sedan (38000-64000), civilian sedan (46000-76000),
+    offroad hatchback (55000-90000), `Offroad_02` (60000-95000), covered
+    cargo truck (70000-110000), Apoc pickup (90000-135000), Apoc SUV
+    (95000-140000), UAZ (115000-155000), M1025 Humvee (150000-190000 -
+    "should probably be 150K, yes it's a Humvee but an apocalyptic
+    scrappy version"), bus (165000-225000), Landrover (175000-235000),
+    then Vodnik. Every color/reskin variant of a given vehicle shares its
+    base's price (same physical vehicle). Root-caused a subtlety along
+    the way: the Apoc SUV/pickup/M1025 families don't exist in
+    `market.ts`'s raw `Cars` source file at all - each is its own
+    `"category": "Vehicles_Cars"` manifest group
+    (`src/data/marketGapFill.json`), cloned entirely by
+    `marketGapFill.ts`'s gap-fill loop from whatever `Vehicles_Cars.json`'s
+    own first item happens to be - so a `market.ts` `priceOverride` on the
+    `Cars` group's own `SourceGroup` silently never reaches them (proven
+    live: they all inherited `offroadhatchback`'s price instead of their
+    intended one). Fixed with a new absolute post-merge
+    `VEHICLE_MANIFEST_CAR_PRICE_FIXES` map in `marketGapFill.ts`, the same
+    "inherited an unrelated gap-fill template price" pattern
+    `TGK_PRICE_FIXES`/`BOW_PRICE_FIXES` already use for guns.
+  - **Vehicle parts and batteries (574 classnames across `Vehicle_Parts`/
+    `Batteries`) tuned for real scarcity for the first time - previously
+    the only category still sitting at DayZ-Expansion-Market's own
+    untouched defaults.** "The stock for most vehicle parts is 20, want a
+    default of 1... all the vehicle prices are around the same too, they
+    need to be more expensive by some margin, min car part should cost a
+    1k to give you a baseline." `VEHICLE_PARTS_MAX_STOCK_CAP` (`market.ts`)
+    dropped from 40 to 1 - every part is now as scarce as any other
+    Legendary-tier item. Every part's price was multiplied 2.5x its own
+    pristine default and floored at 1000 (never lowers an already-
+    pricier part, e.g. `offroad_02_wheel`'s 6845-11410 default becomes
+    17112-28525, not clamped down) - computed once and baked into a new
+    `src/data/vehiclePartsPriceFixes.json` data file (574 entries; kept
+    out of `marketGapFill.ts` itself purely for file-size/readability)
+    and applied as an absolute, idempotent post-merge fix, same pattern
+    as every other price fix in this project.
+    `VEHICLE_PARTS_INIT_STOCK_PERCENT_TARGET` kept at 100% (full, i.e.
+    exactly the new cap of 1) rather than dropping to 0% alongside
+    `Ghillies` - vehicle parts are still a functional necessity (buying a
+    whole vehicle spawns its default attachments, drawing from these same
+    per-classname stock pools), so starting every part at 0 would make
+    the very first vehicle purchase after this change fail outright.
+  - **New: a dedicated daily trickle-restock for vehicle parts/batteries,
+    completely separate from the existing hourly weighted-tier system.**
+    "Restock 1 empty vehicle part a day max." Deliberately isolated
+    (`DZSurvivalTraderRestock_Module.c`'s new `VehiclePartsTick()`,
+    `s_VehiclePartsCategories`, `VEHICLE_PARTS_COOLDOWN_HOURS = 24`,
+    called once per real hourly `Tick()`) rather than folding
+    `Vehicle_Parts`/`Batteries` into `s_ManagedCategories`: with ~574
+    classnames all sharing the exact same cap of 1, mixing them into the
+    shared weighted-pick pool would have massively diluted picks away
+    from guns/gear/medicine every hour. Instead: a single shared 24h
+    cooldown (not per-item) tracked in a new persisted
+    `LastVehiclePartsRestockUnix` field, gating one uniform-random pick
+    per real day across both categories combined (never above any part's
+    own cap). `/restock now` (`ForceTick()`) now also force-triggers this
+    pick immediately, ignoring the 24h cooldown, for testing.
+    Requires an addon republish (`.c` changes), then a normal restart.
+  - Verified via the same scratch-copy dry-run method as every prior
+    session: every price/category change lands exactly on target, a
+    second and third consecutive run converge to byte-identical output
+    (confirmed via `diff -rq` on the whole `Market/` directory, not just
+    the log's own touched-item counts - this project's merge-from-source
+    design means several pre-existing log lines legitimately repeat their
+    same non-zero count on every run, so a stable count is what
+    "idempotent" actually looks like here, not a count reaching zero),
+    and `deno task audit-market` reported 0/0/0 every time.
+    `deno check`/`deno lint`/`deno fmt --check` clean on every touched
+    file (only the 2 known pre-existing, unrelated warnings remain
+    elsewhere).
+
 - **`DZSurvivalBaseDecay`** - abandonment cleanup for this server's
   vanilla-style bases (fence-kit/tent bases secured with a `Code-Lock`
   `CodeLock` item). Neither vanilla DayZ nor Code-Lock itself has any
@@ -1632,80 +2234,216 @@ number>`, same tier keys as `TIER_MAX_STOCK`/`BUY_PRICE_MULTIPLIER`):
   (force-unlocked and dropped) after 30 real days with no recorded
   activity.**
 
-  Getting the activity signal right took real reverse-engineering of
-  Code-Lock's own unpacked source (`armake2 unpack` against
-  `server/@Code-Lock/addons/codelock.pbo`), because the obvious approaches
-  both turned out to be wrong:
+Getting the activity signal right took real reverse-engineering of
+Code-Lock's own unpacked source (`armake2 unpack` against
+`server/@Code-Lock/addons/codelock.pbo`), because the obvious approaches
+both turned out to be wrong:
 
-  - **Hooking `CodeLock`'s own methods alone misses the single most common
-    real activity**: an owner/guest opening a gate/tent they already know
-    the code for goes through `ActionInteractLockOnFence.OnStartServer` /
-    `ActionInteractLockOnTent.OnStartServer`, which call `fence.OpenFence()`
-    / `tent.ToggleAnimation("entrancec")` **directly** - the `CodeLock`
-    object itself is only read (`GetLockState`/`IsOwner`/`IsGuest`), never
-    mutated, on that path. Fixed by also hooking those two Action classes
-    (`DZSurvivalBaseDecay_Actions.c`), re-deriving the same
-    `isOwner||isGuest` condition the vanilla body already checks (there's
-    no side effect to key off through a `super()` call that returns
-    `void`).
-  - **Hooking `Fence.OpenFence()`/the tent equivalent directly (instead of
-    the Action classes) was tried and rejected**: vanilla's own
-    `Fence.AfterStoreLoad()` calls `OpenFence()` again on every server
-    restart if the gate was left open last session - hooking that
-    directly would falsely record "activity" for every open-gate base on
-    every single restart, defeating the whole point of decay.
-  - **`CodeLockServerRPC.EnterCode()`** (a stranger successfully entering
-    the passcode) **is a private method and can't be overridden at all**
-    - but it always calls `codelock.ServerSetOwner(id)` right before
-      opening, on both the fresh-claim and stranger-becomes-guest paths, so
-      hooking `ServerSetOwner()` instead covers this case with no loss of
-      coverage.
-  - `CodeLock.LockServer()` (initial claim / passcode changes) is also
-    hooked directly - unambiguous, deliberate activity.
-  - Between `LockServer`/`ServerSetOwner` (`DZSurvivalBaseDecay_CodeLock.c`)
-    and the two Action-class hooks (`DZSurvivalBaseDecay_Actions.c`),
-    every real way a legitimate user interacts with a lock is covered.
+- **Hooking `CodeLock`'s own methods alone misses the single most common
+  real activity**: an owner/guest opening a gate/tent they already know
+  the code for goes through `ActionInteractLockOnFence.OnStartServer` /
+  `ActionInteractLockOnTent.OnStartServer`, which call `fence.OpenFence()`
+  / `tent.ToggleAnimation("entrancec")` **directly** - the `CodeLock`
+  object itself is only read (`GetLockState`/`IsOwner`/`IsGuest`), never
+  mutated, on that path. Fixed by also hooking those two Action classes
+  (`DZSurvivalBaseDecay_Actions.c`), re-deriving the same
+  `isOwner||isGuest` condition the vanilla body already checks (there's
+  no side effect to key off through a `super()` call that returns
+  `void`).
+- **Hooking `Fence.OpenFence()`/the tent equivalent directly (instead of
+  the Action classes) was tried and rejected**: vanilla's own
+  `Fence.AfterStoreLoad()` calls `OpenFence()` again on every server
+  restart if the gate was left open last session - hooking that
+  directly would falsely record "activity" for every open-gate base on
+  every single restart, defeating the whole point of decay.
+- **`CodeLockServerRPC.EnterCode()`** (a stranger successfully entering
+  the passcode) **is a private method and can't be overridden at all**
+  - but it always calls `codelock.ServerSetOwner(id)` right before
+    opening, on both the fresh-claim and stranger-becomes-guest paths, so
+    hooking `ServerSetOwner()` instead covers this case with no loss of
+    coverage.
+- `CodeLock.LockServer()` (initial claim / passcode changes) is also
+  hooked directly - unambiguous, deliberate activity.
+- Between `LockServer`/`ServerSetOwner` (`DZSurvivalBaseDecay_CodeLock.c`)
+  and the two Action-class hooks (`DZSurvivalBaseDecay_Actions.c`),
+  every real way a legitimate user interacts with a lock is covered.
 
-  A runtime registry of every currently-spawned `CodeLock` (rebuilt fresh
-  every boot via `EEInit()`/`EEDelete()`, never persisted itself) is
-  scanned once a day (`TICK_INTERVAL_MS` - daily granularity is plenty of
-  precision for a 30-day window). Any lock that's currently locked and has
-  gone `>= 30` days without a recorded activity timestamp gets force-
-  unlocked via `lock.NewUnlockServer(null, parent)` - **the exact same
-  "force-unlock with no player" pattern Code-Lock's own `Fence.c` already
-  uses internally** (`OnPartDestroyedServer` calls
-  `codelock.NewUnlockServer(null, this)` when a connected fence part is
-  destroyed with no player attribution) - a mod-author-sanctioned way to
-  unlock and drop a lock with nobody holding it, making the base freely
-  enterable/raidable without this addon deleting or damaging any objects
-  itself. A lock with no recorded activity yet (never seen before this
-  addon existed) is baselined to "now" the first time it's checked, not
-  treated as already overdue - so deploying this addon doesn't instantly
-  decay every pre-existing base in the world.
+A runtime registry of every currently-spawned `CodeLock` (rebuilt fresh
+every boot via `EEInit()`/`EEDelete()`, never persisted itself) is
+scanned once a day (`TICK_INTERVAL_MS` - daily granularity is plenty of
+precision for a 30-day window). Any lock that's currently locked and has
+gone `>= 30` days without a recorded activity timestamp gets force-
+unlocked via `lock.NewUnlockServer(null, parent)` - **the exact same
+"force-unlock with no player" pattern Code-Lock's own `Fence.c` already
+uses internally** (`OnPartDestroyedServer` calls
+`codelock.NewUnlockServer(null, this)` when a connected fence part is
+destroyed with no player attribution) - a mod-author-sanctioned way to
+unlock and drop a lock with nobody holding it, making the base freely
+enterable/raidable without this addon deleting or damaging any objects
+itself. A lock with no recorded activity yet (never seen before this
+addon existed) is baselined to "now" the first time it's checked, not
+treated as already overdue - so deploying this addon doesn't instantly
+decay every pre-existing base in the world.
 
-  Same observability precedent as `DZSurvivalTraderRestock`: every daily
-  tick logs a heartbeat via `GetGame().AdminLog()` (checked/decayed
-  counts) regardless of outcome, plus one line per actual decay event -
-  both visible live via Community-Online-Tools' admin log viewer. Two
-  matching COT chat commands exist for on-demand checks/testing (same
-  `JMModuleBase`/`JMModuleConstructor` extension point as
-  `DZSurvivalTraderRestock`'s own `/restock` commands, gated by a separate
-  `Admin.DZSurvivalBaseDecay.Trigger` permission):
+Same observability precedent as `DZSurvivalTraderRestock`: every daily
+tick logs a heartbeat via `GetGame().AdminLog()` (checked/decayed
+counts) regardless of outcome, plus one line per actual decay event -
+both visible live via Community-Online-Tools' admin log viewer. Two
+matching COT chat commands exist for on-demand checks/testing (same
+`JMModuleBase`/`JMModuleConstructor` extension point as
+`DZSurvivalTraderRestock`'s own `/restock` commands, gated by a separate
+`Admin.DZSurvivalBaseDecay.Trigger` permission):
 
-  - `/basedecay status` - reports how many locked bases are currently
-    tracked and how many days remain until the closest one would decay.
-  - `/basedecay now` - runs a real decay pass immediately (identical logic
-    to the daily tick), for testing without waiting up to 24h.
+- `/basedecay status` - reports how many locked bases are currently
+  tracked and how many days remain until the closest one would decay.
+- `/basedecay now` - runs a real decay pass immediately (identical logic
+  to the daily tick), for testing without waiting up to 24h.
 
-  See `DZSurvivalBaseDecay_COTCommand.c`.
+See `DZSurvivalBaseDecay_COTCommand.c`.
+
+**This addon lives in `serverpack/` (not `serverpack-serveronly/`),
+despite its actual decay logic being entirely server-side
+(`GetGame().IsServer()`-guarded).** It originally lived in the
+server-only pack, since none of its hooks are player-facing - but its COT
+chat commands register a `JMModuleBase` + permission node, and COT
+requires every registered permission to exist identically on both client
+and server (it compares permission-tree structure, not just values, when
+syncing roles to a connecting client). Registering
+`Admin.DZSurvivalBaseDecay.Trigger` only on the server (because the
+server-only pack, by design, never loads on the client) gave the client's
+local tree one fewer child under "Admin" than the server's, which threw
+`JMPermission::OnReceive`'s "Received child count N for X does not match
+registered child count M!" while deserializing the role sync on every
+connect - silently corrupting that client's entire permission tree from
+then on. The practical symptom (confirmed live on this project, 2026-09)
+was extremely confusing to diagnose: Community-Online-Tools' own admin
+UI/keybinds (END/Y/H/INSERT etc, all gated on
+`GetPermissionsManager().HasPermission("COT.View")`) stopped responding
+to any input at all, with no error shown in-game, while things that only
+check permissions server-side (e.g. this same addon's own /basedecay
+chat command gating, and DZSurvivalTraderRestock's /restock commands)
+kept working completely normally - because COT's `JMCommandModule.OnRPC`
+only ever runs on the server, so it never needed the client's (broken)
+copy of the tree. Root cause was only found by digging through the
+client's own RPT (at
+`<Proton prefix>/drive_c/users/steamuser/AppData/Local/DayZ/DayZ_x64_*.RPT`
+
+- not the more obvious `Documents/DayZ/` profile folder, which this
+  client install doesn't write RPTs into at all) for a Virtual Machine
+  Exception around the exact moment of connecting. **Lesson for any future
+  addon: registering anything into COT's module/permission system at all
+  (any `JMModuleBase` subclass, any
+  `GetPermissionsManager().RegisterPermission()` call) forces that addon
+  into the shared client+server pack, full stop - no matter how
+  server-only its actual behavior is.** `src/server.ts`'s `doStart()` now
+  also skips loading `serverpack-serveronly/` entirely whenever it has no
+  addons (rather than failing to build/hard-erroring), so this pack
+  staying empty going forward is an intentional, safe default rather than
+  an oversight.
+
+**Status: confirmed a clean compile via `deno task verify-serverpack`**
+(boots the real server, no script errors/warnings attributable to this
+addon in the RPT). **Not yet confirmed live over a real 30-day window**
+(obviously can't be tested in one sitting) - see `TESTS.md` for a
+suggested faster smoke test (temporarily lowering `DECAY_DAYS`, or
+hand-editing `BaseDecay.json` with an old timestamp to force a decay on
+the next tick).
+
+- **`DZSurvivalTraderFireplace`** - spawns and permanently ignites exactly
+  one `FBF_Fireplace` (from `@Forever_Burning_Campfire`) at the custom
+  trader city's fire barrel, fully automated (no admin ever needs to
+  manually spawn/hold/ignite it). Deliberately does **not** use a repeating
+  `CreateObject()` call or a DayZ-Editor placement - the mod's own Steam
+  page explicitly warns `FBF_Fireplace` "shouldn't be spawned with VPP
+  builder tools or DayZ Editor... if you leave them in init/editor/vpp,
+  they will multiply" (it's a genuine persistent entity, like a
+  player-built campfire). Guarded by a one-time persistent marker
+  (`$profile:DZSurvivalServerPack\TraderFireplace.json`, same pattern as
+  `DZSurvivalTraderRestock`'s own state file) so it only ever spawns once,
+  even across every future restart. `src/foreverBurningCampfire.ts`
+  separately places the mod's other, plain decorative props (fire barrel,
+  torches, area light - none of which multiply) via DayZ-Expansion-Core's
+  generic placed-object `.map` mechanism.
 
   **Status: confirmed a clean compile via `deno task verify-serverpack`**
-  (boots the real server, no script errors/warnings attributable to this
-  addon in the RPT). **Not yet confirmed live over a real 30-day window**
-  (obviously can't be tested in one sitting) - see `TESTS.md` for a
-  suggested faster smoke test (temporarily lowering `DECAY_DAYS`, or
-  hand-editing `BaseDecay.json` with an old timestamp to force a decay on
-  the next tick).
+  only - see `TESTS.md` for what still needs confirming on a real live
+  server (visual placement, the actual ignition firing, and republishing
+  so players receive it).
+
+- **`DZSurvivalTraderWarmth`** - keeps the custom trader city acting as a
+  warm sanctuary: every 1.5 seconds, floors every connected player's
+  `HeatComfort` stat up to `0.10` while they're within 175m of the trader
+  city (`src/traders.ts`'s `CUSTOM_SAFE_ZONE_RADIUS`, same radius as the
+  trader safe zone). This is a real, not-faked mechanic - `HeatComfort` is
+  the exact stat vanilla itself uses to decide whether a player is warm
+  enough to avoid hypothermia (confirmed via DZ's own scripts.pbo,
+  `PlayerStatsPCO.c` registers it with range `-1..1`, default `0`;
+  `Environment.c`'s `ProcessHeatComfort()` is what normally drives it from
+  clothing/weather/stomach temperature on a fixed 3-second cycle).
+  Re-applying the floor every 1.5s (twice that cycle) guarantees it keeps
+  winning while a player is in the zone; the moment they leave, this simply
+  stops touching their stat and vanilla's own weather-driven calculation
+  immediately takes back over - no lingering buff to expire.
+  Pure vanilla mechanic, no Expansion dependency needed.
+
+  **Fixed a live "boiling hot to death" bug** (previously this
+  unconditionally _set_ `HeatComfort` to `1.0`, the absolute max, every
+  tick). Vanilla's own `HeatComfortMdfr.c` treats sustained `HeatComfort`
+  above `0.15` (`PlayerConstants.THRESHOLD_HEAT_COMFORT_PLUS_WARNING`) as a
+  water-loss hazard, and above `0.45`
+  (`THRESHOLD_HEAT_COMFORT_PLUS_CRITICAL`) as a genuine health-loss hazard,
+  scaling up to 0.30 HP/second at `1.0` - forcing the max value every 1.5s
+  pinned every player in the zone at that maximum burn rate for as long as
+  they stood there. Fixed by (1) lowering the target to `0.10`, safely
+  under the `0.15` warning threshold so this addon can never itself trigger
+  any penalty, and (2) only ever raising `HeatComfort` up to that floor
+  when the player's real value is currently below it - never lowering a
+  naturally higher (or dangerously hotter) value. See the file header
+  comment in `DZSurvivalTraderWarmth_Module.c` for the full writeup.
+
+  **Status: confirmed a clean compile via `deno task verify-serverpack`**;
+  the original bug and its cause were confirmed live by the user (severe
+  health loss while standing in the trader safe zone). The fix above has
+  not yet been confirmed live - see `TESTS.md`.
+
+- **`DZSurvivalTentWarmth`** - the same "warm up" idea as
+  `DZSurvivalTraderWarmth` above, but for any pitched tent anywhere on the
+  map instead of the one fixed trader-city position (project owner: "can
+  we make it so that being in a tent stops the weather from making the
+  player colder"). Tents are player-placed and move/get destroyed freely,
+  so there's no coordinate to hardcode here - every 1.5s this looks up real
+  nearby objects around each connected player via `GetGame().
+GetObjectsAtPosition()` (the same native proximity query vanilla's own
+  `PluginUniversalTemperatureSourceServer` debug tool and `Bot_Hunt.c`/
+  `WoodBase.c` use - confirmed via unpacking `scripts.pbo`) and checks
+  whether any of them is a real, currently-`PITCHED` tent (any
+  `TentBase`-derived class - `MediumTent`/`LargeTent`/`CarTent`/
+  `PartyTent`, vanilla's own `IsItemTent()` flag confirms this generically,
+  so a modded tent that still derives from `TentBase` is covered too)
+  close enough (4m horizontal, 2.5m vertical tolerance - loosely sized to a
+  large/party tent's real footprint) to count as "sheltering under it". A
+  `PACKED` tent (folded up, in a bag or on the ground) deliberately does
+  **not** count - only a pitched one provides cover.
+
+  Deliberately does **not** hook into vanilla's own real heat-source system
+  (`UniversalTemperatureSource`/`UTemperatureSource` - confirmed via
+  unpacking `scripts.pbo`, this is the actual mechanism `FireplaceBase`/
+  `Torch` use to warm nearby players from a lit fire) even though it exists
+  and would be the more "native" route: wiring it up means modding
+  `TentBase` itself (every tent, including any third-party modded one,
+  inherits from it) to register a permanent temperature source, and that
+  system's Lambda/settings plumbing is built around heat radiating outward
+  from a burning object, not "you're standing under cover" - a materially
+  riskier change to get right and verify than reusing the exact
+  floor-raise mechanic already confirmed safe and working live on
+  `DZSurvivalTraderWarmth` (same `WARM_TARGET = 0.10`, same "only ever
+  raise, never lower" rule - see that addon's own BUG HISTORY comment for
+  why this specific value and rule are required to avoid the
+  hyperthermia/water-loss bug).
+
+  **Status: confirmed a clean compile via `deno task verify-serverpack`**
+  only - not yet confirmed live (pitch a tent, get cold, stand at it,
+  confirm `HeatComfort` floors at `0.10`) - see `TESTS.md`.
 
 ## Building
 

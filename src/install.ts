@@ -67,6 +67,36 @@ async function findKeyDir(dir: string): Promise<string | null> {
   return null;
 }
 
+/**
+ * Some mods ship a `meta.cpp` with the wrong `publishedid` baked in - an
+ * authoring mistake in the mod's own upload (confirmed live, 2026-09:
+ * `@Necromutant`'s meta.cpp says `publishedid = 0`, even though every other
+ * mod in this project's whole load order correctly embeds its own real
+ * Workshop id). DayZ reports whatever `publishedid` is in this file to the
+ * master server / joining clients as-is, with no cross-check against the
+ * actual folder its content came from - so a bogus id here shows up to
+ * players as the server claiming to run a mod with workshop id 0, which
+ * understandably looks like server misconfiguration even though the mod
+ * itself is installed correctly. Since this project already knows the true
+ * id for every mod (mods.txt), just fix it up rather than trusting whatever
+ * the author shipped - cheap and idempotent, so it's safe to run on every
+ * install.
+ */
+async function fixMetaCpp(dst: string, mod: Mod): Promise<void> {
+  const path = `${dst}/meta.cpp`;
+  const text = await Deno.readTextFile(path).catch(() => null);
+  if (text === null) return;
+  const match = /publishedid\s*=\s*(\d+)\s*;/.exec(text);
+  if (!match || match[1] === mod.id) return;
+  await Deno.writeTextFile(
+    path,
+    text.replace(/publishedid\s*=\s*\d+\s*;/, `publishedid = ${mod.id};`),
+  );
+  warn(
+    `${mod.name}'s meta.cpp had the wrong publishedid (${match[1]}) - corrected to ${mod.id}`,
+  );
+}
+
 /** Copy one downloaded mod into the server dir and collect its .bikey files. */
 export async function installOneMod(
   mod: Mod,
@@ -93,6 +123,8 @@ export async function installOneMod(
   } else {
     await Deno.symlink(src, dst);
   }
+
+  await fixMetaCpp(dst, mod);
 
   const keydir = (await findKeyDir(dst)) ?? (await findKeyDir(src));
   if (keydir) {

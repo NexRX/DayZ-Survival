@@ -165,7 +165,7 @@ export async function tuneStartingLoadouts(): Promise<void> {
 //
 // The default "survivor" loadout ships with clothes, a chemlight, a piece of
 // fruit, and a bandage - no way to defend yourself, navigate, or gather
-// materials. We add a random blunt weapon (found/improvised, not a proper
+// materials. We add a starting blunt weapon (found/improvised, not a proper
 // firearm - still has to be scavenged/upgraded further), a handful of rags
 // (early bandaging/crafting material), and a map (so a fresh spawn isn't
 // totally lost). Deliberately no knife/blade here - butchering tools have to
@@ -176,17 +176,37 @@ export async function tuneStartingLoadouts(): Promise<void> {
 // and an admin's own edits/removals are respected).
 const TERJE_SURVIVOR_ITEMS_CLOSE = /(<Loadout id="survivor"[\s\S]*?)(\s*<\/Items>\s*<\/Loadout>)/;
 
-// A mix of low-tier blunt weapons - the mod's own Selector RANDOM mechanic
-// picks one uniformly at random per spawn, mirroring the pattern the shipped
-// template already uses for chemlights/fruit. Deliberately excludes
-// heavier/rarer melee (e.g. SledgeHammer) to keep a fresh spawn's starting
-// power in line with the earned-power philosophy.
-const TERJE_BLUNT_WEAPON_SELECTOR = `<Selector type="RANDOM">
+// The single guaranteed starting weapon. Project owner: "change the
+// starting weapon from a shortstick to a Baseball bat".
+//
+// UPDATE (2026-09): this used to be a `Selector type="RANDOM"` between 4
+// blunt weapons (WoodenStick/Pipe/BaseballBat/Crowbar) - see
+// TERJE_LEGACY_BLUNT_WEAPON_SELECTOR below. Digging into why every spawn
+// got a WoodenStick ("shortstick") no matter what, despite the RANDOM
+// selector, found a second, unrelated bug: an even older version of this
+// function (predating this file's own git history, no trace of it left in
+// this codebase) had already baked its OWN unconditional
+// `<Item classname="WoodenStick" position="@InHands" />` (tagged with a
+// `dayz-survival:starting-kit-added` comment this file no longer
+// recognizes or manages) directly into every already-materialized
+// Loadouts.xml, positioned in the file BEFORE the RANDOM selector.
+// Bohemia's loadout parser processes `<Item>`/`<Selector>` top-to-bottom,
+// and the first thing to claim `position="@InHands"` wins - every later
+// claim (the RANDOM selector's roll, whatever it picked) is silently
+// discarded. That orphaned leftover line is why the "random" weapon never
+// actually varied. TERJE_LEGACY_ORPHANED_STICK detects and strips it (if
+// still present) below, and TERJE_LEGACY_BLUNT_WEAPON_SELECTOR detects and
+// replaces the old RANDOM selector with this single deterministic item, so
+// a live server converges to exactly one `@InHands` claim either way.
+const TERJE_LEGACY_ORPHANED_STICK =
+  /\s*<!-- dayz-survival:starting-kit-added -->\s*<Item classname="WoodenStick" position="@InHands" \/>/;
+const TERJE_LEGACY_BLUNT_WEAPON_SELECTOR = `<Selector type="RANDOM">
 				<Item classname="WoodenStick" position="@InHands" />
 				<Item classname="Pipe" position="@InHands" />
 				<Item classname="BaseballBat" position="@InHands" />
 				<Item classname="Crowbar" position="@InHands" />
 			</Selector>`;
+const TERJE_STARTING_WEAPON_ITEM = '<Item classname="BaseballBat" position="@InHands" />';
 
 const TERJE_STARTING_KIT_ITEMS: string[] = [
   '<Item classname="Rag" count="4" />',
@@ -206,10 +226,19 @@ export async function tuneStartingKit(): Promise<void> {
   if (!TERJE_SURVIVOR_ITEMS_CLOSE.test(text)) return; // survivor loadout renamed/removed by an admin - leave it alone
 
   const added: string[] = [];
+  const removed: string[] = [];
 
-  if (!text.includes(TERJE_BLUNT_WEAPON_SELECTOR)) {
-    text = text.replace(TERJE_SURVIVOR_ITEMS_CLOSE, `$1\n\t\t\t${TERJE_BLUNT_WEAPON_SELECTOR}$2`);
-    added.push("random blunt weapon");
+  if (TERJE_LEGACY_ORPHANED_STICK.test(text)) {
+    text = text.replace(TERJE_LEGACY_ORPHANED_STICK, "");
+    removed.push("orphaned unconditional WoodenStick");
+  }
+
+  if (text.includes(TERJE_LEGACY_BLUNT_WEAPON_SELECTOR)) {
+    text = text.replace(TERJE_LEGACY_BLUNT_WEAPON_SELECTOR, TERJE_STARTING_WEAPON_ITEM);
+    removed.push("random blunt weapon selector");
+  } else if (!text.includes(TERJE_STARTING_WEAPON_ITEM)) {
+    text = text.replace(TERJE_SURVIVOR_ITEMS_CLOSE, `$1\n\t\t\t${TERJE_STARTING_WEAPON_ITEM}$2`);
+    added.push("BaseballBat");
   }
 
   for (const itemXml of TERJE_STARTING_KIT_ITEMS) {
@@ -218,11 +247,12 @@ export async function tuneStartingKit(): Promise<void> {
     added.push(itemXml.match(/classname="([^"]+)"/)?.[1] ?? itemXml);
   }
 
-  if (added.length === 0) return;
+  if (added.length === 0 && removed.length === 0) return;
   await Deno.writeTextFile(TERJE_LOADOUTS, text);
-  ok(
-    `Added starting kit item(s) [${added.join(", ")}] to the survivor loadout in ${TERJE_LOADOUTS}`,
-  );
+  const parts: string[] = [];
+  if (added.length > 0) parts.push(`added [${added.join(", ")}]`);
+  if (removed.length > 0) parts.push(`removed [${removed.join(", ")}]`);
+  ok(`Starting kit: ${parts.join(", ")} in the survivor loadout (${TERJE_LOADOUTS})`);
 }
 
 // --- Terje-Start-Screen respawn points (TerjeSettings/StartScreen/Respawns.xml) ---

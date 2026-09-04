@@ -148,12 +148,17 @@ export const BUY_PRICE_MULTIPLIER: Record<Tier, number> = {
 // custom zone already leaves its own SellPricePercent at -1 (see
 // ensureCustomZone() in traders.ts), so setting a real value here is the
 // only thing that can make one item sell for a different percentage than
-// another. Rarer tiers sell for a higher percentage than Common/Uncommon -
-// a lucky rare/legendary find should be worth cashing in, without going
-// anywhere near DayZ-Expansion-Market's own 75 default (money should still
-// be hard to make in bulk). Common/Uncommon are left at -1 (inherit the
-// 20 global default) since those tiers are the bulk of ordinary trading
-// volume and shouldn't get any easier to profit from.
+// another.
+//
+// Every tier used to inherit the 20 global default except Rare/Legendary,
+// which were bumped to 40/60 so a lucky rare/legendary find was worth
+// cashing in without going anywhere near DayZ-Expansion-Market's own 75
+// default. Briefly replaced with a single flat 66% across the whole trader
+// (see traders.ts's HARDCORE_SELL_PRICE_PERCENT) at the project owner's
+// request; reverted 2026-09 ("I think sell percentage was fine at 20
+// actually and rarer items should sell for more percentage if possible but
+// not up to 75") back to this exact original scheme - global 20%, Common/
+// Uncommon inherit it via -1, Rare/Legendary get their own explicit bump.
 export const SELL_PRICE_PERCENT_OVERRIDE: Record<Tier, number> = {
   Common: -1,
   Uncommon: -1,
@@ -175,6 +180,17 @@ interface SourceGroup {
   // actual price). Found via a peer-price comparison audit, 2026-08 - see
   // serverpack/README.md's "whatever is most balanced" follow-up session.
   priceOverrides?: Record<string, { min: number; max: number }>;
+  /**
+   * Flat SellPricePercent applied to every item in THIS group only, taking
+   * priority over both the category-wide MergedCategory.sellPricePercent
+   * and the normal per-tier SELL_PRICE_PERCENT_OVERRIDE lookup. Use for a
+   * rule that only applies to one source within an otherwise-mixed
+   * category (e.g. Consumables' Meat/Fish groups selling for a flat 75%
+   * while its Food/Drinks/Fruit_And_Vegetables groups keep the normal 20%
+   * global rate - a category-wide sellPricePercent can't express that
+   * since they all share one MergedCategory).
+   */
+  sellPricePercent?: number;
 }
 
 interface MergedCategory {
@@ -183,6 +199,17 @@ interface MergedCategory {
   icon: string;
   initStockPercent: number;
   groups: SourceGroup[];
+  /**
+   * Flat SellPricePercent applied to every item in this merged category,
+   * overriding the normal per-tier SELL_PRICE_PERCENT_OVERRIDE lookup
+   * entirely. Use for a whole-category rule that isn't tier-dependent
+   * (e.g. Gun_Attachments_Military/Civilian's own "attachments should
+   * only ever sell for half their buy price" rule below) - a per-tier
+   * override can't express that since these categories are entirely
+   * Uncommon-tier, which would otherwise just inherit the 20% global
+   * default like everything else.
+   */
+  sellPricePercent?: number;
 }
 
 // ---------------------------------------------------------------------
@@ -329,6 +356,104 @@ const MAGAZINES_MIL = [
   "mag_m14_20rnd",
 ];
 const MUZZLES_MIL = ["mp5_compensator", "m4_suppressor", "ak_suppressor"];
+
+// Found via a project-owner report ("a KA mag for almost 8K!!!!") and a
+// full deep-dive, 2026-09: every real vanilla magazine's own DayZ-
+// Expansion-Market default price (the base this project's tier multiplier
+// then scales) tracks its COMPATIBLE WEAPON'S price, not the magazine's
+// own value - confirmed exactly: mag_ssg82_5rnd (5940-9900) is IDENTICAL
+// to the ssg82 rifle itself (5940-9900); mag_cz550_10rnd (4988-8310) is
+// ~89% of the cz550 rifle (5588-9315); mag_akm_drum75rnd (17625-29370)
+// actually costs MORE than the entire akm rifle it belongs to
+// (16788-27975). The result was wildly inconsistent, weapon-tier-driven
+// magazine prices (180 for a pm73 mag up to 29370 for an akm drum) with
+// zero relationship to the magazine's own real differentiator - capacity.
+// Re-priced below purely by round count, independent of which weapon it
+// feeds or that weapon's own price/rarity - a magazine is a cheap
+// accessory, never a fraction of buying a whole extra gun.
+// NOTE: these bands are pre-multiplier BASE prices (like every other
+// priceOverride in this file) - this group's tier is Uncommon, whose
+// BUY_PRICE_MULTIPLIER is 1.5x, so the real in-trader price is 1.5x each
+// number below (e.g. TINY's 200-367 base becomes a real 300-550).
+const MAGAZINE_BAND_TINY = { min: 200, max: 367 }; // <=10rnd -> real 300-550
+const MAGAZINE_BAND_SMALL = { min: 300, max: 500 }; // 11-20rnd -> real 450-750
+const MAGAZINE_BAND_MEDIUM = { min: 400, max: 667 }; // 21-30rnd -> real 600-1000
+const MAGAZINE_BAND_LARGE = { min: 533, max: 867 }; // 31-45rnd -> real 800-1300
+const MAGAZINE_BAND_XLARGE = { min: 733, max: 1200 }; // 46-64rnd -> real 1100-1800
+const MAGAZINE_BAND_DRUM = { min: 1000, max: 1667 }; // 65rnd+ -> real 1500-2500
+// Note: TGK-WeaponPack's own Sobr_Mag_*/SM_Magazine_*/SM_Mag_* reskins are
+// deliberately NOT included here - those are already flat-priced by
+// marketGapFill.ts's TGK_MAGAZINE_PRICE (300-600), a separate "cosmetic
+// reskin pack" pricing decision that predates this fix and is unrelated to
+// the real per-weapon clone bug above.
+const MAGAZINE_PRICE_OVERRIDES: Record<string, { min: number; max: number }> = {
+  // Military
+  mag_cz61_20rnd: MAGAZINE_BAND_SMALL,
+  mag_pp19_64rnd: MAGAZINE_BAND_XLARGE,
+  mag_ump_25rnd: MAGAZINE_BAND_MEDIUM,
+  mag_mp5_15rnd: MAGAZINE_BAND_SMALL,
+  mag_mp5_30rnd: MAGAZINE_BAND_MEDIUM,
+  mag_fal_20rnd: MAGAZINE_BAND_SMALL,
+  mag_akm_30rnd: MAGAZINE_BAND_MEDIUM,
+  mag_akm_palm30rnd: MAGAZINE_BAND_MEDIUM,
+  mag_akm_drum75rnd: MAGAZINE_BAND_DRUM,
+  mag_ak101_30rnd: MAGAZINE_BAND_MEDIUM,
+  mag_ak74_30rnd: MAGAZINE_BAND_MEDIUM,
+  mag_ak74_45rnd: MAGAZINE_BAND_LARGE,
+  mag_stanag_30rnd: MAGAZINE_BAND_MEDIUM,
+  // "coupled" (two mags taped together for a fast reload) - priced as its
+  // stated 30rnd capacity, same as every other single 30rnd STANAG mag;
+  // the fast-reload convenience isn't worth double the price.
+  mag_stanagcoupled_30rnd: MAGAZINE_BAND_MEDIUM,
+  mag_stanag_60rnd: MAGAZINE_BAND_XLARGE,
+  mag_cmag_10rnd: MAGAZINE_BAND_TINY,
+  mag_cmag_20rnd: MAGAZINE_BAND_SMALL,
+  mag_cmag_30rnd: MAGAZINE_BAND_MEDIUM,
+  mag_cmag_40rnd: MAGAZINE_BAND_LARGE,
+  mag_vss_10rnd: MAGAZINE_BAND_TINY,
+  mag_val_20rnd: MAGAZINE_BAND_SMALL,
+  mag_vikhr_30rnd: MAGAZINE_BAND_MEDIUM,
+  mag_svd_10rnd: MAGAZINE_BAND_TINY,
+  mag_sv98_10rnd: MAGAZINE_BAND_TINY,
+  mag_famas_25rnd: MAGAZINE_BAND_MEDIUM,
+  mag_aug_30rnd: MAGAZINE_BAND_MEDIUM,
+  mag_m14_10rnd: MAGAZINE_BAND_TINY,
+  mag_m14_20rnd: MAGAZINE_BAND_SMALL,
+  // Civilian
+  mag_pm73_15rnd: MAGAZINE_BAND_SMALL,
+  mag_pm73_25rnd: MAGAZINE_BAND_MEDIUM,
+  mag_deagle_9rnd: MAGAZINE_BAND_TINY,
+  mag_ruger1022_30rnd: MAGAZINE_BAND_MEDIUM,
+  mag_p1_8rnd: MAGAZINE_BAND_TINY,
+  mag_ij70_8rnd: MAGAZINE_BAND_TINY,
+  mag_ruger1022_15rnd: MAGAZINE_BAND_SMALL,
+  mag_mkii_10rnd: MAGAZINE_BAND_TINY,
+  mag_glock_15rnd: MAGAZINE_BAND_SMALL,
+  mag_cz75_15rnd: MAGAZINE_BAND_SMALL,
+  mag_cz527_5rnd: MAGAZINE_BAND_TINY,
+  mag_scout_5rnd: MAGAZINE_BAND_TINY,
+  mag_1911_7rnd: MAGAZINE_BAND_TINY,
+  mag_cz550_10rnd: MAGAZINE_BAND_TINY,
+  mag_saiga_5rnd: MAGAZINE_BAND_TINY,
+  mag_saiga_8rnd: MAGAZINE_BAND_TINY,
+  mag_ssg82_5rnd: MAGAZINE_BAND_TINY,
+  mag_fnx45_15rnd: MAGAZINE_BAND_SMALL,
+  // Actual capacity is 20rnd despite the "drum" name - priced by real
+  // capacity, not the name.
+  mag_saiga_drum20rnd: MAGAZINE_BAND_SMALL,
+};
+
+// m4_suppressor/ak_suppressor (the plain vanilla suppressors) were priced
+// at 7283-12135 - MORE than every one of their own TGK-WeaponPack reskinned
+// variants (M4_Suppressor_Black/Beige/Camo, AK_Suppressor_Black/Beige/Camo,
+// all already 3500-6000 via marketGapFill.ts's TGK price fixes). A plain
+// item costing more than every skin of itself makes no sense - re-priced to
+// match. Base 2334-4000 (this group is also Uncommon/1.5x) -> real
+// 3500-6000, same as the skinned variants.
+const MUZZLE_PRICE_OVERRIDES: Record<string, { min: number; max: number }> = {
+  m4_suppressor: { min: 2334, max: 4000 },
+  ak_suppressor: { min: 2334, max: 4000 },
+};
 const HANDGUARDS_MIL = [
   "mp5_plastichndgrd",
   "mp5_railhndgrd",
@@ -404,10 +529,53 @@ const MERGED_CATEGORIES: MergedCategory[] = [
     // DZSurvivalTraderRestock_Module.c) or sold in by another player.
     initStockPercent: 0,
     groups: [
-      { source: "Assault_Rifles", tier: "Rare" },
+      {
+        source: "Assault_Rifles",
+        tier: "Rare",
+        // Found via a full pistol-vs-rifle price audit (2026-09, project
+        // owner: "some pistols are worth more than assault rifles"):
+        // ak101/m16a2/famas/augshort all shared one accidental DayZ-
+        // Expansion-Market default (2730-4550 base -> 6825-11375 final at
+        // this group's Rare 2.5x), and m4a1/aug shared another, even lower
+        // one (1225-2040 base -> 3062-5100 final) - both bands sat BELOW
+        // several real civilian pistols (fnx45 alone: 7058-11768). Re-based
+        // to sit solidly above every pistol/SMG in the trader, in line with
+        // this same group's own ak74/akm/fal (14850-24750/16788-27975/
+        // 15050-25075). sawedofffamas is deliberately left untouched - every
+        // other "sawed off" variant in this trader (sawedoffb95,
+        // sawedoffizh18, sawedoffmosin9130, sawedoffmagnum) is intentionally
+        // its family's cheapest, junk-tier novelty, and this is no
+        // different.
+        priceOverrides: {
+          ak101: { min: 5500, max: 9200 },
+          m16a2: { min: 5500, max: 9200 },
+          famas: { min: 5500, max: 9200 },
+          augshort: { min: 5500, max: 9200 },
+          m4a1: { min: 5300, max: 8800 },
+          aug: { min: 5300, max: 8800 },
+        },
+      },
       { source: "Submachine_Guns", tier: "Uncommon", exclude: SUBMACHINE_GUNS_CIVILIAN },
       { source: "Sniper_Rifles", tier: "Legendary", exclude: SNIPER_RIFLES_CIVILIAN },
       { source: "Rifles", tier: "Rare", only: RIFLES_MIL_DMR },
+      // deagle and saiga moved here from Guns_Civilian (project owner:
+      // "make the Vaiga and the deagle military not civilian") - relocated
+      // via only/exclude on the shared Pistols/Shotguns source groups
+      // rather than duplicating those groups' full item lists. deagle also
+      // gets an explicit priceOverride (10000 base * this group's Rare 2.5x
+      // multiplier = a flat 25000, "make the deagle 25K") - its real
+      // DayZ-Expansion-Market default (225-375) made it the single cheapest
+      // civilian pistol in the whole trader, nowhere near a 25K sidearm's
+      // actual value. saiga is a separate group at its own original
+      // Uncommon tier (4165-6940 base -> 6248-10410 final, unchanged) -
+      // only its category changes, per "leave its price, just relocate it".
+      {
+        source: "Pistols",
+        tier: "Rare",
+        only: ["deagle"],
+        priceOverrides: { deagle: { min: 10000, max: 10000 } },
+      },
+      { source: "Shotguns", tier: "Uncommon", only: ["saiga"] },
     ],
   },
   {
@@ -424,9 +592,22 @@ const MERGED_CATEGORIES: MergedCategory[] = [
       // civilian shotgun can kill a player, so no gun should regenerate as
       // freely as a t-shirt. Every gun in the trader now caps out at 10
       // (Uncommon) at most.
-      { source: "Shotguns", tier: "Uncommon" },
+      // saiga excluded - moved to Guns_Military (see that category's own
+      // comment on the project owner's "Vaiga...military not civilian"
+      // request).
+      { source: "Shotguns", tier: "Uncommon", exclude: ["saiga"] },
       { source: "Crossbows", tier: "Uncommon" },
-      { source: "Pistols", tier: "Uncommon" },
+      // deagle excluded - moved to Guns_Military (see that category's own
+      // comment). engraved1911 ("engraved Kolt") re-priced: its real
+      // default (3235-5390 base) put it above several rifles at this tier's
+      // 1.5x multiplier (4853-8085) - project owner asked for "~5000-ish"
+      // instead; 3333 base * 1.5 rounds to a flat 5000.
+      {
+        source: "Pistols",
+        tier: "Uncommon",
+        exclude: ["deagle"],
+        priceOverrides: { engraved1911: { min: 3333, max: 3333 } },
+      },
       { source: "Sniper_Rifles", tier: "Uncommon", only: SNIPER_RIFLES_CIVILIAN },
       { source: "Submachine_Guns", tier: "Uncommon", only: SUBMACHINE_GUNS_CIVILIAN },
     ],
@@ -454,9 +635,25 @@ const MERGED_CATEGORIES: MergedCategory[] = [
     displayName: "Gun Attachments - Military",
     icon: "Deliver",
     initStockPercent: 20,
+    // Project owner (2026-09 economy pass): "make attachments only sell
+    // for half of their buy price" - a flat category-wide rule, not tied
+    // to tier (this category is entirely Uncommon/Rare/Legendary already,
+    // whose per-tier sell percents would otherwise be 20/40/60 - all
+    // overridden to a flat 50 here instead).
+    sellPricePercent: 50,
     groups: [
-      { source: "Magazines", tier: "Uncommon", only: MAGAZINES_MIL },
-      { source: "Muzzles", tier: "Uncommon", only: MUZZLES_MIL },
+      {
+        source: "Magazines",
+        tier: "Uncommon",
+        only: MAGAZINES_MIL,
+        priceOverrides: MAGAZINE_PRICE_OVERRIDES,
+      },
+      {
+        source: "Muzzles",
+        tier: "Uncommon",
+        only: MUZZLES_MIL,
+        priceOverrides: MUZZLE_PRICE_OVERRIDES,
+      },
       { source: "Handguards", tier: "Uncommon", only: HANDGUARDS_MIL },
       { source: "Buttstocks", tier: "Uncommon", only: BUTTSTOCKS_MIL },
       { source: "Bayonets", tier: "Uncommon", only: BAYONETS_MIL },
@@ -476,6 +673,12 @@ const MERGED_CATEGORIES: MergedCategory[] = [
           starlightoptic: "Legendary",
         },
       },
+      // "There are some gun flashlights in the Utility category" - moved
+      // from Utility's own Lights group (see that category's own comment).
+      // universallight/tlrlight are real weapon rail-mounted flashlight/
+      // laser combos, priced/tiered like every other Uncommon attachment
+      // here (and covered by this category's flat 50% sell rule above).
+      { source: "Lights", tier: "Uncommon", only: ["universallight", "tlrlight"] },
     ],
   },
   {
@@ -483,8 +686,16 @@ const MERGED_CATEGORIES: MergedCategory[] = [
     displayName: "Gun Attachments - Civilian",
     icon: "Deliver",
     initStockPercent: 30,
+    // Same flat "sell for half of buy price" rule as Gun_Attachments_
+    // Military above.
+    sellPricePercent: 50,
     groups: [
-      { source: "Magazines", tier: "Uncommon", exclude: MAGAZINES_MIL },
+      {
+        source: "Magazines",
+        tier: "Uncommon",
+        exclude: MAGAZINES_MIL,
+        priceOverrides: MAGAZINE_PRICE_OVERRIDES,
+      },
       { source: "Muzzles", tier: "Uncommon", exclude: MUZZLES_MIL },
       { source: "Buttstocks", tier: "Uncommon", exclude: BUTTSTOCKS_MIL },
       { source: "Bayonets", tier: "Uncommon", exclude: BAYONETS_MIL },
@@ -552,6 +763,12 @@ const MERGED_CATEGORIES: MergedCategory[] = [
         only: MIL_EYEWEAR,
         overrides: { nvgheadstrap: "Legendary" },
       },
+      // "NVG in utility but want it in military top with helmets" - moved
+      // from Utility's own Electronics group (see that category's own
+      // comment) to sit alongside its sibling nvgheadstrap above - same
+      // Legendary tier, since standalone NVG goggles are at least as
+      // capable a night-vision item as the head-strap version.
+      { source: "Electronics", tier: "Legendary", only: ["nvgoggles"] },
     ],
   },
   {
@@ -676,10 +893,108 @@ const MERGED_CATEGORIES: MergedCategory[] = [
     initStockPercent: 35,
     groups: [
       { source: "Food", tier: "Common" },
-      { source: "Drinks", tier: "Common" },
+      {
+        source: "Drinks",
+        tier: "Common",
+        // "filteringbottle" (Canteen with built-in filter) and
+        // "expansionmilkbottle" (Milk Bottle) were still at DayZ-
+        // Expansion-Market's own defaults (145-240 and 130-220) - the
+        // project owner: "filtering bottle is too cheap, should be 1K" and
+        // "milk bottle should also be about 500".
+        priceOverrides: {
+          filteringbottle: { min: 1000, max: 1000 },
+          expansionmilkbottle: { min: 500, max: 500 },
+        },
+      },
       { source: "Fruit_And_Vegetables", tier: "Common" },
-      { source: "Meat", tier: "Common" },
-      { source: "Fish", tier: "Common" },
+      {
+        source: "Meat",
+        tier: "Common",
+        // DayZ-Expansion-Market's own shipped default priced every raw
+        // butchered steak/leg cut at 8-16 - barely above a wild apple
+        // (7-9), despite requiring an actual kill + successful butchering
+        // to obtain (found via a full food-price audit, 2026-09). First
+        // bumped to 30-55, then doubled twice more (to 180-280, then
+        // 360-560) per the project owner's explicit follow-up requests:
+        // hunting should double as a genuine, if modest, income source.
+        //
+        // UPDATE (2026-09, later pass): project owner asked for steaks to
+        // sell for a flat 75% of buy price (same ask as Fish below) with
+        // progressively higher prices for harder-to-kill animals, instead
+        // of one flat band for every species regardless of difficulty.
+        // `sellPricePercent: 75` below applies to every item in this group
+        // (steaks only - Food/Drinks/Fruit_And_Vegetables above are
+        // unaffected, still the normal 20% global rate). Difficulty
+        // ranking (common-sense DayZ hunting knowledge, not a precise
+        // simulation): Tier 1 is small game/livestock that's easy to find
+        // and safely kill (rabbit, chicken, goat, sheep); Tier 2 is bigger
+        // livestock/common wild game that still needs a real weapon (pig,
+        // cow, deer, fox); Tier 3 is genuinely dangerous or scarce wild
+        // game (boar, mouflon, reindeer); Tier 4 is the two apex predators
+        // that can kill you back (bear, wolf). Bands chosen so Tier 1's
+        // sell price floors at exactly 400 (534 * 0.75 = 400.5) and each
+        // tier steps up from there - a full animal's worth of cuts still
+        // funds a meaningful chunk of gear without trivializing the
+        // trader's own gun/gear economy.
+        sellPricePercent: 75,
+        priceOverrides: {
+          // Tier 1 - easy/common (buy 534-700, sell 400-525)
+          rabbitlegmeat: { min: 534, max: 700 },
+          chickenbreastmeat: { min: 534, max: 700 },
+          goatsteakmeat: { min: 534, max: 700 },
+          sheepsteakmeat: { min: 534, max: 700 },
+          // Tier 2 - moderate (buy 700-900, sell 525-675)
+          pigsteakmeat: { min: 700, max: 900 },
+          cowsteakmeat: { min: 700, max: 900 },
+          deersteakmeat: { min: 700, max: 900 },
+          foxsteakmeat: { min: 700, max: 900 },
+          // Tier 3 - hard/dangerous wild game (buy 900-1150, sell 675-863)
+          boarsteakmeat: { min: 900, max: 1150 },
+          mouflonsteakmeat: { min: 900, max: 1150 },
+          reindeersteakmeat: { min: 900, max: 1150 },
+          // Tier 4 - apex predators (buy 1150-1450, sell 863-1088)
+          bearsteakmeat: { min: 1150, max: 1450 },
+          wolfsteakmeat: { min: 1150, max: 1450 },
+        },
+      },
+      {
+        source: "Fish",
+        tier: "Common",
+        // Same "hunting/fishing should be a subtle income source" pass as
+        // the Meat group above, and the same 2026-09 follow-up request:
+        // fish sell for a flat 75% of buy price, with progressively higher
+        // prices for harder-to-catch species instead of one flat band for
+        // everything. Difficulty ranking (common-sense DayZ fishing
+        // knowledge): Tier 1 is the smallest/most common catches needing
+        // the least effort (sardines, trap-caught shrimp); Tier 2 is common
+        // coastal/freshwater fish (mackerel, carp); Tier 3 is larger/
+        // less common catches (steelhead trout, walleye pollock); Tier 4 is
+        // caviar - a processed byproduct, not a whole fish, priced above
+        // every whole fish. Bands chosen so Tier 1's sell price floors at
+        // exactly 400 (534 * 0.75 = 400.5), matching the Meat group's own
+        // Tier 1 floor. Fillets (cleaned cuts, real butchering effort) are
+        // priced above their species' whole-fish tier, same relationship
+        // the Meat group's steaks already have over a raw carcass.
+        sellPricePercent: 75,
+        priceOverrides: {
+          // Tier 1 - easiest/most common (buy 534-700, sell 400-525)
+          sardines: { min: 534, max: 700 },
+          shrimp: { min: 534, max: 700 },
+          // Tier 2 - common (buy 700-900, sell 525-675)
+          mackerel: { min: 700, max: 900 },
+          carp: { min: 700, max: 900 },
+          // Tier 3 - larger/less common (buy 900-1150, sell 675-863)
+          steelheadtrout: { min: 900, max: 1150 },
+          walleyepollock: { min: 900, max: 1150 },
+          // Tier 4 - processed byproduct, rarest (buy 1150-1450, sell 863-1088)
+          redcaviar: { min: 1150, max: 1450 },
+          // Fillets - cleaned cuts, priced above their species' whole-fish
+          // tier (carp/mackerel are Tier 2, steelheadtrout is Tier 3)
+          carpfilletmeat: { min: 1000, max: 1300 },
+          mackerelfilletmeat: { min: 1000, max: 1300 },
+          steelheadtroutfilletmeat: { min: 1250, max: 1600 },
+        },
+      },
     ],
   },
   {
@@ -752,8 +1067,18 @@ const MERGED_CATEGORIES: MergedCategory[] = [
       { source: "Gardening", tier: "Uncommon" },
       { source: "Kits", tier: "Uncommon" },
       { source: "Navigation", tier: "Uncommon" },
-      { source: "Electronics", tier: "Uncommon" },
-      { source: "Lights", tier: "Uncommon" },
+      // Project owner (2026-09 follow-up): "NVG in utility but want it in
+      // military top with helmets" - nvgoggles (standalone night vision
+      // goggles) moved to Clothing_Head_Military instead, alongside the
+      // other military headgear/eyewear (see that category's own Eyewear
+      // group below, matching its sibling nvgheadstrap).
+      { source: "Electronics", tier: "Uncommon", exclude: ["nvgoggles"] },
+      // "There are some gun flashlights in the Utility category" -
+      // universallight/tlrlight are real weapon rail-mounted flashlight/
+      // laser attachments, not handheld tools - moved to
+      // Gun_Attachments_Military below (flashlight/headtorch/spotlight/
+      // chemlights/lighters etc. all stay here, they're genuinely handheld).
+      { source: "Lights", tier: "Uncommon", exclude: ["universallight", "tlrlight"] },
       { source: "Fishing", tier: "Uncommon" },
       { source: "Spraycans", tier: "Uncommon" },
       { source: "Liquids", tier: "Uncommon" },
@@ -776,7 +1101,94 @@ const MERGED_CATEGORIES: MergedCategory[] = [
     displayName: "Vehicles - Cars",
     icon: "Car",
     initStockPercent: 10,
-    groups: [{ source: "Cars", tier: "Rare" }],
+    groups: [
+      {
+        source: "Cars",
+        tier: "Rare",
+        // Project owner (2026-09 follow-up): "some better vehicles are the
+        // same price as lower tier cars" - every car/truck/SUV/pickup here
+        // (85 classnames total) was sitting within one narrow 36000-96000
+        // buy band regardless of real capability, except the two already
+        // confirmed correct: expansiontractor (25000-50000 base, lowest
+        // tier, untouched - no override below) and expansionvodnik
+        // (250000-500000 base, top tier, untouched). Every other family
+        // below gets its own priceOverride (pre-multiplier base - this
+        // group is Rare tier, 2.5x - see BUY_PRICE_MULTIPLIER) so the whole
+        // lineup climbs smoothly from the tractor up to the Vodnik: basic
+        // hatchback -> sedan -> civilian sedan -> offroad hatchback ->
+        // Offroad_02 -> covered cargo truck -> Apoc pickup/SUV -> UAZ ->
+        // M1025 Humvee ("should probably be 150K - a humvee but an
+        // apocalyptic scrappy version") -> bus -> Landrover -> Vodnik.
+        // Every reskin/color variant of a base vehicle gets the same price
+        // as its base (same physical vehicle, cosmetic-only difference).
+        priceOverrides: {
+          ...Object.fromEntries(
+            [
+              "hatchback_02",
+              "Hatchback_02_Black",
+              "Hatchback_02_Blue",
+              "Hatchback_02_Cab",
+              "Hatchback_02_Pizzapresto",
+              "Hatchback_02_cat",
+              "Hatchback_02_fat",
+              "Hatchback_02_icegem",
+              "Hatchback_02_mtconstruction",
+              "Hatchback_02_purplebomb",
+              "Hatchback_02_purplesmoke",
+              "Hatchback_02_rustbeige",
+              "Hatchback_02_stripes1",
+            ].map((c) => [c, { min: 12800, max: 22400 }] as const), // final 32000-56000
+          ),
+          ...Object.fromEntries(
+            [
+              "sedan_02",
+              "Sedan_02_Grey",
+              "Sedan_02_Medic01",
+              "Sedan_02_Red",
+              "Sedan_02_peacebird",
+            ].map((c) => [c, { min: 15200, max: 25600 }] as const), // final 38000-64000
+          ),
+          ...Object.fromEntries(
+            ["civiliansedan", "CivilianSedan_Black", "CivilianSedan_Wine"].map(
+              (c) => [c, { min: 18400, max: 30400 }] as const, // final 46000-76000
+            ),
+          ),
+          ...Object.fromEntries(
+            [
+              "offroadhatchback",
+              "OffroadHatchback_5000ca",
+              "OffroadHatchback_Blue",
+              "OffroadHatchback_Cab",
+              "OffroadHatchback_Firefighter",
+              "OffroadHatchback_PoliceRus",
+              "OffroadHatchback_White",
+              "OffroadHatchback_chernarusarmy",
+              "OffroadHatchback_wineblue",
+            ].map((c) => [c, { min: 22000, max: 36000 }] as const), // final 55000-90000
+          ),
+          offroad_02: { min: 24000, max: 38000 }, // final 60000-95000
+          ...Object.fromEntries(
+            ["truck_01_covered", "Truck_01_Covered_Blue", "Truck_01_Covered_Orange"].map(
+              (c) => [c, { min: 28000, max: 44000 }] as const, // final 70000-110000
+            ),
+          ),
+          // NOTE: TP_Apoc_Suv/TP_ApocPickup_Truck/TP_Apoc_M1025 (the Apoc
+          // SUV/pickup/Humvee families) deliberately have NO priceOverride
+          // here - they don't exist in the raw "Cars" source file at all
+          // (confirmed via src/data/marketGapFill.json: each is its own
+          // "category": "Vehicles_Cars" manifest group, cloned entirely by
+          // marketGapFill.ts from whatever this category's first item
+          // happens to be, tier-only via manifest, never touched by this
+          // group's own priceOverrides). Their prices are instead fixed
+          // directly in marketGapFill.ts's VEHICLE_MANIFEST_CAR_PRICE_FIXES
+          // (same "inherited an unrelated gap-fill template price" pattern
+          // as TGK_PRICE_FIXES/BOW_PRICE_FIXES) - see that file.
+          expansionuaz: { min: 46000, max: 62000 }, // final 115000-155000
+          expansionbus: { min: 66000, max: 90000 }, // final 165000-225000
+          expansion_landrover: { min: 70000, max: 94000 }, // final 175000-235000
+        },
+      },
+    ],
   },
   {
     fileName: "Vehicles_Helicopters",
@@ -820,8 +1232,25 @@ export const RARE_MAX_STOCK_CAP = 3;
 const RARE_INIT_STOCK_PERCENT_TARGET = 0.0;
 
 export const VEHICLE_PARTS_CATEGORIES = ["Vehicle_Parts", "Batteries"];
-export const VEHICLE_PARTS_MAX_STOCK_CAP = 40;
-const VEHICLE_PARTS_INIT_STOCK_PERCENT_TARGET = 50.0;
+// Project owner (2026-09 follow-up): "the stock for most vehicle parts is
+// 20, want a default of 1". Cap dropped from 40 straight to 1 - every
+// classname in these two categories is now individually scarce, matching
+// every other Legendary-tier item's cap elsewhere in this economy.
+export const VEHICLE_PARTS_MAX_STOCK_CAP = 1;
+// Init stock kept at 100% (full, i.e. exactly the new cap of 1) rather than
+// dropping to 0% alongside RARE_CATEGORIES above: this category is still a
+// functional necessity, not a "coveted power" one (see this file's own
+// header comment) - a vehicle purchase spawns its default attachments
+// (wheels, doors, battery, ...) drawing from these same per-classname stock
+// pools, and starting every part at 0 would make the very first vehicle
+// purchase after this change fail outright for lack of parts. With a cap
+// of only 1, "start full" is already exactly the scarcity level asked for -
+// it just means the FIRST unit of each part is available immediately, and
+// every purchase after that has to wait on DZSurvivalTraderRestock_Module.c's
+// own dedicated daily vehicle-parts trickle (see that file's
+// VehiclePartsTick(), "restock 1 empty vehicle part a day max") or a
+// player selling one in.
+const VEHICLE_PARTS_INIT_STOCK_PERCENT_TARGET = 100.0;
 
 interface MarketItem {
   ClassName?: string;
@@ -900,7 +1329,26 @@ async function buildMergedItems(def: MergedCategory): Promise<MarketItem[] | nul
         const clamped: MarketItem = {
           ...item,
           MaxStockThreshold: TIER_MAX_STOCK[tier],
-          SellPricePercent: SELL_PRICE_PERCENT_OVERRIDE[tier],
+          // See this function's own header comment on the "static stock"
+          // bug (found via a full economy audit, 2026-09, triggered by a
+          // player noticing SM_Rifle_MK47_Mutant_Black - Legendary tier,
+          // cap 1 - was always buyable no matter how many they bought).
+          // DayZ-Expansion-Market's ExpansionMarketItem.IsStaticStock()
+          // (confirmed via unpacking market_scripts.pbo) returns true
+          // whenever MinStockThreshold == MaxStockThreshold, and a static-
+          // stock item's stock is NEVER decremented on purchase
+          // (ExpansionMarketModule.c/ExpansionMarketTraderZone.c both
+          // explicitly skip the stock-removal call for it) - it's meant for
+          // deliberately-unlimited items, not a real cap. Every Legendary-
+          // tier item (cap 1) shipped with DayZ-Expansion-Market's own
+          // default MinStockThreshold of 1 already, so ALL 126 of them
+          // (every gun, vehicle, safe, etc. this project set to cap 1) were
+          // silently always-in-stock regardless of their real cap. Forcing
+          // MinStockThreshold to 0 here guarantees it's never equal to a
+          // non-zero MaxStockThreshold, so real scarcity actually applies.
+          MinStockThreshold: 0,
+          SellPricePercent: group.sellPricePercent ?? def.sellPricePercent ??
+            SELL_PRICE_PERCENT_OVERRIDE[tier],
         };
         if (typeof clamped.MinPriceThreshold === "number") {
           clamped.MinPriceThreshold = clampPrice(clamped.MinPriceThreshold);
@@ -919,9 +1367,14 @@ async function buildMergedItems(def: MergedCategory): Promise<MarketItem[] | nul
       items.push({
         ...item,
         MaxStockThreshold: TIER_MAX_STOCK[tier],
+        // See the selfMerging branch above for the full "static stock"
+        // bug writeup - same fix applies here for every non-self-merging
+        // item.
+        MinStockThreshold: 0,
         MinPriceThreshold: clampPrice(Math.round(baseMin * multiplier)),
         MaxPriceThreshold: clampPrice(Math.round(baseMax * multiplier)),
-        SellPricePercent: SELL_PRICE_PERCENT_OVERRIDE[tier],
+        SellPricePercent: group.sellPricePercent ?? def.sellPricePercent ??
+          SELL_PRICE_PERCENT_OVERRIDE[tier],
       });
     }
   }

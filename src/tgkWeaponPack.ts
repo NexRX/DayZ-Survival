@@ -33,7 +33,7 @@ import type { Mod } from "./mods.ts";
 
 const MOD_NAME = "@TGK-WeaponPack";
 
-const AMMUNITION = [
+export const AMMUNITION = [
   "Sobr_Ammo_762x25",
   "SM_Ammo_366TKM_BP_M",
   "SM_Ammo_366TKM_EKO",
@@ -53,7 +53,7 @@ const AMMUNITION = [
   "SM_Ammo_792x57",
 ];
 
-const AMMUNITION_BOXES = [
+export const AMMUNITION_BOXES = [
   "Sobr_AmmoBox_762x25_35Rnd",
   "SM_AmmoBox_792x57",
   "SM_AmmoBox_338_LM_AP",
@@ -79,7 +79,7 @@ const AMMUNITION_BOXES = [
 // classname), but excluded from the market manifest, same treatment as
 // any other cosmetic byproduct in this project (e.g. BMM's skinning
 // byproducts - see bmmChemicalZombie.ts).
-const AMMUNITION_CRATES = [
+export const AMMUNITION_CRATES = [
   "SM_Ammo_Empty_Crate",
   "SM_AmmoCrate_338_LM_AP",
   "SM_AmmoCrate_338_LM_FMJ",
@@ -98,7 +98,7 @@ const AMMUNITION_CRATES = [
   "SM_AmmoCrate_762x51_Ultra_Nosler",
 ];
 
-const MAGAZINES = [
+export const MAGAZINES = [
   "Sobr_mag_9A_91_20Rnd",
   "Sobr_Mag_AK74_60Rnd",
   "Sobr_Mag_AK74_45Rnd",
@@ -153,7 +153,7 @@ const MAGAZINES = [
   "SM_Mag_Killo_141_60Rnd",
 ];
 
-const SUPPRESSORS_AND_MUZZLES = [
+export const SUPPRESSORS_AND_MUZZLES = [
   "Sobr_9A_91_Suppressor",
   "AK_Suppressor_Black",
   "AK_Suppressor_Beige",
@@ -202,7 +202,7 @@ const SUPPRESSORS_AND_MUZZLES = [
   "SM_Suppressor_12ga",
 ];
 
-const HANDGUARDS = [
+export const HANDGUARDS = [
   "Sobr_AK_Krebs_UFM_LongHndgrd_Black",
   "Sobr_AK_Magpul_ZhukovHndgrd_Blk",
   "Sobr_AK_Magpul_ZhukovHndgrd_Fde",
@@ -254,7 +254,7 @@ const HANDGUARDS = [
   "SM_Handguard_PKP_Zenitco",
 ];
 
-const BUTTSTOCKS = [
+export const BUTTSTOCKS = [
   "Sobr_9A_91_Buttstock",
   "Sobr_AK_Fab_Defense_UasBttstck_Black",
   "Sobr_AK_Magpul_ZhukovBttstck_Black",
@@ -281,7 +281,7 @@ const BUTTSTOCKS = [
   "SM_Buttstock_PKP_Zenitco",
 ];
 
-const PISTOLGRIPS = [
+export const PISTOLGRIPS = [
   "SM_AK_Pistolgrip_Aeroknox_Scorpius_Black",
   "SM_AK_Pistolgrip_AK_12_Black",
   "SM_AK_Pistolgrip_Custom_Arms_AGS_74_PRO_Sniper_Kit_Black",
@@ -312,7 +312,7 @@ const PISTOLGRIPS = [
   "SM_Pistolgrip_TT_33_TOZ_TT_STD_Black",
 ];
 
-const FOREGRIPS = [
+export const FOREGRIPS = [
   "SM_Foregrip_BCM_Mod_Black",
   "SM_Foregrip_CKIB_Std_Black",
   "SM_Foregrip_Fortis_Shift_Black",
@@ -348,21 +348,21 @@ const FOREGRIPS = [
   "SM_Foregrip_Zenit_PK6_Black",
 ];
 
-const FLASHLIGHTS = [
+export const FLASHLIGHTS = [
   "SM_Flashlight_Zenit_2u",
   "SM_Flashlight_Steiner_LAS_TAC_2",
   "SM_Flashlight_Insight_WMX_200",
 ];
 
-const RECEIVERS = [
+export const RECEIVERS = [
   "Sobr_AK74_Reciever_Black",
   "Sobr_AK_Akademia_Bastion_Black",
   "SM_RD_704_Reciever_Black",
 ];
 
-const OPTICS = ["Sobr_SVT_40_Optic"];
+export const OPTICS = ["Sobr_SVT_40_Optic"];
 
-const OTHERS = [
+export const OTHERS = [
   "SM_Stock_Remington700_promag_archangel_Black",
   "SM_Glock_Mount_Aimtech_Tiger_Shark_Black",
   "SM_AKS74u_Reciever_Izhmash_std",
@@ -371,7 +371,7 @@ const OTHERS = [
   "SM_SVD_Tube_Adapter",
 ];
 
-const KNIVES = [
+export const KNIVES = [
   "SM_Melee_Bars_Hammer",
   "SM_Melee_Samurai_Katana_White",
   "SM_Melee_Samurai_Katana_Pouch",
@@ -392,7 +392,7 @@ const KNIVES = [
 // Standard-issue rifles/carbines/shotguns/SMGs - common enough among the
 // "SOBR"/special-forces roster that they're the Rare, not Legendary, tier
 // (see marketGapFill.json's routing of this array).
-const RIFLES_STANDARD = [
+export const RIFLES_STANDARD = [
   "Sobr_9A_91",
   "Sobr_M4A1",
   "Sobr_M4A1_Black",
@@ -442,7 +442,7 @@ const RIFLES_STANDARD = [
 // Heavy/exotic/precision weapons - machine guns, dedicated sniper rifles,
 // the DMR/EBR variants - Legendary tier, the hardest-to-get weapons this
 // mod offers.
-const RIFLES_HEAVY_AND_SNIPER = [
+export const RIFLES_HEAVY_AND_SNIPER = [
   "Sobr_M14_DMR",
   "Sobr_M14_EBR_Black",
   "Sobr_RPD",
@@ -464,7 +464,7 @@ const RIFLES_HEAVY_AND_SNIPER = [
   "SM_Automatic_Rifle_Killo_141",
 ];
 
-const PISTOLS = [
+export const PISTOLS = [
   "Sobr_Colt_1911",
   "SobrMods_Desert_Eagle_Japan_Edition",
   "SM_Glock_18c",
@@ -476,7 +476,7 @@ const PISTOLS = [
   "SM_Pistol_Beretta_M9A3_FDE",
 ];
 
-const GRENADE_LAUNCHERS = ["SM_Grenade_Launcher_Milkor_M32A1_MSGL_40mm_FDE"];
+export const GRENADE_LAUNCHERS = ["SM_Grenade_Launcher_Milkor_M32A1_MSGL_40mm_FDE"];
 
 // category/tag applied to every classname above, matching vanilla's own
 // convention for the same item families (see e.g. db/types.xml's

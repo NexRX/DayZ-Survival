@@ -54,6 +54,12 @@ import {
 import { log, ok, warn } from "./ui.ts";
 import { exists } from "./steam.ts";
 import { MANAGED_MARKET_CATEGORIES } from "./market.ts";
+import {
+  KEYCARD_CLASSNAMES,
+  MASTER_KEYCARD_CLASSNAME,
+  OLD_FOOD_CLASSNAMES,
+  WOOD_SELL_ONLY_CLASSNAMES,
+} from "./marketGapFill.ts";
 
 const TRADERZONES_DIR = `${MISSION_DIR}/expansion/traderzones`;
 const TRADERS_DIR = `${MISSION_DIR}/expansion/traders`;
@@ -126,7 +132,46 @@ interface TraderIdentity {
   displayName: string;
   icon: string;
   categories: string[];
+  /**
+   * Per-item buy/sell override (ExpansionMarketTrader's own `Items` map,
+   * confirmed via unpacking market_scripts.pbo's
+   * ExpansionMarketTraderBuySell enum: CanOnlyBuy=0, CanBuyAndSell=1,
+   * CanOnlySell=2, CanBuyAndSellAsAttachmentOnly=3). Independent of both
+   * stock AND of the item's own MinPriceThreshold/MaxPriceThreshold -
+   * CanBuyItem()/CanSellItem() each check only this value, so a
+   * CanOnlySell item still sells for its normal (SellPricePercent-scaled)
+   * price, it just can never be bought at any price.
+   */
+  items?: Record<string, number>;
 }
+
+// ExpansionMarketTraderBuySell.CanOnlySell - see TraderIdentity.items above.
+const CAN_ONLY_SELL = 2;
+
+// Custom-Keycards' room keycards (see marketGapFill.ts's KEYCARD_MIN_PRICE
+// comment for the full history): project owner decided 2026-09 these should
+// be find-only, never purchasable, but still sellable back to the trader.
+const KEYCARD_BUYSELL_OVERRIDES = Object.fromEntries(
+  [...KEYCARD_CLASSNAMES, MASTER_KEYCARD_CLASSNAME].map((c) => [c, CAN_ONLY_SELL]),
+);
+
+// Every Old_ (moldy/expired) canned good (see marketGapFill.ts's
+// OLD_FOOD_CLASSNAMES/FOOD_OLD_CAN_PRICE): project owner decided 2026-09
+// these "probably shouldn't be buyable" - find-only in the world (or via
+// a crafting/spoilage path), but still sellable back to the trader for a
+// modest price, same find-only-but-sellable pattern as the keycards above.
+const OLD_FOOD_BUYSELL_OVERRIDES = Object.fromEntries(
+  OLD_FOOD_CLASSNAMES.map((c) => [c, CAN_ONLY_SELL]),
+);
+
+// WoodenLog/Firewood (see marketGapFill.ts's WOOD_SELL_ONLY_CLASSNAMES/
+// WOOD_SELL_ONLY_PRICE_FIXES): project owner (2026-09 follow-up) - "wooden
+// logs shouldnt be purchasable buy should be sellable for 100 a log, same
+// for firewood but firewood should sell for 50" - same find-only-but-
+// sellable pattern as the keycards/old food above.
+const WOOD_BUYSELL_OVERRIDES = Object.fromEntries(
+  WOOD_SELL_ONLY_CLASSNAMES.map((c) => [c, CAN_ONLY_SELL]),
+);
 
 // Same schema/currency as DayZ-Expansion-Market's own 17 default trader
 // identity files (confirmed live, e.g. profiles/ExpansionMod/Traders/
@@ -175,6 +220,11 @@ export const CUSTOM_TRADER_IDENTITIES: TraderIdentity[] = [
       "Utility",
       "Tools_And_Melee",
     ],
+    items: {
+      ...KEYCARD_BUYSELL_OVERRIDES,
+      ...OLD_FOOD_BUYSELL_OVERRIDES,
+      ...WOOD_BUYSELL_OVERRIDES,
+    },
   },
   {
     fileName: "Vehicle",
@@ -424,7 +474,7 @@ async function ensureCustomTraderIdentities(): Promise<void> {
         DisplayCurrencyName: "Gold Coin",
         UseCategoryOrder: 0,
         Categories: identity.categories,
-        Items: {},
+        Items: identity.items ?? {},
       },
       null,
       4,
@@ -762,11 +812,11 @@ async function ensureGoldCoinCurrency(): Promise<void> {
 // money should be hard" lever, paired with market.ts's BUY_PRICE_MULTIPLIER
 // for the "spending money should be hard" side. DayZ-Expansion-Market's own
 // default is 75 (sell for 75% of value); dropped to 20 for the 2026-08
-// hardcore-survival pass - see serverpack/README.md. (A later pass briefly
-// tried 12, but the project owner asked to keep this at 20 and instead
-// raise rarer items' sell percentage individually - see market.ts's
-// SELL_PRICE_PERCENT_OVERRIDE, which layers on top of this global value
-// via DayZ-Expansion-Market's own item > zone > global fallback chain.)
+// hardcore-survival pass, briefly raised to a flat 66 across the board
+// (2026-09), then reverted back to 20 the same day ("I think sell
+// percentage was fine at 20 actually") - see market.ts's
+// SELL_PRICE_PERCENT_OVERRIDE, which once again bumps Rare/Legendary above
+// this global value (40/60) instead of inheriting it uniformly.
 const HARDCORE_SELL_PRICE_PERCENT = 20;
 
 async function ensureHardcoreSellPricePercent(): Promise<void> {

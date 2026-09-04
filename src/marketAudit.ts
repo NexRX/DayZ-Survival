@@ -68,6 +68,9 @@ const NEVER_SELLABLE_PATTERNS: RegExp[] = [
   /^(Land_[Ww]reck|StaticObj_Wreck|Wreck_)/i, // vehicle wreck/decor prop
   /^(Money_|Wallet_)/i, // physical currency prop (Expansion traders use their own virtual currency)
   /^YRTSK_ZMB/i, // YRTSK mod's zombie skin family (same idea as ^Zmb, different mod's naming)
+  /^Doggo_Wild/i, // @DayZ-Dog's wild/feral dog creature variants
+  /^BMM_Chimical/i, // @BMM-Chemical-Zombie's creature + body-part loot family
+  /^TCHC/i, // @Custom-Zombies' creature family (TCHCAI_TheAstronaut_Zombie_*/TCHC_TheButcher_Zombie/TCHC_ZombieBear)
 ];
 
 function isNeverSellable(className: string): boolean {

@@ -160,11 +160,20 @@ signed locally, then staged directly into the running server's own mod
 folder (and loaded via `-servermod=`) on every single start, so nobody -
 not even this server itself - ever downloads it (see
 `src/localServerPacks.ts`'s `ensureLocalServerPack()`, called from
-`src/server.ts`'s `doStart()`). It only ever holds addons confirmed to have
-**zero** client-visible behavior at all - currently just
-`DZSurvivalBaseDecay` (see below). `deno task build-serverpack-serveronly`/
-`verify-serverpack-serveronly` exist for manually building/testing it; there
-is intentionally no `publish-serverpack-serveronly` task.
+`src/server.ts`'s `doStart()`). It may only ever hold addons confirmed to
+have **zero** client-visible behavior _and_ zero Community-Online-Tools
+module/permission integration - COT requires the client's and server's
+permission trees to match structurally, so a permission registered only
+server-side silently corrupts every connecting client's copy of the tree
+(breaking COT's own admin UI/keybinds, while server-side-only checks like
+chat command gating keep working - a very confusing bug to diagnose from
+symptoms alone; this happened for real on this project, see
+`src/paths.ts`'s comment on `SERVERPACK_SERVERONLY`). **Currently empty** -
+`src/server.ts`'s `doStart()` skips staging/loading it entirely whenever it
+has no addons, so that's a safe no-op, not a broken state. `deno task
+build-serverpack-serveronly`/`verify-serverpack-serveronly` exist for
+manually building/testing it once something qualifies again; there is
+intentionally no `publish-serverpack-serveronly` task.
 
 Currently `serverpack/` ships:
 
@@ -190,17 +199,18 @@ Currently `serverpack/` ships:
   Community-Online-Tools commands (`/restock now`, `/restock reset`). See
   `serverpack/README.md`'s "Current addons" section for the full design.
 
-`serverpack-serveronly/` ships:
-
 - **`DZSurvivalBaseDecay`** - force-unlocks (and thus frees up) any
   `Code-Lock`-secured base that's gone 30 days without any real
   owner/guest activity (opening, entering a code, claiming/changing a
-  passcode) - purely server-side bookkeeping with no new client-visible
-  action/UI of its own, which is exactly why it lives in the local-only
-  pack instead of `serverpack/`. See `serverpack/README.md`'s "Current
-  addons" section for the full design (its addon folder physically moved
-  there, but the writeup stayed in one place to keep this project's
-  addon history in a single document).
+  passcode). Its actual decay logic is entirely server-side (guarded via
+  `GetGame().IsServer()`), but it also adds a Community-Online-Tools
+  admin command (`/basedecay status`/`/basedecay now`), and COT's
+  permission-tree design requires that to be registered identically on
+  both client and server - which is why this addon lives here in the
+  shared client+server pack rather than `serverpack-serveronly/` (it used
+  to live there; moved after that mismatch broke COT's own admin UI/
+  keybinds server-wide - see `src/paths.ts`'s comment on
+  `SERVERPACK_SERVERONLY` for the full incident writeup).
 
 See `serverpack/README.md` for full build/publish details and lessons
 learned.
@@ -230,6 +240,54 @@ an extra "priming" pass with its own log lines the very first time you run
 (every later start finds the configs already there and skips straight to
 the real start). The priming server's own console output is saved to
 `profiles/bootstrap-prime.log` if you want to see what it did.
+
+If the priming server itself crashes partway through, the polling loop
+notices the child has already exited and stops immediately with a clear
+"exited early" warning instead of silently polling for files that will
+never appear for the rest of the full 15 minutes (which used to look
+exactly like "still slowly loading" from the outside - a real, observed
+bug, since fixed). Whatever configs did get generated before it died are
+kept, so re-running `up`/`start` again only ever needs to wait on
+whatever's still missing - it's always safe to just try again. This can
+take a genuinely long time on a heavily-modded first boot - in particular
+`@JunkYardDog` walks every vehicle wreck on the whole map one at a time
+registering salvage/fuel points, which alone can take several minutes.
+
+**Ctrl+C during priming is handled properly, not just discouraged.** The
+first version of this just relayed the terminal's raw SIGINT straight to
+the background priming child (since it shared the same foreground process
+group), killing it at an arbitrary mid-write moment with no chance to shut
+down cleanly (confirmed live: a truncated mid-line RPT log after a user's
+own Ctrl+C, mistaken for a hang after ~7 minutes of "still waiting" when
+the server was actually still loading). Fixed properly instead of just
+documenting around it:
+
+- The priming child is spawned via `setsid` so it's detached into its own
+  session/process group - a terminal Ctrl+C no longer reaches it directly
+  at all, only this CLI process does (via `Deno.addSignalListener`). The
+  exact same fix was applied to the real (non-priming) server launch in
+  `src/server.ts`'s `runServerWithWatchdog()`, which had the identical
+  underlying issue.
+- That means this process is now the only thing that ever signals the
+  child, so a Ctrl+C during priming triggers the same graceful
+  SIGINT-then-wait-then-SIGKILL-on-a-second-Ctrl+C sequence already used
+  when priming finishes normally, instead of an uncontrolled kill.
+- The child's stdout/stderr are also run through `stdbuf -oL -eL` so
+  `bootstrap-prime.log` is line-buffered instead of glibc's default
+  fully-buffered mode for a non-tty pipe (which could otherwise sit
+  completely silent for minutes at a time even while the server was
+  actively working - part of what made the mistaken-hang case above look
+  stuck).
+- Each "...still waiting" progress line (every 30s) also reports how much
+  `bootstrap-prime.log` grew since the last one, e.g. "log grew +340KB in
+  the last 30s - still alive and working", or a "hasn't grown" warning if
+  it's gone quiet - a direct, honest liveness signal instead of a fixed
+  timeout you have to just trust.
+
+With this, Ctrl+C during priming is completely safe any time: it stops the
+priming server cleanly, reports that it's safe to re-run `up`/`start`
+(which resumes from whatever configs already exist), and exits - no manual
+care needed.
 
 **Ship their own `types.xml` to merge in - automated**
 ([`src/modTypes.ts`](src/modTypes.ts), runs on every `up`/`start`)
@@ -461,6 +519,21 @@ default to disabled), `Custom-Keycards` (aside from door placement above).
   Has two unresolved live bug reports on its own Workshop Comments tab
   (astronaut invincibility, a PBO-signing complaint) - added anyway per the
   project owner's own request; see TESTS.md.
+- [`src/foreverBurningCampfire.ts`](src/foreverBurningCampfire.ts)
+  (`ensureForeverBurningCampfireWired()`) - `@Forever_Burning_Campfire`
+  (replaces the removed `@NeonMurder-Lights`) splits its content in two,
+  each needing a different auto-wiring approach (see that file's own header
+  comment for the full story): plain decorative static props
+  (`FBF_FireBarrel`/`FBF_Torch`/`FBF_AreaLight_Warm`) are declared via
+  DayZ-Expansion-Core's own generic placed-object file format
+  (`EXPANSION_OBJECTS_DIR`, previously unused by this project), while
+  `FBF_Fireplace` itself - a genuine persistent entity the mod's own docs
+  warn will "multiply" if placed via Editor/init - is spawned + permanently
+  ignited exactly once by a dedicated EnforceScript addon,
+  `serverpack/addons/DZSurvivalTraderFireplace`, guarded by a persistent
+  marker file (same pattern as `DZSurvivalTraderRestock`). Placement
+  positions are still a placeholder pending live visual confirmation - see
+  TESTS.md.
 - [`src/lighting.ts`](src/lighting.ts) (`tuneLightingConfig()`) -
   `Lads-Lighting-Overhaul` does nothing at all until `lightingConfig` is set
   to one of its preset values; this force-sets `WorldsData.lightingConfig`

@@ -50,11 +50,13 @@
 # see the items you placed"). ---
 2961092390  @R22R-Fortifications-Assets
 
-# --- NeonMurder's LIGHTS: static/permanent light-source prop pack, used to
-# actually light up the trader town (the DayZ-Editor NetworkLight/
+# --- Forever_Burning_Campfire: static/permanent light-source prop pack,
+# used to actually light up the trader town (the DayZ-Editor NetworkLight/
 # NetworkSpotLight helper objects placed earlier turned out not to render
-# in the live mission - these are real always-on lamp props instead). ---
-2822125184  @NeonMurder-Lights
+# in the live mission - these are real always-on fire/lamp props instead).
+# Replaces NeonMurder-Lights (removed) - see TESTS.md for the placed-object
+# migration this swap requires. Requires @CF (already present above). ---
+1890912719  @Forever_Burning_Campfire
 
 # --- DayZ Expansion, modular set (matches RemnantZ; replaces the old
 # all-in-one "DayZ-Expansion-Bundle" to avoid double-downloading/duplicating
@@ -299,12 +301,54 @@
 3726714048  @IronhordeLighting
 3659550946  @Signal-Overnight-Stay
 
+# DDP Server Climate Zones: server-side-only mod (confirmed via Steam Web
+# API GetPublishedFileDetails: result=1, banned=0, visibility=0/public - its
+# own Community page renders a stale/misleading "removed" banner, same as
+# Sector31-DynamicHordes above; don't trust that page) that overrides
+# WorldData.GetTemperature() for admin-defined circular zones. Self-
+# generates profiles/DDP_ClimateZones/Config.json on first world load; see
+# src/climateZones.ts, which lays down a 3-ring cold gradient centered deep
+# in the NW quadrant (coldest there, fading back to unmodified vanilla
+# temperature - the map's natural baseline - by the SE), per the project
+# owner's own request. Temperature only - no ground texture, tree, or
+# weather-VFX changes (the mod's own author confirmed in a Steam comment
+# this is temperature-only for now).
+#
+# DECIDED (see TODO.md item 3): a matching NW-only visual snow look isn't
+# included, and won't be. Two routes were explored and both rejected:
+# "Early Winter or late Fall in Chernarus" (3303988563, confirmed live via
+# Steam Web API) reskins via whole-map shared config classes with no
+# position-gated option (would snow-reskin the ENTIRE map, not just the
+# NW, and its license forbids repacking a partial/regional version); a
+# custom scripted particle-effect "snow flurry" confined to the NW was
+# technically workable but the project owner decided it wasn't worth
+# building without real snow on the ground. Final call: keep just this
+# temperature gradient - NW is mechanically colder (frost/hypothermia
+# risk), no visual change anywhere on the map.
+3759083264  @DDP-Climate-Zones          server
+
 # --- Misc/QoL ---
 3690267695  @Admirals-Advanced-Hologram-Mod
 3726129210  @Dart-Board-Game
 2627491185  @Andys-EarPlugs
 2918418331  @Survivor-Animations
 1565871491  @BuilderItems
+
+# Tent Actions Fix - 1.29 "Road To Buglands" hotfix: restores tent UI
+# actions (packing, opening/closing flaps) broken by a vanilla 1.29
+# ActionTargets change that stopped accepting some tent model proxies as
+# valid action targets - without this, players can get stuck unable to
+# open/close or pack any tent. Confirmed live via Steam Web API
+# (GetPublishedFileDetails: result=1, banned=0, visibility=0/public) - its
+# own Community page renders a stale/misleading "removed for guideline
+# violation" banner, same false-positive already seen on Sector31-
+# DynamicHordes/DDP-Climate-Zones above; the API is authoritative. Must be
+# on BOTH client and server (confirmed via the author's own comments -
+# a client without it can't even connect to a server running it), so this
+# is a normal (not -servermod=) entry despite being a pure bugfix. The
+# author explicitly asks it not be repacked, so it stays a separate
+# Workshop entry rather than folding into this project's own serverpack.
+3765278986  @Tent-Actions-Fix
 
 # --- "BARBA RIJA HARDCORE SERVER PACK" (3085139498), the reference
 # server's own custom content bundle. Not all of it made the cut:

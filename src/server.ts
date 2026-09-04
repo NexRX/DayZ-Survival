@@ -22,12 +22,14 @@ import { LIGHTING_PRESET, tuneLightingConfig } from "./lighting.ts";
 import { tuneMapAccess } from "./mapAccess.ts";
 import { tuneWeather } from "./weather.ts";
 import { tuneHazardZones } from "./hazards.ts";
+import { ensureClimateZones } from "./climateZones.ts";
 import { tuneNoBuildZones } from "./noBuildZones.ts";
 import { ensureWildlifeTerritories } from "./wildlifeTerritories.ts";
 import { ensureYuretskiyWired } from "./yuretskiy.ts";
 import { ensureBmmChemicalZombieWired } from "./bmmChemicalZombie.ts";
 import { ensureCustomZombiesTchcWired } from "./customZombiesTchc.ts";
 import { ensureNecromutantWired } from "./necromutant.ts";
+import { ensureForeverBurningCampfireWired } from "./foreverBurningCampfire.ts";
 import { ensureOpticsWired } from "./optics.ts";
 import { ensureTgkWeaponPackWired } from "./tgkWeaponPack.ts";
 import { ensureMilitaryMonsterGarrisons } from "./militaryMonsters.ts";
@@ -56,6 +58,7 @@ import { ensureConfig, type Settings } from "./config.ts";
 import { primeModConfigsIfNeeded } from "./prime.ts";
 import { ensureLocalServerPack } from "./localServerPacks.ts";
 import { SERVERPACK_SERVERONLY } from "./paths.ts";
+import { listAddons } from "./modBuild.ts";
 
 export async function genConfig(s: Settings): Promise<void> {
   const cfg = `${SERVER_DIR}/serverDZ.cfg`;
@@ -168,8 +171,18 @@ async function runServerWithWatchdog(args: string[]): Promise<never> {
   let consecutiveFastCrashes = 0;
   while (true) {
     const startedAt = Date.now();
-    currentChild = new Deno.Command("steam-run", {
-      args,
+    // setsid detaches the server into its own session/process group, so a
+    // terminal Ctrl+C only ever signals *this* CLI process (via the
+    // Deno.addSignalListener above), not the server directly and
+    // uncontrolled in parallel - requestStop() is then the only thing that
+    // ever signals it (SIGTERM, escalating to SIGKILL on a second Ctrl+C),
+    // matching the same fix applied to prime.ts's headless priming run for
+    // the identical underlying issue. stdin/stdout/stderr stay inherited -
+    // detaching the session doesn't affect already-open file descriptors,
+    // so the console (including admin commands typed into stdin) keeps
+    // working exactly as before.
+    currentChild = new Deno.Command("setsid", {
+      args: ["steam-run", ...args],
       cwd: SERVER_DIR,
       env: {
         LD_LIBRARY_PATH: `${SERVER_DIR}:${Deno.env.get("LD_LIBRARY_PATH") ?? ""}`,
@@ -216,20 +229,33 @@ export async function doStart(s: Settings): Promise<void> {
   await ensureConfig(s);
   await ensureServer(s);
   await ensureMods(s);
-  // DZSurvivalServerOnly (server-side-only custom logic, e.g. base decay) is
-  // deliberately never published to Steam Workshop - it's built and signed
-  // locally, then staged straight into the server's own mod folder every
-  // start, so it's never listed in mods.txt and never downloaded by anyone,
-  // including this server itself. See localServerPacks.ts.
-  await ensureLocalServerPack(SERVERPACK_SERVERONLY);
+  // DZSurvivalServerOnly (server-side-only custom logic with NO client-
+  // visible behavior AND no COT/permission-system integration - see
+  // paths.ts's own comment on SERVERPACK_SERVERONLY for why that specific
+  // combination matters) is deliberately never published to Steam Workshop -
+  // it's built and signed locally, then staged straight into the server's
+  // own mod folder every start, so it's never listed in mods.txt and never
+  // downloaded by anyone, including this server itself. See
+  // localServerPacks.ts. Currently empty (DZSurvivalBaseDecay, its only
+  // former occupant, had to move into the shared serverpack/ - see that
+  // addon's own DZSurvivalBaseDecay_COTCommand.c for why) - skipped
+  // entirely whenever it has no addons, rather than staging/loading an
+  // empty mod, so this stays a no-op until something genuinely server-only
+  // (and COT-free) needs it again.
+  const hasServerOnlyAddons = (await listAddons(SERVERPACK_SERVERONLY)).length > 0;
+  if (hasServerOnlyAddons) {
+    await ensureLocalServerPack(SERVERPACK_SERVERONLY);
+  }
   const allMods = await loadMods();
   await genConfig(s);
 
   const mods = modParam(allMods);
   let serverMods = serverModParam(allMods);
-  serverMods = serverMods
-    ? `${serverMods};@${SERVERPACK_SERVERONLY.name}`
-    : `@${SERVERPACK_SERVERONLY.name}`;
+  if (hasServerOnlyAddons) {
+    serverMods = serverMods
+      ? `${serverMods};@${SERVERPACK_SERVERONLY.name}`
+      : `@${SERVERPACK_SERVERONLY.name}`;
+  }
   await Deno.mkdir(PROFILE_DIR, { recursive: true });
   const extra = s.EXTRA_PARAMS.trim() ? s.EXTRA_PARAMS.trim().split(/\s+/) : [];
   const args = [
@@ -284,11 +310,13 @@ export async function doStart(s: Settings): Promise<void> {
   await tuneExpansionMarket();
   await ensureMarketGapFill();
   await ensureCustomTrader();
+  await ensureForeverBurningCampfireWired(allMods);
   await tuneLightingConfig();
   await tuneMapAccess();
   await tuneWeather();
   await tuneHazardZones();
   await tuneNoBuildZones();
+  await ensureClimateZones();
   await ensureFuelSystemVehicles(allMods);
   await tuneNewAIEventMods();
 

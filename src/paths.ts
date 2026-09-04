@@ -211,6 +211,15 @@ export const AI_WARZONES_SETTINGS = `${PROFILE_DIR}/AIWarZones/AIWarZones_Settin
 export const ZOMBIE_HORDE_GENERAL_SETTINGS =
   `${PROFILE_DIR}/ZombieHorde/Settings/GeneralSettings.json`;
 
+// DDP Server Climate Zones (@DDP-Climate-Zones) self-generates this on first
+// world load with a default-template Zones array. The mod's own Steam page
+// says "profiles\DDP_ClimateZones\Config.json", but its actual runtime log
+// on a live run said otherwise: "Loaded config from
+// $profile:DDP\DDP_ClimateZones\Config.json" - confirmed on disk at
+// profiles/DDP/DDP_ClimateZones/Config.json (an extra DDP/ parent directory
+// the Steam page didn't mention). See climateZones.ts.
+export const CLIMATE_ZONES_SETTINGS = `${PROFILE_DIR}/DDP/DDP_ClimateZones/Config.json`;
+
 // Fuel-System (@Fuel-System) self-generates this on first world load -
 // confirmed on a live server run. Matches vehicle fuel type/consumption by
 // classname, and the mod's own Steam page confirms `type` "can be a base
@@ -227,20 +236,51 @@ export const FUEL_SYSTEM_VEHICLES = `${PROFILE_DIR}/iTzMods/FuelSystem/vehicles.
 //
 // Two packs exist, split by whether an addon has ANY client-visible/
 // client-required behavior (UI, self-actions, board interactions, input
-// overrides):
+// overrides) *and* whether it registers anything into Community-Online-
+// Tools' module/permission system (JMModuleBase subclasses,
+// GetPermissionsManager().RegisterPermission(), etc.):
 //   - SERVERPACK ( DZSurvivalServerPack) - loaded via -mod= (players must
 //     download it). Holds DZSurvivalFindStone (hold-action UI),
-//     DZSurvivalMapGate (overrides the client's own M-key handler), and
+//     DZSurvivalMapGate (overrides the client's own M-key handler),
 //     DZSurvivalTraderRestock (the board's ActionCheckTraderBoard is a
-//     player-facing proximity action).
+//     player-facing proximity action), and DZSurvivalBaseDecay (server-only
+//     *logic*, but registers a COT permission/module - see below for why
+//     that alone forces it into this pack).
 //   - SERVERPACK_SERVERONLY (DZSurvivalServerOnly) - LOCAL ONLY, never
 //     published to Steam Workshop at all (see localServerPacks.ts's
 //     ensureLocalServerPack() - staged directly into the server's own mod
 //     folder and loaded via -servermod= on every start, so nobody -
-//     including this server itself - ever needs to download it). Holds
-//     DZSurvivalBaseDecay, which only hooks *Server()/OnStartServer-suffixed
-//     methods and adds no new client-visible action/UI/board of its own -
-//     confirmed safe to keep off the client entirely.
+//     including this server itself - ever needs to download it). Currently
+//     EMPTY (see below) - src/server.ts's doStart() skips staging/loading
+//     it entirely whenever listAddons() returns none, so this is a safe
+//     no-op until something genuinely qualifies again.
+//
+//   *** Why DZSurvivalBaseDecay isn't server-only, even though its actual
+//   decay logic is ***: it was originally here, since none of its hooks are
+//   player-facing (only *Server()/OnStartServer-suffixed methods + EEInit/
+//   EEDelete). But its COT admin-command integration (DZSurvivalBaseDecay_
+//   COTCommand.c) registers a JMModuleBase + a permission node
+//   ("Admin.DZSurvivalBaseDecay.Trigger"), and COT requires every
+//   registered permission node to exist IDENTICALLY on both client and
+//   server - it builds a tree client-side from whatever's compiled in, then
+//   compares it structurally (child count per node) against what the
+//   server sends on connect. A permission registered only server-side
+//   (because the addon defining it was -servermod=-only) makes the client's
+//   copy of that branch have fewer children than the server's, which
+//   throws "Received child count N for X does not match registered child
+//   count M!" while deserializing the role sync - corrupting that client's
+//   entire permission tree from then on. The practical symptom (confirmed
+//   live on this project, 2026-09): COT's own admin UI/keybinds (which gate
+//   on GetPermissionsManager().HasPermission("COT.View")) stop responding
+//   to ANY input entirely, silently, with no error shown to the user, while
+//   things that check permissions purely server-side (e.g. chat command
+//   gating) keep working fine - a very confusing split-brain bug to
+//   diagnose from symptoms alone. Lesson: ANY addon that touches COT's
+//   module/permission system at all must live in the shared pack, no
+//   matter how server-only its actual behavior is - see
+//   DZSurvivalBaseDecay_Module.c's GetGame().IsServer() guards for how the
+//   real logic still stays server-authoritative despite the scripts
+//   compiling into the client build too.
 export interface ServerPackConfig {
   /** Must match the CfgMods class name / `dir` in this pack's mod.cpp. */
   name: string;

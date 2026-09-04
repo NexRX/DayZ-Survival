@@ -14,9 +14,12 @@
 // earlier version of this file that had 4 hand-picked fixed-interval rules,
 // e.g. "1 helicopter/168h", "1 gun/6h"): every real hourly tick, scans
 // EVERY item in every category in s_ManagedCategories (see Init() - these
-// match src/market.ts's MERGED_CATEGORIES, minus Ghillies/Vehicle_Parts/
-// Batteries, which are deliberately never auto-restocked - see that file's
-// header comment) and buckets each item into a rarity tier purely from its
+// match src/market.ts's MERGED_CATEGORIES, minus Ghillies (sale-only - see
+// that file's header comment) and Vehicle_Parts/Batteries, which get their
+// own separate, much slower daily trickle instead - see VehiclePartsTick()/
+// s_VehiclePartsCategories/VEHICLE_PARTS_COOLDOWN_HOURS below, added 2026-09
+// per the project owner's "restock 1 empty vehicle part a day max") and
+// buckets each item into a rarity tier purely from its
 // own live MaxStockThreshold (TierForCap() - <=1 Legendary, <=3 Rare, <=8
 // Uncommon, else Common - kept in sync with src/market.ts's
 // TIER_MAX_STOCK, no separate classname lookup table needed here). Each
@@ -76,6 +79,17 @@ class DZSurvivalTraderRestockState
 	// eligible (cooldown trivially satisfied) - a freshly added/renamed
 	// item doesn't have to wait a full cooldown before its first pick.
 	ref map<string, int> LastRestockUnix = new map<string, int>();
+
+	// Separate single timestamp (not per-item) for the Vehicle_Parts/
+	// Batteries daily trickle (see VehiclePartsTick()) - project owner
+	// (2026-09 follow-up): "restock 1 empty vehicle part a day max". Unlike
+	// every other managed category, vehicle parts are deliberately NOT part
+	// of the per-item weighted tier system above (see s_ManagedCategories'
+	// own comment) - this is a single shared "at most one part total, once
+	// per real day" budget across both categories, so one shared timestamp
+	// is enough (no per-classname cooldown needed). 0 (never restocked yet)
+	// is immediately eligible, same convention as LastRestockUnix above.
+	int LastVehiclePartsRestockUnix = 0;
 };
 
 class DZSurvivalTraderRestock
@@ -130,13 +144,27 @@ class DZSurvivalTraderRestock
 	// eligible item so a manual trigger visibly tops things up immediately
 	// instead of needing to be spammed repeatedly.
 
+	// Vehicle_Parts/Batteries daily trickle (see VehiclePartsTick()) -
+	// project owner (2026-09 follow-up): "the stock for most vehicle parts
+	// is 20, want a default of 1 and should restock 1 empty vehicle part a
+	// day max". Deliberately its own tiny, isolated mechanism rather than
+	// folding these two categories into s_ManagedCategories above: with
+	// ~574 classnames between them (vs. cap 1 each, same as any other
+	// Legendary-tier item), mixing them into the shared weighted-pick pool
+	// would massively dilute picks away from guns/gear/medicine every hour.
+	protected static const int VEHICLE_PARTS_COOLDOWN_HOURS = 24;
+
 	protected static ref DZSurvivalTraderRestockState s_State;
 	// Every Market category this addon scans for restock-eligible items -
 	// must match src/market.ts's MERGED_CATEGORIES fileNames, minus
 	// Ghillies (sale-only, see that file's header comment) and
-	// Vehicle_Parts/Batteries (functional necessity, kept generously
-	// stocked outside the tier system).
+	// Vehicle_Parts/Batteries (see s_VehiclePartsCategories/VehiclePartsTick()
+	// below instead - their own separate, much slower daily mechanism).
 	protected static ref array<string> s_ManagedCategories;
+	// Vehicle_Parts/Batteries - see VEHICLE_PARTS_COOLDOWN_HOURS above and
+	// VehiclePartsTick() below. Kept separate from s_ManagedCategories on
+	// purpose (see that constant's own comment).
+	protected static ref array<string> s_VehiclePartsCategories;
 
 	// Player/admin-facing grouping layer - purely for the board text and
 	// admin log readability (see BuildBoardStatusText()). The rarity tier
@@ -225,6 +253,10 @@ class DZSurvivalTraderRestock
 		s_ManagedCategories.Insert("Tools_And_Melee");
 		s_ManagedCategories.Insert("Vehicles_Cars");
 		s_ManagedCategories.Insert("Vehicles_Helicopters");
+
+		s_VehiclePartsCategories = new array<string>();
+		s_VehiclePartsCategories.Insert("Vehicle_Parts");
+		s_VehiclePartsCategories.Insert("Batteries");
 
 		s_RestockGroups = new map<string, ref array<string>>();
 
@@ -333,6 +365,7 @@ class DZSurvivalTraderRestock
 	static void Tick()
 	{
 		TickInternal(false);
+		VehiclePartsTick(false);
 	}
 
 	// Manual/testing entry point (called from the Community-Online-Tools
@@ -347,7 +380,9 @@ class DZSurvivalTraderRestock
 	// unconditional "success".
 	static int ForceTick()
 	{
-		return TickInternal(true);
+		int restocked = TickInternal(true);
+		restocked += VehiclePartsTick(true);
+		return restocked;
 	}
 
 	// Manual/testing entry point (called from the Community-Online-Tools
@@ -547,6 +582,88 @@ class DZSurvivalTraderRestock
 			GetGame().AdminLog(string.Format("[TraderRestock] tick - %1 item(s) restocked out of %2 managed. Next check in ~%3 min.", restocked, totalItems, TICK_INTERVAL_MS / 60000));
 
 		return restocked;
+	}
+
+	// Project owner (2026-09 follow-up): "restock 1 empty vehicle part a day
+	// max" - a single shared uniform-random pick (not weighted by tier like
+	// TickInternal() above, since every Vehicle_Parts/Batteries classname now
+	// shares the exact same cap of 1 - see market.ts's VEHICLE_PARTS_MAX_STOCK_
+	// CAP) across BOTH categories combined, gated by a single 24h cooldown
+	// (VEHICLE_PARTS_COOLDOWN_HOURS) tracked in s_State.LastVehiclePartsRestockUnix
+	// rather than a per-item timestamp. Called once per real hourly Tick() (see
+	// above) - actually restocks at most once per real day, same "persists
+	// across an early server restart" real-clock design as TickInternal().
+	// force=true (from '/restock now') ignores the 24h cooldown, same as
+	// TickInternal(force=true) does for its own per-item cooldowns.
+	protected static int VehiclePartsTick(bool force)
+	{
+		int now = NowUnix();
+
+		if (!force)
+		{
+			int elapsedHours = (now - s_State.LastVehiclePartsRestockUnix) / 3600;
+			if (s_State.LastVehiclePartsRestockUnix > 0 && elapsedHours < VEHICLE_PARTS_COOLDOWN_HOURS)
+				return 0;
+		}
+
+		ExpansionMarketTraderZone zone = GetExpansionSettings().GetMarket().GetTraderZoneByPosition(CUSTOM_TRADER_POSITION);
+		if (!zone)
+			return 0;
+
+		array<ExpansionMarketItem> eligible = new array<ExpansionMarketItem>();
+		array<string> categoryOf = new array<string>();
+
+		foreach (string categoryName : s_VehiclePartsCategories)
+		{
+			ExpansionMarketCategory category = GetExpansionSettings().GetMarket().GetCategory(categoryName);
+			if (!category || !category.Items)
+				continue;
+
+			foreach (ExpansionMarketItem item : category.Items)
+			{
+				string key = item.ClassName;
+				key.ToLower();
+
+				int currentStock;
+				zone.Stock.Find(key, currentStock);
+				if (currentStock >= item.MaxStockThreshold)
+					continue;
+
+				eligible.Insert(item);
+				categoryOf.Insert(categoryName);
+			}
+		}
+
+		if (eligible.Count() == 0)
+		{
+			// Still counts as "checked today" even if nothing was actually
+			// depleted - otherwise a fully-stocked catalog would let the very
+			// next real tick (an hour later) immediately restock the moment
+			// a single part sells, instead of waiting out the rest of the day.
+			s_State.LastVehiclePartsRestockUnix = now;
+			SaveState();
+			return 0;
+		}
+
+		int chosenIndex = Math.RandomInt(0, eligible.Count());
+		ExpansionMarketItem chosen = eligible.Get(chosenIndex);
+		string chosenCategory = categoryOf.Get(chosenIndex);
+
+		string chosenKey = chosen.ClassName;
+		chosenKey.ToLower();
+
+		int chosenStock;
+		zone.Stock.Find(chosenKey, chosenStock);
+		int newStock = Math.Min(chosen.MaxStockThreshold, chosenStock + 1);
+		zone.Stock.Set(chosenKey, newStock);
+		zone.Save();
+
+		s_State.LastVehiclePartsRestockUnix = now;
+		SaveState();
+
+		GetGame().AdminLog(string.Format("[TraderRestock] Vehicle parts daily trickle - restocked %1 (%2): %3 -> %4 (cap %5)", chosen.ClassName, chosenCategory, chosenStock, newStock, chosen.MaxStockThreshold));
+
+		return 1;
 	}
 
 	// Builds the live status text shown by the physical board's action (see

@@ -19,6 +19,7 @@ import {
   AI_PATROL_SETTINGS,
   AI_WARZONES_SETTINGS,
   AIRBORNE_AI_SETTINGS,
+  CLIMATE_ZONES_SETTINGS,
   DYNAMIC_MISSIONS_SETTINGS,
   INEDIA_SETTINGS,
   KNOCK_KNOCK_ZOMBIES_SETTINGS,
@@ -58,6 +59,7 @@ const PRIME_TARGETS = [
   AIRBORNE_AI_SETTINGS,
   AI_WARZONES_SETTINGS,
   ZOMBIE_HORDE_GENERAL_SETTINGS,
+  CLIMATE_ZONES_SETTINGS,
 ];
 
 const PRIME_TIMEOUT_MS = 15 * 60_000;
@@ -86,8 +88,25 @@ export async function primeModConfigsIfNeeded(args: string[]): Promise<void> {
   const bootstrapLog = `${PROFILE_DIR}/bootstrap-prime.log`;
   const logFile = await Deno.open(bootstrapLog, { create: true, write: true, truncate: true });
 
-  const child = new Deno.Command("steam-run", {
-    args,
+  // setsid detaches the child into its own session/process group, so a
+  // terminal Ctrl+C (which delivers SIGINT to the whole foreground process
+  // group) does NOT reach it directly and uncontrolled - it only ever
+  // reaches this process (via the Deno.addSignalListener below), which then
+  // decides *when* and *how* to signal the child itself (same graceful
+  // SIGINT-then-wait-then-SIGKILL sequence used on a normal finish).
+  // Without this, a user's Ctrl+C would kill the child at an arbitrary
+  // mid-write moment (confirmed live: a truncated mid-line RPT log) with no
+  // chance for either side to shut down cleanly - a real, observed bug.
+  //
+  // stdbuf -oL/-eL forces the child's stdout/stderr into line-buffered mode.
+  // Piped (non-tty) stdout normally makes glibc switch to fully-buffered
+  // (chunks of several KB), so the log file this feeds into can go quiet for
+  // long stretches even while the server is actively working - exactly what
+  // made a genuinely-still-loading server look indistinguishable from a
+  // stuck/dead one to a human watching bootstrap-prime.log. A harmless
+  // no-op if the binary doesn't use glibc stdio buffering internally.
+  const child = new Deno.Command("setsid", {
+    args: ["stdbuf", "-oL", "-eL", "steam-run", ...args],
     cwd: SERVER_DIR,
     env: {
       LD_LIBRARY_PATH: `${SERVER_DIR}:${Deno.env.get("LD_LIBRARY_PATH") ?? ""}`,
@@ -105,55 +124,141 @@ export async function primeModConfigsIfNeeded(args: string[]): Promise<void> {
     }
   };
   const pumping = Promise.all([pump(child.stdout), pump(child.stderr)]);
-  const statusPromise = child.status;
 
-  const start = Date.now();
-  let lastLog = start;
-  let remaining = missing;
-  while (remaining.length > 0 && Date.now() - start < PRIME_TIMEOUT_MS) {
-    await new Promise((r) => setTimeout(r, PRIME_POLL_MS));
-    remaining = await missingTargets();
-    if (Date.now() - lastLog > PRIME_LOG_EVERY_MS) {
-      log(`  ...still waiting on ${remaining.length} mod config file(s) (see ${bootstrapLog})`);
-      lastLog = Date.now();
+  // Tracked separately from the raw promise so the polling loop below can
+  // cheaply check "has it exited yet" on every iteration without racing a
+  // fresh promise each time - a priming server that crashes partway through
+  // world load would otherwise leave the loop below polling for files that
+  // will never appear for the rest of the full timeout, looking
+  // indistinguishable from "just still loading".
+  let exitStatus: Deno.CommandStatus | null = null;
+  const statusPromise = child.status.then((status) => {
+    exitStatus = status;
+    return status;
+  });
+
+  // The only way this child now ever receives SIGINT (see the setsid note
+  // above) - a user pressing Ctrl+C on the surrounding `up`/`start` signals
+  // *this* process, not the detached child, so this is what decides to stop
+  // it gracefully instead of it dying uncontrolled. A second Ctrl+C escalates
+  // straight to SIGKILL for anyone unwilling to wait out the grace period.
+  let interrupted = false;
+  const onInterrupt = () => {
+    if (interrupted) {
+      warn("Second interrupt received - force-killing the priming server immediately.");
+      try {
+        child.kill("SIGKILL");
+      } catch {
+        // already exited
+      }
+      return;
     }
-  }
-
-  if (remaining.length > 0) {
+    interrupted = true;
     warn(
-      `Timed out after ${Math.round(PRIME_TIMEOUT_MS / 60_000)}m waiting on ` +
-        `${remaining.length} mod config file(s) - continuing anyway. Tuning will only apply to ` +
-        `whichever configs did generate; re-run 'up' again later once the rest exist ` +
-        `(see ${bootstrapLog} for what the server logged).`,
+      "Interrupted - stopping the priming server gracefully (Ctrl-C again to force-kill)... " +
+        "whatever mod configs already exist are kept, so it's always safe to just run this again.",
     );
-  } else {
-    ok(`All mod configs generated after ${Math.round((Date.now() - start) / 1000)}s`);
-  }
+  };
+  Deno.addSignalListener("SIGINT", onInterrupt);
 
-  log("Stopping the priming server so tuning can be applied...");
   try {
-    child.kill("SIGINT");
-  } catch {
-    // already exited
-  }
-  const exited = await Promise.race([
-    statusPromise.then(() => true),
-    new Promise<boolean>((r) => setTimeout(() => r(false), PRIME_STOP_GRACE_MS)),
-  ]);
-  if (!exited) {
-    warn(
-      `Priming server didn't stop gracefully within ${
-        PRIME_STOP_GRACE_MS / 1000
-      }s - sending SIGKILL`,
-    );
+    const start = Date.now();
+    let lastLog = start;
+    let lastLogSize = 0;
+    let remaining = missing;
+    while (
+      remaining.length > 0 && Date.now() - start < PRIME_TIMEOUT_MS && !exitStatus && !interrupted
+    ) {
+      await new Promise((r) => setTimeout(r, PRIME_POLL_MS));
+      remaining = await missingTargets();
+      if (Date.now() - lastLog > PRIME_LOG_EVERY_MS) {
+        // A raw "still waiting" message alone is indistinguishable from a
+        // silently-dead server for as long as the process itself hasn't
+        // exited yet (e.g. it's stuck rather than crashed) - showing whether
+        // the log is actually still growing gives a direct, honest signal
+        // instead of asking the admin to trust a fixed timeout.
+        let sizeNote = "log size unknown";
+        try {
+          const info = await Deno.stat(bootstrapLog);
+          const grew = info.size - lastLogSize;
+          sizeNote = grew > 0
+            ? `log grew +${(grew / 1024).toFixed(0)}KB in the last ${
+              Math.round(PRIME_LOG_EVERY_MS / 1000)
+            }s - still alive and working`
+            : `log hasn't grown in the last ${
+              Math.round(PRIME_LOG_EVERY_MS / 1000)
+            }s - may be stuck (or just quiet); check the last lines of ${bootstrapLog}`;
+          lastLogSize = info.size;
+        } catch {
+          // log file not created yet somehow - fall through with the placeholder note
+        }
+        log(
+          `  ...still waiting on ${remaining.length} mod config file(s) after ${
+            Math.round((Date.now() - start) / 1000)
+          }s (${sizeNote})`,
+        );
+        lastLog = Date.now();
+      }
+    }
+
+    if (interrupted) {
+      // Already logged by onInterrupt() above - nothing more to say here.
+    } else if (remaining.length > 0 && exitStatus) {
+      const status: Deno.CommandStatus = exitStatus;
+      const how = status.signal ? `signal ${status.signal}` : `exit code ${status.code}`;
+      warn(
+        `Priming server exited early (${how}) after ${
+          Math.round((Date.now() - start) / 1000)
+        }s, before all mod configs were generated - ${remaining.length} config(s) still missing ` +
+          `(likely a crash - see ${bootstrapLog}'s last few lines for what it was doing when it ` +
+          `stopped). Continuing anyway with whichever configs did generate; just re-run this again ` +
+          `- it's safe, and only needs to wait on the configs that are still missing.`,
+      );
+    } else if (remaining.length > 0) {
+      warn(
+        `Timed out after ${Math.round(PRIME_TIMEOUT_MS / 60_000)}m waiting on ` +
+          `${remaining.length} mod config file(s) - continuing anyway. Tuning will only apply to ` +
+          `whichever configs did generate; re-run 'up' again later once the rest exist ` +
+          `(see ${bootstrapLog} for what the server logged).`,
+      );
+    } else {
+      ok(`All mod configs generated after ${Math.round((Date.now() - start) / 1000)}s`);
+    }
+
+    log("Stopping the priming server so tuning can be applied...");
     try {
-      child.kill("SIGKILL");
+      child.kill("SIGINT");
     } catch {
       // already exited
     }
-    await statusPromise;
+    const exited = await Promise.race([
+      statusPromise.then(() => true),
+      new Promise<boolean>((r) => setTimeout(() => r(false), PRIME_STOP_GRACE_MS)),
+    ]);
+    if (!exited) {
+      warn(
+        `Priming server didn't stop gracefully within ${
+          PRIME_STOP_GRACE_MS / 1000
+        }s - sending SIGKILL`,
+      );
+      try {
+        child.kill("SIGKILL");
+      } catch {
+        // already exited
+      }
+      await statusPromise;
+    }
+    await pumping;
+    logFile.close();
+
+    if (interrupted) {
+      ok(
+        "Priming server stopped. Re-run 'up'/'start' whenever you're ready - it'll pick up right where this left off.",
+      );
+      Deno.exit(130);
+    }
+    ok("Priming server stopped - continuing with the real start");
+  } finally {
+    Deno.removeSignalListener("SIGINT", onInterrupt);
   }
-  await pumping;
-  logFile.close();
-  ok("Priming server stopped - continuing with the real start");
 }
