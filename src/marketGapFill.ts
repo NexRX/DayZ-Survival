@@ -21,8 +21,8 @@
 // made sellable - see isExcluded() below, this mod's items are permanently
 // denylisted per the project owner's own request),
 // Risus-Bases' ~90 bl_ building kits, Gas-Mask-Overhaul's BVP_ masks, the
-// Quiver mod's seis_ quiver variants, Custom-Keycards' evg_ keys, loose
-// currency/wallet classnames, several MBM/UAZ vehicle-part color variants,
+// Quiver mod's seis_ quiver variants, loose currency/wallet classnames,
+// several MBM/UAZ vehicle-part color variants,
 // and more). See src/data/marketGapFill.json for the full, hand-reviewed
 // list (excludes creatures, zombies, vehicle wrecks, and world-decor props -
 // those were never meant to be sellable).
@@ -588,69 +588,10 @@ const DEPOSIT_CONTAINER_CLASSNAME = "bl_deposit_container";
 const DEPOSIT_CONTAINER_MIN_PRICE = 9_000_000;
 const DEPOSIT_CONTAINER_MAX_PRICE = 11_000_000;
 
-// Custom-Keycards' room keycards (TODO.md item 2) - the generic gap-fill
-// clone logic priced these like whatever the "Utility" category's first
-// item happened to be (a wallet, a few hundred at most). Originally made
-// buyable at a steep price to compensate; project owner later decided (2026-
-// 09) these should be find-only - already spawning naturally in loot via
-// Custom-Keycards' own types.xml (merged in by modTypes.ts, nominal=2/
-// tag=shelves) - and only sellable back to the trader for a modest amount,
-// not purchasable at any price. Buy-blocking is done in traders.ts
-// (ensureCustomTraderIdentities()'s per-item BuySell override, set to
-// CanOnlySell - confirmed via unpacking market_scripts.pbo's
-// ExpansionMarketTrader.CanBuyItem()/CanSellItem(), which gate purchase and
-// sale completely independently of each other and of stock). These prices
-// below are now purely the SELL basis (MinPriceThreshold/MaxPriceThreshold *
-// SellPricePercent - see ExpansionMarketModule.c's FindSellPrice()), no
-// longer a buy price: sized so a Legendary-tier item's 60% sell cut (see
-// market.ts's SELL_PRICE_PERCENT_OVERRIDE) lands the master key around the
-// project owner's requested ~30,000, single-location cards well below that.
-const KEYCARD_MIN_PRICE = 15_000;
-const KEYCARD_MAX_PRICE = 25_000;
-export const MASTER_KEYCARD_CLASSNAME = "evg_keycards_all";
-const MASTER_KEYCARD_MIN_PRICE = 48_000;
-const MASTER_KEYCARD_MAX_PRICE = 52_000;
-export const KEYCARD_CLASSNAMES = [
-  "evg_keycards_Blue",
-  "evg_keycards_Green",
-  "evg_keycards_NWAF01",
-  "evg_keycards_NWAF02",
-  "evg_keycards_NWAF03",
-  "evg_keycards_Red",
-  "evg_keycards_Tisy01",
-  "evg_keycards_Tisy02",
-  "evg_keycards_Tisy03",
-  "evg_keycards_Tisy04",
-  "evg_keycards_Tisy05",
-  "evg_keycards_Violet",
-  "evg_keycards_White",
-  "evg_keycards_Yellow",
-].map((c) => c.toLowerCase());
-
-// UPDATE (2026-09 follow-up): project owner asked for exact, individually
-// scaled sell prices instead - "The tisy military cards should start
-// selling from 1k for level 1 and go up to 5k for level 5. same for NWAF
-// zone 1-3. All access card should sell for 7K". These override the
-// ranged KEYCARD_MIN_PRICE/MAX_PRICE-based pricing above for just these 9
-// classnames (every other single-location card - Blue/Green/Red/Violet/
-// White/Yellow - keeps the original ranged pricing, unchanged).
-// SellPricePercent is forced to 100 for each of these so the flat value
-// below IS the exact payout (basis x 100%), independent of whatever the
-// trader zone's/global SellPricePercent default happens to be - avoids
-// any dependence on MarketSettings.json's global percent, which has been
-// changed more than once this project's history (see market.ts's own
-// SELL_PRICE_PERCENT_OVERRIDE comment).
-const KEYCARD_ZONE_PRICE_FIXES: Record<string, number> = {
-  evg_keycards_tisy01: 1_000,
-  evg_keycards_tisy02: 2_000,
-  evg_keycards_tisy03: 3_000,
-  evg_keycards_tisy04: 4_000,
-  evg_keycards_tisy05: 5_000,
-  evg_keycards_nwaf01: 1_000,
-  evg_keycards_nwaf02: 2_000,
-  evg_keycards_nwaf03: 3_000,
-  evg_keycards_all: 7_000,
-};
+// Custom-Keycards' room keycards (evg_keycards_*) and its price/rarity/
+// trader wiring were fully removed (2026-09) when the project owner decided
+// to drop the mod in favor of KeyCard-Rooms Better instead - see mods.txt
+// and serverpack/README.md's removal writeup for the full history.
 
 // Consumables' "category"-based manifest group (Bitterlings/DeadChicken_*/
 // HorseSteakMeat/Lard/every Old_* moldy can/SkinnedRat/
@@ -1604,8 +1545,6 @@ const UTILITY_PRICE_FIXES: Record<string, { min: number; max: number }> = {
       "cw_crossbowstock",
       "cw_crossbowupper",
       "cw_glue",
-      "evg_keycard_holder_camo",
-      "evg_keycard_holder_leather",
       "zenpetrollighter",
       "zenpetrollighter_green",
       "zenpetrollighter_purple",
@@ -2197,64 +2136,6 @@ export async function ensureMarketGapFill(): Promise<void> {
         `Market gap-fill: re-priced ${DEPOSIT_CONTAINER_CLASSNAME} to its 10M "personal box" tier`,
       );
     }
-  }
-
-  let keycardsRepriced = 0;
-  for (const key of [...KEYCARD_CLASSNAMES, MASTER_KEYCARD_CLASSNAME]) {
-    const item = classNameItem.get(key);
-    const owner = classNameOwner.get(key);
-    if (!item || !owner) continue;
-
-    const isMaster = key === MASTER_KEYCARD_CLASSNAME;
-    const minPrice = isMaster ? MASTER_KEYCARD_MIN_PRICE : KEYCARD_MIN_PRICE;
-    const maxPrice = isMaster ? MASTER_KEYCARD_MAX_PRICE : KEYCARD_MAX_PRICE;
-
-    let touched = false;
-    if (item.MinPriceThreshold !== minPrice) {
-      item.MinPriceThreshold = minPrice;
-      touched = true;
-    }
-    if (item.MaxPriceThreshold !== maxPrice) {
-      item.MaxPriceThreshold = maxPrice;
-      touched = true;
-    }
-    if (touched) {
-      dirty.add(owner);
-      keycardsRepriced++;
-    }
-  }
-  if (keycardsRepriced > 0) {
-    ok(`Market gap-fill: re-priced ${keycardsRepriced} Custom-Keycards keycard(s)`);
-  }
-
-  let keycardZonePricesFixed = 0;
-  for (const [key, exactPrice] of Object.entries(KEYCARD_ZONE_PRICE_FIXES)) {
-    const item = classNameItem.get(key);
-    const owner = classNameOwner.get(key);
-    if (!item || !owner) continue;
-
-    let touched = false;
-    if (item.MinPriceThreshold !== exactPrice) {
-      item.MinPriceThreshold = exactPrice;
-      touched = true;
-    }
-    if (item.MaxPriceThreshold !== exactPrice) {
-      item.MaxPriceThreshold = exactPrice;
-      touched = true;
-    }
-    if (item.SellPricePercent !== 100) {
-      item.SellPricePercent = 100;
-      touched = true;
-    }
-    if (touched) {
-      dirty.add(owner);
-      keycardZonePricesFixed++;
-    }
-  }
-  if (keycardZonePricesFixed > 0) {
-    ok(
-      `Market gap-fill: set exact per-zone sell prices on ${keycardZonePricesFixed} Tisy/NWAF/master keycard(s) (see KEYCARD_ZONE_PRICE_FIXES)`,
-    );
   }
 
   let foodPricesFixed = 0;

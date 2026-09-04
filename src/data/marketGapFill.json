@@ -3131,33 +3131,10 @@
       "Wallet_Women_Blue",
       "Wallet_Women_Brown",
       "Wallet_Women_Green",
-      "Wallet_Women_Pink",
-      "evg_keycard_holder_camo",
-      "evg_keycard_holder_leather"
+      "Wallet_Women_Pink"
     ],
     "category": "Utility",
     "tier": "Uncommon"
-  },
-  {
-    "classNames": [
-      "evg_keycards_All",
-      "evg_keycards_Blue",
-      "evg_keycards_Green",
-      "evg_keycards_NWAF01",
-      "evg_keycards_NWAF02",
-      "evg_keycards_NWAF03",
-      "evg_keycards_Red",
-      "evg_keycards_Tisy01",
-      "evg_keycards_Tisy02",
-      "evg_keycards_Tisy03",
-      "evg_keycards_Tisy04",
-      "evg_keycards_Tisy05",
-      "evg_keycards_Violet",
-      "evg_keycards_White",
-      "evg_keycards_Yellow"
-    ],
-    "category": "Utility",
-    "tier": "Legendary"
   },
   {
     "classNames": [
@@ -4345,10 +4322,7 @@
     "template": "hatchbackdoors_driver"
   },
   {
-    "classNames": [
-      "TP_ApocPickup_Wheel",
-      "TP_ApocSuv_Wheel"
-    ],
+    "classNames": ["TP_ApocPickup_Wheel", "TP_ApocSuv_Wheel"],
     "template": "hatchbackwheel"
   }
 ]

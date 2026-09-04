@@ -63,7 +63,6 @@ import type { Mod } from "./mods.ts";
 const MOD_TYPES_SOURCES = new Set([
   "@Windstride-Clothing",
   "@DayZ-Dog",
-  "@Custom-Keycards",
   "@BoomLays-Things",
   "@Crowwolfie-Recipes",
   "@Dart-Board-Game",
@@ -172,4 +171,96 @@ export async function ensureModTypesMerged(mods: Mod[]): Promise<void> {
 
   if (addedTotal === 0) return;
   await Deno.writeTextFile(ECONOMY_TYPES_FILE, text);
+}
+
+// One-time cleanup for a mod that was REMOVED from this project entirely.
+// @Custom-Keycards' own reference types.xml was merged in (additively, by
+// ensureModTypesMerged() above) on every server that ever had it installed -
+// that merge never removes anything, so once the mod was dropped from
+// mods.txt (2026-09, replaced by @KeyCard-Rooms-Better - see mods.txt/
+// serverpack/README.md for the full history) its 17 <type> blocks would
+// otherwise persist forever in db/types.xml as orphaned dead weight: still
+// spawnable in loot, but with zero trader wiring after its price/rarity/
+// buy-sell code was removed from marketGapFill.ts/traders.ts/economy.ts -
+// confirmed via `deno task audit-market` surfacing exactly these 17
+// classnames as a fresh "Bucket A" gap the moment that wiring was removed.
+// A brand-new install never hits this (types.xml ships vanilla, and
+// ensureModTypesMerged() only ever merges currently-installed mods) - this
+// only matters for an existing server that already ran the mod at least
+// once. Safe to run on every start: a no-op once the entries are gone.
+const REMOVED_CUSTOM_KEYCARDS_TYPES = [
+  "evg_keycard_holder_camo",
+  "evg_keycard_holder_leather",
+  "evg_keycards_All",
+  "evg_keycards_Blue",
+  "evg_keycards_Green",
+  "evg_keycards_NWAF01",
+  "evg_keycards_NWAF02",
+  "evg_keycards_NWAF03",
+  "evg_keycards_Red",
+  "evg_keycards_Tisy01",
+  "evg_keycards_Tisy02",
+  "evg_keycards_Tisy03",
+  "evg_keycards_Tisy04",
+  "evg_keycards_Tisy05",
+  "evg_keycards_Violet",
+  "evg_keycards_White",
+  "evg_keycards_Yellow",
+];
+
+export async function ensureCustomKeycardsTypesRemoved(): Promise<void> {
+  // ensureModTypesMerged() already logs the missing-file case.
+  if (!(await exists(ECONOMY_TYPES_FILE))) return;
+
+  let text = await Deno.readTextFile(ECONOMY_TYPES_FILE);
+  let removedCount = 0;
+  for (const name of REMOVED_CUSTOM_KEYCARDS_TYPES) {
+    const re = new RegExp(`\\s*<type name="${name}">[\\s\\S]*?</type>`);
+    if (re.test(text)) {
+      text = text.replace(re, "");
+      removedCount++;
+    }
+  }
+
+  if (removedCount === 0) return;
+  await Deno.writeTextFile(ECONOMY_TYPES_FILE, text);
+  ok(
+    `Removed ${removedCount} orphaned Custom-Keycards item type(s) from ${ECONOMY_TYPES_FILE} (mod no longer installed)`,
+  );
+}
+
+// @KeyCard-Rooms-Better was dropped entirely (2026-09, project owner
+// decided the mod's own screenshots/name promised actual "rooms" but every
+// one of its PBOs was inspected and confirmed to ship nothing but 3 door
+// models + a crate + a keycard - no room/bunker asset ever existed) -
+// same orphaned-<type>-block cleanup as REMOVED_CUSTOM_KEYCARDS_TYPES
+// above. Only _01/_02/_03 were ever additively merged into db/types.xml
+// by ensureKeyCardRoomsTypesMerged() (now removed) - _04 was deliberately
+// never included there (the mod's own natural-loot types.xml didn't spawn
+// it either), so there's nothing to clean up for it.
+const REMOVED_KEYCARD_ROOMS_TYPES = [
+  "RedemptionKeyCard_01",
+  "RedemptionKeyCard_02",
+  "RedemptionKeyCard_03",
+];
+
+export async function ensureKeyCardRoomsTypesRemoved(): Promise<void> {
+  // ensureModTypesMerged() already logs the missing-file case.
+  if (!(await exists(ECONOMY_TYPES_FILE))) return;
+
+  let text = await Deno.readTextFile(ECONOMY_TYPES_FILE);
+  let removedCount = 0;
+  for (const name of REMOVED_KEYCARD_ROOMS_TYPES) {
+    const re = new RegExp(`\\s*<type name="${name}">[\\s\\S]*?</type>`);
+    if (re.test(text)) {
+      text = text.replace(re, "");
+      removedCount++;
+    }
+  }
+
+  if (removedCount === 0) return;
+  await Deno.writeTextFile(ECONOMY_TYPES_FILE, text);
+  ok(
+    `Removed ${removedCount} orphaned @KeyCard-Rooms-Better item type(s) from ${ECONOMY_TYPES_FILE} (mod no longer installed)`,
+  );
 }

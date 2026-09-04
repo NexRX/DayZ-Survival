@@ -96,41 +96,41 @@ DayZ_x64_*.RPT` (NOT `Documents/DayZ/` - this client install doesn't
       (`deno task verify-serverpack`).
 
       **Still needs, on a real live server, since none of this can be
-              confirmed from here**:
-              1. Confirm all 6 static props actually render at the trader and
-                 don't clip into a wall/other prop - the original 4 (barrel/2
-                 torches/area light) are a PLACEHOLDER (a few meters off the
-                 general trader NPC's own spot, never visually confirmed against
-                 the real built town); the other 2 torches are real user-given
-                 coordinates but still assumed `FBF_Torch` (no classname was
-                 specified when given). If anything needs to move/change, the
-                 offsets live in two places that must be updated together:
-                 `src/foreverBurningCampfire.ts`'s
-                 `PLACEMENTS`/`FIRE_BARREL_OFFSET` and
-                 `DZSurvivalTraderFireplace_Module.c`'s `FIRE_POSITION`.
-              2. Confirm the fireplace addon actually fires ~20s after mission
-                 start - check the `.ADM` admin log (COT reads it live) for
-                 `[TraderFireplace] Spawned and permanently ignited FBF_Fireplace...`
-              3. Confirm the flame visually sits inside/right next to the barrel
-                 prop (not floating/sunk into the ground) and that it's actually
-                 burning (lit) rather than just present unlit.
-              4. This addon ships inside the already-published
-                 `DZSurvivalServerPack` Workshop item - run
-                 `deno task publish-serverpack` (auto-verifies first) so players
-                 actually receive `DZSurvivalTraderFireplace`.
-              5. Separately, the _old_ NeonMurder campfire props are still
-                 sitting in the live DayZ-Editor scene
-                 (`server/mpmissions/dayzOffline.chernarusplus/EditorFiles/survival-server-1.dze`,
-                 confirmed via `strings` referencing
-                 `neonm_lights_models\models\campfire.p3d`/`campfireempty.p3d`) -
-                 these will fail to load now that the mod is gone. Open
-                 DayZ-Editor, delete them (no need to replace them with anything -
-                 the new mod's props are auto-placed separately now), then
-                 `deno task sync-editor` and restart.
-              6. Confirm the new mod's lights don't look jarring/oversaturated at
-                 the trader (its own docs warn DayZ struggles with more than 4-5
-                 lights in one small area - shadows are already disabled in the
-                 mod for performance).
+                                              confirmed from here**:
+                                              1. Confirm all 6 static props actually render at the trader and
+                                                 don't clip into a wall/other prop - the original 4 (barrel/2
+                                                 torches/area light) are a PLACEHOLDER (a few meters off the
+                                                 general trader NPC's own spot, never visually confirmed against
+                                                 the real built town); the other 2 torches are real user-given
+                                                 coordinates but still assumed `FBF_Torch` (no classname was
+                                                 specified when given). If anything needs to move/change, the
+                                                 offsets live in two places that must be updated together:
+                                                 `src/foreverBurningCampfire.ts`'s
+                                                 `PLACEMENTS`/`FIRE_BARREL_OFFSET` and
+                                                 `DZSurvivalTraderFireplace_Module.c`'s `FIRE_POSITION`.
+                                              2. Confirm the fireplace addon actually fires ~20s after mission
+                                                 start - check the `.ADM` admin log (COT reads it live) for
+                                                 `[TraderFireplace] Spawned and permanently ignited FBF_Fireplace...`
+                                              3. Confirm the flame visually sits inside/right next to the barrel
+                                                 prop (not floating/sunk into the ground) and that it's actually
+                                                 burning (lit) rather than just present unlit.
+                                              4. This addon ships inside the already-published
+                                                 `DZSurvivalServerPack` Workshop item - run
+                                                 `deno task publish-serverpack` (auto-verifies first) so players
+                                                 actually receive `DZSurvivalTraderFireplace`.
+                                              5. Separately, the _old_ NeonMurder campfire props are still
+                                                 sitting in the live DayZ-Editor scene
+                                                 (`server/mpmissions/dayzOffline.chernarusplus/EditorFiles/survival-server-1.dze`,
+                                                 confirmed via `strings` referencing
+                                                 `neonm_lights_models\models\campfire.p3d`/`campfireempty.p3d`) -
+                                                 these will fail to load now that the mod is gone. Open
+                                                 DayZ-Editor, delete them (no need to replace them with anything -
+                                                 the new mod's props are auto-placed separately now), then
+                                                 `deno task sync-editor` and restart.
+                                              6. Confirm the new mod's lights don't look jarring/oversaturated at
+                                                 the trader (its own docs warn DayZ struggles with more than 4-5
+                                                 lights in one small area - shadows are already disabled in the
+                                                 mod for performance).
 
 - [ ] **Market variant-integrity fix** (`src/marketGapFill.ts`) - confirmed via a
       direct dry-run (`tuneExpansionMarket()` + `ensureMarketGapFill()` against
@@ -233,23 +233,6 @@ CONFIGURATION ERROR` lines it had every start before this fix, and that
       adjust `Spatial_MinTimer`/`Spatial_MaxTimer` (in
       `ai/SpatialSettings.json`, self-generated - not currently tuned by this
       project) and/or `SPATIAL_CLEANUP_TIMER_FLOOR` in `src/difficulty.ts`.
-- [ ] **Keycards are now find-only, sell-only (2026-09 update, supersedes
-      the old "buyable" test below)** (`src/marketGapFill.ts`,
-      `src/traders.ts`) - project owner decided keycards should never be
-      purchasable at all, only found in loot and sold back for a modest
-      amount. Implemented via `ExpansionMarketTrader`'s per-item `Items`
-      map (`CanOnlySell` = 2), set for every `evg_keycards_*` classname on
-      the General Store trader identity. Confirm live: 1. Opening the General Store's Utility category, every keycard (and
-      `evg_keycards_All`) shows a sell-only indicator (or simply can't be
-      bought - no "Buy" button/action succeeds) while still being
-      sellable for a real payout if you have one in inventory. 2. Selling a single-location card (`evg_keycards_Blue`/`NWAF01`/
-      `Tisy01`/etc.) pays out roughly 9,000-15,000 (60% of the new
-      15,000-25,000 basis, Legendary tier). Selling `evg_keycards_All`
-      pays out roughly 28,800-31,200 (targeting the project owner's
-      requested ~30,000). 3. They still spawn naturally in loot (already confirmed via
-      `server/@Custom-Keycards/.info/types.xml` merging into db/types.xml
-      with `nominal=2`/`tag=shelves`) - no loot-table change was made this
-      pass, only the trader's buy/sell behavior.
 - [ ] **Custom vehicle world spawns** (`src/vehicleSpawns.ts`) - confirm
       `UAZ-31514`, both MBM trucks, and the 25 `MoreCars` body variants
       actually spawn at the existing `VehicleOffroadHatchback`/
@@ -738,22 +721,17 @@ Helicopter_Crash`, `Ammo_40mm_Smoke_AirStrike`) and TGK-
       exactly on target, and a second run converges identically). Needs
       a server restart; no addon republish needed.
 
-- [ ] **Starting weapon, per-zone keycard prices, gun cabinet, and
-      backpack economy pass** (2026-09) - four independent fixes: 1. **Starting weapon** - a real bug meant every new spawn always got
+- [ ] **Starting weapon, gun cabinet, and backpack economy pass** (2026-09) - three independent fixes: 1. **Starting weapon** - a real bug meant every new spawn always got
       a `WoodenStick` regardless of what the loadout's random selector
       rolled (an orphaned, unconditional stick claimed the `@InHands` slot
       first). Now fixed to a deterministic `BaseballBat` - confirm a brand
-      new character spawns with a Baseball Bat in hand, not a stick. 2. **Keycard sell prices** - Tisy zone keycards (`evg_keycards_tisy01`
-      \-`05`) should sell for exactly 1,000/2,000/3,000/4,000/5,000; NWAF
-      zone keycards (`evg_keycards_nwaf01`-`03`) the same 1,000/2,000/3,000;
-      the all-access master keycard (`evg_keycards_all`) exactly 7,000 -
-      confirm selling each pays out precisely that amount (not a range). 3. **Gun cabinet** - the wooden gun cabinet kit (`bl_pallet_cabinet_*_
-  Kit`, all 5 sizes) should now buy for 1,500-2,400 (was 400-900) -
+      new character spawns with a Baseball Bat in hand, not a stick. 2. **Gun cabinet** - the wooden gun cabinet kit (`bl_pallet_cabinet_*_
+Kit`, all 5 sizes) should now buy for 1,500-2,400 (was 400-900) -
       confirm in the Base Building trader menu. The barrel/prefab stove
-      kits are unaffected, still 400-900. 4. **Backpacks** - two changes: (a) every color variant of the same
+      kits are unaffected, still 400-900. 3. **Backpacks** - two changes: (a) every color variant of the same
       backpack model (e.g. `AliceBag_Black`/`Camo` vs. `alicebag_green`,
       `ArmyPouch_Black/Camo/Green` vs. `armypouch_beige`, `AssaultBag_
-  Green/Ttsko` vs. `assaultbag_black`, `Attack2Bag_Green/Ttsko/Yeger`
+Green/Ttsko` vs. `assaultbag_black`, `Attack2Bag_Green/Ttsko/Yeger`
       vs. `attack2bag_black`, `CoyoteBag_Green` vs. `coyotebag_brown`,
       `DuffelBagSmall_Green/Medical` vs. `duffelbagsmall_camo`,
       `taloonbag_orange/green` vs. `taloonbag_blue`) now costs the exact
@@ -765,7 +743,7 @@ Helicopter_Crash`, `Ammo_40mm_Smoke_AirStrike`) and TGK-
       backpacks across the price range pays out in that ballpark, not the
       old, much higher tier-based percentage.
       `deno task audit-market` still reports **0/0/0**; verified via the
-      scratch-copy dry-run method (all four fixes land exactly on target,
+      scratch-copy dry-run method (all three fixes land exactly on target,
       second run converges identically). Needs a server restart; no addon
       republish needed.
 
@@ -812,7 +790,7 @@ Helicopter_Crash`, `Ammo_40mm_Smoke_AirStrike`) and TGK-
       wait roughly a day (or use `/restock now` as admin, which now also
       force-triggers this pick immediately for testing), and confirm the
       server's `.ADM` admin log shows a `[TraderRestock] Vehicle parts
-    daily trickle - restocked ...` line and the part's stock actually
+daily trickle - restocked ...` line and the part's stock actually
       increased by exactly 1. Confirm it does not restock more than
       once per real day under normal (non-forced) hourly ticks.
       `deno task audit-market` still reports **0/0/0**; verified via the
@@ -821,3 +799,4 @@ Helicopter_Crash`, `Ammo_40mm_Smoke_AirStrike`) and TGK-
       converge to byte-identical output on disk (`diff -rq`), not just a
       matching log count. `deno check`/`deno lint`/`deno fmt --check`
       clean on every touched file.
+

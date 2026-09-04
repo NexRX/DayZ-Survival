@@ -203,9 +203,7 @@
 2950280649  @DayZ-Rat
 2471347750  @DayZ-Dog
 
-# --- Base building / access control (Code Lock and Custom Keycards are
-# different mechanics — door codes vs. keycard readers — not a conflict) ---
-2810212624  @Custom-Keycards
+# --- Base building / access control ---
 3238690259  @CS-Modular-Cave
 2924580520  @Zens-Repairable-Wells
 3083277274  @Risus-Bases

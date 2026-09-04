@@ -40,3 +40,14 @@ client-visible behavior nor any COT integration; otherwise it belongs in
 `../serverpack/` instead (its actual runtime logic can still be guarded
 server-only there via `GetGame().IsServer()` checks, as
 `DZSurvivalBaseDecay` now does).
+
+(A keycard-crate loot addon, `DZSurvivalKeycardLootOverride`, was tried
+here first but had to move to `../serverpack/` instead purely for
+organizational reasons - not because `-servermod=` itself was the problem.
+See that addon's own `config.cpp` for the real story: cross-mod `modded
+class` extension of a _third-party_ mod's own class (config-bound or not)
+reliably failed to compile with "Unknown type", identically whether tried
+via `-servermod=` (this pack) or `-mod=` (`../serverpack/`) - so that
+addon ended up not extending @KeyCard-Rooms-Better's classes at all, using
+a dynamic/generic scan instead. It happens to live in `../serverpack/` now
+since nothing about it actually needed to be `-servermod=`-only.)

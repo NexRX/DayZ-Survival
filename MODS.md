@@ -43,10 +43,15 @@ A few notes on choices made while porting that list over:
   description says it's "designed to be used by livonia Barba Rija Hardcore
   server", i.e. built for the Livonia map, not our `dayzOffline.chernarusplus`
   mission.
-- A few pairs look redundant but aren't: `Code-Lock` (door codes) vs.
-  `Custom-Keycards` (keycard readers) are different access mechanics, and
-  `CJ187-Money-Euros-Only` (currency reskin) vs. `CJ187-MoreMoney` (loot
-  amount tuning) are a matched set, not competing systems.
+- `CJ187-Money-Euros-Only` (currency reskin) vs. `CJ187-MoreMoney` (loot
+  amount tuning) look redundant but aren't - they're a matched set, not
+  competing systems.
+- Both `Custom-Keycards` and, later, `KeyCard-Rooms-Better` were tried as
+  keycard-gated loot systems and both were fully removed (2026-09) - the
+  latter's own PBOs never actually shipped any room/bunker assets despite
+  the mod's name and screenshots implying otherwise (only door, crate, and
+  keycard models existed). `Code-Lock` (door codes) remains the project's
+  only access-control mechanic. See `serverpack/README.md` for the history.
 - The zombie/bandit mods (`InediaInfectedAI`, `CreepyZombies`, `AI-Bandits`)
   are complementary to, not replacements for, the roaming human patrols from
   `DayZ-Expansion-AI` described below - they add infected behavior and extra
@@ -295,7 +300,6 @@ care needed.
 - `Windstride-Clothing` - `Types.xml` in the mod folder root
 - `DayZ-Dog` - example `types.xml` entries in the mod folder ("not a full
   file replacer")
-- `Custom-Keycards` - `.INFO/types.xml` in the mod folder
 - `BoomLays-Things` - example `types.xml` in the mod's `00_Info` folder
 - `Crowwolfie-Recipes` - a few industrial-zone items (Glue, Carbon Fiber
   Roll) in its own `types.xml`
@@ -352,10 +356,6 @@ warning instead of blocking `up`/`start`.
   no currency-item concept), ships 2 placeholder-SteamID lot-limit entries
   that should be replaced with real players, and includes an already-enabled
   `VehicleTrade` sub-config worth reviewing.
-- `Custom-Keycards` - keycard doors **must** be added via the mod's own
-  config files (`CustomKeycards/Locations/` in the profile folder after
-  first start) - placing them with the Editor/COT silently turns them back
-  into regular doors.
 
 **Self-generate a config on first server start, sane defaults, safe to
 leave alone**
@@ -367,7 +367,7 @@ confirmed on a live install), `Zens-Repairable-Wells`, `Fuel-System`
 only per-vehicle fuel-type entries for our custom vehicles are still
 unverified), `AirRaid` (siren/bombers/submarine/
 MiG-21/UFO events, tunable per-event - confirmed all non-bomber event types
-default to disabled), `Custom-Keycards` (aside from door placement above).
+default to disabled).
 
 `Vehicle3PP` also self-generates a config
 (`profiles/3PPVehicleWhitelist.json`), but is no longer left alone - see

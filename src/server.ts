@@ -10,7 +10,11 @@ import { ensureAIPatrols } from "./ai.ts";
 import { ensureAIBanditsDensity } from "./aiBanditsDensity.ts";
 import { ensureSpatialAI } from "./spatial.ts";
 import { ensureDynamicMissions } from "./dynamicMissions.ts";
-import { ensureModTypesMerged } from "./modTypes.ts";
+import {
+  ensureCustomKeycardsTypesRemoved,
+  ensureKeyCardRoomsTypesRemoved,
+  ensureModTypesMerged,
+} from "./modTypes.ts";
 import { ensureNamalskClothingMerged } from "./namalskClothing.ts";
 import { ensureMoreCarsTypesMerged } from "./moreCars.ts";
 import { ensureNCPRTypesMerged } from "./ncpr.ts";
@@ -236,12 +240,8 @@ export async function doStart(s: Settings): Promise<void> {
   // it's built and signed locally, then staged straight into the server's
   // own mod folder every start, so it's never listed in mods.txt and never
   // downloaded by anyone, including this server itself. See
-  // localServerPacks.ts. Currently empty (DZSurvivalBaseDecay, its only
-  // former occupant, had to move into the shared serverpack/ - see that
-  // addon's own DZSurvivalBaseDecay_COTCommand.c for why) - skipped
-  // entirely whenever it has no addons, rather than staging/loading an
-  // empty mod, so this stays a no-op until something genuinely server-only
-  // (and COT-free) needs it again.
+  // localServerPacks.ts. Currently empty - skipped entirely whenever it has
+  // no addons, rather than staging/loading an empty mod.
   const hasServerOnlyAddons = (await listAddons(SERVERPACK_SERVERONLY)).length > 0;
   if (hasServerOnlyAddons) {
     await ensureLocalServerPack(SERVERPACK_SERVERONLY);
@@ -276,6 +276,8 @@ export async function doStart(s: Settings): Promise<void> {
   await primeModConfigsIfNeeded(args);
 
   await ensureModTypesMerged(allMods);
+  await ensureCustomKeycardsTypesRemoved();
+  await ensureKeyCardRoomsTypesRemoved();
   await ensureNamalskClothingMerged(allMods);
   await ensureMoreCarsTypesMerged(allMods);
   await ensureCustomVehicleSpawns(allMods);

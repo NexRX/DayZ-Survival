@@ -28,7 +28,7 @@ const LOG_PATTERNS = [
 ];
 
 // A handful of installed mods (DayZ-Expansion, Community-Online-Tools,
-// Code-Lock, Custom-Keycards, sVisual/sUDE, CJ187-RandomMineFields, the
+// Code-Lock, sVisual/sUDE, CJ187-RandomMineFields, the
 // P2P-Trading-Board, and DayZ's own WebApi/EventManager logging) each keep
 // their own separate, unbounded per-run log directory under PROFILE_DIR -
 // individually much smaller than the main RPT/ADM problem above (KBs, not
@@ -40,7 +40,6 @@ const MOD_LOG_DIRS = [
   "ExpansionMod/Logs",
   "CommunityOnlineTools/Logs",
   "CodeLock/Logs",
-  "CustomKeycards/0_Logs",
   "EventManagerLog",
   "WebApiLog",
   "sUDE/logs",

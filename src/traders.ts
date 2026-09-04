@@ -54,12 +54,7 @@ import {
 import { log, ok, warn } from "./ui.ts";
 import { exists } from "./steam.ts";
 import { MANAGED_MARKET_CATEGORIES } from "./market.ts";
-import {
-  KEYCARD_CLASSNAMES,
-  MASTER_KEYCARD_CLASSNAME,
-  OLD_FOOD_CLASSNAMES,
-  WOOD_SELL_ONLY_CLASSNAMES,
-} from "./marketGapFill.ts";
+import { OLD_FOOD_CLASSNAMES, WOOD_SELL_ONLY_CLASSNAMES } from "./marketGapFill.ts";
 
 const TRADERZONES_DIR = `${MISSION_DIR}/expansion/traderzones`;
 const TRADERS_DIR = `${MISSION_DIR}/expansion/traders`;
@@ -148,18 +143,11 @@ interface TraderIdentity {
 // ExpansionMarketTraderBuySell.CanOnlySell - see TraderIdentity.items above.
 const CAN_ONLY_SELL = 2;
 
-// Custom-Keycards' room keycards (see marketGapFill.ts's KEYCARD_MIN_PRICE
-// comment for the full history): project owner decided 2026-09 these should
-// be find-only, never purchasable, but still sellable back to the trader.
-const KEYCARD_BUYSELL_OVERRIDES = Object.fromEntries(
-  [...KEYCARD_CLASSNAMES, MASTER_KEYCARD_CLASSNAME].map((c) => [c, CAN_ONLY_SELL]),
-);
-
 // Every Old_ (moldy/expired) canned good (see marketGapFill.ts's
 // OLD_FOOD_CLASSNAMES/FOOD_OLD_CAN_PRICE): project owner decided 2026-09
 // these "probably shouldn't be buyable" - find-only in the world (or via
 // a crafting/spoilage path), but still sellable back to the trader for a
-// modest price, same find-only-but-sellable pattern as the keycards above.
+// modest price.
 const OLD_FOOD_BUYSELL_OVERRIDES = Object.fromEntries(
   OLD_FOOD_CLASSNAMES.map((c) => [c, CAN_ONLY_SELL]),
 );
@@ -168,7 +156,7 @@ const OLD_FOOD_BUYSELL_OVERRIDES = Object.fromEntries(
 // WOOD_SELL_ONLY_PRICE_FIXES): project owner (2026-09 follow-up) - "wooden
 // logs shouldnt be purchasable buy should be sellable for 100 a log, same
 // for firewood but firewood should sell for 50" - same find-only-but-
-// sellable pattern as the keycards/old food above.
+// sellable pattern as old food above.
 const WOOD_BUYSELL_OVERRIDES = Object.fromEntries(
   WOOD_SELL_ONLY_CLASSNAMES.map((c) => [c, CAN_ONLY_SELL]),
 );
@@ -221,7 +209,6 @@ export const CUSTOM_TRADER_IDENTITIES: TraderIdentity[] = [
       "Tools_And_Melee",
     ],
     items: {
-      ...KEYCARD_BUYSELL_OVERRIDES,
       ...OLD_FOOD_BUYSELL_OVERRIDES,
       ...WOOD_BUYSELL_OVERRIDES,
     },

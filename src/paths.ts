@@ -367,3 +367,13 @@ export const DAYTOOLS_DIR = `${ROOT}/daytools`;
 export const WINE_PREFIX_DIR = `${ROOT}/.wine-daytools`;
 export const DSSIGNFILE_EXE = `${DAYTOOLS_DIR}/Bin/DsUtils/DSSignFile.exe`;
 export const DSCHECKSIGNATURES_EXE = `${DAYTOOLS_DIR}/Bin/DsUtils/DSCheckSignatures.exe`;
+
+// KeyCard-Rooms-Better (@KeyCard-Rooms-Better) ships its own
+// KeyCardSystemServerConfig.pbo with every T1/T2/T3 crate loot array
+// completely empty ({"", ""} placeholders). Filled in via a separate
+// -servermod= addon instead (safe: never touches this mod's own PBOs at
+// all) - see serverpack-serveronly/addons/DZSurvivalKeycardLootOverride/.
+// An earlier approach directly repacked+re-signed this mod's own PBO in
+// place, which got every connecting client kicked ("Server has a more
+// recent version") since it's loaded via -mod= (client-required) and DayZ
+// enforces a content/version match there - reverted back to the stock copy.
