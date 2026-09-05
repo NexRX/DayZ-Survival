@@ -136,10 +136,21 @@ const RESTART_BACKOFF_MS = 15_000;
 const MAX_CONSECUTIVE_FAST_CRASHES = 5;
 
 let stopRequested = false;
+let stopRequestedAt = 0;
 let currentChild: Deno.ChildProcess | null = null;
 
+// A single Ctrl-C often reaches this process as more than one signal - e.g.
+// the terminal delivers SIGINT to the whole foreground process group while
+// a wrapper (nix develop --command, a shell, etc.) separately forwards
+// SIGTERM moments later as its own cleanup behavior. Both are registered on
+// this same handler below, so a second signal arriving within this window
+// is treated as an artifact of that, not a genuinely repeated Ctrl-C.
+const DUPLICATE_SIGNAL_WINDOW_MS = 1_000;
+
 function requestStop(): void {
+  const now = Date.now();
   if (stopRequested) {
+    if (now - stopRequestedAt < DUPLICATE_SIGNAL_WINDOW_MS) return;
     warn("Second stop signal received - killing the server immediately.");
     try {
       currentChild?.kill("SIGKILL");
@@ -149,6 +160,7 @@ function requestStop(): void {
     Deno.exit(1);
   }
   stopRequested = true;
+  stopRequestedAt = now;
   log(
     "Stop requested - waiting for the server to shut down gracefully " +
       "(Ctrl-C again to force-kill)...",
