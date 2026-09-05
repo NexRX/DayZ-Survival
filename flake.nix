@@ -96,6 +96,8 @@
 
         devShells.default = pkgs.mkShell {
           packages = tools;
+          SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+          NIX_SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
           shellHook = ''
             echo "DayZ Survival dev shell — deno + steamcmd + steam-run ready."
             echo "  run:  deno task dayz        (or: deno task up)"

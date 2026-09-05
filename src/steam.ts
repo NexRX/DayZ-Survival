@@ -196,6 +196,14 @@ export async function doLogin(s: Settings): Promise<void> {
   log(`Logging in to Steam as '${s.STEAM_USER}'`);
   hint("Password is used once to cache a session; it is NOT saved.");
   const pass = await askSecret("Steam password");
+  if (!pass) {
+    die(
+      "No Steam password entered - if this is running unattended (e.g. a systemd " +
+        "service), it has no terminal to prompt on. Log in once interactively first " +
+        "(run 'deno task login' from a real terminal on this machine to cache a " +
+        "session), then restart the service.",
+    );
+  }
   hint("(Steam Guard: confirm on your phone or enter the code when asked.)");
   if ((await runSteamcmd(["+login", s.STEAM_USER, pass, "+quit"])) === 0) {
     await Deno.writeTextFile(LOGIN_MARKER, "");
@@ -262,6 +270,14 @@ export async function forceDepotRelogin(s: Settings): Promise<void> {
     "Password is used once to cache a DepotDownloader token; it is NOT saved.",
   );
   const pass = await askSecret("Steam password");
+  if (!pass) {
+    die(
+      "No Steam password entered - if this is running unattended (e.g. a systemd " +
+        "service), it has no terminal to prompt on. Log in once interactively first " +
+        "(run 'deno task login' from a real terminal on this machine to cache a " +
+        "session), then restart the service.",
+    );
+  }
   hint("(Steam Guard: confirm on your phone or enter the code when asked.)");
   const code = await runDepot([
     "-app",
