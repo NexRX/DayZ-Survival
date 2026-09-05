@@ -80,7 +80,7 @@ forceSameBuild   = 1;
 
 disableVoN        = 0;
 vonCodecQuality   = 20;
-disable3rdPerson  = 0;
+disable3rdPerson  = 1;
 disableCrosshair  = 0;
 
 serverTime                  = "SystemTime";
