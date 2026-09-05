@@ -1,48 +1,15 @@
-// DayZ-Raven, DayZ-Rat, DayZ-Horse, and DayZ-Dog each ship a Chernarus-specific
-// "territory" file plus a short readme (server/@DayZ-Raven/raven_territories/
-// ambient_ravens_readme.txt, server/@DayZ-Rat/rat_territories/
-// ambient_rats_readme.txt) or, for Horse, an equivalent set of reference
-// files (server/@DayZ-Horse/horse_territories/{cfgenvironment,events,
-// cfgeventspawns}.xml) describing the manual steps an admin has to do
-// before the animals actually roam/spawn:
-//
-//   1. Copy the mod's own per-map territory file into the mission's env/
-//      folder.
-//   2. Register that file + a <territory> block in the mission's
-//      cfgenvironment.xml.
+// Wires up wildlife mods (Raven, Rat, Horse, Dog) by performing the manual
+// setup steps each mod's readme normally asks an admin to do:
+//   1. Copy the mod's per-map territory file into the mission's env/ folder.
+//   2. Register that file + a <territory> block in cfgenvironment.xml.
 //   3. Add an <event> block to db/events.xml.
-//   4. Add a few <type> blocks to db/types.xml.
-//   5. "Herd"-type territories (Horse) ALSO need a matching self-closing
-//      <event name="..." /> stub in cfgeventspawns.xml - confirmed by
-//      cross-checking against the vanilla Wolf/Deer/WildBoar entries
-//      already there, which follow the exact same pattern. "Ambient"-type
-//      territories (Raven/Rat, and vanilla Hen/Fox/Hare) do NOT need this -
-//      confirmed absent for all of them.
+//   4. Add the matching <type> blocks to db/types.xml.
+//   5. "Herd"-type territories (Horse, Dog) also need a self-closing
+//      <event name="..." /> stub in cfgeventspawns.xml; "Ambient" territories
+//      (Raven, Rat) do not.
 //
-// All of this is fully mechanical and additive (never touches/duplicates an
-// existing entry), so it's automated the same way modTypes.ts/ai.ts do.
-// Raven/Rat's block text below is copied verbatim from each mod's own
-// readme. Horse ships no readme - its reference files are instead full
-// copies of vanilla-shaped files with the horse-specific additions marked
-// by "HORSE MOD" comments; the blocks below were extracted from between
-// those markers (not guessed), and the handful of Animal_Horse_* <type>
-// blocks the mod itself doesn't ship follow the exact boilerplate every
-// other vanilla Animal_* creature type already uses in db/types.xml
-// (confirmed by direct comparison, e.g. Animal_CanisLupus_Grey) - Horse's
-// own root types.xml (Saddle/Bridle/HorseBags/etc.) is merged separately by
-// modTypes.ts, since it's a literal types.xml file at the mod's root.
-//
-// DayZ-Dog is the same shape as Horse: server/@DayZ-Dog/dog_territories/
-// ships ready-made cfgenvironment.xml/events.xml/cfgeventspawns.xml snippets
-// (copied verbatim below) plus per-map territory files (including
-// dog_territories_cherno.xml) and a root types.xml, but that root file only
-// covers gear (collars/vests/gasmask/sheds) - confirmed by grepping it for
-// "Doggo", which is the creature classname prefix used in its own
-// events.xml (Doggo_Wild1..35) - so, exactly like Horse's Animal_Horse_*,
-// the 35 Doggo_Wild<N> creature <type> blocks below are synthesized from
-// the same vanilla Animal_CanisLupus_Grey boilerplate (dogs use
-// behavior="DZWolfGroupBeh", the same wolf AI, so the wolf's types.xml
-// shape is the correct template).
+// All edits are additive only - existing entries are never touched or
+// duplicated.
 
 import {
   ECONOMY_EVENTS_FILE,

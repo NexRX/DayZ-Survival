@@ -1,9 +1,6 @@
 // AI-Bandits map density: the mod self-generates profiles/AI_Bandits/
-// DynamicAIB.json with just its own single generic example patrol/sniper
-// (from its own explained_dynamicaib.txt docs, waypoints near the south
-// coast) - confirmed on a live install (1 GroupLocation, 1 SniperLocation).
-// Way too sparse for "the world feels dangerous/alive even solo"
-// (TODO.md item 8).
+// DynamicAIB.json with just its own single generic example patrol/sniper.
+// Way too sparse for "the world feels dangerous/alive even solo".
 //
 // AI-Bandits itself ships a much denser, Chernarus-specific example at
 // server/@AI-Bandits/doc/chernarus_dynamicaib.json (6 real patrol routes:
@@ -13,11 +10,8 @@
 // ai/AIPatrolSettings.json works for DayZ-Expansion-AI.
 //
 // The mod's own chernarus_dynamicaib.json SniperLocations entry ships with
-// a literal "0 0 0" position/triggerpos (i.e. world origin - not a real
-// Chernarus coordinate, unlike its 6 GroupLocations which are all real) -
-// deliberately NOT merged here, since a sniper camping world-origin isn't
-// a real hazard, just a broken one. Add a real SniperLocation by hand (or
-// via the in-game AI-Bandits admin menu) if wanted.
+// a literal "0 0 0" position (world origin, not a real coordinate) -
+// deliberately NOT merged here. Add a real SniperLocation by hand if wanted.
 //
 // Same additive, name-deduped merge as ai.ts, so this never touches an
 // admin's own hand-placed patrols/snipers and is safe to run on every

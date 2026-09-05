@@ -1,22 +1,16 @@
 // No-Build-Zones (@No-Build-Zones): blocks construction around
-// high-value/high-loot locations, per TODO.md item 10.
+// high-value/high-loot locations.
 //
-// Self-generates a flat profiles/NoBuildZone.json (confirmed via the mod's
-// own Steam Workshop page) with an empty `NoBuildZones` array and two
-// placeholder example entries baked into its description, not actually
-// written to the file - so unlike most other mods in this project, there's
-// no shipped-default zone list to leave alone; this only ever *adds* our
-// own curated zones by name, never touching an admin's own hand-added
-// entries.
+// Self-generates a flat profiles/NoBuildZone.json with an empty
+// `NoBuildZones` array - unlike most other mods in this project, there's no
+// shipped-default zone list to leave alone; this only ever *adds* our own
+// curated zones by name, never touching an admin's own hand-added entries.
 //
 // Only one zone is authored here so far: NWAF, using the exact coordinate
 // already verified for its `Roaming_Bandits_NWAF` patrol waypoint in
-// ai/AIPatrolSettings.json (`[4501.0, 300.0, 10231.0]`) - a real, working
-// position confirmed live rather than a newly-guessed one. The other
-// Chernarus military bases (Tisy, Balota, Vybor, Devil's Castle, Green
-// Mountain, etc.) still need their own coordinates verified on a live map
-// before a zone can be safely added for them too - see TODO.md item 11 and
-// TESTS.md.
+// ai/AIPatrolSettings.json. Other Chernarus military bases still need their
+// own coordinates verified on a live map before a zone can be safely added
+// for them too.
 
 import { NO_BUILD_ZONES_SETTINGS } from "./paths.ts";
 import { log, ok } from "./ui.ts";
@@ -37,9 +31,7 @@ interface NoBuildZoneConfig {
 }
 
 // The mod's own field names use "X"/"Y" for the two horizontal world
-// coordinates (confirmed by its shipped example, "Y": 7500.0 next to an
-// "X" of the same magnitude - not a vertical height) - "Y" here is what
-// every other file in this project calls "Z".
+// coordinates - "Y" here is what every other file in this project calls "Z".
 const CURATED_ZONES: NoBuildZone[] = [
   {
     Name: "NWAF",

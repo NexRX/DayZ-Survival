@@ -1,17 +1,16 @@
 // On a brand-new install, none of the mod-generated config files the
 // ensure/tune pipeline edits (AI patrols, spatial AI, dynamic missions,
 // airdrop/loadout/difficulty settings) exist yet - each mod only writes its
-// own config out once its mission has actually loaded. Left alone, that
-// means the very first `up`/`start` boots with every mod's untuned
-// defaults, and only a *second* start (after the mod configs exist) would
-// actually apply this project's tuning.
+// own config out once its mission has actually loaded. Left alone, the very
+// first `up`/`start` would boot with every mod's untuned defaults, and only
+// a *second* start (after the mod configs exist) would actually apply this
+// project's tuning.
 //
 // Rather than require the admin to notice and manually restart, this runs
 // the server headless in the background just long enough for every mod to
 // generate its config, then stops it so the real (foreground, blocking)
 // start in server.ts can tune everything before players ever connect. A
-// no-op on every start after the very first successful one, since every
-// target already exists by then.
+// no-op on every start after the very first successful one.
 
 import {
   AI_BANDITS_DYNAMIC_SETTINGS,
@@ -35,15 +34,12 @@ import {
 import { log, ok, warn } from "./ui.ts";
 import { exists } from "./steam.ts";
 
-// Only files self-generated on *mission/world load*, independent of any
-// player ever connecting - AI_SETTINGS/COT admin grants are deliberately
-// excluded here since those are gated on a player connecting at least once
-// and would never appear during a headless priming run. AIRDROP_SETTINGS is
-// also deliberately excluded: unlike the others, it's only written once an
-// actual airdrop mission fires (not on plain world load), which can take far
-// longer than any reasonable priming window - loot.ts's tuneAirdropLoot()
-// already no-ops gracefully if it's still missing, so there's nothing to
-// gain by blocking `up` on it.
+// Only files self-generated on mission/world load, independent of any
+// player ever connecting - AI_SETTINGS/COT admin grants are excluded since
+// those are gated on a player connecting at least once. AIRDROP_SETTINGS is
+// also excluded: it's only written once an actual airdrop mission fires,
+// which can take far longer than any reasonable priming window -
+// loot.ts's tuneAirdropLoot() already no-ops gracefully if it's missing.
 const PRIME_TARGETS = [
   AI_PATROL_SETTINGS,
   SPATIAL_SETTINGS,
@@ -90,21 +86,16 @@ export async function primeModConfigsIfNeeded(args: string[]): Promise<void> {
 
   // setsid detaches the child into its own session/process group, so a
   // terminal Ctrl+C (which delivers SIGINT to the whole foreground process
-  // group) does NOT reach it directly and uncontrolled - it only ever
-  // reaches this process (via the Deno.addSignalListener below), which then
-  // decides *when* and *how* to signal the child itself (same graceful
-  // SIGINT-then-wait-then-SIGKILL sequence used on a normal finish).
-  // Without this, a user's Ctrl+C would kill the child at an arbitrary
-  // mid-write moment (confirmed live: a truncated mid-line RPT log) with no
-  // chance for either side to shut down cleanly - a real, observed bug.
+  // group) does not reach it directly - it only reaches this process (via
+  // the Deno.addSignalListener below), which decides when and how to
+  // signal the child. Without this, a user's Ctrl+C would kill the child
+  // mid-write with no chance for either side to shut down cleanly.
   //
-  // stdbuf -oL/-eL forces the child's stdout/stderr into line-buffered mode.
-  // Piped (non-tty) stdout normally makes glibc switch to fully-buffered
-  // (chunks of several KB), so the log file this feeds into can go quiet for
-  // long stretches even while the server is actively working - exactly what
-  // made a genuinely-still-loading server look indistinguishable from a
-  // stuck/dead one to a human watching bootstrap-prime.log. A harmless
-  // no-op if the binary doesn't use glibc stdio buffering internally.
+  // stdbuf -oL/-eL forces the child's stdout/stderr into line-buffered
+  // mode. Piped (non-tty) stdout normally makes glibc switch to
+  // fully-buffered mode, which can make the log go quiet for long stretches
+  // even while the server is actively working - a harmless no-op if the
+  // binary doesn't use glibc stdio buffering internally.
   const child = new Deno.Command("setsid", {
     args: ["stdbuf", "-oL", "-eL", "steam-run", ...args],
     cwd: SERVER_DIR,
@@ -127,10 +118,7 @@ export async function primeModConfigsIfNeeded(args: string[]): Promise<void> {
 
   // Tracked separately from the raw promise so the polling loop below can
   // cheaply check "has it exited yet" on every iteration without racing a
-  // fresh promise each time - a priming server that crashes partway through
-  // world load would otherwise leave the loop below polling for files that
-  // will never appear for the rest of the full timeout, looking
-  // indistinguishable from "just still loading".
+  // fresh promise each time.
   let exitStatus: Deno.CommandStatus | null = null;
   const statusPromise = child.status.then((status) => {
     exitStatus = status;
@@ -138,10 +126,9 @@ export async function primeModConfigsIfNeeded(args: string[]): Promise<void> {
   });
 
   // The only way this child now ever receives SIGINT (see the setsid note
-  // above) - a user pressing Ctrl+C on the surrounding `up`/`start` signals
-  // *this* process, not the detached child, so this is what decides to stop
-  // it gracefully instead of it dying uncontrolled. A second Ctrl+C escalates
-  // straight to SIGKILL for anyone unwilling to wait out the grace period.
+  // above) - a user pressing Ctrl+C signals this process, not the detached
+  // child, so this decides to stop it gracefully instead of it dying
+  // uncontrolled. A second Ctrl+C escalates straight to SIGKILL.
   let interrupted = false;
   const onInterrupt = () => {
     if (interrupted) {
@@ -172,11 +159,8 @@ export async function primeModConfigsIfNeeded(args: string[]): Promise<void> {
       await new Promise((r) => setTimeout(r, PRIME_POLL_MS));
       remaining = await missingTargets();
       if (Date.now() - lastLog > PRIME_LOG_EVERY_MS) {
-        // A raw "still waiting" message alone is indistinguishable from a
-        // silently-dead server for as long as the process itself hasn't
-        // exited yet (e.g. it's stuck rather than crashed) - showing whether
-        // the log is actually still growing gives a direct, honest signal
-        // instead of asking the admin to trust a fixed timeout.
+        // Show whether the log is still growing, so a stuck server is
+        // distinguishable from one that's just quiet.
         let sizeNote = "log size unknown";
         try {
           const info = await Deno.stat(bootstrapLog);

@@ -1,15 +1,14 @@
 // DZSurvivalBaseDecay_Module.c
 //
 // Time-based abandonment cleanup for this server's vanilla-style bases
-// (fence kits + tents secured with a Code-Lock CodeLock item) - see
-// TODO.md's "Base decay/raiding" item for the design background. Neither
+// (fence kits + tents secured with a Code-Lock CodeLock item). Neither
 // vanilla DayZ nor Code-Lock itself has any concept of decay: a locked base
 // persists forever with no upkeep unless something physically destroys it.
 // This addon adds a real 30-day "if nobody has touched this lock in 30
 // days, force-unlock it and drop it on the ground" cleanup pass, without
 // touching Code-Lock's own save format (see below) or DayZ-Expansion's
 // separate Territory Flag system (this server doesn't use it - confirmed by
-// checking every installed base-building mod, see TODO.md).
+// checking every installed base-building mod).
 //
 // --- Why a separate JSON file instead of extending CodeLock's own state ---
 // CodeLock (server/@Code-Lock/addons/codelock.pbo, scripts/4_world/Entities/

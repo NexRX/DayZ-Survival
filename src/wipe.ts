@@ -1,11 +1,8 @@
 // Resetting server state on demand, from a "fresh season" world wipe up to a
-// full nuke-and-reinstall - so getting back to a clean slate never requires
-// hand-deleting anything outside git yourself.
-//
-// Nothing here touches anything git-tracked; it only ever removes generated,
-// gitignored directories (server/, profiles/) or the mission's persistence
-// database (mpmissions/<mission>/storage_1), all of which `deno task up`
-// happily regenerates/reinstalls from scratch afterwards.
+// full nuke-and-reinstall. Nothing here touches anything git-tracked; it
+// only removes generated, gitignored directories (server/, profiles/) or
+// the mission's persistence database (mpmissions/<mission>/storage_1), all
+// of which `deno task up` happily regenerates/reinstalls from scratch.
 
 import { AREA_FLAGS_CACHE, MISSION_DIR, PROFILE_DIR, SERVER_DIR } from "./paths.ts";
 import { ask, confirm, log, ok, warn } from "./ui.ts";

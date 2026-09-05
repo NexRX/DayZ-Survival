@@ -1,75 +1,23 @@
 // Custom Zombies - The Astronaut, The Butcher & The Zombie Bear
-// (@Custom-Zombies, author OldGuyFrags, id 3557687387) adds 3 custom
-// creature models. Real classnames + base classes confirmed via `strings`
-// on the mod's own server/@Custom-Zombies/addons/tchczombies.pbo (no
-// shipped types.xml, so everything below is authored from scratch, same
-// treatment as necromutant.ts/bmmChemicalZombie.ts):
+// (@Custom-Zombies) adds 3 custom creature models with no shipped
+// types.xml, so classnames/base classes below were confirmed via `strings`
+// on the mod's own PBO (same treatment as necromutant.ts/bmmChemicalZombie.ts):
 //   - TCHCAI_TheAstronaut_Zombie_1 : TCHCAI1_CitizenASkinny_Base -> ZombieMaleBase -> ZombieBase
 //   - TCHCAI_TheAstronaut_Zombie_2 : same chain as _1 (a second skin variant)
 //   - TCHC_TheButcher_Zombie       : TCHCAI_CitizenASkinny_Base -> ZombieMaleBase -> ZombieBase
 //   - TCHC_ZombieBear              : Animal_UrsusArctos -> AnimalBase (an ANIMAL, not Infected)
 //
-// The two Astronaut variants + the Butcher are folded into one dedicated
-// ambient event (ammunition Infected-style, ~same shape as
-// bmmChemicalZombie.ts's own InfectedBMMChemical event) rather than the
-// real vanilla InfectedCity/InfectedVillage events, so this project's
-// existing zombie balance is never touched and this stays independently
-// tunable.
-//
-// --- Bug found and fixed (twice) getting the Zombie Bear working ---
-// Round 1: an earlier version gave a bear event named plain
-// "TCHCZombieBear" the same `position=player` DynamicEvent shape as the
-// zombie event above. Confirmed live via `deno task verify-serverpack`'s
-// RPT log that this doesn't work: `[DynEvent] "TCHCZombieBear" will be
-// ignored :: failed to determine spawner type!`. Switching only `position`
-// from `player` to `fixed` reproduced the exact same error, which ruled out
-// "Animal-kind creatures can't use position=player" and pointed at the real
-// cause: DayZ's DynamicEvent engine resolves which internal spawner handler
-// to use purely from the event NAME's prefix (confirmed exhaustively: every
-// single one of the ~65 other event names in db/events.xml starts with one
-// of exactly 8 prefixes - Animal/Infected/Ambient/Static/Vehicle/Item/Loot/
-// Trajectory - with zero exceptions). Renaming to `AnimalTCHCZombieBear`
-// (plus switching to a `position=fixed` "territory" - see below, required
-// separately for any Animal-kind creature) got past that error.
-//
-// Round 2: with the naming fixed, a NEW error appeared instead:
-// `[CE][AnimalRespawner] :: !!! Missing AI Template "HerdTCHCZombieBear" for
-// DE: "AnimalTCHCZombieBear"`. Animal-kind "Herd" territories need a
-// matching AI behavior template (named "Herd" + the territory's own bare
-// name, e.g. vanilla's "Bear" territory pairs with a "HerdBear" template)
-// that isn't defined anywhere in the mission's own files - it must be baked
-// into the base game's core data, with no documented way to register a
-// brand new one from mission-level XML alone. Rather than fighting
-// undocumented core-engine plumbing further, this instead REACTIVATES
-// vanilla Chernarus' own dormant "Bear"/"AnimalBear" territory+event pair
-// (already confirmed, via this same RPT, to load with zero errors - its
-// "HerdBear" template genuinely exists) by patching it in place:
-//   - `env/bear_territories.xml` is real, already-shipped bear habitat data
-//     (forest/wilderness zones), already registered and referenced by the
-//     "Bear" territory in cfgenvironment.xml - but that territory ships
-//     with NO <agent>/<spawn> block at all, so it's 100% inert out of the
-//     box (confirmed: no cfgeventspawns.xml stub for "Bear" either, and the
-//     paired "AnimalBear" event ships with `nominal=0` and no way to ever
-//     actually place one). Since nothing has ever spawned from this pair,
-//     patching it is not "touching a real population budget" the way this
-//     project normally avoids - there's no existing behavior to disrupt.
-//   - This adds the missing `<agent><spawn configName="TCHC_ZombieBear">`
-//     to the "Bear" territory, and adds `TCHC_ZombieBear` as an additional
-//     `<child>` of the "AnimalBear" event (alongside the untouched, still
-//     unused `Animal_UrsusArctos` child), bumping `nominal` 0->1 so it can
-//     actually be placed - capped at 1 total, a rare "boss" encounter, not
-//     a routine spawn. `min`/`max` are left at vanilla's own 2/2 (a fixed
-//     ceiling the engine enforces per-territory regardless, so with
-//     zoneCountMax staying implicit/default this doesn't meaningfully raise
-//     how many can ever exist beyond what `nominal` actually drives).
-//   - No new cfgeventspawns.xml stub or new territory name needed - reusing
-//     vanilla's existing, already-correctly-wired pair sidesteps the
-//     missing-template problem entirely instead of solving it.
-//
-// Known live bug reports on the mod's own Comments tab, unconfirmed either
-// way as of this wiring (see TESTS.md): "the astronauts are invincible"
-// and "Client has pbo that is not part of the server". Added anyway per
-// the project owner's own request to playtest live.
+// Gotcha: DayZ's DynamicEvent engine picks its spawner handler purely from
+// the event NAME's prefix (Animal/Infected/Ambient/Static/Vehicle/Item/Loot/
+// Trajectory). A custom-named bear event fails with "failed to determine
+// spawner type", and even a correctly-prefixed new Animal territory fails
+// with a missing "Herd<name>" AI template that can only exist in core game
+// data. So instead of registering a new territory/event, the bear is wired
+// in by reactivating vanilla's own dormant "Bear"/"AnimalBear" pair (which
+// ships inert: no <agent>/<spawn> block and nominal=0) - adding the missing
+// spawn block and bumping nominal 0->1, capped at 1 as a rare encounter.
+// STALE_BEAR_NAMES below are cleanup for two earlier attempts that used the
+// broken custom-name approach.
 
 import {
   ECONOMY_EVENTS_FILE,
@@ -196,9 +144,7 @@ export async function ensureCustomZombiesTchcWired(mods: Mod[]): Promise<void> {
     eventsChanged = true;
   }
 
-  // One-time cleanup: remove every artifact from the two earlier broken
-  // attempts (see this file's header comment) - both used names that never
-  // actually worked, so nothing should legitimately exist under them.
+  // Clean up any artifacts from the earlier broken naming attempts.
   for (const staleName of STALE_BEAR_NAMES) {
     if (eventsText.includes(`<event name="${staleName}">`)) {
       const match = EVENT_BLOCK_RE(staleName).exec(eventsText);

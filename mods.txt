@@ -24,8 +24,7 @@
 
 # --- World-building: DayZ-Editor-Loader is the server-side companion to
 # @DayZ-Editor, used to design/build the custom trader town (see
-# src/traders.ts, TODO.md, and MODS.md's "Building the trader town itself"
-# section for the full workflow). It reads whatever .dze build file(s) an
+# src/traders.ts for the full workflow). It reads whatever .dze build file(s) an
 # admin drops into this mission's own EditorFiles/ folder (auto-created at
 # the mission root on first load once this mod is active) and spawns those
 # objects on every mission load - data-driven, not persistence-based, so it
@@ -54,8 +53,7 @@
 # used to actually light up the trader town (the DayZ-Editor NetworkLight/
 # NetworkSpotLight helper objects placed earlier turned out not to render
 # in the live mission - these are real always-on fire/lamp props instead).
-# Replaces NeonMurder-Lights (removed) - see TESTS.md for the placed-object
-# migration this swap requires. Requires @CF (already present above). ---
+# Replaces NeonMurder-Lights (removed). Requires @CF (already present above). ---
 1890912719  @Forever_Burning_Campfire
 
 # --- DayZ Expansion, modular set (matches RemnantZ; replaces the old
@@ -71,8 +69,7 @@
 
 # Zens ExpansionAI Audio: ambient audio/voice/footstep cues layered onto the
 # DayZ-Expansion-AI patrols above - same author as Zens-Repairable-Wells/
-# Zens-Zippo-Lighter/Zens-COT-Plus-Fix (all already trusted here). Live
-# verification tracked in TESTS.md.
+# Zens-Zippo-Lighter/Zens-COT-Plus-Fix (all already trusted here).
 3321340470  @Zens-ExpansionAI-Audio
 
 # --- Terje suite (Core first; Skills before Medicine, since Medicine's
@@ -123,10 +120,8 @@
 # reply (8 Dec 2025) appears (by comment ordering/reply nesting) to address
 # a DIFFERENT report - a mod-not-loading/folder-naming issue from "Tempest"
 # (7 Dec 2025) - not either of the two above, so treat both as UNCONFIRMED
-# either way. Project owner wants to playtest live regardless - see
-# TESTS.md for what to check. Real classnames confirmed via the author's
-# own comment (5 Jan): TCHCAI_TheAstronaut_Zombie_1/_2, TCHC_TheButcher_Zombie,
-# TCHC_ZombieBear.
+# either way. Real classnames confirmed via the author's own comment (5 Jan):
+# TCHCAI_TheAstronaut_Zombie_1/_2, TCHC_TheButcher_Zombie, TCHC_ZombieBear.
 3557687387  @Custom-Zombies
 
 # InediaTerjeCompatibility: rebalances several Terje-Skills perks (HeavyWeight,
@@ -140,9 +135,7 @@
 # a mobile convoy patrol, airborne troop insertions, a broader "warzone"
 # density mod (capped to maxConcurrentZones=2 via src/aiWorldEvents.ts for
 # FPS safety), and an occasional zombie-horde event (its SafeZones config
-# is patched via src/aiWorldEvents.ts to exclude the trader city). Live
-# verification (overlap with @AirRaid/@AI-Bandits, FPS impact, point-blank
-# horde spawns) tracked in TESTS.md. ---
+# is patched via src/aiWorldEvents.ts to exclude the trader city). ---
 3767913539  @Moving-AI-Convoy
 
 # Admiral's Parachute Mod: hard requirement of @Airborne-AI below (confirmed via
@@ -166,8 +159,6 @@
 # with a built-in Chernarus waypoint network, so no manual waypoint setup is
 # needed. The "move PBO from optional to addons" step in its own
 # instructions is Namalsk-only and doesn't apply to our Chernarus mission.
-# Live verification (actual horde spawns/roaming, FPS impact, overlap with
-# the other AI/zombie mods above) tracked in TESTS.md.
 3777397357  @Sector31-DynamicHordes       server
 
 # --- Vehicles ---
@@ -214,7 +205,7 @@
 3010267444  @Paragon-Storage
 
 # --- No-Build-Zones: blocks construction around high-value/high-loot spots
-# (currently just NWAF - see src/noBuildZones.ts and TODO.md item 10/11) ---
+# (currently just NWAF - see src/noBuildZones.ts) ---
 2371483403  @No-Build-Zones
 
 # --- Weapons/equipment ---
@@ -276,16 +267,18 @@
 # no config option to disable it for AI specifically. Revisit only if the
 # author ships a fix for AI-triggered corpse conversion.
 
+# NOTE: @Custom-Keycards (2810212624) causes the server to hang indefinitely
+# at mission/script compile when added to this mod list (confirmed by
+# repeated real boots, and a differential test showing the same list boots
+# cleanly without it). Not worth bisecting against the other ~90 mods to
+# find the exact conflicting pair. Revisit only if a future version fixes it.
+
 # --- This project's own custom content (serverpack/ - a single Workshop
-# mod bundling every addon we write ourselves; see serverpack/README.md for
-# how to add more to it without needing a new Workshop entry). Currently:
-# DZSurvivalFindStone, a hold-to-search action letting players reliably
-# find a Stone on gravel/dirt/rail-ballast paths (train tracks, dirt
-# trails) as the route to crafting materials for a butchering tool - no
-# knife/blade is handed out at spawn (see src/loot.ts's tuneStartingKit()).
-# STATUS: published but UNVERIFIED IN-GAME YET - watch profiles/*.RPT and
-# script.log on first boot with this mod loaded; see serverpack/README.md's
-# "TODO verify" notes if anything fails to compile. ---
+# mod bundling every addon we write ourselves). Currently: DZSurvivalFindStone,
+# a hold-to-search action letting players reliably find a Stone on
+# gravel/dirt/rail-ballast paths (train tracks, dirt trails) as the route to
+# crafting materials for a butchering tool - no knife/blade is handed out at
+# spawn (see src/loot.ts's tuneStartingKit()). ---
 3789404408  @DZSurvivalServerPack
 
 # --- Environment/atmosphere/events ---
@@ -312,8 +305,8 @@
 # weather-VFX changes (the mod's own author confirmed in a Steam comment
 # this is temperature-only for now).
 #
-# DECIDED (see TODO.md item 3): a matching NW-only visual snow look isn't
-# included, and won't be. Two routes were explored and both rejected:
+# DECIDED: a matching NW-only visual snow look isn't included, and won't be.
+# Two routes were explored and both rejected:
 # "Early Winter or late Fall in Chernarus" (3303988563, confirmed live via
 # Steam Web API) reskins via whole-map shared config classes with no
 # position-gated option (would snow-reskin the ENTIRE map, not just the
@@ -379,7 +372,7 @@
 3036748011  @Buddys-BoltZ
 
 # Server-side-only AI extras (loaded via -servermod=, not downloaded by
-# players) - see MODS.md for what each does and how they're configured.
+# players).
 2874589934  @DayZ-Dynamic-AI-Addon        server
 3277130230  @Dynamic-AI-Missions          server
 3773597150  @Dynamic-AI-Missions-Extended server

@@ -1,18 +1,11 @@
 // Enables DayZ's own M-key ("map toggle") shortcut in the mission's
 // cfggameplay.json, which the shortcut requires to even be reachable in the
-// first place (see serverpack/addons/DZSurvivalMapGate). Unpacked from
-// vanilla's own server/dta/scripts.pbo, 5_Mission/mission/missionGameplay.c:
-//
-//   if (CfgGameplayHandler.GetMapIgnoreMapOwnership() && !CfgGameplayHandler.GetUse3DMap())
-//     if (GetUApi().GetInputByID(UAMapToggle).LocalPress() && ...)
-//       HandleMapToggleByKeyboardShortcut(player);
-//
-// With this off (the vanilla default), pressing M does nothing at all,
-// regardless of inventory - so this must be on for the shortcut to work,
-// full stop. Vanilla's own gate is otherwise all-or-nothing (no Map/GPS
-// check whatsoever once enabled) - DZSurvivalMapGate's modded
-// MissionGameplay is what actually re-adds the "must have both a Map and a
-// GPS" requirement on top of this.
+// first place (see serverpack/addons/DZSurvivalMapGate). Per vanilla's
+// 5_Mission/mission/missionGameplay.c, with this off (the vanilla default)
+// pressing M does nothing at all, regardless of inventory. Vanilla's own
+// gate is otherwise all-or-nothing (no Map/GPS check whatsoever once
+// enabled) - DZSurvivalMapGate's modded MissionGameplay is what actually
+// re-adds the "must have both a Map and a GPS" requirement on top of this.
 //
 // Like lighting.ts, this force-overwrites the field on every start so it
 // keeps winning over the field's own vanilla default.

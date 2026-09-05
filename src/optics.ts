@@ -1,19 +1,14 @@
-// Optics (@Optics, aka "BC ServerPack") adds 8 high-end scope attachments.
-// Real classnames confirmed via strings on the mod's own
-// server/@Optics/addons/bc_serverpack.pbo (each has scope=2, confirming
-// they're real CE-spawnable items, not just forward declarations):
-//   BC_Accupower_Optic, BC_ACOG_ACSS_Optic, BC_EoTechVuduOptic,
-//   BC_HAMROptic, BC_HolosunHS507C_Optic, BC_LeupoldHoloDEvoOptic,
-//   BC_VortexAMG_UH1_Optic, BC_Vortex_RazorHD_Optic.
+// Optics (@Optics, aka "BC ServerPack") adds 8 high-end scope attachments:
+// BC_Accupower_Optic, BC_ACOG_ACSS_Optic, BC_EoTechVuduOptic,
+// BC_HAMROptic, BC_HolosunHS507C_Optic, BC_LeupoldHoloDEvoOptic,
+// BC_VortexAMG_UH1_Optic, BC_Vortex_RazorHD_Optic.
 //
-// The mod ships no reference types.xml/classname file at all (unlike most
-// other content mods here), so this wires up nominal=0 stub entries
-// (never naturally spawns in the world) exactly like the trader-only guns
+// The mod ships no reference types.xml, so this wires up nominal=0 stub
+// entries (never naturally spawns) exactly like the trader-only guns
 // already handled by marketGapFill.ts - these are meant to be earned via
-// the trader's stock/restock system, not found lying around. Actual
-// availability/pricing is handled by marketGapFillManifest.ts routing them
-// into the existing Gun Attachments - Military tier (all of these are
-// high-end modern optics, not civilian gear).
+// the trader's stock/restock system. Actual availability/pricing is handled
+// by marketGapFillManifest.ts, routing them into the Gun Attachments -
+// Military tier.
 
 import { ECONOMY_TYPES_FILE } from "./paths.ts";
 import { log, ok } from "./ui.ts";

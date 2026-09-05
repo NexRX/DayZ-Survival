@@ -1,27 +1,17 @@
 // Stations Yuretskiy-Creatures' 7 tougher zombie variants (already typed by
 // yuretskiy.ts) as a fixed "garrison" at each of the 5 confirmed military
 // patrol coordinates already used by ai/AIPatrolSettings.json (NWAF, Tisy,
-// Balota, Vybor, Green Mountain) - reusing those exact coordinates rather
-// than inventing new ones, the same "single source of truth, no fresh
-// guessing" approach vehicleSpawns.ts uses for vanilla vehicle events.
+// Balota, Vybor, Green Mountain).
 //
 // This is on top of, not instead of, Yuretskiy's own ambient
-// `InfectedYuretskiy` event (yuretskiy.ts) - that one is `position=player`
-// (spawns ambiently anywhere as players roam, no location bias). This new
-// `InfectedYuretskiyMilitary` event is `position=fixed` with a real <pos>
-// list in cfgeventspawns.xml, mirroring vanilla's own
-// `VehicleHatchback02`-style multi-position/multi-type spawning (already
-// used by vehicleSpawns.ts) - the closest vanilla precedent for "several
-// named fixed spots, several possible spawned types per spot". Radius/
-// lifetime values are reused from vanilla's own `StaticMilitaryConvoy`/
-// `StaticPoliceSituation` events (the closest vanilla precedent for "a
-// dangerous fixed encounter at a real military-flavoured coordinate"),
-// not invented.
+// `InfectedYuretskiy` event (yuretskiy.ts), which is `position=player`
+// (spawns anywhere as players roam). This new `InfectedYuretskiyMilitary`
+// event is `position=fixed` with a real <pos> list in cfgeventspawns.xml,
+// mirroring vanilla's own multi-position/multi-type spawn events.
 //
 // Same classnames as yuretskiy.ts (never touched here - already registered
-// as <type> by that module, which runs first in server.ts's doStart()).
-// Purely additive: skipped entirely if the event already exists in either
-// file, and never touches yuretskiy.ts's own ambient event.
+// as <type> by that module, which runs first). Purely additive: skipped
+// entirely if the event already exists in either file.
 
 import { ECONOMY_EVENTS_FILE, MISSION_EVENT_SPAWNS_FILE } from "./paths.ts";
 import { log, ok } from "./ui.ts";
@@ -42,8 +32,7 @@ const CLASSNAMES = [
 ];
 
 // Same 5 coordinates as ai/AIPatrolSettings.json's MilitaryPatrols
-// (Roaming_Bandits_NWAF/Tisy/Balota/Vybor/GreenMountain Waypoints, X/Z only
-// - vanilla vehicle/static events omit Y too, the engine snaps to terrain).
+// (X/Z only - the engine snaps Y to terrain).
 const MILITARY_POSITIONS: { name: string; x: number; z: number }[] = [
   { name: "NWAF", x: 4501, z: 10231 },
   { name: "Tisy", x: 1900, z: 14100 },

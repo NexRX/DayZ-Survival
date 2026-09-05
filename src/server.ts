@@ -60,9 +60,6 @@ import { tuneAnimalSpawns, tuneFoodScarcity, tuneMoneyScarcity } from "./economy
 import { loadMods, modParam, serverModParam } from "./mods.ts";
 import { ensureConfig, type Settings } from "./config.ts";
 import { primeModConfigsIfNeeded } from "./prime.ts";
-import { ensureLocalServerPack } from "./localServerPacks.ts";
-import { SERVERPACK_SERVERONLY } from "./paths.ts";
-import { listAddons } from "./modBuild.ts";
 
 export async function genConfig(s: Settings): Promise<void> {
   const cfg = `${SERVER_DIR}/serverDZ.cfg`;
@@ -122,14 +119,9 @@ adminLogPlayerList     = 1;
   ok(`Wrote ${cfg}`);
 }
 
-// Crash-recovery watchdog for the actual server launch (the very last step
-// of doStart()). Previously the server ran once via runInherit() and, on
-// ANY exit - a clean admin shutdown or a genuine crash - the whole CLI
-// process exited with it, so an unattended crash (e.g. overnight) just left
-// the server down until someone noticed and reran the CLI by hand. This
-// wraps the launch in a loop that auto-restarts on an unexpected exit, with
-// a short backoff, while still stopping cleanly (no restart) on an
-// intentional Ctrl-C/SIGTERM.
+// Crash-recovery watchdog for the actual server launch (the last step of
+// doStart()): auto-restarts on an unexpected exit with a short backoff,
+// but stops cleanly (no restart) on an intentional Ctrl-C/SIGTERM.
 const CRASH_LOG = `${PROFILE_DIR}/crashes.log`;
 // Below this much runtime, an exit counts as a "fast crash" for the
 // give-up logic below rather than a normal shutdown after a real play
@@ -176,15 +168,8 @@ async function runServerWithWatchdog(args: string[]): Promise<never> {
   while (true) {
     const startedAt = Date.now();
     // setsid detaches the server into its own session/process group, so a
-    // terminal Ctrl+C only ever signals *this* CLI process (via the
-    // Deno.addSignalListener above), not the server directly and
-    // uncontrolled in parallel - requestStop() is then the only thing that
-    // ever signals it (SIGTERM, escalating to SIGKILL on a second Ctrl+C),
-    // matching the same fix applied to prime.ts's headless priming run for
-    // the identical underlying issue. stdin/stdout/stderr stay inherited -
-    // detaching the session doesn't affect already-open file descriptors,
-    // so the console (including admin commands typed into stdin) keeps
-    // working exactly as before.
+    // terminal Ctrl+C only signals this CLI process; requestStop() below is
+    // then the only thing that signals the server itself.
     currentChild = new Deno.Command("setsid", {
       args: ["steam-run", ...args],
       cwd: SERVER_DIR,
@@ -233,29 +218,11 @@ export async function doStart(s: Settings): Promise<void> {
   await ensureConfig(s);
   await ensureServer(s);
   await ensureMods(s);
-  // DZSurvivalServerOnly (server-side-only custom logic with NO client-
-  // visible behavior AND no COT/permission-system integration - see
-  // paths.ts's own comment on SERVERPACK_SERVERONLY for why that specific
-  // combination matters) is deliberately never published to Steam Workshop -
-  // it's built and signed locally, then staged straight into the server's
-  // own mod folder every start, so it's never listed in mods.txt and never
-  // downloaded by anyone, including this server itself. See
-  // localServerPacks.ts. Currently empty - skipped entirely whenever it has
-  // no addons, rather than staging/loading an empty mod.
-  const hasServerOnlyAddons = (await listAddons(SERVERPACK_SERVERONLY)).length > 0;
-  if (hasServerOnlyAddons) {
-    await ensureLocalServerPack(SERVERPACK_SERVERONLY);
-  }
   const allMods = await loadMods();
   await genConfig(s);
 
   const mods = modParam(allMods);
-  let serverMods = serverModParam(allMods);
-  if (hasServerOnlyAddons) {
-    serverMods = serverMods
-      ? `${serverMods};@${SERVERPACK_SERVERONLY.name}`
-      : `@${SERVERPACK_SERVERONLY.name}`;
-  }
+  const serverMods = serverModParam(allMods);
   await Deno.mkdir(PROFILE_DIR, { recursive: true });
   const extra = s.EXTRA_PARAMS.trim() ? s.EXTRA_PARAMS.trim().split(/\s+/) : [];
   const args = [

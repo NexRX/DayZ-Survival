@@ -1,27 +1,22 @@
-// Yuretskiy-Creatures (@Yuretskiy-Creatures) adds 7 tougher zombie variants
-// with real classnames confirmed via the mod's own
-// server/@Yuretskiy-Creatures/extras/classname.txt: YRTSK_ZMB_SWAT,
-// YRTSK_ZMB_Male, YRTSK_ZMB_TShirt, YRTSK_ZMB_Fitness_F,
+// Yuretskiy-Creatures (@Yuretskiy-Creatures) adds 7 tougher zombie variants:
+// YRTSK_ZMB_SWAT, YRTSK_ZMB_Male, YRTSK_ZMB_TShirt, YRTSK_ZMB_Fitness_F,
 // YRTSK_ZMB_Fitness_F_2, YRTSK_ZMB_Fat, YRTSK_ZMB_PartFoot.
 //
 // Unlike Burning-Mutant/Freezing-Mutant, these ARE real CE-spawnable
 // creatures out of the box: the mod's extras/config.cpp only *forward
-// declares* them (e.g. `class YRTSK_ZMB_SWAT;`, no body) as base classes to
-// optionally inherit a custom-HP subclass from - which only works if
-// they're already fully defined with scope=2 inside the mod's own compiled
-// yrtsk_creatures.pbo. So spawning them at their shipped default stats needs
-// nothing but standard types.xml/events.xml wiring, same as every other
-// creature mod here (DayZ-Raven/Rat/Horse, MoreCars, etc.).
+// declares* them as base classes to optionally inherit a custom-HP subclass
+// from, since they're already fully defined with scope=2 inside the mod's
+// own compiled pbo. So spawning them at their shipped default stats needs
+// nothing but standard types.xml/events.xml wiring.
 //
-// What's genuinely NOT automatable (left in TODO.md) is *customizing their
-// HP*: that requires hand-editing extras/config.cpp and re-packing it into
-// your own PBO - a source-edit-and-recompile workflow this project doesn't
-// do for any mod. This file only wires up the default-stat classnames.
+// Customizing their HP is NOT automatable: that requires hand-editing
+// extras/config.cpp and re-packing it into your own PBO, a
+// source-edit-and-recompile workflow this project doesn't do for any mod.
+// This file only wires up the default-stat classnames.
 //
-// Folded into one dedicated event (like AmbientRaven/AmbientRat/
-// AnimalWildHorse) rather than into an existing InfectedCity/Military event,
-// so its rarity is independently tunable without touching vanilla zombie
-// balance.
+// Folded into one dedicated event rather than into an existing InfectedCity/
+// Military event, so its rarity is independently tunable without touching
+// vanilla zombie balance.
 
 import { ECONOMY_EVENTS_FILE, ECONOMY_TYPES_FILE } from "./paths.ts";
 import { log, ok } from "./ui.ts";

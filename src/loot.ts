@@ -2,15 +2,10 @@
 // arsenal, and trims an overly generous demo starting loadout so your first
 // gun still has to be found, not picked from a menu.
 //
-// Unlike ai.ts/spatial.ts/dynamicMissions.ts (which only ever *add* curated
-// entries and never touch an admin's existing tuning), this module
-// deliberately *overwrites*/removes a handful of reward fields/entries every
-// time it runs. The defaults shipped by these mods hand out far more loot
-// per reward than we want (e.g. 50 items drawn per DayZ-Expansion-AI airdrop
-// crate). This is an explicit, opinionated override — not an additive merge
-// — so edit the constants below (and re-run `deno task up`/`start`) if you
-// want different numbers, rather than hand-editing the generated JSON/XML,
-// since these values get re-applied on every start.
+// Unlike ai.ts/spatial.ts/dynamicMissions.ts (which only ever add curated
+// entries), this module deliberately overwrites/removes reward fields every
+// run - an explicit override, not an additive merge. Edit the constants
+// below rather than hand-editing the generated JSON/XML.
 
 import {
   AIRDROP_SETTINGS,
@@ -117,18 +112,11 @@ export async function tuneMissionRewards(): Promise<void> {
 
 // --- Terje-Start-Screen starting loadouts (TerjeSettings/StartScreen/Loadouts.xml) ---
 //
-// The mod's own shipped template (github.com/TerjeBruoygard/TerjeMods) has a
-// few loadouts we don't want on a straightforward hardcore-survival server:
-// "multiselect" lets a fresh spawn trade all of their starting points for a
-// shotgun + ammo with zero scavenging (undercuts "finding your first gun
-// should be a tense scramble"), and "hunter" is a distinct starting-kit
-// choice gated behind a Terje-Skills skill level - we don't want a
-// skill-gated "character class" pick on spawn at all, independent of
-// whether Terje-Skills is installed. The default "survivor" loadout
-// (clothes, a chemlight, a piece of fruit, a bandage - no weapon) and the
-// SteamGUID-gated "admin" loadout are left as-is. Each entry is removed
-// independently and verbatim-matched, the first time it's seen; if an admin
-// has already edited/removed all of them themselves, this is a no-op.
+// Removes the shipped "multiselect" (trades all starting points for a
+// shotgun with zero scavenging) and "hunter" (skill-gated character-class
+// pick) loadouts. "survivor" and the SteamGUID-gated "admin" loadout are
+// left as-is. Each entry is matched verbatim and removed once; already
+// edited/removed entries are left alone.
 const TERJE_LOADOUTS_MARKER = "<!-- dayz-survival:loadouts-tuned -->";
 const TERJE_REMOVED_LOADOUTS: [string, RegExp][] = [
   ["multiselect", /\s*<Loadout id="multiselect"[\s\S]*?<\/Loadout>/],
@@ -163,41 +151,21 @@ export async function tuneStartingLoadouts(): Promise<void> {
 
 // --- Terje-Start-Screen "survivor" starting kit (TerjeSettings/StartScreen/Loadouts.xml) ---
 //
-// The default "survivor" loadout ships with clothes, a chemlight, a piece of
-// fruit, and a bandage - no way to defend yourself, navigate, or gather
-// materials. We add a starting blunt weapon (found/improvised, not a proper
-// firearm - still has to be scavenged/upgraded further), a handful of rags
-// (early bandaging/crafting material), and a map (so a fresh spawn isn't
-// totally lost). Deliberately no knife/blade here - butchering tools have to
-// be found or crafted (see the DZSurvivalFindStone addon under serverpack/
-// for the stone-gathering side of that). Each item/selector is inserted
-// independently into the survivor loadout's <Items> block, the first time
-// it's seen (matched verbatim, so already-added items are never duplicated
-// and an admin's own edits/removals are respected).
+// The default "survivor" loadout has no weapon, so we add a starting blunt
+// weapon, a handful of rags, and a map. Deliberately no knife/blade -
+// butchering tools still have to be found or crafted. Each item/selector is
+// inserted once, matched verbatim, so admin edits/removals are respected.
 const TERJE_SURVIVOR_ITEMS_CLOSE = /(<Loadout id="survivor"[\s\S]*?)(\s*<\/Items>\s*<\/Loadout>)/;
 
-// The single guaranteed starting weapon. Project owner: "change the
-// starting weapon from a shortstick to a Baseball bat".
-//
-// UPDATE (2026-09): this used to be a `Selector type="RANDOM"` between 4
-// blunt weapons (WoodenStick/Pipe/BaseballBat/Crowbar) - see
-// TERJE_LEGACY_BLUNT_WEAPON_SELECTOR below. Digging into why every spawn
-// got a WoodenStick ("shortstick") no matter what, despite the RANDOM
-// selector, found a second, unrelated bug: an even older version of this
-// function (predating this file's own git history, no trace of it left in
-// this codebase) had already baked its OWN unconditional
-// `<Item classname="WoodenStick" position="@InHands" />` (tagged with a
-// `dayz-survival:starting-kit-added` comment this file no longer
-// recognizes or manages) directly into every already-materialized
-// Loadouts.xml, positioned in the file BEFORE the RANDOM selector.
-// Bohemia's loadout parser processes `<Item>`/`<Selector>` top-to-bottom,
-// and the first thing to claim `position="@InHands"` wins - every later
-// claim (the RANDOM selector's roll, whatever it picked) is silently
-// discarded. That orphaned leftover line is why the "random" weapon never
-// actually varied. TERJE_LEGACY_ORPHANED_STICK detects and strips it (if
-// still present) below, and TERJE_LEGACY_BLUNT_WEAPON_SELECTOR detects and
-// replaces the old RANDOM selector with this single deterministic item, so
-// a live server converges to exactly one `@InHands` claim either way.
+// The single guaranteed starting weapon (a Baseball bat). This used to be a
+// `Selector type="RANDOM"` between 4 blunt weapons - see
+// TERJE_LEGACY_BLUNT_WEAPON_SELECTOR below. Bohemia's loadout parser
+// processes `<Item>`/`<Selector>` top-to-bottom and the first thing to claim
+// `position="@InHands"` wins, so an orphaned unconditional WoodenStick item
+// earlier in the file (from an older version of this function) silently
+// discarded every RANDOM roll. TERJE_LEGACY_ORPHANED_STICK strips that
+// leftover, and TERJE_LEGACY_BLUNT_WEAPON_SELECTOR replaces the old RANDOM
+// selector, so a live server converges to exactly one `@InHands` claim.
 const TERJE_LEGACY_ORPHANED_STICK =
   /\s*<!-- dayz-survival:starting-kit-added -->\s*<Item classname="WoodenStick" position="@InHands" \/>/;
 const TERJE_LEGACY_BLUNT_WEAPON_SELECTOR = `<Selector type="RANDOM">
@@ -257,13 +225,10 @@ export async function tuneStartingKit(): Promise<void> {
 
 // --- Terje-Start-Screen respawn points (TerjeSettings/StartScreen/Respawns.xml) ---
 //
-// Same idea as the loadouts above: prune the shipped template's respawn
-// options that don't fit a straightforward hardcore-survival server -
-// "hunting" is a skill-gated respawn zone tied to the "hunter" loadout we
-// remove above, "sleepingbag" lets players respawn at a placed sleeping bag
-// (too safe/convenient - death should cost you your position), and
-// "deathpoint" respawns you at your own corpse. The regional map respawns
-// and the SteamGUID-gated "admin" base are left as-is.
+// Prunes the shipped template's "hunting" (skill-gated, tied to the
+// "hunter" loadout removed above), "sleepingbag" (too safe/convenient), and
+// "deathpoint" (respawn at own corpse) options. Regional map respawns and
+// the SteamGUID-gated "admin" base are left as-is.
 const TERJE_RESPAWNS_MARKER = "<!-- dayz-survival:respawns-tuned -->";
 const TERJE_REMOVED_RESPAWNS: [string, RegExp][] = [
   ["hunting", /\s*<Respawn id="hunting"[\s\S]*?<\/Respawn>/],
@@ -300,13 +265,8 @@ export async function tuneRespawnPoints(): Promise<void> {
 // --- Terje-Start-Screen settings (TerjeSettings/StartScreen.cfg) ---
 //
 // StartScreen.SkillsPageEnabled shows a page on character creation that lets
-// a fresh spawn pre-allocate skill/perk levels from a pool of points
-// (StartScreen.SkillsPagePoints) before ever playing - the opposite of
-// "earned power": skills should only grow from actually butchering, making
-// fires, etc. (Terje-Skills' own progression system, unaffected by this
-// setting). This disables just that page, verbatim-matched, the first time
-// it's seen; if an admin has already changed it themselves, this is a
-// no-op.
+// a fresh spawn pre-allocate skill/perk levels from a pool of points - the
+// opposite of "earned power". This disables just that page, once.
 const TERJE_START_SCREEN_MARKER = "// dayz-survival:startscreen-tuned";
 const TERJE_SKILLS_PAGE_ENABLED = /StartScreen\.SkillsPageEnabled\s*=\s*true;/;
 

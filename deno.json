@@ -14,8 +14,6 @@
     "build-serverpack": "deno run -A src/main.ts build-serverpack",
     "publish-serverpack": "deno run -A src/main.ts publish-serverpack",
     "verify-serverpack": "deno run -A src/main.ts verify-serverpack",
-    "build-serverpack-serveronly": "deno run -A src/main.ts build-serverpack-serveronly",
-    "verify-serverpack-serveronly": "deno run -A src/main.ts verify-serverpack-serveronly",
     "sync-editor": "deno run -A src/main.ts sync-editor",
     "audit-market": "deno run -A src/main.ts audit-market",
     "check": "deno check src/main.ts",

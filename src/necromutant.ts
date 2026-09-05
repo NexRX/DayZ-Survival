@@ -1,45 +1,29 @@
 // Necromutant (@Necromutant) adds a rare readable book ("Book darkness")
-// that, once a player finishes reading it, triggers a boss-style event: the
-// mod's own script spawns a wave of zombies followed by the JVDS_Necromutant
-// mutant, then drops a JVDS_cross_gravestone reward on its death (see
-// profiles/Necromutant/Config.json for wave size/loot table - shipped
-// defaults already reviewed and left untouched).
+// that, once read, triggers a boss-style event: the mod's own script spawns
+// a wave of zombies followed by the JVDS_Necromutant mutant, then drops a
+// JVDS_cross_gravestone reward on its death (see profiles/Necromutant/
+// Config.json for wave size/loot table - shipped defaults left untouched).
 //
-// Real classnames confirmed via strings on the mod's own
-// server/@Necromutant/addons/necromutant.pbo:
-//   - JVDS_Book_darkness : ItemBase   -- the trigger book, a real lootable item
-//   - JVDS_Necromutant : JVDS_mutants_base   -- the mutant, `CreateObject()`'d
-//     directly by the mod's own script once the book finishes reading, never
-//     placed by a CE event
-//   - JVDS_cross_gravestone : ItemBase   -- the reward, also `CreateObject()`'d
-//     directly by the mod's own script
+// Real classnames confirmed via strings on the mod's own pbo:
+//   - JVDS_Book_darkness : ItemBase - the trigger book, a real lootable item
+//   - JVDS_Necromutant : JVDS_mutants_base - `CreateObject()`'d directly by
+//     the mod's own script, never placed by a CE event
+//   - JVDS_cross_gravestone : ItemBase - the reward, also `CreateObject()`'d
+//     directly
 //
-// Only the book needs an economy entry: it's the only one of the three ever
-// meant to be found via ordinary loot spawning. The mutant and its reward are
+// Only the book needs an economy entry: the mutant and its reward are
 // entirely script-controlled and would never be touched by the CE even if
-// registered, so they're deliberately left out here to avoid a types.xml
-// entry that does nothing.
+// registered.
 //
-// --- Bug found and fixed: a plain item can't be a DynamicEvent target ---
 // An earlier version of this file also added a `position=player` <event> to
-// db/events.xml (spawn the book itself near a random player, so its rarity
-// was independently tunable without touching vanilla literature spawns).
-// Confirmed live via `deno task verify-serverpack`'s RPT log that this
-// doesn't work at all: `[DynEvent] "NecromutantBook" will be ignored ::
-// failed to determine spawner type!` / `"NecromutantBook" failed to
-// initialize spawner - unknown type?!`. DayZ's DynamicEvent engine only
-// knows how to resolve a spawner "kind" (Infected/Animal/etc.) from a
-// child's real CfgVehicles inheritance chain - `JVDS_Book_darkness` is a
-// plain `ItemBase`, not a creature, so there's no spawner kind to resolve
-// and the whole event is silently disabled at CE load
+// spawn the book near a random player. That doesn't work: DayZ's
+// DynamicEvent engine can only resolve a spawner "kind" from a real
+// CfgVehicles creature inheritance chain, and JVDS_Book_darkness is a plain
+// ItemBase, so the event silently fails at CE load
 // (`[CE][DE] DynamicEvent "NecromutantBook" setup is invalid`). Fixed by
-// dropping the event entirely and letting the book spawn through the
-// ordinary nominal-based CE loot economy instead (the same path every other
-// piece of literature uses) - its own `<type>` block already existed, it
-// was just missing `<usage>` tags (needed for the CE to have any valid
-// spawn points at all). `Historical`/`Village` were picked to fit the
-// "creepy old tome" theme without making it a common find, keeping the
-// `<nominal>`/`<lifetime>` values already tuned for rarity.
+// dropping the event and letting the book spawn through the ordinary
+// nominal-based CE loot economy instead (its `<type>` block just needed
+// `<usage>` tags added).
 
 import { ECONOMY_EVENTS_FILE, ECONOMY_TYPES_FILE } from "./paths.ts";
 import { log, ok } from "./ui.ts";

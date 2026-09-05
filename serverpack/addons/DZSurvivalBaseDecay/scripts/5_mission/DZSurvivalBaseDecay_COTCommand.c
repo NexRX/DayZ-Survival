@@ -7,8 +7,8 @@
 // GUI panel).
 //
 // IMPORTANT: this whole addon (DZSurvivalBaseDecay) must be loaded on BOTH
-// client and server (it lives in serverpack/, not serverpack-serveronly/)
-// even though its actual decay logic is server-only. COT's permission
+// client and server (it lives in serverpack/, a client+server pack) even
+// though its actual decay logic is server-only. COT's permission
 // system builds an in-memory tree of every registered permission node, and
 // the server sends its tree to each connecting client to compare structure
 // (child counts per node) - if a permission is registered only server-side
@@ -24,13 +24,13 @@
 // ToggleMenu all gate on HasPermission("COT.View")) while server-side-only
 // checks (e.g. chat command permission gating, which runs entirely on the
 // server and never needs the client's copy of the tree) keep working fine -
-// exactly the confusing split-brain symptom that led to this addon being
-// moved out of serverpack-serveronly/ in the first place. Any future addon
-// that registers a COT permission/module MUST be loaded on both sides for
-// the same reason - see DZSurvivalBaseDecay_Module.c's RegisterLock/
-// UnregisterLock/RecordActivity for how the actual decay logic itself is
-// still kept server-only (via GetGame().IsServer() guards) despite the
-// script files themselves compiling into the client build too.
+// exactly the confusing split-brain symptom that led to this addon needing
+// to live in the shared client+server pack rather than a server-only one.
+// Any future addon that registers a COT permission/module MUST be loaded
+// on both sides for the same reason - see DZSurvivalBaseDecay_Module.c's
+// RegisterLock/UnregisterLock/RecordActivity for how the actual decay
+// logic itself is still kept server-only (via GetGame().IsServer() guards)
+// despite the script files themselves compiling into the client build too.
 //
 // Usage in-game (as an admin):
 //     /basedecay status   - reports how many locked bases are tracked and

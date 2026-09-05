@@ -1,10 +1,6 @@
 // Server housekeeping run at the start of every doStart(): log rotation and
-// a rotating backup of the mission's persistence database. Neither of these
-// existed before - a long-lived, rarely-supervised server (per this
-// project's own design goals) was accumulating profiles/*.RPT+*.ADM forever
-// with no cleanup, and a bad wipe/crash/corrupted save had no automatic
-// recovery path at all. Both are best-effort: a failure here should never
-// block the server from actually starting.
+// a rotating backup of the mission's persistence database. Both are
+// best-effort: a failure here should never block the server from starting.
 
 import { MISSION_DIR, PROFILE_DIR, ROOT } from "./paths.ts";
 import { log, ok, warn } from "./ui.ts";
@@ -15,10 +11,8 @@ import { exists } from "./steam.ts";
 
 // Every real server start writes a fresh, uniquely-timestamped RPT (+ ADM
 // when -adminlog is on, + occasional script_*/error_* logs from mod crash
-// reports) into PROFILE_DIR - confirmed live: 194 RPT + 144 ADM files
-// (673MB) had piled up with zero cleanup before this existed. 20 is
-// generous headroom (weeks of typical restart cadence) while keeping
-// profiles/ from growing without bound across months of uptime.
+// reports) into PROFILE_DIR. 20 is generous headroom (weeks of typical
+// restart cadence) while keeping profiles/ from growing unbounded.
 const LOG_KEEP_COUNT = 20;
 const LOG_PATTERNS = [
   /^DayZServer_.*\.RPT$/,
@@ -27,13 +21,8 @@ const LOG_PATTERNS = [
   /^error_.*\.log$/,
 ];
 
-// A handful of installed mods (DayZ-Expansion, Community-Online-Tools,
-// Code-Lock, sVisual/sUDE, CJ187-RandomMineFields, the
-// P2P-Trading-Board, and DayZ's own WebApi/EventManager logging) each keep
-// their own separate, unbounded per-run log directory under PROFILE_DIR -
-// individually much smaller than the main RPT/ADM problem above (KBs, not
-// hundreds of MBs), but every one of them grows forever with no cleanup of
-// its own (confirmed live: 100-185 files apiece after only ~10 days).
+// A handful of installed mods each keep their own separate, unbounded
+// per-run log directory under PROFILE_DIR, with no cleanup of their own.
 // Pruned the same way, just without the RPT/ADM filename-pattern filter
 // (each of these directories only ever holds one kind of file).
 const MOD_LOG_DIRS = [
@@ -102,12 +91,10 @@ export async function pruneOldLogs(): Promise<void> {
 
 // Rotating backup of the mission's persistence database (storage_1 -
 // characters, bases, vehicles, trader stock) taken on every server start,
-// capturing whatever was left over from the previous run before anything
-// new happens to it. This is the only safety net against a bad `wipe`,
-// disk corruption, or a mod bug trashing a save - none existed before. Uses
-// `tar` (already relied on inside the nix devshell) for a single-file,
-// easy-to-prune artifact that also compresses reasonably well - confirmed
-// live storage_1 is ~86MB uncompressed.
+// before anything new happens to it. This is the only safety net against a
+// bad `wipe`, disk corruption, or a mod bug trashing a save. Uses `tar`
+// (already relied on inside the nix devshell) for a single-file artifact
+// that also compresses reasonably well.
 export const BACKUPS_DIR = `${ROOT}/backups`;
 const BACKUP_KEEP_COUNT = 10;
 

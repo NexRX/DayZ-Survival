@@ -5,7 +5,7 @@ import {
   DAYZ_CLIENT_APPID,
   PROFILE_DIR,
   SERVER_DIR,
-  SERVER_PACKS,
+  SERVERPACK,
   WORKSHOP_SUBPATH,
 } from "./paths.ts";
 import { die, log, ok, warn } from "./ui.ts";
@@ -68,19 +68,10 @@ async function findKeyDir(dir: string): Promise<string | null> {
 }
 
 /**
- * Some mods ship a `meta.cpp` with the wrong `publishedid` baked in - an
- * authoring mistake in the mod's own upload (confirmed live, 2026-09:
- * `@Necromutant`'s meta.cpp says `publishedid = 0`, even though every other
- * mod in this project's whole load order correctly embeds its own real
- * Workshop id). DayZ reports whatever `publishedid` is in this file to the
- * master server / joining clients as-is, with no cross-check against the
- * actual folder its content came from - so a bogus id here shows up to
- * players as the server claiming to run a mod with workshop id 0, which
- * understandably looks like server misconfiguration even though the mod
- * itself is installed correctly. Since this project already knows the true
- * id for every mod (mods.txt), just fix it up rather than trusting whatever
- * the author shipped - cheap and idempotent, so it's safe to run on every
- * install.
+ * Some mods ship a `meta.cpp` with the wrong `publishedid` baked in (an
+ * authoring mistake, e.g. `@Necromutant` shipping `publishedid = 0`). DayZ
+ * reports that id as-is to the master server / clients, so fix it up using
+ * the real id from mods.txt - cheap and idempotent, safe on every install.
  */
 async function fixMetaCpp(dst: string, mod: Mod): Promise<void> {
   const path = `${dst}/meta.cpp`;
@@ -108,15 +99,10 @@ export async function installOneMod(
   await Deno.remove(dst, { recursive: true }).catch(() => {});
 
   // Our own server pack's .bisign/.bikey filenames encode the signing key's
-  // authority name verbatim (see modBuild.ts) - DayZ's signature check
-  // matches that name case-sensitively against the key/signature content, so
-  // lowercasing it here (fine for third-party mods, which is what this exists
-  // for) would desync the filename from the case actually embedded in the
-  // signature and break verification. We wrote this addon ourselves with
-  // consistent casing throughout, so it doesn't need the Linux-compatibility
-  // lowercase pass at all - but it still gets copied like every other mod
-  // (never symlinked), so it's installed identically to everything else.
-  const skipLowercase = SERVER_PACKS.some((p) => mod.name === `@${p.name}`);
+  // authority name case-sensitively (see modBuild.ts) - lowercasing them
+  // would desync the filename from the case embedded in the signature and
+  // break verification, so skip the lowercase pass for our own pack only.
+  const skipLowercase = mod.name === `@${SERVERPACK.name}`;
   if (lowercase) {
     await runCapture("cp", ["-a", src, dst]);
     if (!skipLowercase) await lowercaseTree(dst);
@@ -142,20 +128,10 @@ export async function installOneMod(
 
 /**
  * Download (or re-validate) a single workshop item into the SteamCMD-style
- * content layout so the install pipeline is unchanged. DepotDownloader always
- * checks the item's current manifest and only re-fetches changed files, so
- * `-validate` is what keeps a mod from silently going stale relative to Steam
- * once we've downloaded it once - a stale server-side copy can mismatch a
- * player's freshly-downloaded client copy and get them kicked for "a PBO
- * which is not part of the server".
- *
- * Every Steam3 login (one per mod, since DepotDownloader has no multi-item
- * batch mode) counts against Steam's login rate limit, so re-validating
- * *everything* on every run isn't viable for a large mods.txt - it reliably
- * trips `RateLimitExceeded` partway through. So this only talks to
- * DepotDownloader at all for mods that aren't downloaded yet, or that
- * `doMods`/`ensureMods` determined (via `staleModIds`, a login-free check)
- * are actually out of date - `force: true` in that case.
+ * content layout. `-validate` keeps a mod from silently going stale relative
+ * to Steam, but each login counts against Steam's rate limit, so this only
+ * talks to DepotDownloader for mods that aren't downloaded yet or that the
+ * caller has flagged as stale (`force: true`).
  */
 export async function downloadOne(
   s: Settings,
@@ -172,8 +148,7 @@ export async function downloadOne(
   await ensureDepotLogin(s);
   await Deno.mkdir(out, { recursive: true });
 
-  // Pace logins a bit even so, and back off hard specifically on Steam's
-  // rate limit rather than the flat retry delay used for other failures.
+  // Pace logins a bit to help avoid Steam's rate limit.
   await new Promise<void>((resolve) => setTimeout(resolve, 2000));
 
   const maxTries = 4;
@@ -202,9 +177,8 @@ export async function downloadOne(
     }
 
     // A stale/invalid remembered-login token makes DepotDownloader crash
-    // outright instead of failing gracefully - retrying with the same dead
-    // token would just burn through all attempts uselessly, so re-authorize
-    // once and retry immediately instead of following the normal backoff.
+    // outright instead of failing gracefully, so re-authorize once and retry
+    // immediately instead of burning through attempts on the normal backoff.
     const staleLogin = /LogOn requires a username and password|Unhandled exception/i
       .test(output);
     if (staleLogin && !reauthed) {
@@ -234,10 +208,8 @@ export async function downloadOne(
 /**
  * Which already-downloaded mods have a newer content id published on Steam
  * than what we last validated (see `localManifestId`) - a single, login-free
- * Web API call, so this is cheap enough to run on every `up`/`mods`
- * invocation. Anything not yet downloaded, or where the check itself fails
- * (offline, API hiccup), is left out rather than forced. Keyed by mod id;
- * values carry the old/new content ids so callers can log what changed.
+ * Web API call. Keyed by mod id; values carry the old/new content ids so
+ * callers can log what changed.
  */
 async function staleModIds(mods: Mod[]): Promise<Map<string, { ours: string; theirs: string }>> {
   const remote = await fetchContentIds(mods);
@@ -251,14 +223,10 @@ async function staleModIds(mods: Mod[]): Promise<Map<string, { ours: string; the
   return stale;
 }
 
-// A persistent, append-only record of every auto-update `ensureMods`/`doMods`
-// has ever silently applied (by design, this project never prompts before
-// re-validating an updated mod - see doMods/ensureMods below) - previously
-// there was no way to tell what changed or when after the fact. Logged once,
-// from `doMods` only (not `staleModIds`'s other caller, `ensureMods`'s
-// pre-check), since `ensureMods` always re-runs `doMods` - which recomputes
-// staleness itself - whenever it finds anything stale, so logging in both
-// places would double up every entry.
+// A persistent, append-only record of every auto-update `doMods` silently
+// applies. Logged only from `doMods` (not `ensureMods`'s pre-check), since
+// `ensureMods` always re-runs `doMods` when anything is stale, which would
+// otherwise double up every log entry.
 const MOD_UPDATE_LOG = `${PROFILE_DIR}/mod-updates.log`;
 
 async function logModUpdates(
@@ -282,9 +250,8 @@ async function logModUpdates(
 
 /**
  * `extraRefreshIds`, when given, additionally forces a re-validation of
- * those specific workshop ids (e.g. to force-check a mod you suspect is
- * stale even if Steam's API hasn't caught up yet). `staleModIds` runs
- * regardless, so normal use needs nothing passed manually at all.
+ * those specific workshop ids. `staleModIds` runs regardless, so normal use
+ * needs nothing passed manually.
  */
 export async function doMods(s: Settings, extraRefreshIds?: Set<string>): Promise<void> {
   await requireTools();
@@ -324,8 +291,7 @@ export async function modsInstalled(): Promise<boolean> {
 /**
  * The automatic path used by every `up`/server start: installs anything
  * missing, then does a fast, login-free check for mods Steam has updated
- * since we last validated them and re-validates just those - no manual
- * intervention (or workshop-id-hunting) required.
+ * since we last validated them and re-validates just those.
  */
 export async function ensureMods(s: Settings): Promise<void> {
   if (!(await modsInstalled())) {

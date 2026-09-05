@@ -1,31 +1,21 @@
-// Keeps the new "world feels alive" AI event mods (2026-08 batch: Knock
-// Knock Zombies, Airborne AI, AI War Zones, hSF Zombie Horde Event) from
-// firing on top of the custom trader city, and caps AI War Zones' own
-// concurrent-zone setting for FPS safety given how much other AI this
-// project already stacks (DayZ-Expansion-AI patrols, AI-Bandits, Dynamic AI
-// Missions, InediaInfectedAI, CreepyZombies, the fixed military garrisons,
-// AIConvoy, and now these four).
+// Keeps the "world feels alive" AI event mods (Knock Knock Zombies, Airborne
+// AI, AI War Zones, hSF Zombie Horde Event) from firing on top of the custom
+// trader city, and caps AI War Zones' own concurrent-zone setting for FPS
+// safety given how much other AI this project already stacks.
 //
 // Each mod self-generates its own config on first world load (see
-// src/prime.ts) with a real per-mod schema for "don't spawn here" - none
-// share a format:
-//   - Knock Knock Zombies / Airborne AI (same author, agent001): a single
-//     comma-joined string field, each entry "X Radius Z" (radius is the
-//     *second* token, not a fourth) - confirmed via the mods' own shipped
-//     admin/explanation.txt and a live-generated config.
-//   - hSF Zombie Horde Event: a proper `SafeZones` JSON array of
-//     `{ Position: [x, y, z], Radius: N }` objects - confirmed via a live-
-//     generated config (which already ships one placeholder example zone;
-//     left alone, only appended to).
-//   - AI War Zones has no generic "safe zone" concept (it's a fixed list of
-//     hand-authored zones) - not applicable, and its 3 shipped example
-//     zones (Berezino/Vybor/Krasnostav PD) are all >1.5km from the trader
-//     city anyway, confirmed via their own shipped positions.
+// src/prime.ts) with a different per-mod schema for "don't spawn here":
+//   - Knock Knock Zombies / Airborne AI: a single comma-joined string field,
+//     each entry "X Radius Z" (radius is the *second* token, not a fourth).
+//   - hSF Zombie Horde Event: a `SafeZones` JSON array of
+//     `{ Position: [x, y, z], Radius: N }` objects.
+//   - AI War Zones has no generic "safe zone" concept (fixed hand-authored
+//     zones) - not applicable here.
 //
 // Idempotent: every run checks whether our own trader position is already
-// present (by exact string match) before appending, so this never
-// duplicates an entry across restarts, and never touches any other
-// safe-zone entry an admin added by hand.
+// present before appending, so this never duplicates an entry across
+// restarts, and never touches any other safe-zone entry an admin added by
+// hand.
 
 import {
   AI_WARZONES_SETTINGS,
@@ -37,11 +27,10 @@ import { ok } from "./ui.ts";
 import { exists } from "./steam.ts";
 import { CUSTOM_POSITION, CUSTOM_SAFE_ZONE_RADIUS } from "./traders.ts";
 
-// AI War Zones' own Steam page recommends "I would not suggest allowing
-// more than 1-3 active zones at once" even standalone - with this project's
-// already-heavy AI stack on top, cap it below the mod's own shipped default
-// (3) rather than at it. A floor/cap, not a fixed overwrite: never raises a
-// host's own deliberately-lower setting.
+// AI War Zones' own Steam page recommends no more than 1-3 active zones at
+// once even standalone - with this project's already-heavy AI stack, cap it
+// below the mod's own shipped default (3). A floor/cap, not a fixed
+// overwrite: never raises a host's own deliberately-lower setting.
 const MAX_CONCURRENT_WARZONES_CAP = 2;
 
 interface GenericSafeZoneConfig {

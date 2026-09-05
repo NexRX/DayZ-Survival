@@ -1,15 +1,8 @@
-// Global AI combat-difficulty rebalance across every AI mod, so encounters
-// feel like a genuine threat (the "world that fights back" design goal)
-// without turning bots into bullet sponges — kills should stay fast in both
-// directions ("hardcore, but respects your time").
-//
-// Covers DayZ-Expansion-AI (patrols/spatial/missions), InediaInfectedAI
-// (infected), and AI-Bandits (standalone bandit spawns). Like loot.ts, this
-// deliberately *overwrites*/floors a handful of scalar fields on every start
-// rather than merging - it's an explicit, opinionated tuning pass, not an
-// additive merge of new content. Edit the constants below (and re-run
-// `deno task up`/`start`) to adjust, rather than hand-editing the generated
-// JSON, since these values get re-applied on every start.
+// Rebalances AI combat difficulty across DayZ-Expansion-AI, InediaInfectedAI,
+// and AI-Bandits so encounters stay dangerous without becoming bullet
+// sponges. Like loot.ts, this overwrites/floors scalar fields on every start
+// rather than merging - edit the constants below (not the generated JSON)
+// since values are re-applied on every `deno task up`/`start`.
 
 import {
   AI_BANDITS_DYNAMIC_SETTINGS,
@@ -24,11 +17,9 @@ import { exists } from "./steam.ts";
 
 // --- DayZ-Expansion-AI global baseline (AISettings.json) ---
 //
-// Every patrol in AIPatrolSettings.json (confirmed across all 46 generated
-// entries) uses `-1` for its own Accuracy/Damage/Threat fields, which means
-// "inherit this file's values". So this is the single lever that governs
-// difficulty for every Expansion AI patrol on the map — roaming bandits,
-// town guards, helicopter wreck defenders, everything.
+// Patrols in AIPatrolSettings.json use `-1` for their own Accuracy/Damage/
+// Threat fields, meaning "inherit this file's values" - so this is the
+// single lever governing difficulty for every Expansion AI patrol on the map.
 interface AISettings {
   AccuracyMin?: number;
   AccuracyMax?: number;
@@ -82,27 +73,10 @@ export async function tuneAIDifficulty(): Promise<void> {
 // --- DayZ-Dynamic-AI-Addon ambient spawns (SpatialSettings.json) ---
 //
 // Each Group/Point/Location/Audio entry carries its own accuracy + trigger
-// chance, so unlike AISettings.json there's no single global knob — we raise
-// every entry's floor instead of guessing at one number for all of them.
-//
-// `Group` entries are the one type that spawns purely based on proximity to
-// *any* player, anywhere on the map (see spatial.ts) - governed globally by
-// `HuntMode`/`MinDistance`/`MaxDistance`/`Spatial_MinTimer`/
-// `Spatial_MaxTimer`/`CleanupTimer` below, not per-entry. Per the mod's own
-// docs (server/@DayZ-Dynamic-AI-Addon/files/spatialsettings
-// descriptions.txt), `HuntMode: 1` already means "ai pathing/aggression
-// setting: hunt player aggressively" and ships as the mod's own default -
-// so TODO.md item 9 ("a player is constantly hunted by AI, even in the
-// wilderness, every hour or two, not point-blank/unfair") turns out to
-// already be *mostly* covered out of the box: confirmed on a live install,
-// `Spatial_MinTimer`/`MaxTimer` (20-40 real-world minutes between
-// encounters) and `MinDistance`/`MaxDistance` (140-220m spawn distance -
-// never point-blank) already satisfy the letter of the ask. The one gap:
-// `CleanupTimer` (how long a spawned hunting group survives before being
-// despawned) shipped at just 6 minutes - barely enough time for a
-// `HuntMode: 1` group to actually close the distance and threaten the
-// player before vanishing. Floored below so a hunt has time to actually
-// happen.
+// chance, so unlike AISettings.json there's no single global knob - we raise
+// every entry's floor instead. `Group` entries also spawn purely based on
+// proximity to any player (see spatial.ts), governed by the global
+// HuntMode/MinDistance/CleanupTimer knobs below.
 interface SpatialEntry {
   Spatial_MinAccuracy?: number;
   Spatial_MaxAccuracy?: number;
@@ -229,14 +203,9 @@ export async function tuneMissionDifficulty(): Promise<void> {
 
 // --- InediaInfectedAI infected combat (Inedia/InediaInfectedAIConfig.json) ---
 //
-// The mod's own shipped defaults are tuned for "hardcore" play (e.g.
-// DamageToPlayerHealthMultiplier 1.2-1.4x, StunToPlayerChancePercent
-// 25-35%, and a 4s post-stagger immunity window on zombies) which in
-// practice reads as "infected hit too hard and can never be staggered
-// again mid-fight". So unlike the other AI mods above, this rebalance is a
-// direct target-setter (always overwrites to an exact value) rather than a
-// floor - we're deliberately pulling several fields *below* the mod's own
-// defaults, not just guarding a minimum.
+// Unlike the other AI mods above, this rebalance always overwrites to an
+// exact value rather than flooring - the mod's shipped defaults hit too hard
+// and stagger-lock the player, so several fields are pulled below default.
 interface InediaScaledValue {
   all?: number;
   highstr?: number;
@@ -356,11 +325,9 @@ export async function tuneInediaInfectedAIDifficulty(): Promise<void> {
 
 // --- AI-Bandits patrol/sniper accuracy (AI_Bandits/{Dynamic,Static}AIB.json) ---
 //
-// Each patrol/sniper/static-guard entry carries its own 0-100 "accuracy"
-// integer (confirmed via github.com/hunter688/Hunterz-mods-Wiki) - there's
-// no separate damage multiplier to tune, since AI-Bandits fire real
-// ammunition through the engine's normal ballistics ("no bullet sponges" is
-// automatic here, in both directions). Raise the accuracy floor only.
+// Each patrol/sniper/static-guard entry carries its own 0-100 accuracy
+// integer; there's no separate damage multiplier since AI-Bandits fire real
+// ammunition through the engine's normal ballistics. Raise the accuracy floor only.
 interface BanditEntry {
   accuracy?: number;
   [key: string]: unknown;
@@ -400,7 +367,7 @@ export async function tuneAIBanditsDifficulty(): Promise<void> {
   ) {
     log(
       "AI_Bandits configs not generated yet — AI-Bandits will create them on first " +
-        "server start (see MODS.md for per-map example configs)",
+        "server start",
     );
     return;
   }

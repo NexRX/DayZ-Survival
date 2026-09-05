@@ -3,17 +3,16 @@
 //
 // Like AIPatrolSettings.json and SpatialSettings.json, this mod
 // self-regenerates its own MainConfig.json (with a default mission set) the
-// first time it loads, at DYNAMIC_MISSIONS_SETTINGS (confirmed on a live
-// server run — see paths.ts).
+// first time it loads, at DYNAMIC_MISSIONS_SETTINGS.
 //
-// Merge strategy, verified against that real, generated MainConfig.json:
+// Merge strategy:
 // - `Missions[]` entries are added by unique `Name`, never overwritten.
 // - Each mission needs a `Bots_Loadout_ID` pointing at a *sub-group* inside
 //   `Loadouts[0]` (shared by that group's Weapons/Armour/Headgear entries
-//   via a repeated `Loadout_ID` field) — it's not a separate top-level
-//   Loadouts array item. Rather than guess at (and risk colliding with)
-//   whatever Loadout_IDs the admin's file already has, we mint a new, unused
-//   Loadout_ID for our curated gear and point our new missions at it.
+//   via a repeated `Loadout_ID` field), not a separate top-level Loadouts
+//   array item. Rather than risk colliding with whatever Loadout_IDs the
+//   admin's file already has, we mint a new, unused Loadout_ID for our
+//   curated gear.
 // - `Settings`, `RewardObjects`, and `Loot` are never touched.
 
 import { AI_TEMPLATE_DIR, DYNAMIC_MISSIONS_SETTINGS } from "./paths.ts";

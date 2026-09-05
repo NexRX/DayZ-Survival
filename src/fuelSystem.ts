@@ -1,24 +1,17 @@
 // Fuel-System (@Fuel-System) matches vehicle fuel type/consumption by
 // classname in profiles/iTzMods/FuelSystem/vehicles.xml, self-generated on
-// first world load with only vanilla base-class entries (confirmed on a
-// live server run):
+// first world load with only vanilla base-class entries (CarScript/
+// BoatScript, CivilianSedan, Hatchback_02, Sedan_02, OffroadHatchback,
+// Offroad_02, Truck_01_Base, ExpansionHelicopterScript,
+// ExpansionVehicleHelicopterBase).
 //
-//   CarScript/BoatScript (generic fallback), CivilianSedan, Hatchback_02,
-//   Sedan_02, OffroadHatchback, Offroad_02, Truck_01_Base,
-//   ExpansionHelicopterScript, ExpansionVehicleHelicopterBase
-//
-// The mod's own Steam page confirms `type` "can be a base class" (i.e. it
-// walks the inheritance chain, not just exact-match), so every custom
-// vehicle here likely already gets *some* fallback via CarScript/
-// Offroad_02/Truck_01_Base. But the mod's own comments section has a live
-// user report of base-class diesel matching not applying reliably (see
-// TODO.md's compatibility/risk section), so this adds explicit exact-match
-// entries for our confirmed custom vehicle classnames as a safety net -
-// never wrong, and removes any dependency on that inheritance-matching
-// working correctly.
+// The mod's `type` field can match a base class via inheritance, but a live
+// user report found base-class diesel matching doesn't always apply
+// reliably - so this adds explicit exact-match entries for our custom
+// vehicle classnames as a safety net.
 //
 // Consumption/fuel-type values are not invented: each custom vehicle reuses
-// the exact numbers already shipped for its closest vanilla counterpart
+// the numbers already shipped for its closest vanilla counterpart
 // (UAZ-31514 -> OffroadHatchback, MBM trucks -> Truck_01_Base, MoreCars
 // reskins -> whichever vanilla body they're a texture variant of).
 //
@@ -101,9 +94,8 @@ const MORE_CARS: VehicleFuel[] = [
 ];
 
 // TP-Apoc-SUV/M1025/Pickup - closest vanilla counterpart is Offroad_02
-// (DIESEL, 1.24 - reused verbatim from vehicles.xml), confirmed by
-// TP-Apoc-M1025's own shipped trader JSON fragment listing
-// "Offroad_02_Wheel" as its spare wheel part (see modTypes.ts's comment).
+// (DIESEL, 1.24, reused verbatim from vehicles.xml). TP-Apoc-M1025's own
+// shipped trader JSON lists "Offroad_02_Wheel" as its spare wheel part.
 const TP_APOC_SUV: VehicleFuel[] = [
   "TP_Apoc_Suv",
   "TP_Apoc_Black_Suv",

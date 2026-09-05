@@ -1,13 +1,9 @@
-// Builds one of this project's server packs (see paths.ts's ServerPackConfig
-// - SERVERPACK for the client+server pack, SERVERPACK_SERVERONLY for the
-// server-only one) - each a single Workshop mod bundling every custom addon
-// under its own addons/ folder - into signed, publish-ready PBOs.
-// Packing/rapifying uses armake2, a Linux-native reimplementation of
-// Bohemia's AddonBuilder. Signing uses the *real* `DSSignFile.exe` (DayZ
-// Tools, via Wine - see modSign.ts) - BiSignUtils (a reimplementation) was
-// tried first and produces `.bisign` files that pass its own `checkAll` but
-// that the real DayZ engine rejects at connect-time as "not part of the
-// server". See modSign.ts's header for the full story.
+// Builds this project's server pack (see paths.ts's ServerPackConfig /
+// SERVERPACK) - a single Workshop mod bundling every custom addon under its
+// addons/ folder - into signed, publish-ready PBOs. Packing/rapifying uses
+// armake2, a Linux-native reimplementation of Bohemia's AddonBuilder.
+// Signing uses the *real* `DSSignFile.exe` (DayZ Tools, via Wine - see
+// modSign.ts) - see modSign.ts's header for why.
 //
 // One quirk worth knowing if this ever needs touching again: the `.bisign`
 // filename's key-name suffix must match the exact original case of the
@@ -52,18 +48,10 @@ function keyPaths(pack: ServerPackConfig): { priv: string; pub: string } {
 }
 
 /**
- * Signing key length in bits. A real, working Workshop mod's `.bisign`
- * (bvp_charcoal.pbo.bloodshot.bisign, from @Search-For-Charcoal) was hex-
- * dumped and its embedded RSA key length is 1024 bits (`0004 0000` right
- * after the "RSA1" magic) - not 2048. DayZ's connect-time PBO signature
- * verification appears to only recognize 1024-bit keys; a cryptographically
- * valid 2048-bit signature (confirmed valid via `bisignutils checkAll`)
- * still gets silently treated as an unrecognized/foreign PBO, producing the
- * exact same generic "Client has a PBO which is not part of the server"
- * kick reproduced throughout this project's debugging history - with no
- * hint it's actually a key-length problem. Keep this at 1024 to match real
- * mods; BiSignUtils (github.com/rvost/BiSignUtils) is still used instead of
- * armake2's own signer for other reasons (see the file header comment).
+ * Signing key length in bits. DayZ's connect-time PBO signature verification
+ * appears to only recognize 1024-bit keys - a cryptographically valid
+ * 2048-bit signature still gets silently treated as an unrecognized PBO.
+ * Keep this at 1024 to match real mods.
  */
 const KEY_LENGTH_BITS = 1024;
 
@@ -117,22 +105,15 @@ export async function buildServerPack(pack: ServerPackConfig = SERVERPACK): Prom
   await ensurePackKeys(pack);
   const { priv, pub } = keyPaths(pack);
 
-  // Lowercase "addons"/"keys" - matches every real, working mod we've
-  // unpacked to check (@AI-Bandits, @Dynamic-Scavenging, @Terje-Skills all
-  // use lowercase folder names here, never "Addons"/"Keys"). Our own
-  // install.ts is case-insensitive when it copies bikeys server-side
-  // (findKeyDir matches /^keys?$/i), so this specific mismatch was
-  // invisible on the server, but the actual DayZ client downloads this
-  // Workshop item's raw folder structure as-is (no such normalization) -
-  // matching real-world convention removes this as a possible cause of the
-  // persistent "Client has a PBO which is not part of the server" kick.
+  // Lowercase "addons"/"keys" to match real-world mod convention (our own
+  // install.ts is case-insensitive server-side, but the DayZ client
+  // downloads the raw Workshop folder structure as-is).
   const outRoot = `${pack.buildDir}/@${pack.name}`;
   const addonsOut = `${outRoot}/addons`;
   const keysOut = `${outRoot}/keys`;
   // Wipe any previous build first - otherwise an addon removed from the
   // pack's addons/ (or renamed) leaves its old .pbo/.bisign orphaned here
-  // forever, silently getting bundled into every future build/publish even
-  // though its source is gone.
+  // forever, silently getting bundled into every future build/publish.
   await Deno.remove(outRoot, { recursive: true }).catch(() => {});
   await Deno.mkdir(addonsOut, { recursive: true });
   await Deno.mkdir(keysOut, { recursive: true });
@@ -141,18 +122,10 @@ export async function buildServerPack(pack: ServerPackConfig = SERVERPACK): Prom
     const pboTarget = `${addonsOut}/${addon.name}.pbo`;
     log(`Building ${addon.name}.pbo from ${addon.srcDir}`);
     // A real, Workshop-published DayZ addon's PBO header extension always
-    // includes `product=dayz ugc` (confirmed by unpacking a genuine working
-    // mod, @Search-For-Charcoal's bvp_charcoal.pbo, and comparing its raw
-    // header bytes against ours: it has `product\0dayz ugc\0prefix\0...`,
-    // while armake2's own build output only ever writes `prefix` - never
-    // `product`). Its absence is what the client-side error
-    // `#STR_ve_unexpected_source` ("Client has a PBO which is not part of
-    // the server") was actually about: the DayZ engine's connect-time addon
-    // check treats a PBO lacking this marker as not being genuine DayZ UGC
-    // content, regardless of correct signing/CfgPatches/script content -
-    // this persisted through 8 previous, independently-verified-correct
-    // fixes (signing keys, case, namespace, etc.) because none of them
-    // touched this header property.
+    // includes `product=dayz ugc`, which armake2's own build output
+    // otherwise omits. Its absence makes the DayZ engine's connect-time
+    // addon check treat the PBO as not genuine DayZ UGC content, regardless
+    // of correct signing/CfgPatches/script content.
     const buildCode = await runInherit("armake2", [
       "build",
       "-f",
@@ -165,8 +138,7 @@ export async function buildServerPack(pack: ServerPackConfig = SERVERPACK): Prom
       die(`armake2 build failed for addon '${addon.name}' - see output above.`);
     }
     // The real DSSignFile.exe writes its `.bisign` output directly next to
-    // the target PBO path - no cwd trick needed (unlike BiSignUtils, which
-    // wrote next to its *current working directory* instead).
+    // the target PBO path - no cwd trick needed.
     await signPboReal(priv, pboTarget);
     if (!(await exists(`${pboTarget}.${pack.name}.bisign`))) {
       die(`Signing failed for addon '${addon.name}' - see output above.`);
@@ -186,32 +158,18 @@ export async function buildServerPack(pack: ServerPackConfig = SERVERPACK): Prom
 
 /**
  * A `meta.cpp` in the mod's own root folder, declaring its Workshop
- * `publishedid`. Without this, DayZ/Steam can't tie the on-disk folder back
- * to the Workshop item it came from - the server can't correctly advertise
- * this mod's real id to the master server / joining clients, which shows up
- * to players as "invalid mods that are not recognized by Steam" even though
- * the item itself is public and downloads fine. Steam writes this file
- * automatically when a mod is subscribed/downloaded through its own
- * workshop machinery, but we bypass that entirely by uploading via
- * `steamcmd +workshop_build_item` (see modPublish.ts), so we have to write
- * it ourselves - matching the exact schema Steam itself uses (verified
- * against a real downloaded mod's meta.cpp: `protocol`, `publishedid`,
- * `name`, `timestamp`, CRLF line endings). `timestamp` here isn't wall-clock
- * time - it's the depot's manifest id (`hcontent_file` from the Workshop
- * API), the same value already used elsewhere in this project
- * (see mods.ts's fetchContentIds / staleModIds) to detect content changes.
- * Skipped (with a warning) before the very first publish, when no id has
- * been assigned yet - `publishServerPack` rebuilds and re-uploads once more
- * right after a first publish specifically so this file gets embedded with
- * the now-known id.
+ * `publishedid`. Without this, the server can't correctly advertise this
+ * mod's real id to the master server / clients. Steam writes this file
+ * automatically for mods installed through its own workshop machinery, but
+ * we upload via `steamcmd +workshop_build_item` instead, so we write it
+ * ourselves, matching Steam's own schema. `timestamp` is the depot's
+ * manifest id (`hcontent_file` from the Workshop API, see mods.ts's
+ * fetchContentIds), not wall-clock time. Skipped (with a warning) before
+ * the very first publish, when no id has been assigned yet -
+ * `publishServerPack` rebuilds and re-uploads once more right after a first
+ * publish specifically so this file gets embedded with the now-known id.
  */
 async function writeMeta(outRoot: string, pack: ServerPackConfig): Promise<void> {
-  // Local-only packs (see paths.ts's ServerPackConfig.localOnly) are never
-  // published to Steam Workshop at all, so they never have a real
-  // publishedid - meta.cpp is simply skipped, silently, every build (not a
-  // one-time "before the first publish" warning, since there will never be
-  // one).
-  if (pack.localOnly) return;
   if (!(await exists(pack.workshopIdFile))) {
     warn(
       `No cached Workshop id yet (${pack.workshopIdFile} not found) - building without ` +
@@ -221,7 +179,7 @@ async function writeMeta(outRoot: string, pack: ServerPackConfig): Promise<void>
   }
   const id = (await Deno.readTextFile(pack.workshopIdFile)).trim();
 
-  const contentIds = await fetchContentIds([{ id, name: pack.name, serverOnly: pack.serverOnly }]);
+  const contentIds = await fetchContentIds([{ id, name: pack.name, serverOnly: false }]);
   const timestamp = contentIds.get(id);
   if (!timestamp) {
     warn(

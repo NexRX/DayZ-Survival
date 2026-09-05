@@ -1,38 +1,23 @@
 // Wires UAZ-31514, the MBM trucks, and MoreCars' body variants into the
-// actual live world - until now they were typed (nominal=0, admin/trader-
-// spawnable) but never placed anywhere (see TODO.md's old item 1).
+// live world by adding each as an extra <child> of the closest matching
+// vanilla vehicle event in db/events.xml, reusing that event's existing
+// <pos> list in cfgeventspawns.xml untouched. This mirrors how vanilla
+// already lists multiple colour variants under one event. The "closest
+// counterpart" mapping matches the one fuelSystem.ts uses.
 //
-// Rather than hand-picking ~165 brand new Chernarus coordinates blind (the
-// original reason this was deferred - none of these mods ship a ready-made
-// spawn-position example to copy, unlike AI-Bandits/DayZ-Dog/etc.), this
-// adds each new vehicle as an extra <child> of the closest matching
-// *existing* vanilla vehicle event in db/events.xml, reusing that event's
-// own already-shipped, already-safe, already-on-road <pos> list in
-// cfgeventspawns.xml untouched. This mirrors how vanilla itself already
-// lists multiple colour variants under one event (e.g. Hatchback_02/
-// Hatchback_02_Black/Hatchback_02_Blue all under VehicleHatchback02), and
-// the "closest counterpart" mapping itself is not a new guess - it's the
-// same one fuelSystem.ts already uses (UAZ-31514 -> OffroadHatchback, MBM
-// trucks -> Truck_01_Base, each MoreCars reskin -> whichever vanilla body
-// it's a texture variant of).
-//
-// No cfgeventspawns.xml changes needed at all. db/events.xml gains new
-// <child> lines plus a modest one-time bump to that event's own
-// nominal/min/max (sized to the number of new variants added, via the
-// nominalPerVariant/minPerVariant/maxPerVariant fields below) so the added
-// variety doesn't just cannibalize the existing vanilla population's spawn
-// budget - kept deliberately small per this project's hardcore-scarcity
-// design (see economy.ts), not a 1:1 population increase per new variant.
+// Each event also gets a modest bump to its own nominal/min/max (via the
+// nominalPerVariant/minPerVariant/maxPerVariant fields below), kept small
+// per this project's hardcore-scarcity design (see economy.ts) rather than
+// a 1:1 population increase per new variant.
 //
 // Additive merge only, same rule as modTypes.ts/moreCars.ts: a
 // <child type="..."/> already present is never touched or duplicated. Each
-// event gets its own marker (not one file-wide marker like economy.ts uses)
-// so adding one of these vehicle mods later, without the others, still
-// gets wired up correctly on a later start.
+// event gets its own marker so adding one of these vehicle mods later,
+// without the others, still gets wired up correctly on a later start.
 //
-// MoreCars' spare parts (doors/hoods/trunks) are deliberately excluded here
-// - they're loot items, not full vehicles, and already spawn via their own
-// category="lootdispatch"/usage="Industrial" typing (see moreCars.ts).
+// MoreCars' spare parts (doors/hoods/trunks) are excluded here - they're
+// loot items, not full vehicles, and already spawn via their own
+// category="lootdispatch" typing (see moreCars.ts).
 
 import { ECONOMY_EVENTS_FILE } from "./paths.ts";
 import { log, ok } from "./ui.ts";
@@ -114,14 +99,11 @@ const MORECARS_GUNTER2 = [
 
 const MORECARS_SARKA_120 = ["Sedan_02_Medic01", "Sedan_02_peacebird"];
 
-// TP-Apoc-SUV/Pickup - confirmed closest counterpart is Offroad_02 (see
-// modTypes.ts's comment: TP-Apoc-M1025's own shipped trader JSON lists
-// "Offroad_02_Wheel" as its spare wheel part). TP-Apoc-M1025 (armed
-// Humvee) is deliberately EXCLUDED from world spawn - it's priced as a
-// Legendary-tier trader item (src/data/marketGapFill.json) specifically so
-// it stays hard to get; spawning it for free in the wild on a civilian
-// vanilla event would undercut that scarcity by design, and there's no
-// close *military* vanilla vehicle event to attach it to instead.
+// TP-Apoc-SUV/Pickup - closest counterpart is Offroad_02 (TP-Apoc-M1025's
+// own trader JSON lists "Offroad_02_Wheel" as its spare wheel part).
+// TP-Apoc-M1025 (armed Humvee) is excluded from world spawn - it's a
+// Legendary-tier trader item (src/data/marketGapFill.json) and there's no
+// close military vanilla vehicle event to attach it to instead.
 const TP_APOC_SUV = [
   "TP_Apoc_Suv",
   "TP_Apoc_Black_Suv",

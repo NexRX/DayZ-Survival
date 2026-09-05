@@ -1,23 +1,17 @@
-// Turns on the one real danger zone Terje-Radiation ships out of the box,
-// per TODO.md item 3.
+// Turns on the one real danger zone Terje-Radiation ships out of the box.
 //
 // Terje-Radiation self-generates ScriptableAreasSpawner.xml on first world
 // load with exactly one example `TerjeRadioactiveScriptableArea` (a
 // radiation zone that contaminates items/vehicles/zombies/animals/players
 // within it - see profiles/TerjeSettings/ScriptableAreas/README.md), shipped
-// with `Active=0` (confirmed on a live install) - so out of the box it does
-// literally nothing. This turns it on, trusting the mod author's own
-// example position/radius/power rather than guessing new Chernarus
-// coordinates blindly (this project's own discipline: verify before
-// deploying, and there's no way to confirm a hand-picked coordinate is on
-// dry land / sensibly placed without a live server + map check) - see
-// TESTS.md for the live placement-sanity check this still needs.
+// with `Active=0` - so out of the box it does nothing. This turns it on,
+// trusting the mod author's own example position/radius/power rather than
+// guessing new Chernarus coordinates blindly.
 //
-// CJ187-RandomMineFields' own RandomMineFields.json (profiles/
-// CJ_RandomMineFields/) ships two real, already-populated minefield/
-// claymore-field entries with no separate on/off switch in its schema -
-// they're live by default, so nothing to change there; this only covers
-// Terje-Radiation's zone.
+// CJ187-RandomMineFields' own RandomMineFields.json ships two real,
+// already-populated minefield/claymore-field entries with no separate
+// on/off switch in its schema - they're live by default, so nothing to
+// change there; this only covers Terje-Radiation's zone.
 
 import { TERJE_SCRIPTABLE_AREAS } from "./paths.ts";
 import { log, ok } from "./ui.ts";

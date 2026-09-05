@@ -53,10 +53,9 @@ export async function doSyncEditor(): Promise<void> {
   ok(`Synced ${saves.name} (saved ${saves.mtime.toLocaleString()}) -> ${dest}`);
   hint("Restart the server for @DayZ-Editor-Loader to pick up the change.");
 
-  // Warn if there are other .dze files sitting in EditorFiles/ that could
-  // also get loaded (Editor-Loader loads every .dze it finds there, not just
-  // the newest one) - stale saves left behind by earlier syncs would
-  // duplicate/conflict with the current build.
+  // Warn about other .dze files in EditorFiles/ - Editor-Loader loads every
+  // .dze it finds there, not just the newest one, so stale saves could
+  // conflict with the current build.
   const stale: string[] = [];
   for await (const entry of Deno.readDir(EDITOR_FILES_DIR)) {
     if (entry.isFile && entry.name.toLowerCase().endsWith(".dze") && entry.name !== saves.name) {

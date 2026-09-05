@@ -13,8 +13,6 @@ ai/cache/
 # --- Custom mod build output & signing keys (see src/modBuild.ts) ---
 .serverpack-build/
 .serverpack-keys/
-.serverpack-serveronly-build/
-.serverpack-serveronly-keys/
 
 # --- Real DayZ Tools (via Wine) - see src/modSign.ts ---
 daytools/

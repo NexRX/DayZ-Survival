@@ -5,8 +5,7 @@
 // via admin tools/trader/crafting.
 //
 // Additive merge only, same rule as ai.ts/dynamicMissions.ts: a <type>
-// already present in the mission's types.xml (by name) — whether it came
-// from vanilla, another mod, or an admin's own tuning — is never touched or
+// already present in the mission's types.xml (by name) is never touched or
 // duplicated. Safe to run on every start.
 //
 // Like economy.ts, this deliberately avoids a full XML parser/serializer:
@@ -18,48 +17,19 @@ import { log, ok } from "./ui.ts";
 import { exists } from "./steam.ts";
 import type { Mod } from "./mods.ts";
 
-// Mods confirmed (either from a real install under server/@ModName, or from
-// their own Steam Workshop pages when not yet installed) to ship a reference
-// economy types file somewhere in their mod folder for admins to merge in by
-// hand. Keyed by the @name used in mods.txt. NCPR is deliberately excluded -
-// its types are published separately on GitHub (https://github.com/N3msi/NCPR)
-// rather than shipped in the workshop download, so there's no local file to
-// discover here; see ncpr.ts instead, which fetches and merges them directly.
+// Mods confirmed to ship a reference economy types file somewhere in their
+// mod folder for admins to merge in by hand. Keyed by the @name used in
+// mods.txt. NCPR is deliberately excluded - its types are published
+// separately on GitHub rather than shipped in the workshop download, so
+// there's no local file to discover here; see ncpr.ts instead, which
+// fetches and merges them directly.
 //
-// Verified against a real install (2026-08, see TODO.md): most of these
-// mods do NOT literally name their file "types.xml" - e.g. Old-Food ships
-// types_chernarus.xml, Nail-Gun ships types/bvp_nailgun_types.xml, and both
-// MBM vehicle mods ship extra/<name>_types.xml. findEconomyTypesFiles()
-// below scans every *.xml file under the mod folder and only merges ones
-// whose root element is literally <types> (not <spawnabletypes>, <events>,
-// etc.), so any filename works and non-economy XML is never touched - this
-// is what actually makes Old-Food/Nail-Gun/the MBM trucks work, since the
-// old exact-filename-only scan found nothing for any of them.
-//
-// The two CJ187 money mods and Buddys-BoltZ are kept in the list on a
-// speculative basis (their Steam pages hint at a bundled example file but
-// don't confirm one) - harmless either way, since the scan below is a no-op
-// if a mod ships nothing matching. DayZ-Horse ships a real root types.xml
-// (Saddle/Bridle/HorseBags/HorseSteakMeat/HorsePelt/Stable_dayz(_kit)) -
-// confirmed on a live install; the Animal_Horse_* creature types it does
-// NOT ship are instead added by wildlifeTerritories.ts, matching the exact
-// boilerplate every other vanilla Animal_* creature type already uses.
-// @BMM-Chemical-Zombie ships a root extra/types.xml with 3 skinning-
-// byproduct entries (BMM_ChimicalZombie_Head/Hand/Foot) - confirmed on a
-// live install; the creature classname itself (BMM_Chimical_Zombies) is NOT
-// in that file and is instead wired up by bmmChemicalZombie.ts, matching
-// the yuretskiy.ts pattern.
-// @TP-Apoc-SUV/@TP-Apoc-M1025/@TP-Apoc-Pickup each ship a real root
-// extras/*_types.xml (nominal=0 stubs for the vehicle body + every color
-// variant) - confirmed on a live install. Their own shipped Expansion-
-// trader JSON fragment (tp_apoc_m1025.json) confirms "Offroad_02_Wheel" as
-// the spare wheel part, i.e. Offroad_02 is the intended closest vanilla
-// counterpart - see vehicleSpawns.ts/fuelSystem.ts. @AnimatedDynamic
-// Helicopters ships a root extras/adh_types.xml, but it only contains smoke-
-// grenade/flare ammo types (Ammo_40mm_Smoke_AirStrike, M18SmokeGrenade_*) -
-// confirmed it adds crash/flight scripting to DayZ-Expansion's EXISTING
-// helicopter classnames rather than shipping any new vehicle of its own, so
-// no separate market/vehicle-trader wiring is needed for it.
+// Most of these mods do NOT literally name their file "types.xml" (e.g.
+// Old-Food ships types_chernarus.xml, Nail-Gun ships
+// types/bvp_nailgun_types.xml). findEconomyTypesFiles() below scans every
+// *.xml file under the mod folder and only merges ones whose root element
+// is literally <types> (not <spawnabletypes>, <events>, etc.), so any
+// filename works and non-economy XML is never touched.
 const MOD_TYPES_SOURCES = new Set([
   "@Windstride-Clothing",
   "@DayZ-Dog",
@@ -95,10 +65,8 @@ const TYPE_BLOCK = /<type name="([^"]+)">[\s\S]*?<\/type>/g;
 // Matches an economy types file's root element (optionally preceded by an
 // XML declaration and/or comments), e.g. `<?xml ...?>` then `<types>`.
 // Deliberately anchored so a *.xml file whose root is <spawnabletypes>
-// (item-in-crate spawn tables, a different schema some mods ship alongside
-// their real types file - e.g. Alevarics-Clothing-Overhaul's own
-// alv_spawnabletypes.xml) is never mistaken for one, even though both use
-// <type name="..."> blocks internally.
+// (a different schema some mods ship alongside their real types file) is
+// never mistaken for one, even though both use <type name="..."> blocks.
 const TYPES_ROOT = /^\uFEFF?\s*(<\?xml[^>]*\?>\s*)?(<!--[\s\S]*?-->\s*)*<types[\s>]/;
 
 /** Recursively find every *.xml file under `dir` whose root element is `<types>`. */
@@ -174,20 +142,14 @@ export async function ensureModTypesMerged(mods: Mod[]): Promise<void> {
 }
 
 // One-time cleanup for a mod that was REMOVED from this project entirely.
-// @Custom-Keycards' own reference types.xml was merged in (additively, by
-// ensureModTypesMerged() above) on every server that ever had it installed -
+// @Custom-Keycards' own reference types.xml was merged in additively by
+// ensureModTypesMerged() above on every server that ever had it installed -
 // that merge never removes anything, so once the mod was dropped from
-// mods.txt (2026-09, replaced by @KeyCard-Rooms-Better - see mods.txt/
-// serverpack/README.md for the full history) its 17 <type> blocks would
-// otherwise persist forever in db/types.xml as orphaned dead weight: still
-// spawnable in loot, but with zero trader wiring after its price/rarity/
-// buy-sell code was removed from marketGapFill.ts/traders.ts/economy.ts -
-// confirmed via `deno task audit-market` surfacing exactly these 17
-// classnames as a fresh "Bucket A" gap the moment that wiring was removed.
-// A brand-new install never hits this (types.xml ships vanilla, and
-// ensureModTypesMerged() only ever merges currently-installed mods) - this
-// only matters for an existing server that already ran the mod at least
-// once. Safe to run on every start: a no-op once the entries are gone.
+// mods.txt its <type> blocks would otherwise persist forever in
+// db/types.xml as orphaned dead weight. A brand-new install never hits
+// this - it only matters for an existing server that already ran the mod
+// at least once. Safe to run on every start: a no-op once the entries are
+// gone.
 const REMOVED_CUSTOM_KEYCARDS_TYPES = [
   "evg_keycard_holder_camo",
   "evg_keycard_holder_leather",
@@ -229,15 +191,11 @@ export async function ensureCustomKeycardsTypesRemoved(): Promise<void> {
   );
 }
 
-// @KeyCard-Rooms-Better was dropped entirely (2026-09, project owner
-// decided the mod's own screenshots/name promised actual "rooms" but every
-// one of its PBOs was inspected and confirmed to ship nothing but 3 door
-// models + a crate + a keycard - no room/bunker asset ever existed) -
-// same orphaned-<type>-block cleanup as REMOVED_CUSTOM_KEYCARDS_TYPES
-// above. Only _01/_02/_03 were ever additively merged into db/types.xml
-// by ensureKeyCardRoomsTypesMerged() (now removed) - _04 was deliberately
-// never included there (the mod's own natural-loot types.xml didn't spawn
-// it either), so there's nothing to clean up for it.
+// @KeyCard-Rooms-Better was dropped entirely from this project - same
+// orphaned-<type>-block cleanup as REMOVED_CUSTOM_KEYCARDS_TYPES above.
+// Only _01/_02/_03 were ever additively merged into db/types.xml (by a
+// now-removed helper) - _04 was deliberately never included there, so
+// there's nothing to clean up for it.
 const REMOVED_KEYCARD_ROOMS_TYPES = [
   "RedemptionKeyCard_01",
   "RedemptionKeyCard_02",

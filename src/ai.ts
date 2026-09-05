@@ -2,8 +2,8 @@
 //
 // Expansion reads per-mission AI patrol config from
 // `<mission>/expansion/settings/AIPatrolSettings.json` (NOT the server
-// profile), and generates this file itself — with a solid default set of
-// town patrols plus genuine ROAMING/ROAMING_LOCAL bandits — the first time
+// profile), and generates this file itself - with a solid default set of
+// town patrols plus genuine ROAMING/ROAMING_LOCAL bandits - the first time
 // the mission loads.
 //
 // Rather than overwrite that (which would *downgrade* a good default), we
@@ -14,17 +14,12 @@
 //
 // One exception to "never touch an already-merged patrol": a curated
 // patrol's `LoadBalancingCategory` is re-synced against the template on
-// every run (only that one field, only for patrols we ourselves added by
-// name) - this is what lets e.g. TODO.md item 11's NWAF split into its own
-// `MilitaryPatrols` pool actually take effect on a server that already
-// merged `Roaming_Bandits_NWAF` under the old `RoamingBandits` category in
-// an earlier run, without needing an admin to hand-edit the live JSON or
-// wipe/regenerate it. Same idea for a category's own `MaxPatrols` density
-// thresholds: raising them in the template (e.g. to make military areas
-// feel more heavily patrolled) is re-synced - raised, never lowered, in
-// case an admin tuned one even higher themselves by hand - on every run
-// too, since `LoadBalancingCategories` below is otherwise only merged
-// wholesale for a category that doesn't exist yet at all.
+// every run (only that field, only for patrols we ourselves added by name)
+// - this lets a patrol's category be changed later (e.g. splitting NWAF
+// into its own `MilitaryPatrols` pool) actually take effect on a server
+// that already merged it under an old category in an earlier run. Same
+// idea for a category's own `MaxPatrols` threshold: raised, never lowered,
+// in case an admin tuned one even higher by hand.
 
 import { AI_PATROL_SETTINGS, AI_TEMPLATE_DIR } from "./paths.ts";
 import { log, ok } from "./ui.ts";

@@ -1,27 +1,15 @@
 // TGK-WeaponPack (@TGK-WeaponPack, aka "SOBR"/"SM_" weapon pack) adds ~280
 // Russian-special-forces-themed weapons/attachments/melee items.
 //
-// The mod ships classnames/cfgspawnabletypes.xml, but that file's root
-// element is <spawnabletypes> (per-weapon attachment-chance data), NOT
-// <types> - src/modTypes.ts's generic merger only matches a real <types>
-// root (see its own TYPES_ROOT regex/comment), so it correctly skips this
-// file and nothing here gets auto-merged. There is no other types.xml
-// shipped by this mod, so every classname below is authored from scratch.
-// Full categorized list confirmed via the mod's own
-// classnames/item_classnames.txt (280 real classnames across 16 categories).
+// The mod ships a cfgspawnabletypes.xml (root <spawnabletypes>, not
+// <types>), so src/modTypes.ts's generic merger correctly skips it - there's
+// no types.xml shipped, so every classname below is authored from scratch.
 //
-// Per TODO.md's own note ("mostly but not all high-end weapons wanted...
-// gate the weapons you don't want freely available behind steep trader
-// pricing/near-zero stock, the same approach already used for m107-class
-// rifles and keycards") this follows the exact same nominal=0,
-// trader-only-stub pattern already established for @Optics (see
-// src/optics.ts) rather than trying to hand-tune ~280 individual
-// nominal/min/lifetime values for a mod this large: nothing here ever
-// spawns naturally in the world, everything is earned exclusively via the
-// trader's stock/restock system, with rarity controlled entirely by
+// Follows the same nominal=0, trader-only-stub pattern as @Optics (see
+// src/optics.ts): nothing here spawns naturally, everything is earned via
+// the trader's stock/restock system, with rarity controlled by
 // src/data/marketGapFill.json's tier assignment (see market.ts's
-// TIER_MAX_STOCK) - the single lever this project already uses everywhere
-// else for "hard to get, not physically absent".
+// TIER_MAX_STOCK).
 //
 // Additive merge only, same rule as modTypes.ts/moreCars.ts/optics.ts: a
 // <type name="..."> already present is never touched or duplicated.
@@ -73,12 +61,9 @@ export const AMMUNITION_BOXES = [
   "SM_AmmoBox_762x51_Ultra_Nosler",
 ];
 
-// SM_Ammo_Empty_Crate is "purely for beauty" per the mod's own
-// classnames.txt comment (spawned automatically when a full crate is
-// opened) - included here so it's typed (never left as an undefined
-// classname), but excluded from the market manifest, same treatment as
-// any other cosmetic byproduct in this project (e.g. BMM's skinning
-// byproducts - see bmmChemicalZombie.ts).
+// SM_Ammo_Empty_Crate spawns automatically when a full crate is opened;
+// included so it's typed, but excluded from the market manifest (same
+// treatment as other cosmetic byproducts, e.g. bmmChemicalZombie.ts).
 export const AMMUNITION_CRATES = [
   "SM_Ammo_Empty_Crate",
   "SM_AmmoCrate_338_LM_AP",

@@ -48,11 +48,9 @@ class DZSurvivalTraderFireplace
 
 	// Must match src/foreverBurningCampfire.ts's FIRE_BARREL_OFFSET (added
 	// to that file's own copy of CUSTOM_POSITION) exactly - duplicated here
-	// for the same reason as DZSurvivalTraderRestock_Module.c's
-	// CUSTOM_TRADER_POSITION comment: this addon is a separate build
-	// artifact with no shared config with the TypeScript CLI. PLACEHOLDER -
-	// not yet visually confirmed against the real built town, see TESTS.md;
-	// update both this and that file's offset together if it needs to move.
+	// since this addon is a separate build artifact with no shared config
+	// with the TypeScript CLI. Update both this and that file's offset
+	// together if the trader town position ever moves.
 	protected static const vector FIRE_POSITION = "7987.59 221.09 11314.5";
 
 	protected static ref DZSurvivalTraderFireplaceState s_State;

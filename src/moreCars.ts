@@ -1,32 +1,22 @@
 // MoreCars (@MoreCars) ships no classname reference file or types.xml of
-// its own (only a compiled .pbo) - real classnames come straight from the
-// mod author's own pinned Steam Discussions thread on the mod's Workshop
-// page (id 1931069341, ".XML Files / Trader / Classnames"), never guessed.
-// See TODO.md for that source.
+// its own (only a compiled .pbo) - classnames come from the mod author's
+// pinned Steam Discussions thread (Workshop id 1931069341, ".XML Files /
+// Trader / Classnames").
 //
-// Every reskin is a texture variant of a vanilla vehicle body
-// (Ada 4x4 -> OffroadHatchback, Gunter2 -> Hatchback_02, Sarka 120 ->
-// Sedan_02), and every door/hood/trunk spare part follows the exact same
-// part-naming convention vanilla already uses for those bodies (confirmed
-// by direct comparison against db/types.xml, e.g. HatchbackDoors_Driver_*,
-// Hatchback_02_Door_1_1_*, Sedan_02_Door_1_1_*). So the <type> blocks below
-// reuse vanilla's own templates verbatim (body: nominal 0/lifetime 3/
-// restock 1800/no category; part: nominal 0/lifetime 28800/restock 0/
-// category=lootdispatch/usage=Industrial) rather than guessing values.
+// Every reskin is a texture variant of a vanilla vehicle body (Ada 4x4 ->
+// OffroadHatchback, Gunter2 -> Hatchback_02, Sarka 120 -> Sedan_02), so the
+// <type> blocks below reuse vanilla's own templates (body: nominal 0/
+// lifetime 3/restock 1800/no category; part: nominal 0/lifetime 28800/
+// restock 0/category=lootdispatch/usage=Industrial).
 //
-// Livonia-only variants (OffroadHatchback_lvparamedic, Sedan_02_sk_policja)
-// are deliberately excluded - we run Chernarus. Olga 24
+// Livonia-only variants are excluded - we run Chernarus. Olga 24
 // (CivilianSedan_ChernarusPolice) is excluded entirely - the author's own
-// thread marks it broken/WIP (texture bug), never fixed.
+// thread marks it broken/WIP.
 //
-// Like modTypes.ts/wildlifeTerritories.ts, this is an additive-only merge:
-// a <type> already present (by name) is never touched or duplicated. This
-// intentionally only adds nominal=0 type entries - actual in-world spawning
-// needs new events.xml/cfgeventspawns.xml entries with real map
-// coordinates, which is a world-placement decision tracked separately in
-// TODO.md's world-crafting checklist, matching how UAZ-31514/MBM trucks
-// already work (typed and tradeable, but admin/event-spawn-only until
-// spawn points are chosen).
+// Like modTypes.ts/wildlifeTerritories.ts, this is additive-only: a <type>
+// already present (by name) is never touched or duplicated. This only adds
+// nominal=0 type entries - actual in-world spawning needs events.xml/
+// cfgeventspawns.xml entries with real map coordinates, tracked separately.
 
 import { ECONOMY_TYPES_FILE } from "./paths.ts";
 import { log, ok } from "./ui.ts";
@@ -151,7 +141,7 @@ const ADA_4X4: Variant[] = [
 ];
 
 // Gunter2 (VW Golf 2) - base Hatchback_02. "cat" ships an extra spare hood
-// (Hood_cat2) alongside its own matching Hood_cat - both confirmed, kept.
+// (Hood_cat2) alongside its own matching Hood_cat - both kept.
 const GUNTER2: Variant[] = [
   {
     body: "Hatchback_02_Cab",

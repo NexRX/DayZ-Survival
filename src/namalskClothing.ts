@@ -1,29 +1,19 @@
 // Cherry-picks new-to-us clothing items out of Namalsk-Survival's own
 // hardcore mission economy (server/@Namalsk-Survival/extras/hardcore/
-// hardcore.namalsk/db/types.xml), per TODO.md item 7.
+// hardcore.namalsk/db/types.xml).
 //
-// That file is a *complete* alternate mission economy built for the
-// separate Namalsk map, so it isn't merged wholesale (risks pulling in
+// That file is a *complete* alternate mission economy for the separate
+// Namalsk map, so it isn't merged wholesale (risks pulling in
 // Namalsk-map-only items or environmental-hazard flags) - only genuinely
-// new clothing <type> blocks are lifted out, one at a time, after
-// confirming they don't already exist in our own db/types.xml.
+// new clothing <type> blocks are lifted out, after confirming they don't
+// already exist in our own db/types.xml. Of ~500 clothing types Namalsk
+// ships, only the 12 below aren't already vanilla DayZ items.
 //
-// Cross-checked (2026, see TODO.md) by diffing every <type> with
-// <category name="clothes"/> in Namalsk's file against ours: of ~500
-// clothing types Namalsk ships, all but 12 are already vanilla DayZ items
-// (recent DayZ updates added the Gorka/Ghillie/ManSuit/WomanSuit/TrackSuit
-// sets to base-game Chernarus - they were NOT Namalsk exclusives after
-// all). The 12 below are the real, new-to-us delta.
-//
-// Namalsk's own file ships every one of these 12 with an empty, name-less
-// `<usage />` tag (no location group at all) - which in vanilla DayZ's CE
-// schema means the item has no spawn point and would never actually appear
-// via normal loot economy, only via crafting/trader/admin. That's almost
-// certainly an artifact of Namalsk's own map using different spawn-flag
-// conventions internally, not an intentional "never spawns" design - so
-// each block below fills in real `<usage>` tags derived from that same
-// item's own `<tag>` hints (already present, unmodified) rather than
-// carrying the likely-broken empty tag forward verbatim.
+// Namalsk ships each of these 12 with an empty `<usage />` tag, which in
+// vanilla DayZ's CE schema means the item would never spawn via normal
+// loot economy. That's an artifact of Namalsk's own spawn-flag
+// conventions, not intentional, so each block below fills in real
+// `<usage>` tags derived from that item's own (unmodified) `<tag>` hints.
 
 import { ECONOMY_TYPES_FILE } from "./paths.ts";
 import { ok } from "./ui.ts";

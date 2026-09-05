@@ -135,8 +135,7 @@ class DZSurvivalTraderRestock
 	// manual reset); RESTOCK_FRACTION_DIVISOR controls what fraction of the
 	// eligible pool gets picked otherwise (1/25 = 4% per hour) - see this
 	// file's header comment for why this is still probabilistic per item,
-	// not an exact schedule. Slowed 2026-08 (was 15/20 = ~5%/hour) as part of
-	// the hardcore-survival economy pass - see serverpack/README.md.
+	// not an exact schedule.
 	protected static const int MIN_RESTOCKS_PER_TICK = 10;
 	protected static const int RESTOCK_FRACTION_DIVISOR = 25;
 	// '/restock now' (see DZSurvivalTraderRestock_COTCommand.c) ignores

@@ -82,12 +82,12 @@ export async function publishServerPack(
   const firstPublish = existingId === "0";
 
   // Captured *before* uploading so the post-upload poll below can detect
-  // when Steam's API actually reflects this specific upload's new manifest,
-  // rather than just checking a `timestamp` field exists (which would also
-  // be true of a stale one left over from the previous publish).
+  // when Steam's API actually reflects this specific upload's manifest,
+  // rather than just checking a `timestamp` field exists (which could also
+  // be a stale one from a previous publish).
   const previousManifest = firstPublish
     ? null
-    : (await fetchContentIds([{ id: existingId, name: pack.name, serverOnly: pack.serverOnly }]))
+    : (await fetchContentIds([{ id: existingId, name: pack.name, serverOnly: false }]))
       .get(existingId) ?? null;
 
   log(`${firstPublish ? "Publishing new" : "Updating"} Workshop item for '${pack.name}'`);
@@ -129,20 +129,11 @@ export async function publishServerPack(
   }
 
   // meta.cpp's `timestamp` field is the Workshop item's manifest id (see
-  // modBuild.ts's writeMeta) - but that's fetched from Steam's Web API
-  // *before* this exact upload happens, so it can only ever reflect the
-  // *previous* manifest, never the one this upload just created (Steam only
-  // assigns the new manifest id during/after the upload itself). Every
-  // publish therefore shipped a meta.cpp one version stale - previously this
-  // rebuild-and-reupload step only ran for the very first publish (to embed
-  // an id that didn't exist yet at all), which meant every subsequent update
-  // kept shipping a stale timestamp. That's the likely real cause of a
-  // long-reproduced client-side kick ("Client has a mod which is not on the
-  // server" / "PBO which is not part of the server") that survived 8
-  // independently-verified content/signing/namespace fixes - none of them
-  // touched this. Steam's API needs a little time to reflect a just-uploaded
-  // manifest, so this polls until it actually changes (not just that a
-  // timestamp field is present, which would also be true of a stale one).
+  // modBuild.ts's writeMeta), but that's fetched from Steam's Web API
+  // *before* this upload happens, so it can only reflect the *previous*
+  // manifest. Rebuild and re-upload once more so it embeds the manifest id
+  // this exact upload just created, polling since Steam's API needs a
+  // little time to reflect a just-uploaded manifest.
   log("Re-uploading once more so meta.cpp's timestamp matches this exact upload…");
   let rebuilt: string | null = null;
   for (let attempt = 1; attempt <= 6; attempt++) {

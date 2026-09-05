@@ -1,17 +1,8 @@
-// Nemsis Craftingpack Redux (NCPR) publishes its item balancing (types.xml
-// and cfgspawnabletypes.xml) on its own GitHub repo instead of bundling
-// them in the workshop download like every other content mod in mods.txt
-// (see modTypes.ts's MOD_TYPES_SOURCES) - there's nothing local to scan
-// for. Rather than leave this as a manual copy-paste chore, this fetches
-// the mod's own reference files straight from that public repo
-// (https://github.com/N3msi/NCPR) and merges them in the same additive,
-// name-deduped way modTypes.ts merges local ones.
-//
-// Network access here is best-effort and never required: every fetched
-// file is cached locally under ai/cache/ so a later run works fully
-// offline, and any failure (offline, GitHub down/rate-limited, repo
-// restructured) just skips this step with a warning instead of blocking
-// install/start.
+// NCPR publishes its types.xml/cfgspawnabletypes.xml balancing on its own
+// GitHub repo (https://github.com/N3msi/NCPR) rather than bundling them in
+// the workshop download, so we fetch and merge them the same way modTypes.ts
+// merges local mod files. Network access is best-effort: fetched files are
+// cached under ai/cache/ and any failure just skips this step with a warning.
 
 import { ECONOMY_TYPES_FILE, MISSION_DIR, ROOT } from "./paths.ts";
 import { log, ok, warn } from "./ui.ts";
@@ -35,8 +26,8 @@ interface NCPRSource {
   closingTag: string;
 }
 
-// The mod's own README describes both files as "for all addons" - i.e.
-// meant to be merged in full regardless of which NCPR module(s) you run.
+// Both files are documented as "for all addons", so merge in full
+// regardless of which NCPR module(s) are installed.
 const SOURCES: NCPRSource[] = [
   {
     url: "https://raw.githubusercontent.com/N3msi/NCPR/main/NM_TYPES.xml",

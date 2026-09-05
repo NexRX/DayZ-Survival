@@ -1,17 +1,13 @@
 // Vehicle3PP (@Vehicle3PP) 3rd-person-camera classname whitelist. The mod
 // self-generates `profiles/3PPVehicleWhitelist.json` with only 5 vanilla car
-// classnames (confirmed on a live server run) - any vehicle classname not in
-// this flat array doesn't get the mod's 3rd-person treatment. Additive
-// merge only, same rule as modTypes.ts: an existing entry (vanilla, another
-// mod, or an admin's own edit) is never removed or duplicated.
+// classnames - any vehicle classname not in this flat array doesn't get the
+// mod's 3rd-person treatment. Additive merge only, same rule as modTypes.ts:
+// an existing entry is never removed or duplicated.
 //
 // The mod's own docs warn an invalid/unknown classname in this file can
 // crash the server, so only classnames pulled directly from a mod's own
-// shipped reference list (never guessed) are added here. Each mod below
-// ships a plain-text classname list in its own folder - keyed by @name used
-// in mods.txt, with only the actual driveable vehicle roots kept (door/
-// wheel/wreck sub-parts from those same lists are deliberately excluded,
-// since they aren't things the camera mod needs to whitelist).
+// shipped reference list are added here (door/wheel/wreck sub-parts are
+// excluded - the camera mod doesn't need those whitelisted).
 
 import { VEHICLE_3PP_WHITELIST } from "./paths.ts";
 import { log, ok } from "./ui.ts";
