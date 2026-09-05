@@ -141,16 +141,15 @@ export async function ensureModTypesMerged(mods: Mod[]): Promise<void> {
   await Deno.writeTextFile(ECONOMY_TYPES_FILE, text);
 }
 
-// One-time cleanup for a mod that was REMOVED from this project entirely.
-// @Custom-Keycards' own reference types.xml was merged in additively by
-// ensureModTypesMerged() above on every server that ever had it installed -
-// that merge never removes anything, so once the mod was dropped from
-// mods.txt its <type> blocks would otherwise persist forever in
-// db/types.xml as orphaned dead weight. A brand-new install never hits
-// this - it only matters for an existing server that already ran the mod
-// at least once. Safe to run on every start: a no-op once the entries are
-// gone.
-const REMOVED_CUSTOM_KEYCARDS_TYPES = [
+// Cleanup for when @Custom-Keycards is NOT installed. Its own item types
+// (see customKeycards.ts, which wires these back in with nominal=0
+// trader-stub entries when the mod IS installed) would otherwise persist
+// forever in db/types.xml as orphaned dead weight once the mod is dropped
+// from mods.txt again - a brand-new install never hits this, it only
+// matters for an existing server that already ran the mod at least once.
+// Safe to run on every start: a no-op once the entries are gone (or while
+// the mod is installed - see the guard in ensureCustomKeycardsTypesRemoved).
+export const CUSTOM_KEYCARDS_ITEM_TYPES = [
   "evg_keycard_holder_camo",
   "evg_keycard_holder_leather",
   "evg_keycards_All",
@@ -170,13 +169,17 @@ const REMOVED_CUSTOM_KEYCARDS_TYPES = [
   "evg_keycards_Yellow",
 ];
 
-export async function ensureCustomKeycardsTypesRemoved(): Promise<void> {
+export async function ensureCustomKeycardsTypesRemoved(mods: Mod[]): Promise<void> {
+  // Mod is currently installed - customKeycards.ts's own wiring owns these
+  // types now, don't fight it.
+  if (mods.some((m) => m.name === "@Custom-Keycards")) return;
+
   // ensureModTypesMerged() already logs the missing-file case.
   if (!(await exists(ECONOMY_TYPES_FILE))) return;
 
   let text = await Deno.readTextFile(ECONOMY_TYPES_FILE);
   let removedCount = 0;
-  for (const name of REMOVED_CUSTOM_KEYCARDS_TYPES) {
+  for (const name of CUSTOM_KEYCARDS_ITEM_TYPES) {
     const re = new RegExp(`\\s*<type name="${name}">[\\s\\S]*?</type>`);
     if (re.test(text)) {
       text = text.replace(re, "");

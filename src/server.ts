@@ -36,6 +36,11 @@ import { ensureNecromutantWired } from "./necromutant.ts";
 import { ensureForeverBurningCampfireWired } from "./foreverBurningCampfire.ts";
 import { ensureOpticsWired } from "./optics.ts";
 import { ensureTgkWeaponPackWired } from "./tgkWeaponPack.ts";
+import {
+  ensureCustomKeycardsLootTables,
+  ensureCustomKeycardsSecuredBuildings,
+  ensureCustomKeycardsTypesWired,
+} from "./customKeycards.ts";
 import { ensureMilitaryMonsterGarrisons } from "./militaryMonsters.ts";
 import { tuneExpansionMarket } from "./market.ts";
 import { ensureMarketGapFill } from "./marketGapFill.ts";
@@ -243,7 +248,7 @@ export async function doStart(s: Settings): Promise<void> {
   await primeModConfigsIfNeeded(args);
 
   await ensureModTypesMerged(allMods);
-  await ensureCustomKeycardsTypesRemoved();
+  await ensureCustomKeycardsTypesRemoved(allMods);
   await ensureKeyCardRoomsTypesRemoved();
   await ensureNamalskClothingMerged(allMods);
   await ensureMoreCarsTypesMerged(allMods);
@@ -257,6 +262,9 @@ export async function doStart(s: Settings): Promise<void> {
   await ensureNecromutantWired(allMods);
   await ensureOpticsWired(allMods);
   await ensureTgkWeaponPackWired(allMods);
+  await ensureCustomKeycardsTypesWired(allMods);
+  await ensureCustomKeycardsLootTables(allMods);
+  await ensureCustomKeycardsSecuredBuildings(allMods);
   await ensureMilitaryMonsterGarrisons(allMods);
   await ensureAIPatrols();
   await ensureAIBanditsDensity();

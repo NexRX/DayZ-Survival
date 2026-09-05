@@ -61,6 +61,15 @@ export const TERJE_SCRIPTABLE_AREAS =
 // load - see noBuildZones.ts.
 export const NO_BUILD_ZONES_SETTINGS = `${PROFILE_DIR}/NoBuildZone.json`;
 
+// Custom-Keycards self-generates this whole folder tree (with working
+// 0_Default*.json examples in each subfolder) on first server start. See
+// customKeycards.ts, which adds our own curated LootTables files alongside
+// the shipped defaults, plus real (in-game-verified) Static_Locations
+// entries retrofitting existing buildings into the Keycard system.
+export const CUSTOM_KEYCARDS_DIR = `${PROFILE_DIR}/CustomKeycards`;
+export const CUSTOM_KEYCARDS_LOOT_TABLES_DIR = `${CUSTOM_KEYCARDS_DIR}/LootTables`;
+export const CUSTOM_KEYCARDS_STATIC_LOCATIONS_DIR = `${CUSTOM_KEYCARDS_DIR}/Static_Locations`;
+
 // Fixed-position event spawn point registry, shipped as part of the mission
 // itself. "Herd"-type animal territories (Wolf/Deer/WildBoar/...) each need
 // a matching self-closing <event name="..." /> stub here even though their

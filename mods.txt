@@ -194,7 +194,15 @@
 2950280649  @DayZ-Rat
 2471347750  @DayZ-Dog
 
-# --- Base building / access control ---
+# --- Base building / access control. Custom Keycards and Code Lock are
+# different mechanics — door codes vs. keycard readers — not a conflict.
+# Custom Keycards previously hung the server at mission/script compile (see
+# the old note further down in this file, kept for history) - retested
+# clean (twice, real boots) after the mod's own 8 Apr update, so it's back.
+# Wired via src/customKeycards.ts (trader-stub item types + curated loot
+# tables); actual Keycard Door/Building placement is NOT done yet - see
+# that file's own header comment for why (needs real in-game coordinates). ---
+2810212624  @Custom-Keycards
 3238690259  @CS-Modular-Cave
 2924580520  @Zens-Repairable-Wells
 3083277274  @Risus-Bases
@@ -267,11 +275,14 @@
 # no config option to disable it for AI specifically. Revisit only if the
 # author ships a fix for AI-triggered corpse conversion.
 
-# NOTE: @Custom-Keycards (2810212624) causes the server to hang indefinitely
-# at mission/script compile when added to this mod list (confirmed by
-# repeated real boots, and a differential test showing the same list boots
-# cleanly without it). Not worth bisecting against the other ~90 mods to
-# find the exact conflicting pair. Revisit only if a future version fixes it.
+# NOTE: @Custom-Keycards (2810212624) previously caused the server to hang
+# indefinitely at mission/script compile when added to this mod list
+# (confirmed by repeated real boots, and a differential test showing the
+# same list booted cleanly without it). RETESTED after the mod's own 8 Apr
+# update: two clean boots in a row, mod's own startup log line present
+# (script.log: "Successfully loaded... location(s)"), no fatal RPT/crash-log
+# pattern. It's back, in the "Base building / access control" section
+# above, wired via src/customKeycards.ts.
 
 # --- This project's own custom content (serverpack/ - a single Workshop
 # mod bundling every addon we write ourselves). Currently: DZSurvivalFindStone,
