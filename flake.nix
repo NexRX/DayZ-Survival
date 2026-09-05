@@ -96,9 +96,15 @@
 
         devShells.default = pkgs.mkShell {
           packages = tools;
-          SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
-          NIX_SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
           shellHook = ''
+            # SSL_CERT_FILE/NIX_SSL_CERT_FILE are on stdenv's impureEnvVars list,
+            # so setting them as plain mkShell attrs gets silently clobbered by
+            # whatever (possibly unset) value the calling shell had. Exporting
+            # them here in shellHook runs after that, so it actually sticks -
+            # needed for steamcmd (and anything else shelling out over TLS) to
+            # find a trusted CA bundle.
+            export SSL_CERT_FILE="${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
+            export NIX_SSL_CERT_FILE="$SSL_CERT_FILE"
             echo "DayZ Survival dev shell — deno + steamcmd + steam-run ready."
             echo "  run:  deno task dayz        (or: deno task up)"
           '';
