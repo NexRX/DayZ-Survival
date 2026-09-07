@@ -151,6 +151,14 @@ export async function downloadOne(
   // Pace logins a bit to help avoid Steam's rate limit.
   await new Promise<void>((resolve) => setTimeout(resolve, 2000));
 
+  // DepotDownloader's `-remember-password` token doesn't reliably persist
+  // across separate process runs on Linux (see the comment on getPassword()
+  // in steam.ts), so when running unattended (no TTY) with STEAM_PASSWORD
+  // set, pass the real password explicitly every time rather than relying
+  // on that token - this avoids DepotDownloader's own native password
+  // prompt (which would otherwise hang/crash with no terminal to answer it).
+  const headlessPassword = !Deno.stdin.isTerminal() ? Deno.env.get("STEAM_PASSWORD") : undefined;
+
   const maxTries = 4;
   const backoffMs = [15_000, 30_000, 60_000];
   let reauthed = false;
@@ -166,6 +174,7 @@ export async function downloadOne(
       mod.id,
       "-username",
       s.STEAM_USER,
+      ...(headlessPassword ? ["-password", headlessPassword] : []),
       "-remember-password",
       "-validate",
       "-dir",

@@ -33,6 +33,25 @@ export async function exists(p: string): Promise<boolean> {
 
 const homeEnv = () => ({ HOME: STEAMCMD_DIR });
 
+/**
+ * Steam password source for prompts: interactively via `askSecret()` when
+ * there's a real terminal (default, unchanged behavior) - but when running
+ * unattended (e.g. a systemd service has no stdin to prompt on), falls back
+ * to the `STEAM_PASSWORD` env var if set. This exists because DepotDownloader's
+ * `-remember-password` token doesn't reliably persist across separate process
+ * runs on Linux (its `AccountSettingsStore` uses .NET IsolatedStorage, which is
+ * unreliable for single-file published binaries) - so a fully unattended
+ * service needs the real password available every start. Only used when
+ * stdin isn't a terminal; interactive use is completely unaffected.
+ */
+async function getPassword(promptText: string): Promise<string> {
+  if (!Deno.stdin.isTerminal()) {
+    const envPass = Deno.env.get("STEAM_PASSWORD");
+    if (envPass) return envPass;
+  }
+  return await askSecret(promptText);
+}
+
 /** SteamCMD with project-local HOME + inherited stdio (for interactive login). */
 export async function runSteamcmd(args: string[]): Promise<number> {
   await Deno.mkdir(STEAMCMD_DIR, { recursive: true });
@@ -195,13 +214,14 @@ export async function doLogin(s: Settings): Promise<void> {
   await ensureConfig(s);
   log(`Logging in to Steam as '${s.STEAM_USER}'`);
   hint("Password is used once to cache a session; it is NOT saved.");
-  const pass = await askSecret("Steam password");
+  const pass = await getPassword("Steam password");
   if (!pass) {
     die(
       "No Steam password entered - if this is running unattended (e.g. a systemd " +
-        "service), it has no terminal to prompt on. Log in once interactively first " +
-        "(run 'deno task login' from a real terminal on this machine to cache a " +
-        "session), then restart the service.",
+        "service), set the STEAM_PASSWORD env var for it (see the systemd unit's " +
+        "EnvironmentFile), or log in once interactively first (run 'deno task login' " +
+        "from a real terminal on this machine to cache a session), then restart the " +
+        "service.",
     );
   }
   hint("(Steam Guard: confirm on your phone or enter the code when asked.)");
@@ -269,13 +289,14 @@ export async function forceDepotRelogin(s: Settings): Promise<void> {
   hint(
     "Password is used once to cache a DepotDownloader token; it is NOT saved.",
   );
-  const pass = await askSecret("Steam password");
+  const pass = await getPassword("Steam password");
   if (!pass) {
     die(
       "No Steam password entered - if this is running unattended (e.g. a systemd " +
-        "service), it has no terminal to prompt on. Log in once interactively first " +
-        "(run 'deno task login' from a real terminal on this machine to cache a " +
-        "session), then restart the service.",
+        "service), set the STEAM_PASSWORD env var for it (see the systemd unit's " +
+        "EnvironmentFile), or log in once interactively first (run 'deno task login' " +
+        "from a real terminal on this machine to cache a session), then restart the " +
+        "service.",
     );
   }
   hint("(Steam Guard: confirm on your phone or enter the code when asked.)");
