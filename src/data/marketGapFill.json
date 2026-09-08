@@ -2490,6 +2490,10 @@
     "tier": "Common"
   },
   {
+    "classNames": ["TRQ_DecoyGrenade"],
+    "template": "m67grenade"
+  },
+  {
     "classNames": ["nm_IncendiaryGren"],
     "category": "Explosives",
     "tier": "Uncommon"

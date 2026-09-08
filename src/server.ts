@@ -36,6 +36,7 @@ import { ensureCustomZombiesTchcWired } from "./customZombiesTchc.ts";
 import { ensureNecromutantWired } from "./necromutant.ts";
 import { ensureForeverBurningCampfireWired } from "./foreverBurningCampfire.ts";
 import { ensureNatureOverhaulWired } from "./natureOverhaul.ts";
+import { ensureDecoyGrenadeTypeWired } from "./decoyGrenades.ts";
 import { ensureOpticsWired } from "./optics.ts";
 import { ensureTgkWeaponPackWired } from "./tgkWeaponPack.ts";
 import {
@@ -302,6 +303,7 @@ export async function doStart(s: Settings): Promise<void> {
   await ensureOpticsWired(allMods);
   await ensureTgkWeaponPackWired(allMods);
   await ensureCustomKeycardsTypesWired(allMods);
+  await ensureDecoyGrenadeTypeWired(allMods);
   await ensureCustomKeycardsLootTables(allMods);
   await ensureCustomKeycardsSecuredBuildings(allMods);
   await ensureMilitaryMonsterGarrisons(allMods);

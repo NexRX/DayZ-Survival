@@ -1328,6 +1328,12 @@ const WOOD_SELL_ONLY_PRICE_FIXES: Record<string, number> = {
 // (flashbang, remote/tripwire charges, plastic explosive, chemgas,
 // landmine, claymore) is untouched.
 const EXPLOSIVES_GRENADE_PRICE = { min: 1500, max: 1500 };
+// @DecoyGrenades' TRQ_DecoyGrenade (added via marketGapFill.json's template
+// entry, cloned from m67grenade) - priced above a disposable frag/smoke
+// since pulling zombie/AI aggro off yourself is worth more on a hardcore
+// server. Merged into the same hardcorePricesFixed pass as
+// EXPLOSIVES_PRICE_FIXES below.
+const TRQ_DECOY_GRENADE_PRICE_FIXES = { trq_decoygrenade: { min: 2000, max: 2000 } };
 const EXPLOSIVES_PRICE_FIXES: Record<string, { min: number; max: number }> = Object.fromEntries(
   [
     "m67grenade",
@@ -1886,6 +1892,7 @@ export async function ensureMarketGapFill(): Promise<void> {
       ...BASE_BUILDING_STRUCTURES_PRICE_FIXES,
       ...UTILITY_PRICE_FIXES,
       ...EXPLOSIVES_PRICE_FIXES,
+      ...TRQ_DECOY_GRENADE_PRICE_FIXES,
       ...MEDICAL_PRICE_FIXES,
       ...VEHICLE_PARTS_PRICE_FIXES,
       ...VEHICLE_MANIFEST_CAR_PRICE_FIXES,
