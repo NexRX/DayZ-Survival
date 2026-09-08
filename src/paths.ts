@@ -139,6 +139,10 @@ export const AI_SETTINGS = `${PROFILE_DIR}/ExpansionMod/Settings/AISettings.json
 // the mod's wiki: github.com/ysaroka/InediaInfectedAI/wiki).
 export const INEDIA_SETTINGS = `${PROFILE_DIR}/Inedia/InediaInfectedAIConfig.json`;
 
+// InediaStamina self-regenerates its config in the same profile folder (see
+// the mod's wiki: github.com/ysaroka/InediaStamina/wiki).
+export const INEDIA_STAMINA_SETTINGS = `${PROFILE_DIR}/Inedia/InediaStaminaConfig.json`;
+
 // AI-Bandits self-generates both configs in the server profile on first
 // start - Dynamic covers patrols/snipers, Static covers stationary NPCs.
 // Both share the same per-entry 0-100 "accuracy" field where applicable.

@@ -59,6 +59,7 @@ import {
   tuneAIBanditsDifficulty,
   tuneAIDifficulty,
   tuneInediaInfectedAIDifficulty,
+  tuneInediaStaminaDifficulty,
   tuneMissionDifficulty,
   tuneSpatialAIDifficulty,
 } from "./difficulty.ts";
@@ -296,6 +297,7 @@ export async function doStart(s: Settings): Promise<void> {
   await tuneSpatialAIDifficulty();
   await tuneMissionDifficulty();
   await tuneInediaInfectedAIDifficulty();
+  await tuneInediaStaminaDifficulty();
   await tuneAIBanditsDifficulty();
   await tuneFoodScarcity();
   await tuneAnimalSpawns();

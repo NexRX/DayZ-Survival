@@ -10,6 +10,7 @@ import {
   AI_SETTINGS,
   DYNAMIC_MISSIONS_SETTINGS,
   INEDIA_SETTINGS,
+  INEDIA_STAMINA_SETTINGS,
   SPATIAL_SETTINGS,
 } from "./paths.ts";
 import { log, ok } from "./ui.ts";
@@ -232,13 +233,17 @@ type InediaTierTargets = Partial<
 // roughly-vanilla-plus-a-bit, scaled by infected "strength" tier. Health/
 // shock multipliers trimmed another ~10% below that baseline - a single
 // infected was still chewing through health/consciousness too fast.
+//
+// Stamina drain from being hit is zeroed out entirely (in and out of
+// block) - a single zombie shouldn't be able to gas the player out on its
+// own; that made minor scuffles snowball into unwinnable fights.
 const INEDIA_PLAYER_DAMAGE_TARGETS: Record<string, InediaTierTargets> = {
   DamageToPlayerHealthMultiplier: { all: 0.9, lowstr: 0.9, mediumstr: 0.95, highstr: 1.05 },
   DamageToPlayerInBlockHealthMultiplier: { all: 0.45, lowstr: 0.45, mediumstr: 0.5, highstr: 0.55 },
   DamageToPlayerShockMultiplier: { all: 0.9, lowstr: 0.9, mediumstr: 0.95, highstr: 1.05 },
   DamageToPlayerInBlockShockMultiplier: { all: 0.45, lowstr: 0.45, mediumstr: 0.5, highstr: 0.55 },
-  DamageToPlayerStaminaPercent: { all: 8, lowstr: 8, mediumstr: 10, highstr: 14 },
-  DamageToPlayerInBlockStaminaPercent: { all: 4, lowstr: 4, mediumstr: 5, highstr: 7 },
+  DamageToPlayerStaminaPercent: { all: 0, lowstr: 0, mediumstr: 0, highstr: 0 },
+  DamageToPlayerInBlockStaminaPercent: { all: 0, lowstr: 0, mediumstr: 0, highstr: 0 },
   DamageToPlayerBleedingChancePercent: { all: 6, lowstr: 6, mediumstr: 8, highstr: 10 },
   DamageToPlayerInBlockBleedingChancePercent: { all: 3, lowstr: 3, mediumstr: 4, highstr: 5 },
   StunToPlayerChancePercent: { all: 12, lowstr: 12, mediumstr: 15, highstr: 20 },
@@ -258,7 +263,25 @@ const INEDIA_PLAYER_DAMAGE_TARGETS: Record<string, InediaTierTargets> = {
 // the random chance to *ignore* an otherwise-qualifying heavy hit and
 // downgrade it to a weak stagger - zeroing that out below is the closest
 // this mod lets us get to "a qualifying blunt-weapon hit always staggers".
+//
+// TOGGLE: ZOMBIE_STAGGER_USE_MOD_SYSTEM controls whether Inedia's own
+// custom stagger handler runs at all.
+//   true  (default) - Inedia's system is active: regular/tap melee swings
+//     are hard-capped at a max 50% stagger chance (its own docs say this
+//     is intentional, to stop players permanently stun-locking a zombie by
+//     spamming taps), while heavy/charged swings use the fully-tunable
+//     threshold settings below (already set to near-guaranteed staggers).
+//   false - Inedia's stagger handler is disabled entirely and DayZ's pure
+//     vanilla stagger logic takes over for every melee swing, regular and
+//     heavy alike. No 50% cap on taps, but per Inedia's own docs, vanilla
+//     alone allows near-permanent stun-locking a zombie with rapid hits
+//     (e.g. a sledgehammer) - the settings below (threshold/ignore-chance/
+//     immunity-seconds) all stop applying in this mode, since they're
+//     specific to Inedia's own handler.
+const ZOMBIE_STAGGER_USE_MOD_SYSTEM = true;
+
 const INEDIA_ZOMBIE_STAGGER_TARGETS: Record<string, InediaTierTargets> = {
+  DamageToZombieShockToStunHandlerIsActive: { all: ZOMBIE_STAGGER_USE_MOD_SYSTEM ? 1 : 0 },
   DamageToZombieShockToStunImmunityAfterMeleeHitSeconds: { all: 2.0 },
   DamageToZombieShockToStunImmunityAfterRangedHitSeconds: { all: 2.0 },
   DamageToZombieShockToStunIgnoreMeleeHitChancePercent: { all: 0 },
@@ -335,6 +358,76 @@ export async function tuneInediaInfectedAIDifficulty(): Promise<void> {
   if (!changed) return;
   await Deno.writeTextFile(INEDIA_SETTINGS, JSON.stringify(settings, null, 4));
   ok(`Rebalanced infected combat difficulty in ${INEDIA_SETTINGS}`);
+}
+
+// --- InediaStamina melee attack cost (Inedia/InediaStaminaConfig.json) ---
+//
+// The mod's own default docs describe a light melee swing costing -0.5%
+// general stamina (heavy swings double that); this project's copy already
+// ships at a slightly gentler -0.3%. Overwritten to a fixed, halved target
+// (not a relative multiplier - re-running this on every start must not keep
+// halving an already-halved value) so extended melee fights against groups
+// of infected don't gas the player out on their own swings alone, on top of
+// the zombie-hit stamina drain already zeroed out above. Sleep stamina's
+// much smaller melee cost is scaled down by the same ratio for consistency.
+interface InediaStaminaCategory {
+  CostPerMeleeAttackPercent?: number;
+  [key: string]: unknown;
+}
+
+interface InediaStaminaConfig {
+  StaminaGeneralOptions?: InediaStaminaCategory;
+  StaminaSleepOptions?: InediaStaminaCategory;
+  [key: string]: unknown;
+}
+
+const INEDIA_STAMINA_MELEE_COST_TARGETS = {
+  StaminaGeneralOptions: -0.15,
+  StaminaSleepOptions: -0.005,
+};
+
+function setMeleeCost(
+  category: InediaStaminaCategory | undefined,
+  target: number,
+): [InediaStaminaCategory, boolean] {
+  const c = category ?? {};
+  const current = c.CostPerMeleeAttackPercent;
+  if (current !== undefined && Math.abs(current - target) <= INEDIA_EPSILON) {
+    return [c, false];
+  }
+  c.CostPerMeleeAttackPercent = target;
+  return [c, true];
+}
+
+export async function tuneInediaStaminaDifficulty(): Promise<void> {
+  if (!(await exists(INEDIA_STAMINA_SETTINGS))) {
+    log(
+      "InediaStaminaConfig.json not generated yet — InediaStamina will create it " +
+        "(already tuned for hardcore play by default) on first server start",
+    );
+    return;
+  }
+
+  const settings: InediaStaminaConfig = JSON.parse(
+    await Deno.readTextFile(INEDIA_STAMINA_SETTINGS),
+  );
+  let changed = false;
+
+  let updated: boolean;
+  [settings.StaminaGeneralOptions, updated] = setMeleeCost(
+    settings.StaminaGeneralOptions,
+    INEDIA_STAMINA_MELEE_COST_TARGETS.StaminaGeneralOptions,
+  );
+  changed ||= updated;
+  [settings.StaminaSleepOptions, updated] = setMeleeCost(
+    settings.StaminaSleepOptions,
+    INEDIA_STAMINA_MELEE_COST_TARGETS.StaminaSleepOptions,
+  );
+  changed ||= updated;
+
+  if (!changed) return;
+  await Deno.writeTextFile(INEDIA_STAMINA_SETTINGS, JSON.stringify(settings, null, 4));
+  ok(`Halved melee-attack stamina cost in ${INEDIA_STAMINA_SETTINGS}`);
 }
 
 // --- AI-Bandits patrol/sniper accuracy (AI_Bandits/{Dynamic,Static}AIB.json) ---
