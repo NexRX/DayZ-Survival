@@ -137,6 +137,13 @@ const CRASH_LOG = `${PROFILE_DIR}/crashes.log`;
 const FAST_CRASH_THRESHOLD_MS = 60_000;
 const RESTART_BACKOFF_MS = 15_000;
 const MAX_CONSECUTIVE_FAST_CRASHES = 5;
+// If the server hasn't exited this long after a graceful SIGTERM, force-kill
+// it ourselves. This matters under systemd, which sends exactly one SIGTERM
+// on `systemctl stop`/`restart` and then just waits - there's no interactive
+// "press Ctrl-C again" follow-up in that context, so without this the whole
+// unit (and `systemctl restart`) can hang if the DayZ binary doesn't exit
+// cleanly on its own.
+const GRACEFUL_STOP_TIMEOUT_MS = 30_000;
 
 let stopRequested = false;
 let stopRequestedAt = 0;
@@ -150,29 +157,42 @@ let currentChild: Deno.ChildProcess | null = null;
 // is treated as an artifact of that, not a genuinely repeated Ctrl-C.
 const DUPLICATE_SIGNAL_WINDOW_MS = 1_000;
 
+function forceKill(): void {
+  try {
+    currentChild?.kill("SIGKILL");
+  } catch {
+    // already exited - nothing to kill
+  }
+}
+
 function requestStop(): void {
   const now = Date.now();
   if (stopRequested) {
     if (now - stopRequestedAt < DUPLICATE_SIGNAL_WINDOW_MS) return;
     warn("Second stop signal received - killing the server immediately.");
-    try {
-      currentChild?.kill("SIGKILL");
-    } catch {
-      // already exited - nothing to kill
-    }
+    forceKill();
     Deno.exit(1);
   }
   stopRequested = true;
   stopRequestedAt = now;
   log(
     "Stop requested - waiting for the server to shut down gracefully " +
-      "(Ctrl-C again to force-kill)...",
+      `(will force-kill after ${GRACEFUL_STOP_TIMEOUT_MS / 1000}s if it doesn't, ` +
+      "or send another stop signal to force sooner)...",
   );
   try {
     currentChild?.kill("SIGTERM");
   } catch {
     // already exited - the watchdog loop will notice via child.status
   }
+  setTimeout(() => {
+    if (stopRequested && currentChild) {
+      warn(
+        `Server didn't exit within ${GRACEFUL_STOP_TIMEOUT_MS / 1000}s of SIGTERM - force-killing.`,
+      );
+      forceKill();
+    }
+  }, GRACEFUL_STOP_TIMEOUT_MS);
 }
 
 async function logCrash(code: number, ranMs: number): Promise<void> {
