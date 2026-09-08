@@ -189,6 +189,14 @@ const TERJE_STARTING_WEAPON_ITEM = '<Item classname="BaseballBat" position="Mele
 const TERJE_STARTING_KIT_ITEMS: string[] = [
   '<Item classname="Rag" count="4" />',
   '<Item classname="Map" />',
+  // @DecoyGrenades (3788373552): imitates gunfire from a random weapon for
+  // ~30s then a weak final explosion, pulling zombie/AI aggro toward the
+  // decoy instead of the player. No dedicated attachment slot needed for
+  // quickbar binding - it just needs to be somewhere on the character, so
+  // this drops into cargo (pockets) like Rag/Map above, bound to slot 1
+  // (0 is the starting BaseballBat) so it's actually reachable in a hurry
+  // rather than buried in inventory.
+  '<Item classname="TRQ_DecoyGrenade" quickbar="1" />',
 ];
 
 // Terje's own shipped default "survivor" loadout already includes a RANDOM

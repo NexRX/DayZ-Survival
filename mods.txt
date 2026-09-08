@@ -227,6 +227,16 @@
 2926289548  @Survivor-Backpack
 3571068454  @Optics
 3464752232  @Hunter-Bow
+# DecoyGrenades: throws a decoy that imitates gunfire from a random weapon
+# for ~30s then does a weak final explosion - pulls zombie/AI aggro toward
+# the decoy's noise instead of the player. Its own Community page renders a
+# stale/misleading "removed for guideline violation" banner (the same
+# false-positive already seen on Sector31-DynamicHordes/DDP-Climate-Zones/
+# Tent-Actions-Fix above); confirmed live via Steam Web API
+# (GetPublishedFileDetails: result=1, banned=0, visibility=0/public) - the
+# API is authoritative. General classname (all weapon sounds):
+# TRQ_DecoyGrenade - see loot.ts's starting-kit entry for player spawn.
+3788373552  @DecoyGrenades
 # TGK-WeaponPack (~280 Russian-special-forces-themed weapons/attachments/
 # melee items, aka "SOBR"/"SM_" pack) is fully wired: typed via
 # tgkWeaponPack.ts as nominal=0 trader-only stubs (never spawn in the
