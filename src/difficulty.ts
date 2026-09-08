@@ -231,23 +231,57 @@ type InediaTierTargets = Partial<
 
 // Player-facing pain, pulled down from the mod's aggressive defaults to
 // roughly-vanilla-plus-a-bit, scaled by infected "strength" tier. Health/
-// shock multipliers trimmed another ~10% below that baseline - a single
-// infected was still chewing through health/consciousness too fast.
+// shock multipliers trimmed ~20% below the previous baseline - a single
+// infected was still chewing through health/consciousness too fast even
+// after the first round of cuts.
 //
 // Stamina drain from being hit is zeroed out entirely (in and out of
 // block) - a single zombie shouldn't be able to gas the player out on its
 // own; that made minor scuffles snowball into unwinnable fights.
 const INEDIA_PLAYER_DAMAGE_TARGETS: Record<string, InediaTierTargets> = {
-  DamageToPlayerHealthMultiplier: { all: 0.9, lowstr: 0.9, mediumstr: 0.95, highstr: 1.05 },
-  DamageToPlayerInBlockHealthMultiplier: { all: 0.45, lowstr: 0.45, mediumstr: 0.5, highstr: 0.55 },
-  DamageToPlayerShockMultiplier: { all: 0.9, lowstr: 0.9, mediumstr: 0.95, highstr: 1.05 },
-  DamageToPlayerInBlockShockMultiplier: { all: 0.45, lowstr: 0.45, mediumstr: 0.5, highstr: 0.55 },
+  DamageToPlayerHealthMultiplier: { all: 0.7, lowstr: 0.7, mediumstr: 0.75, highstr: 0.85 },
+  DamageToPlayerInBlockHealthMultiplier: {
+    all: 0.35,
+    lowstr: 0.35,
+    mediumstr: 0.375,
+    highstr: 0.425,
+  },
+  DamageToPlayerShockMultiplier: { all: 0.7, lowstr: 0.7, mediumstr: 0.75, highstr: 0.85 },
+  DamageToPlayerInBlockShockMultiplier: {
+    all: 0.35,
+    lowstr: 0.35,
+    mediumstr: 0.375,
+    highstr: 0.425,
+  },
   DamageToPlayerStaminaPercent: { all: 0, lowstr: 0, mediumstr: 0, highstr: 0 },
   DamageToPlayerInBlockStaminaPercent: { all: 0, lowstr: 0, mediumstr: 0, highstr: 0 },
   DamageToPlayerBleedingChancePercent: { all: 6, lowstr: 6, mediumstr: 8, highstr: 10 },
   DamageToPlayerInBlockBleedingChancePercent: { all: 3, lowstr: 3, mediumstr: 4, highstr: 5 },
   StunToPlayerChancePercent: { all: 12, lowstr: 12, mediumstr: 15, highstr: 20 },
   StunToPlayerInBlockChancePercent: { all: 6, lowstr: 6, mediumstr: 7.5, highstr: 10 },
+};
+
+// These three fields were never touched by the tuning pass above and were
+// silently sitting at the mod's own aggressive defaults, which turned out to
+// be the real cause of "one zombie feels unbeatable even with a bat":
+//
+// - FastAttackToPlayerChancePercent defaulted to 100% - every zombie attack
+//   had a 100% chance to skip its normal post-attack recovery delay and
+//   immediately chain into another attack, effectively removing the player's
+//   window to swing back or back off between hits. Dropped to a rare event.
+// - MeleeAttacksDodgeChance defaulted to 50% - a coin flip on every close-
+//   range approach for the infected to juke/slow down (by design, to break
+//   up predictable headshot timing), wasting the player's swing. Halved so
+//   fights stay a little unpredictable without whiffing half your hits.
+// - JumpAttackChance defaulted to 10% (on a 60s cooldown) for a lunge that
+//   always stuns/knocks the player down on landing - combined with the fast-
+//   attack chaining above this could snowball a single hit into a death
+//   spiral. Trimmed slightly; the 60s cooldown already limits how often any
+//   one zombie can attempt it.
+const INEDIA_ZOMBIE_AGGRESSION_TARGETS: Record<string, InediaTierTargets> = {
+  FastAttackToPlayerChancePercent: { all: 10 },
+  MeleeAttacksDodgeChance: { all: 25 },
+  JumpAttackChance: { all: 6 },
 };
 
 // Let players stagger zombies again sooner mid-fight, without making it
@@ -338,6 +372,7 @@ export async function tuneInediaInfectedAIDifficulty(): Promise<void> {
     const [key, targets] of Object.entries({
       ...INEDIA_PLAYER_DAMAGE_TARGETS,
       ...INEDIA_ZOMBIE_STAGGER_TARGETS,
+      ...INEDIA_ZOMBIE_AGGRESSION_TARGETS,
     })
   ) {
     let updated: boolean;
@@ -372,6 +407,8 @@ export async function tuneInediaInfectedAIDifficulty(): Promise<void> {
 // much smaller melee cost is scaled down by the same ratio for consistency.
 interface InediaStaminaCategory {
   CostPerMeleeAttackPercent?: number;
+  WeightOverloadThresholdKg?: number;
+  WeightOverloadMultiplierMax?: number;
   [key: string]: unknown;
 }
 
@@ -386,6 +423,17 @@ const INEDIA_STAMINA_MELEE_COST_TARGETS = {
   StaminaSleepOptions: -0.005,
 };
 
+// The mod's default weight-overload curve (28kg threshold, up to a 10x
+// stamina-cost multiplier beyond it) applies to every general stamina cost,
+// melee swings included - so a player carrying a realistic hardcore loadout
+// (backpack, weapon, tools, ammo) was often already past the threshold
+// before a fight even started, silently multiplying the melee cost above
+// back up close to its pre-nerf value. Raised the threshold and capped the
+// max multiplier so gear weight stops quietly re-inflating combat stamina
+// costs.
+const INEDIA_STAMINA_WEIGHT_OVERLOAD_THRESHOLD_KG = 40;
+const INEDIA_STAMINA_WEIGHT_OVERLOAD_MULTIPLIER_MAX = 6;
+
 function setMeleeCost(
   category: InediaStaminaCategory | undefined,
   target: number,
@@ -397,6 +445,25 @@ function setMeleeCost(
   }
   c.CostPerMeleeAttackPercent = target;
   return [c, true];
+}
+
+function setWeightOverload(
+  category: InediaStaminaCategory | undefined,
+): [InediaStaminaCategory, boolean] {
+  const c = category ?? {};
+  let changed = false;
+  if ((c.WeightOverloadThresholdKg ?? 0) < INEDIA_STAMINA_WEIGHT_OVERLOAD_THRESHOLD_KG) {
+    c.WeightOverloadThresholdKg = INEDIA_STAMINA_WEIGHT_OVERLOAD_THRESHOLD_KG;
+    changed = true;
+  }
+  if (
+    c.WeightOverloadMultiplierMax === undefined ||
+    c.WeightOverloadMultiplierMax > INEDIA_STAMINA_WEIGHT_OVERLOAD_MULTIPLIER_MAX
+  ) {
+    c.WeightOverloadMultiplierMax = INEDIA_STAMINA_WEIGHT_OVERLOAD_MULTIPLIER_MAX;
+    changed = true;
+  }
+  return [c, changed];
 }
 
 export async function tuneInediaStaminaDifficulty(): Promise<void> {
@@ -424,10 +491,14 @@ export async function tuneInediaStaminaDifficulty(): Promise<void> {
     INEDIA_STAMINA_MELEE_COST_TARGETS.StaminaSleepOptions,
   );
   changed ||= updated;
+  [settings.StaminaGeneralOptions, updated] = setWeightOverload(settings.StaminaGeneralOptions);
+  changed ||= updated;
 
   if (!changed) return;
   await Deno.writeTextFile(INEDIA_STAMINA_SETTINGS, JSON.stringify(settings, null, 4));
-  ok(`Halved melee-attack stamina cost in ${INEDIA_STAMINA_SETTINGS}`);
+  ok(
+    `Halved melee-attack stamina cost and raised weight-overload threshold in ${INEDIA_STAMINA_SETTINGS}`,
+  );
 }
 
 // --- AI-Bandits patrol/sniper accuracy (AI_Bandits/{Dynamic,Static}AIB.json) ---
