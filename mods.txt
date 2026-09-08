@@ -289,7 +289,12 @@
 # a hold-to-search action letting players reliably find a Stone on
 # gravel/dirt/rail-ballast paths (train tracks, dirt trails) as the route to
 # crafting materials for a butchering tool - no knife/blade is handed out at
-# spawn (see src/loot.ts's tuneStartingKit()). ---
+# spawn (see src/loot.ts's tuneStartingKit()). Also registers two recipes
+# (HandDrillKitFromBirchBark.c / HandDrillKitFromOakBark.c) fixing a
+# vanilla bug where the Hand Drill Kit recipe never matches the current
+# Bark_Birch/Bark_Oak classnames (combine menu shows a scrollable second
+# option next to Fireplace, but it never resolves - not a client cache
+# issue, relogging/restarting doesn't fix it). ---
 3789404408  @DZSurvivalServerPack
 
 # --- Environment/atmosphere/events ---

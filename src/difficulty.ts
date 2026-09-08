@@ -229,12 +229,14 @@ type InediaTierTargets = Partial<
 >;
 
 // Player-facing pain, pulled down from the mod's aggressive defaults to
-// roughly-vanilla-plus-a-bit, scaled by infected "strength" tier.
+// roughly-vanilla-plus-a-bit, scaled by infected "strength" tier. Health/
+// shock multipliers trimmed another ~10% below that baseline - a single
+// infected was still chewing through health/consciousness too fast.
 const INEDIA_PLAYER_DAMAGE_TARGETS: Record<string, InediaTierTargets> = {
-  DamageToPlayerHealthMultiplier: { all: 1.0, lowstr: 1.0, mediumstr: 1.05, highstr: 1.15 },
-  DamageToPlayerInBlockHealthMultiplier: { all: 0.5, lowstr: 0.5, mediumstr: 0.55, highstr: 0.6 },
-  DamageToPlayerShockMultiplier: { all: 1.0, lowstr: 1.0, mediumstr: 1.05, highstr: 1.15 },
-  DamageToPlayerInBlockShockMultiplier: { all: 0.5, lowstr: 0.5, mediumstr: 0.55, highstr: 0.6 },
+  DamageToPlayerHealthMultiplier: { all: 0.9, lowstr: 0.9, mediumstr: 0.95, highstr: 1.05 },
+  DamageToPlayerInBlockHealthMultiplier: { all: 0.45, lowstr: 0.45, mediumstr: 0.5, highstr: 0.55 },
+  DamageToPlayerShockMultiplier: { all: 0.9, lowstr: 0.9, mediumstr: 0.95, highstr: 1.05 },
+  DamageToPlayerInBlockShockMultiplier: { all: 0.45, lowstr: 0.45, mediumstr: 0.5, highstr: 0.55 },
   DamageToPlayerStaminaPercent: { all: 8, lowstr: 8, mediumstr: 10, highstr: 14 },
   DamageToPlayerInBlockStaminaPercent: { all: 4, lowstr: 4, mediumstr: 5, highstr: 7 },
   DamageToPlayerBleedingChancePercent: { all: 6, lowstr: 6, mediumstr: 8, highstr: 10 },
@@ -244,10 +246,22 @@ const INEDIA_PLAYER_DAMAGE_TARGETS: Record<string, InediaTierTargets> = {
 };
 
 // Let players stagger zombies again sooner mid-fight, without making it
-// trivial/spammable (10% ignore-chance on qualifying hits is left as-is).
+// trivial/spammable. Melee's "ignore" roll is zeroed out (see below) so
+// ranged keeps its own separate 10% ignore-chance default untouched.
+//
+// Note on "blunt weapons should always stun, fists shouldn't": that's
+// already how vanilla's underlying shock-damage math works (fists deal
+// almost no shock, so they rarely stagger; real blunt weapons deal enough
+// to usually qualify) - Inedia's own docs confirm regular (non-heavy)
+// melee swings use unmodified vanilla logic with no exposed parameter to
+// force a 100% chance. The one melee-stagger knob this mod does expose is
+// the random chance to *ignore* an otherwise-qualifying heavy hit and
+// downgrade it to a weak stagger - zeroing that out below is the closest
+// this mod lets us get to "a qualifying blunt-weapon hit always staggers".
 const INEDIA_ZOMBIE_STAGGER_TARGETS: Record<string, InediaTierTargets> = {
   DamageToZombieShockToStunImmunityAfterMeleeHitSeconds: { all: 2.0 },
   DamageToZombieShockToStunImmunityAfterRangedHitSeconds: { all: 2.0 },
+  DamageToZombieShockToStunIgnoreMeleeHitChancePercent: { all: 0 },
 };
 
 // No bullet sponges: a clean headshot should never be worth *less* than a

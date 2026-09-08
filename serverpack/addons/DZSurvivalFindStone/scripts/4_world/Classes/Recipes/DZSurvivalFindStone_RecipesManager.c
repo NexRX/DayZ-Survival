@@ -18,5 +18,11 @@ modded class PluginRecipesManager
 	{
 		super.RegisterRecipies();
 		RegisterRecipe(new SharpenSmallStone);
+
+		// Fixes vanilla's own Hand Drill Kit recipe never matching the
+		// post-bark-split classnames Bark_Birch/Bark_Oak - see
+		// Recipes/HandDrillKitFromBirchBark.c for the full explanation.
+		RegisterRecipe(new HandDrillKitFromBirchBark);
+		RegisterRecipe(new HandDrillKitFromOakBark);
 	}
 };
