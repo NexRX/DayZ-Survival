@@ -300,19 +300,23 @@ const INEDIA_ZOMBIE_AGGRESSION_TARGETS: Record<string, InediaTierTargets> = {
 //
 // TOGGLE: ZOMBIE_STAGGER_USE_MOD_SYSTEM controls whether Inedia's own
 // custom stagger handler runs at all.
-//   true  (default) - Inedia's system is active: regular/tap melee swings
-//     are hard-capped at a max 50% stagger chance (its own docs say this
-//     is intentional, to stop players permanently stun-locking a zombie by
-//     spamming taps), while heavy/charged swings use the fully-tunable
-//     threshold settings below (already set to near-guaranteed staggers).
-//   false - Inedia's stagger handler is disabled entirely and DayZ's pure
-//     vanilla stagger logic takes over for every melee swing, regular and
-//     heavy alike. No 50% cap on taps, but per Inedia's own docs, vanilla
-//     alone allows near-permanent stun-locking a zombie with rapid hits
-//     (e.g. a sledgehammer) - the settings below (threshold/ignore-chance/
-//     immunity-seconds) all stop applying in this mode, since they're
-//     specific to Inedia's own handler.
-const ZOMBIE_STAGGER_USE_MOD_SYSTEM = true;
+//   true  - Inedia's system is active: regular/tap melee swings (which is
+//     what a baseball bat, pipe wrench, etc. do on a normal swing) are
+//     hard-capped at a max 50% stagger chance no matter how much shock
+//     damage the weapon deals - its own docs say this is intentional, to
+//     stop players permanently stun-locking a zombie by spamming taps.
+//     Heavy/charged swings instead use the fully-tunable threshold settings
+//     below (already set to near-guaranteed staggers).
+//   false (default) - Inedia's stagger handler is disabled entirely and
+//     DayZ's pure vanilla stagger logic takes over for every melee swing,
+//     regular and heavy alike - no 50% cap, so a real blunt weapon's normal
+//     tap swing reliably staggers/stuns like the user expects. Per Inedia's
+//     own docs, this does mean a fast/heavy-shock weapon (e.g. a
+//     sledgehammer) can keep a single zombie in near-constant stun-lock -
+//     that's the deliberate tradeoff for "blunt weapons always stun". The
+//     settings below (threshold/ignore-chance/immunity-seconds) all stop
+//     applying in this mode, since they're specific to Inedia's own handler.
+const ZOMBIE_STAGGER_USE_MOD_SYSTEM = false;
 
 const INEDIA_ZOMBIE_STAGGER_TARGETS: Record<string, InediaTierTargets> = {
   DamageToZombieShockToStunHandlerIsActive: { all: ZOMBIE_STAGGER_USE_MOD_SYSTEM ? 1 : 0 },
