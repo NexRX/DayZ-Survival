@@ -505,9 +505,9 @@ async function ensureCustomZone(): Promise<void> {
 }
 
 // DayZ-Expansion-Core's own SafeZoneSettings.json schema (self-generated
-// with Chernarus' default city safe zones already in CircleZones). Only
-// the fields this reads/writes are typed; everything else round-trips
-// untouched via the index signature.
+// with Chernarus' default city safe zones already in CircleZones/
+// PolygonZones). Only the fields this reads/writes are typed; everything
+// else round-trips untouched via the index signature.
 interface SafeZoneCircleZone {
   Center: [number, number, number];
   Radius: number;
@@ -515,9 +515,20 @@ interface SafeZoneCircleZone {
 
 interface SafeZoneSettings {
   CircleZones: SafeZoneCircleZone[];
+  PolygonZones?: unknown[];
+  CylinderZones?: unknown[];
   [key: string]: unknown;
 }
 
+// This project only wants ONE safe zone (the custom trader city) - not the
+// half-dozen default Expansion city/airfield/boat-trader zones the mod
+// ships with. Those defaults are small individually (175-700m) but add up
+// to "you keep wandering into a random no-PvP/no-damage bubble far from
+// the actual trader", which reads as "the whole map is a safe zone" the
+// first few times it happens. So, unlike removeDefaultZones() above (which
+// only ever removes Expansion-Market's default trader NPCs/stock zones),
+// this strips every CircleZones/PolygonZones/CylinderZones entry that
+// isn't this project's own custom trader zone, every start.
 async function ensureCustomTraderSafeZone(): Promise<void> {
   if (!CUSTOM_POSITION) return; // same guard as ensureCustomZone() above
 
@@ -530,6 +541,26 @@ async function ensureCustomTraderSafeZone(): Promise<void> {
   }
 
   const settings: SafeZoneSettings = JSON.parse(await Deno.readTextFile(SAFE_ZONE_SETTINGS));
+  let changed = false;
+
+  const otherCircleZones = settings.CircleZones.filter(
+    (z) =>
+      Math.abs(z.Center[0] - CUSTOM_POSITION[0]) >= 1 ||
+      Math.abs(z.Center[2] - CUSTOM_POSITION[2]) >= 1,
+  );
+  if (otherCircleZones.length > 0) {
+    settings.CircleZones = settings.CircleZones.filter((z) => !otherCircleZones.includes(z));
+    changed = true;
+  }
+  if ((settings.PolygonZones?.length ?? 0) > 0) {
+    settings.PolygonZones = [];
+    changed = true;
+  }
+  if ((settings.CylinderZones?.length ?? 0) > 0) {
+    settings.CylinderZones = [];
+    changed = true;
+  }
+
   const existing = settings.CircleZones.find(
     (z) =>
       Math.abs(z.Center[0] - CUSTOM_POSITION[0]) < 1 &&
@@ -537,22 +568,20 @@ async function ensureCustomTraderSafeZone(): Promise<void> {
   );
 
   if (existing) {
-    if (existing.Radius === CUSTOM_SAFE_ZONE_RADIUS) return;
-    const oldRadius = existing.Radius;
-    existing.Radius = CUSTOM_SAFE_ZONE_RADIUS;
-    await Deno.writeTextFile(SAFE_ZONE_SETTINGS, JSON.stringify(settings, null, 4));
-    ok(
-      `Updated the custom trader city safe zone radius from ${oldRadius}m to ` +
-        `${CUSTOM_SAFE_ZONE_RADIUS}m in ${SAFE_ZONE_SETTINGS}`,
-    );
-    return;
+    if (existing.Radius !== CUSTOM_SAFE_ZONE_RADIUS) {
+      existing.Radius = CUSTOM_SAFE_ZONE_RADIUS;
+      changed = true;
+    }
+  } else {
+    settings.CircleZones.push({ Center: CUSTOM_POSITION, Radius: CUSTOM_SAFE_ZONE_RADIUS });
+    changed = true;
   }
 
-  settings.CircleZones.push({ Center: CUSTOM_POSITION, Radius: CUSTOM_SAFE_ZONE_RADIUS });
+  if (!changed) return;
   await Deno.writeTextFile(SAFE_ZONE_SETTINGS, JSON.stringify(settings, null, 4));
   ok(
-    `Added a ${CUSTOM_SAFE_ZONE_RADIUS}m safe zone at the custom trader city to ` +
-      SAFE_ZONE_SETTINGS,
+    `${SAFE_ZONE_SETTINGS}: kept only the ${CUSTOM_SAFE_ZONE_RADIUS}m custom trader city safe ` +
+      "zone, removed every other default zone",
   );
 }
 

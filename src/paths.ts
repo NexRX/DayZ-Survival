@@ -29,8 +29,10 @@ export const AI_PATROL_SETTINGS = `${MISSION_DIR}/expansion/settings/AIPatrolSet
 
 // DayZ-Expansion-Core's SafeZone module config - self-generated (with
 // Chernarus' default city safe zones) on first mission load. traders.ts's
-// ensureCustomTraderSafeZone() adds one CircleZones entry for the custom
-// trader city without touching the existing defaults.
+// ensureCustomTraderSafeZone() strips every one of those defaults
+// (CircleZones/PolygonZones/CylinderZones) and keeps only a single
+// CircleZones entry for the custom trader city - this project wants
+// exactly one safe zone, not the half-dozen the mod ships with.
 export const SAFE_ZONE_SETTINGS = `${MISSION_DIR}/expansion/settings/SafeZoneSettings.json`;
 
 // DayZ-Expansion-Market's own global config - self-generated (with default
