@@ -101,6 +101,7 @@ storageAutoFix = 1;
 respawnTime    = 5;
 
 steamQueryPort = ${s.QUERY_PORT};
+steamProtocolMaxDataSize = 4096;
 
 class Missions
 {
