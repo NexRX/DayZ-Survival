@@ -308,6 +308,59 @@
 3726714048  @IronhordeLighting
 3659550946  @Signal-Overnight-Stay
 
+# Weather Lighting Control (WLC): server-side-only weather system (30
+# built-in patterns + 9 scripted sequences, weighted random selection,
+# built-in anti-repeat so it doesn't get stuck raining for hours - see
+# src/wlcWeather.ts) replacing this project's old hand-authored
+# cfgweather.xml tuning. Self-generates $ServerProfile/WLC/weather_config.json
+# on first launch. No client download needed. Requires vanilla weather
+# disabled - see src/weather.ts, which forces cfgweather.xml to enable="0"
+# every start. Always active, every session, regardless of the Early Winter
+# roll below (see src/season.ts) - Early Winter is visual-only and never
+# conflicts with it.
+3660359997  @WeatherLightingControl     server
+
+# Weather Lighting Control - COT Control Panel: optional companion sub-mod
+# adding an in-game admin GUI (via Community Online Tools, already above)
+# for WLC - force/preview patterns, live-edit fields, start sequences,
+# reload config from disk - without chat commands or manual JSON editing.
+# Requires @CF + @Community-Online-Tools (both already above) + WLC core
+# above. NOT server-only - admin clients need their own copy too (players
+# don't). Steam page renders a stale/misleading "removed" banner like
+# Sector31-DynamicHordes and DDP-Climate-Zones above; verified live via the
+# same Steam Web API check (result=1, banned=0, visibility=0/public).
+#
+# IMPORTANT TRADEOFF (found by unpacking WLC core's own MissionServer.c,
+# not just its docs): the panel's buttons only work once
+# "enable_testing_mode": 1 is set in weather_config.json (src/wlcWeather.ts
+# sets this unconditionally so the panel always works) - but that same flag
+# is ALSO what gates WLC's plain chat commands (/w next, /w random, etc.),
+# and WLC's own chat-command handler does NOT check admin/permission status
+# at all, only this one global flag. The panel itself IS admin-gated (COT's
+# Weather.WLC permission, via the standard Admin role's wildcard), but
+# turning it on necessarily also lets ANY connected player type /w commands
+# and change the whole server's weather. If that's not acceptable here,
+# either flip enable_testing_mode back to 0 by hand (breaks the panel too -
+# there's no way to separate the two) or drop this sub-mod and stick to
+# editing weather_config.json directly.
+3720376716  @WeatherLightingControl-COT-Control-Panel
+
+# Early Winter or late Fall in Chernarus: full whole-map winter/late-fall
+# reskin (ground satmap texture, plant/tree models, footstep sounds, and
+# per-overcast-band sky/cloud lighting) - previously rejected for having no
+# position-gated option (see the DDP-Climate-Zones note above), now embraced
+# as a whole-session toggle instead. VERIFIED (unpacked the mod's actual
+# config.cpp directly, not just taken on faith from a Steam comment): it is
+# visual-only - CfgWorlds > ChernarusPlus > Weather > Overcast > lighting
+# classes plus model/sound overrides, no CfgWeather/precipitation logic of
+# its own - so it does NOT conflict with @WeatherLightingControl above, and
+# both run every session. Only this mod's presence in the actual launch
+# line is toggled by the roll (see src/season.ts's filterModsForSeason());
+# WLC itself is unaffected either way. Real client-facing asset mod (not
+# server-only) - always downloaded/kept up to date so it's ready the moment
+# a restart rolls it "on".
+3303988563  @Early-Winter-Chernarus
+
 # DDP Server Climate Zones: server-side-only mod (confirmed via Steam Web
 # API GetPublishedFileDetails: result=1, banned=0, visibility=0/public - its
 # own Community page renders a stale/misleading "removed" banner, same as
@@ -321,17 +374,21 @@
 # weather-VFX changes (the mod's own author confirmed in a Steam comment
 # this is temperature-only for now).
 #
-# DECIDED: a matching NW-only visual snow look isn't included, and won't be.
-# Two routes were explored and both rejected:
-# "Early Winter or late Fall in Chernarus" (3303988563, confirmed live via
-# Steam Web API) reskins via whole-map shared config classes with no
-# position-gated option (would snow-reskin the ENTIRE map, not just the
-# NW, and its license forbids repacking a partial/regional version); a
-# custom scripted particle-effect "snow flurry" confined to the NW was
-# technically workable but the project owner decided it wasn't worth
-# building without real snow on the ground. Final call: keep just this
-# temperature gradient - NW is mechanically colder (frost/hypothermia
-# risk), no visual change anywhere on the map.
+# REVISED: a matching visual snow look is now included after all, but as a
+# whole-map, whole-SESSION toggle rather than a permanent or NW-gated
+# change - "Early Winter or late Fall in Chernarus" (3303988563) reskins
+# via whole-map shared config classes with no position-gated option (would
+# snow-reskin the ENTIRE map, not just the NW), which is exactly why it was
+# rejected before. Now embraced instead of worked around: src/season.ts
+# rolls a fresh "is this session Early Winter?" coin flip on every server
+# restart (EARLY_WINTER_CHANCE_PERCENT, currently 40% - restarts are
+# common here and wipes are meant to stay rare, so tying this to a wipe
+# would make it fixed indefinitely once the server is stable). See the
+# Environment/atmosphere/events section below for the actual mod entry.
+# @WeatherLightingControl (WLC) drives actual precipitation every session
+# regardless of this roll - see src/wlcWeather.ts, which weights its own
+# custom snow patterns higher (snow occurs slightly more often than not)
+# specifically on Early Winter sessions, and to 0 otherwise.
 3759083264  @DDP-Climate-Zones          server
 
 # --- Misc/QoL ---

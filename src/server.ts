@@ -25,6 +25,7 @@ import { ensureFuelSystemVehicles } from "./fuelSystem.ts";
 import { LIGHTING_PRESET, tuneLightingConfig } from "./lighting.ts";
 import { tuneMapAccess } from "./mapAccess.ts";
 import { tuneWeather } from "./weather.ts";
+import { tuneWlcWeather } from "./wlcWeather.ts";
 import { tuneHazardZones } from "./hazards.ts";
 import { ensureClimateZones } from "./climateZones.ts";
 import { tuneNoBuildZones } from "./noBuildZones.ts";
@@ -63,6 +64,7 @@ import {
 } from "./difficulty.ts";
 import { tuneAnimalSpawns, tuneFoodScarcity, tuneMoneyScarcity } from "./economy.ts";
 import { loadMods, modParam, serverModParam } from "./mods.ts";
+import { filterModsForSeason, rollEarlyWinter } from "./season.ts";
 import { ensureConfig, type Settings } from "./config.ts";
 import { primeModConfigsIfNeeded } from "./prime.ts";
 
@@ -238,8 +240,10 @@ export async function doStart(s: Settings): Promise<void> {
   const allMods = await loadMods();
   await genConfig(s);
 
-  const mods = modParam(allMods);
-  const serverMods = serverModParam(allMods);
+  const earlyWinter = rollEarlyWinter();
+  const launchMods = filterModsForSeason(allMods, earlyWinter);
+  const mods = modParam(launchMods);
+  const serverMods = serverModParam(launchMods);
   await Deno.mkdir(PROFILE_DIR, { recursive: true });
   const extra = s.EXTRA_PARAMS.trim() ? s.EXTRA_PARAMS.trim().split(/\s+/) : [];
   const args = [
@@ -303,6 +307,7 @@ export async function doStart(s: Settings): Promise<void> {
   await tuneLightingConfig();
   await tuneMapAccess();
   await tuneWeather();
+  await tuneWlcWeather(earlyWinter);
   await tuneHazardZones();
   await tuneNoBuildZones();
   await ensureClimateZones();

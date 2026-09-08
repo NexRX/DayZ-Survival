@@ -195,6 +195,11 @@ export const AI_WARZONES_SETTINGS = `${PROFILE_DIR}/AIWarZones/AIWarZones_Settin
 export const ZOMBIE_HORDE_GENERAL_SETTINGS =
   `${PROFILE_DIR}/ZombieHorde/Settings/GeneralSettings.json`;
 
+// Weather Lighting Control self-generates this (with its own default
+// 30-pattern/9-sequence config) on first world load - see wlcWeather.ts,
+// which patches in 2 custom snow patterns without touching the rest.
+export const WLC_CONFIG_FILE = `${PROFILE_DIR}/WLC/weather_config.json`;
+
 // DDP Server Climate Zones self-generates this on first world load with a
 // default-template Zones array. Note: the mod's Steam page says
 // "profiles\DDP_ClimateZones\Config.json", but its actual runtime log says
