@@ -84,9 +84,16 @@ export async function tuneFoodScarcity(): Promise<void> {
 }
 
 // --- Animal populations (events.xml, Animal* events) ---
-const ANIMAL_NOMINAL_MULTIPLIER = 1.75;
+const ANIMAL_NOMINAL_MULTIPLIER = 2.1; // a bit higher than before - more huntable game
 
-const ANIMAL_MARKER = "<!-- dayz-survival:animal-spawns-tuned -->";
+// Unlike FOOD_MARKER/MONEY_MARKER above (pure one-shot flags), this marker
+// embeds the multiplier it was last tuned with. That lets bumping
+// ANIMAL_NOMINAL_MULTIPLIER later re-scale an already-tuned file relative to
+// its own vanilla baseline (nominal / appliedMultiplier) instead of either
+// silently no-op'ing forever (a bare marker would) or compounding on top of
+// the previous tune (re-running the plain multiply would).
+const ANIMAL_MARKER_PREFIX = "<!-- dayz-survival:animal-spawns-tuned:";
+const ANIMAL_MARKER_RE = /<!-- dayz-survival:animal-spawns-tuned:([\d.]+) -->/;
 const EVENT_BLOCK = /<event name="(Animal[^"]*)">([\s\S]*?)<\/event>/g;
 
 export async function tuneAnimalSpawns(): Promise<void> {
@@ -99,7 +106,9 @@ export async function tuneAnimalSpawns(): Promise<void> {
   }
 
   const text = await Deno.readTextFile(ECONOMY_EVENTS_FILE);
-  if (text.includes(ANIMAL_MARKER)) return; // already tuned, and not reset by a Steam update
+  const existingMarker = text.match(ANIMAL_MARKER_RE);
+  const appliedMultiplier = existingMarker ? Number(existingMarker[1]) : 1; // untuned vanilla baseline
+  if (appliedMultiplier === ANIMAL_NOMINAL_MULTIPLIER) return; // already at the target multiplier
 
   let changedCount = 0;
   let result = text.replace(EVENT_BLOCK, (whole, name: string, body: string) => {
@@ -108,7 +117,8 @@ export async function tuneAnimalSpawns(): Promise<void> {
     const nominal = Number(nominalMatch[1]);
     if (nominal === 0) return whole; // e.g. AnimalBear - left at its (rare-by-design) vanilla value
 
-    const newNominal = Math.round(nominal * ANIMAL_NOMINAL_MULTIPLIER);
+    const vanillaNominal = nominal / appliedMultiplier;
+    const newNominal = Math.round(vanillaNominal * ANIMAL_NOMINAL_MULTIPLIER);
     if (newNominal === nominal) return whole;
 
     changedCount++;
@@ -117,9 +127,14 @@ export async function tuneAnimalSpawns(): Promise<void> {
   });
 
   if (changedCount === 0) return;
-  result = result.replace("?>", `?>\n${ANIMAL_MARKER}`);
+  result = existingMarker
+    ? result.replace(ANIMAL_MARKER_RE, `${ANIMAL_MARKER_PREFIX}${ANIMAL_NOMINAL_MULTIPLIER} -->`)
+    : result.replace("?>", `?>\n${ANIMAL_MARKER_PREFIX}${ANIMAL_NOMINAL_MULTIPLIER} -->`);
   await Deno.writeTextFile(ECONOMY_EVENTS_FILE, result);
-  ok(`Raised population targets for ${changedCount} animal species in ${ECONOMY_EVENTS_FILE}`);
+  ok(
+    `Raised population targets for ${changedCount} animal species in ${ECONOMY_EVENTS_FILE} ` +
+      `(x${ANIMAL_NOMINAL_MULTIPLIER})`,
+  );
 }
 
 // --- Currency scarcity (types.xml, CJ187-Money-Euros-Only / CJ187-MoreMoney) ---

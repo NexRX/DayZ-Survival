@@ -157,15 +157,21 @@ export async function tuneStartingLoadouts(): Promise<void> {
 // inserted once, matched verbatim, so admin edits/removals are respected.
 const TERJE_SURVIVOR_ITEMS_CLOSE = /(<Loadout id="survivor"[\s\S]*?)(\s*<\/Items>\s*<\/Loadout>)/;
 
-// The single guaranteed starting weapon (a Baseball bat). This used to be a
-// `Selector type="RANDOM"` between 4 blunt weapons - see
-// TERJE_LEGACY_BLUNT_WEAPON_SELECTOR below. Bohemia's loadout parser
-// processes `<Item>`/`<Selector>` top-to-bottom and the first thing to claim
-// `position="@InHands"` wins, so an orphaned unconditional WoodenStick item
-// earlier in the file (from an older version of this function) silently
-// discarded every RANDOM roll. TERJE_LEGACY_ORPHANED_STICK strips that
-// leftover, and TERJE_LEGACY_BLUNT_WEAPON_SELECTOR replaces the old RANDOM
-// selector, so a live server converges to exactly one `@InHands` claim.
+// The single guaranteed starting weapon. Slotted onto the character's back
+// (the vanilla "Melee" attachment slot used by axes/machetes/bats/etc, worn
+// without occupying hands) and bound to quickbar slot 0, rather than
+// spawning directly in-hands - see TERJE_STARTING_WEAPON_ITEM_INHANDS below
+// for the migration path from this project's own previous version of this
+// same line. This used to be a `Selector type="RANDOM"` between 4 blunt
+// weapons - see TERJE_LEGACY_BLUNT_WEAPON_SELECTOR below. Bohemia's loadout
+// parser processes `<Item>`/`<Selector>` top-to-bottom and the first thing
+// to claim `position="@InHands"`/a given attachment slot wins, so an
+// orphaned unconditional WoodenStick item earlier in the file (from an even
+// older version of this function) silently discarded every RANDOM roll.
+// TERJE_LEGACY_ORPHANED_STICK strips that leftover, and
+// TERJE_LEGACY_BLUNT_WEAPON_SELECTOR/TERJE_STARTING_WEAPON_ITEM_INHANDS
+// replace the two older formats in turn, so a live server converges to
+// exactly one bat, worn on the back.
 const TERJE_LEGACY_ORPHANED_STICK =
   /\s*<!-- dayz-survival:starting-kit-added -->\s*<Item classname="WoodenStick" position="@InHands" \/>/;
 const TERJE_LEGACY_BLUNT_WEAPON_SELECTOR = `<Selector type="RANDOM">
@@ -174,12 +180,28 @@ const TERJE_LEGACY_BLUNT_WEAPON_SELECTOR = `<Selector type="RANDOM">
 				<Item classname="BaseballBat" position="@InHands" />
 				<Item classname="Crowbar" position="@InHands" />
 			</Selector>`;
-const TERJE_STARTING_WEAPON_ITEM = '<Item classname="BaseballBat" position="@InHands" />';
+// This project's own previous version of the starting weapon line (spawned
+// in-hands rather than on the back) - migrated to TERJE_STARTING_WEAPON_ITEM
+// below on any server that already has it.
+const TERJE_STARTING_WEAPON_ITEM_INHANDS = '<Item classname="BaseballBat" position="@InHands" />';
+const TERJE_STARTING_WEAPON_ITEM = '<Item classname="BaseballBat" position="Melee" quickbar="0" />';
 
 const TERJE_STARTING_KIT_ITEMS: string[] = [
   '<Item classname="Rag" count="4" />',
   '<Item classname="Map" />',
 ];
+
+// Terje's own shipped default "survivor" loadout already includes a RANDOM
+// pick between Plum/Apple/Pear/Tomato. This widens that same pool with one
+// more real vanilla classname (not invented) without guaranteeing it.
+// Idempotent the same way the rest of this file's regex substitutions are:
+// once Potato is inserted between Tomato and the closing tag, the exact
+// adjacency this pattern requires no longer exists, so a second run is a
+// no-op - and an admin who edits/removes the selector entirely is respected
+// (the pattern just stops matching).
+const TERJE_FRUIT_SELECTOR =
+  /(\t\t\t<Selector type="RANDOM">\n\t\t\t\t<Item classname="Plum" \/>\n\t\t\t\t<Item classname="Apple" \/>\n\t\t\t\t<Item classname="Pear" \/>\n\t\t\t\t<Item classname="Tomato" \/>\n)(\t\t\t<\/Selector>)/;
+const TERJE_FRUIT_ADDITION = '\t\t\t\t<Item classname="Potato" />\n';
 
 export async function tuneStartingKit(): Promise<void> {
   if (!(await exists(TERJE_LOADOUTS))) {
@@ -204,15 +226,25 @@ export async function tuneStartingKit(): Promise<void> {
   if (text.includes(TERJE_LEGACY_BLUNT_WEAPON_SELECTOR)) {
     text = text.replace(TERJE_LEGACY_BLUNT_WEAPON_SELECTOR, TERJE_STARTING_WEAPON_ITEM);
     removed.push("random blunt weapon selector");
+    added.push("BaseballBat (worn on back, quickbar 0)");
+  } else if (text.includes(TERJE_STARTING_WEAPON_ITEM_INHANDS)) {
+    text = text.replace(TERJE_STARTING_WEAPON_ITEM_INHANDS, TERJE_STARTING_WEAPON_ITEM);
+    removed.push("in-hands BaseballBat");
+    added.push("BaseballBat (worn on back, quickbar 0)");
   } else if (!text.includes(TERJE_STARTING_WEAPON_ITEM)) {
     text = text.replace(TERJE_SURVIVOR_ITEMS_CLOSE, `$1\n\t\t\t${TERJE_STARTING_WEAPON_ITEM}$2`);
-    added.push("BaseballBat");
+    added.push("BaseballBat (worn on back, quickbar 0)");
   }
 
   for (const itemXml of TERJE_STARTING_KIT_ITEMS) {
     if (text.includes(itemXml)) continue; // already present (this run or a previous one)
     text = text.replace(TERJE_SURVIVOR_ITEMS_CLOSE, `$1\n\t\t\t${itemXml}$2`);
     added.push(itemXml.match(/classname="([^"]+)"/)?.[1] ?? itemXml);
+  }
+
+  if (TERJE_FRUIT_SELECTOR.test(text)) {
+    text = text.replace(TERJE_FRUIT_SELECTOR, `$1${TERJE_FRUIT_ADDITION}$2`);
+    added.push("Potato (added to starting fruit/veg pool)");
   }
 
   if (added.length === 0 && removed.length === 0) return;
