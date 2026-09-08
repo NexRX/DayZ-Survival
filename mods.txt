@@ -308,6 +308,22 @@
 3789404408  @DZSurvivalServerPack
 
 # --- Environment/atmosphere/events ---
+# Nature Overhaul Redux is not a normal script mod - it ships a set of
+# vanilla-format "Static Object Spawner" JSON files that the mission has to
+# load directly via cfggameplay.json's WorldsData.objectSpawnersArr (see
+# src/natureOverhaul.ts, which copies its custom/*.json files into the
+# mission root and wires the array entries in). ~8,300 static objects across
+# 25 files - watch server FPS after a fresh deploy; @BuilderItems (Misc/QoL
+# section below) must stay loaded since a handful of placements use its
+# bldr_ classnames.
+3795177246  @Nature-Overhaul-Redux
+# Chernarus Overhaul - Standalone: town/city prop dressing (wrecks, roadblocks,
+# garbage, decals - no trees/bushes/clutter, by design, so it can be mixed
+# with any Nature Overhaul mod). Hooks in via a proper `modded class
+# MissionServer.OnInit()` (chains safely with other mods doing the same,
+# unlike the raw init.c-overwrite technique some older overhaul mods use) -
+# no mission-file wiring needed on our end.
+3632726388  @Chernarus-Overhaul-Standalone
 3012019528  @Lads-Lighting-Overhaul
 2536780687  @SkyZ-Skybox-Overhaul
 2289461232  @Namalsk-Survival
