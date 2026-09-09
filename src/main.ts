@@ -16,6 +16,7 @@ import { publishServerPack } from "./modPublish.ts";
 import { verifyServerPackScripts } from "./modVerify.ts";
 import { doSyncEditor } from "./editorSync.ts";
 import { auditMarket } from "./marketAudit.ts";
+import { buildCustomMapTextures } from "./customMap.ts";
 
 function statusLine(label: string, good: boolean, extra = ""): void {
   const mark = good ? c.green("✓") : c.dim("·");
@@ -156,7 +157,10 @@ const HELP = `Usage: deno task dayz [command]
   admin         Grant AI-menu / Community Online Tools admin access
   wipe          Reset world state, or remove the install entirely
   build-serverpack    Build serverpack/ (this project's own custom addons)
-                      into one publish-ready Workshop mod
+                      into one publish-ready Workshop mod - also re-encodes
+                      serverpack/assets/DZSurvivalCustomMap/*.png into the
+                      custom map addon's textures automatically (see
+                      build-custom-map below)
   publish-serverpack  Build, verify (boots the real server briefly to catch
                       script compile errors), then publish/update the
                       server pack as the one Workshop item bundling all
@@ -164,6 +168,11 @@ const HELP = `Usage: deno task dayz [command]
   verify-serverpack   Build the server pack and verify its scripts actually
                       compile, without publishing (same check publish-
                       serverpack runs automatically first)
+  build-custom-map    Re-encode serverpack/assets/DZSurvivalCustomMap/*.png
+                      into the DZSurvivalCustomMap addon's .paa textures on
+                      their own, without a full build-serverpack run - handy
+                      for quickly sanity-checking an edit (build-serverpack
+                      and publish-serverpack already do this step too)
   sync-editor   Copy the newest DayZ-Editor .dze save into the mission's
                 EditorFiles/ folder, ready for @DayZ-Editor-Loader to load
                 on next server start
@@ -221,6 +230,9 @@ async function main(): Promise<void> {
       break;
     case "verify-serverpack":
       await verifyServerPackScripts(await buildServerPack());
+      break;
+    case "build-custom-map":
+      await buildCustomMapTextures();
       break;
     case "sync-editor":
       await doSyncEditor();

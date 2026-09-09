@@ -19,6 +19,7 @@ import { exists } from "./steam.ts";
 import { fetchContentIds } from "./mods.ts";
 import { ensureDayZTools, ensureWinePrefix, signPboReal } from "./modSign.ts";
 import { ensureConfig, loadSettings } from "./config.ts";
+import { buildCustomMapTextures } from "./customMap.ts";
 
 export interface ServerPackAddon {
   /** Folder name under the pack's addons/ - also the built PBO's name. */
@@ -95,6 +96,11 @@ export async function buildServerPack(pack: ServerPackConfig = SERVERPACK): Prom
   const s = await ensureConfig(await loadSettings());
   await ensureDayZTools(s);
   await ensureWinePrefix();
+  // Re-encode DZSurvivalCustomMap's source PNGs (serverpack/assets/) into its
+  // addon's tourist/data/*.paa before packing, so editing the map art is a
+  // one-command (build-serverpack / publish-serverpack) affair - see
+  // src/customMap.ts.
+  await buildCustomMapTextures();
   const addons = await listAddons(pack);
   if (addons.length === 0) {
     die(`No addons found under ${pack.addonsDir} (expected a config.cpp in each).`);

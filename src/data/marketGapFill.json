@@ -4328,5 +4328,48 @@
   {
     "classNames": ["TP_ApocPickup_Wheel", "TP_ApocSuv_Wheel"],
     "template": "hatchbackwheel"
+  },
+  {
+    "classNames": ["evg_keycard_holder_camo", "evg_keycard_holder_leather"],
+    "category": "Utility",
+    "tier": "Common"
+  },
+  {
+    "classNames": [
+      "evg_keycards_White",
+      "evg_keycards_Yellow",
+      "evg_keycards_Green"
+    ],
+    "category": "Utility",
+    "tier": "Common"
+  },
+  {
+    "classNames": [
+      "evg_keycards_Blue",
+      "evg_keycards_Tisy01",
+      "evg_keycards_NWAF01",
+      "evg_keycards_Violet"
+    ],
+    "category": "Utility",
+    "tier": "Uncommon"
+  },
+  {
+    "classNames": [
+      "evg_keycards_Red",
+      "evg_keycards_NWAF02",
+      "evg_keycards_Tisy02",
+      "evg_keycards_NWAF03"
+    ],
+    "category": "Utility",
+    "tier": "Rare"
+  },
+  {
+    "classNames": [
+      "evg_keycards_Tisy03",
+      "evg_keycards_Tisy04",
+      "evg_keycards_Tisy05"
+    ],
+    "category": "Utility",
+    "tier": "Legendary"
   }
 ]

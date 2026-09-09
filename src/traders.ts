@@ -42,7 +42,11 @@ import {
 import { log, ok, warn } from "./ui.ts";
 import { exists } from "./steam.ts";
 import { MANAGED_MARKET_CATEGORIES } from "./market.ts";
-import { OLD_FOOD_CLASSNAMES, WOOD_SELL_ONLY_CLASSNAMES } from "./marketGapFill.ts";
+import {
+  KEYCARD_SELL_ONLY_CLASSNAMES,
+  OLD_FOOD_CLASSNAMES,
+  WOOD_SELL_ONLY_CLASSNAMES,
+} from "./marketGapFill.ts";
 
 const TRADERZONES_DIR = `${MISSION_DIR}/expansion/traderzones`;
 const TRADERS_DIR = `${MISSION_DIR}/expansion/traders`;
@@ -121,6 +125,16 @@ const WOOD_BUYSELL_OVERRIDES = Object.fromEntries(
   WOOD_SELL_ONLY_CLASSNAMES.map((c) => [c, CAN_ONLY_SELL]),
 );
 
+// @Custom-Keycards: find-only-but-sellable, same pattern as old food/wood
+// above - a card is worth *using* far more than selling it (see
+// marketGapFill.ts's KEYCARD_SELL_ONLY_CLASSNAMES/KEYCARD_SELL_PRICE_FIXES
+// for the deliberately modest payout scale). evg_keycards_All isn't in this
+// list at all - it was never wired into any Market category in the first
+// place (see customKeycards.ts), so there's nothing to restrict here.
+const KEYCARD_BUYSELL_OVERRIDES = Object.fromEntries(
+  KEYCARD_SELL_ONLY_CLASSNAMES.map((c) => [c, CAN_ONLY_SELL]),
+);
+
 // Same schema/currency as DayZ-Expansion-Market's own default trader
 // identity files. Categories reference Market category names under
 // profiles/ExpansionMod/Market/, which stay individually stock-capped by
@@ -165,6 +179,7 @@ export const CUSTOM_TRADER_IDENTITIES: TraderIdentity[] = [
     items: {
       ...OLD_FOOD_BUYSELL_OVERRIDES,
       ...WOOD_BUYSELL_OVERRIDES,
+      ...KEYCARD_BUYSELL_OVERRIDES,
     },
   },
   {

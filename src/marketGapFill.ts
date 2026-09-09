@@ -1334,6 +1334,42 @@ const EXPLOSIVES_GRENADE_PRICE = { min: 1500, max: 1500 };
 // server. Merged into the same hardcorePricesFixed pass as
 // EXPLOSIVES_PRICE_FIXES below.
 const TRQ_DECOY_GRENADE_PRICE_FIXES = { trq_decoygrenade: { min: 2000, max: 2000 } };
+
+// @Custom-Keycards: find-only, never purchasable (see traders.ts's
+// KEYCARD_BUYSELL_OVERRIDES, CanOnlySell) - same pattern as OLD_FOOD/WOOD
+// above. Deliberately priced as a modest cash-in, not a real alternative to
+// actually using the card: each figure below is the exact, final sell
+// payout (SellPricePercent forced to 100 in the dedicated loop below, same
+// as WOOD_SELL_ONLY_PRICE_FIXES), roughly a fifth of what the card would
+// cost to buy if it were purchasable - well under half the value of the
+// loot it unlocks. Still climbs by the same common->rarest ladder agreed
+// with the admin (White < Yellow < Green < Blue < Tisy01 < NWAF01 < Violet
+// < Red < NWAF02 < Tisy02 < NWAF03 < Tisy03 < Tisy04 < Tisy05), so a rarer
+// card is always worth more to sell too, just never close to its real
+// value. evg_keycards_All (master key) is deliberately excluded - admin-
+// only, never purchasable OR sellable. Ground-loot nominal/min for these
+// same classnames lives in customKeycards.ts.
+const KEYCARD_SELL_PRICE_FIXES: Record<string, number> = {
+  evg_keycard_holder_camo: 300,
+  evg_keycard_holder_leather: 400,
+  evg_keycards_white: 500,
+  evg_keycards_yellow: 800,
+  evg_keycards_green: 1000,
+  evg_keycards_blue: 1500,
+  evg_keycards_tisy01: 1800,
+  evg_keycards_nwaf01: 2000,
+  evg_keycards_violet: 2200,
+  evg_keycards_red: 4000,
+  evg_keycards_nwaf02: 5000,
+  evg_keycards_tisy02: 5500,
+  evg_keycards_nwaf03: 6500,
+  evg_keycards_tisy03: 9000,
+  evg_keycards_tisy04: 11000,
+  evg_keycards_tisy05: 13000,
+};
+// Exported so traders.ts can mark every one of these CanOnlySell without a
+// second, hand-maintained classname list to drift out of sync.
+export const KEYCARD_SELL_ONLY_CLASSNAMES = Object.keys(KEYCARD_SELL_PRICE_FIXES);
 const EXPLOSIVES_PRICE_FIXES: Record<string, { min: number; max: number }> = Object.fromEntries(
   [
     "m67grenade",
@@ -1953,6 +1989,40 @@ export async function ensureMarketGapFill(): Promise<void> {
   if (woodSellPercentsFixed > 0) {
     ok(
       `Market gap-fill: set an exact flat sell-only price on ${woodSellPercentsFixed} wood item(s) (see WOOD_SELL_ONLY_PRICE_FIXES)`,
+    );
+  }
+
+  // @Custom-Keycards: same exact-flat-price-plus-100%-sell-percent pattern
+  // as wood above - see KEYCARD_SELL_PRICE_FIXES for why these are
+  // deliberately modest, final payouts rather than a scaled-down percent of
+  // a bigger "buy" price.
+  let keycardSellPricesFixed = 0;
+  for (const [key, exactPrice] of Object.entries(KEYCARD_SELL_PRICE_FIXES)) {
+    const item = classNameItem.get(key);
+    const owner = classNameOwner.get(key);
+    if (!item || !owner) continue;
+
+    let touched = false;
+    if (item.MinPriceThreshold !== exactPrice) {
+      item.MinPriceThreshold = exactPrice;
+      touched = true;
+    }
+    if (item.MaxPriceThreshold !== exactPrice) {
+      item.MaxPriceThreshold = exactPrice;
+      touched = true;
+    }
+    if (item.SellPricePercent !== 100) {
+      item.SellPricePercent = 100;
+      touched = true;
+    }
+    if (touched) {
+      dirty.add(owner);
+      keycardSellPricesFixed++;
+    }
+  }
+  if (keycardSellPricesFixed > 0) {
+    ok(
+      `Market gap-fill: set an exact flat sell-only price on ${keycardSellPricesFixed} Custom-Keycards item(s) (see KEYCARD_SELL_PRICE_FIXES)`,
     );
   }
 

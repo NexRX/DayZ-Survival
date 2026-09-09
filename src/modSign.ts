@@ -17,7 +17,7 @@ import { ensureLogin, exists, runSteamcmdQuietForceWindows } from "./steam.ts";
 import type { Settings } from "./config.ts";
 
 /** Convert an absolute Unix path to the Wine `Z:\...` path DsUtils expects. */
-function toWinePath(unixPath: string): string {
+export function toWinePath(unixPath: string): string {
   if (!unixPath.startsWith("/")) {
     throw new Error(`toWinePath expects an absolute path, got: ${unixPath}`);
   }

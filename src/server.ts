@@ -95,6 +95,15 @@ serverNightTimeAcceleration = 4; // halved night length (was 2) - user found nig
 serverTimePersistent        = 0;
 lightingConfig              = ${LIGHTING_PRESET};
 
+// Without this, the mission's cfggameplay.json (UIData.use3DMap,
+// MapData.ignoreMapOwnership, PlayerData.disable2dMap, etc. - see
+// extendedTouristMap.ts) is silently ignored entirely and every field
+// falls back to its hardcoded vanilla default (use3DMap=false), no matter
+// what's written to the JSON file. lightingConfig above is unaffected by
+// this since it has its own independent serverDZ.cfg fallback, but nothing
+// else in cfggameplay.json does.
+enableCfgGameplayFile = 1;
+
 guaranteedUpdates = 1;
 loginQueueConcurrentPlayers = 5;
 loginQueueMaxPlayers        = 500;

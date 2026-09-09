@@ -19,6 +19,10 @@ daytools/
 .wine-daytools/
 daytools-out/
 
+# --- Scratch space for extracted/decoded game assets (copyrighted BI
+# content - never commit, see chat history for how these were produced) ---
+.mapwork/
+
 # --- Editor / OS noise ---
 *.swp
 *~

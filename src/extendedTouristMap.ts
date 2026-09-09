@@ -20,6 +20,13 @@
 //    builds its marker/pin system on top of. Per the mod's own Workshop
 //    page: "How to disable the 2D map on your server: ... Change 'false'
 //    to 'true'".
+// 2b. Sets cfggameplay.json's PlayerData.disable2dMap = true - a second,
+//    separate vanilla field from use3DMap. CfgGameplayHandler.GetDisable2dMap()
+//    has zero callers anywhere in the moddable scripts, which means the
+//    engine reads it natively as a hard kill-switch for its own 2D map
+//    fallback (independent of the scripted MENU_MAP path that use3DMap
+//    already gates). Without this, players could still get kicked into a
+//    fullscreen interactive 2D map instead of the 3D held-map experience.
 // 3. Force-sets UseGPSReceiver/SlotGPSReceiver in the mod's own
 //    Settings.json (self-generated on first server start, see paths.ts) -
 //    both on, so the live position marker only shows if the player has a
@@ -44,6 +51,10 @@ interface CfgGameplay {
     ignoreMapOwnership?: boolean;
     [key: string]: unknown;
   };
+  PlayerData?: {
+    disable2dMap?: boolean;
+    [key: string]: unknown;
+  };
   [key: string]: unknown;
 }
 
@@ -56,17 +67,21 @@ export async function tuneMapGameplayConfig(): Promise<void> {
   const cfg: CfgGameplay = JSON.parse(await Deno.readTextFile(CFG_GAMEPLAY_FILE));
   if (!cfg.UIData) cfg.UIData = {};
   if (!cfg.MapData) cfg.MapData = {};
+  if (!cfg.PlayerData) cfg.PlayerData = {};
 
   const wantUse3DMap = cfg.UIData.use3DMap !== true;
   const wantIgnoreMapOwnershipReverted = cfg.MapData.ignoreMapOwnership !== false;
-  if (!wantUse3DMap && !wantIgnoreMapOwnershipReverted) return;
+  const wantDisable2dMap = cfg.PlayerData.disable2dMap !== true;
+  if (!wantUse3DMap && !wantIgnoreMapOwnershipReverted && !wantDisable2dMap) return;
 
   cfg.UIData.use3DMap = true;
   cfg.MapData.ignoreMapOwnership = false;
+  cfg.PlayerData.disable2dMap = true;
   await Deno.writeTextFile(CFG_GAMEPLAY_FILE, JSON.stringify(cfg, null, "\t"));
   ok(
-    `Enabled the 3D held map (UIData.use3DMap) and reverted the M-key map shortcut ` +
-      `(MapData.ignoreMapOwnership) to vanilla in ${CFG_GAMEPLAY_FILE}`,
+    `Enabled the 3D held map (UIData.use3DMap), reverted the M-key map shortcut ` +
+      `(MapData.ignoreMapOwnership), and disabled the native 2D map fallback ` +
+      `(PlayerData.disable2dMap) in ${CFG_GAMEPLAY_FILE}`,
   );
 }
 

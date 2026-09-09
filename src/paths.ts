@@ -274,3 +274,14 @@ export const DAYZ_TOOLS_APPID = "830640";
 export const DAYTOOLS_DIR = `${ROOT}/daytools`;
 export const WINE_PREFIX_DIR = `${ROOT}/.wine-daytools`;
 export const DSSIGNFILE_EXE = `${DAYTOOLS_DIR}/Bin/DsUtils/DSSignFile.exe`;
+
+// Same DayZ Tools install as above, used to re-encode the custom physical
+// map's textures (PNG -> PAA) - see src/customMap.ts.
+export const IMAGETOPAA_EXE = `${DAYTOOLS_DIR}/Bin/ImageToPAA/ImageToPAA.exe`;
+
+// Editable source artwork for the DZSurvivalCustomMap addon (see
+// serverpack/addons/DZSurvivalCustomMap) - PNGs here are the checked-in
+// source of truth; src/customMap.ts's buildCustomMapTextures() re-encodes
+// them into that addon's tourist/data/*.paa on demand.
+export const CUSTOM_MAP_ASSETS_DIR = `${SERVERPACK.dir}/assets/DZSurvivalCustomMap`;
+export const CUSTOM_MAP_ADDON_DATA_DIR = `${SERVERPACK.addonsDir}/DZSurvivalCustomMap/tourist/data`;
