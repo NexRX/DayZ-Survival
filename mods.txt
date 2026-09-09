@@ -366,8 +366,12 @@
 # mission root and wires the array entries in). ~8,300 static objects across
 # 25 files - watch server FPS after a fresh deploy; @BuilderItems (Misc/QoL
 # section below) must stay loaded since a handful of placements use its
-# bldr_ classnames.
-3795177246  @Nature-Overhaul-Redux
+# bldr_ classnames. Its actual .pbo is a near-empty stub (just a ReadMe.txt,
+# no CfgPatches/assets) - all placed objects render using classnames from
+# other already-required mods, so clients never need this in their -mod=
+# list at all; server-only avoids requiring it as a Workshop download and
+# sidesteps a connect-time "Missing PBO" kick some clients hit against it.
+3795177246  @Nature-Overhaul-Redux    server
 # Chernarus Overhaul - Standalone: town/city prop dressing (wrecks, roadblocks,
 # garbage, decals - no trees/bushes/clutter, by design, so it can be mixed
 # with any Nature Overhaul mod). Hooks in via a proper `modded class
