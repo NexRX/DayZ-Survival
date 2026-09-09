@@ -49,12 +49,18 @@
 # see the items you placed"). ---
 2961092390  @R22R-Fortifications-Assets
 
-# --- Forever_Burning_Campfire: static/permanent light-source prop pack,
-# used to actually light up the trader town (the DayZ-Editor NetworkLight/
+# NOTE: Forever_Burning_Campfire (1890912719) used to be a separate
+# Workshop mod here - static/permanent light-source prop pack, used to
+# actually light up the trader town (the DayZ-Editor NetworkLight/
 # NetworkSpotLight helper objects placed earlier turned out not to render
 # in the live mission - these are real always-on fire/lamp props instead).
-# Replaces NeonMurder-Lights (removed). Requires @CF (already present above). ---
-1890912719  @Forever_Burning_Campfire
+# Its author's Steam page permits redistribution, so its content (all
+# FBF_* classes/scripts) is now merged as-is into
+# serverpack/addons/forever_burning_campfire and ships inside
+# @DZSurvivalServerPack instead - one less mod players need to subscribe
+# to. See src/foreverBurningCampfire.ts (updated to no longer gate on this
+# mod's own presence in mods.txt, since its classes are now always
+# present via the server pack).
 
 # --- DayZ Expansion, modular set (matches RemnantZ; replaces the old
 # all-in-one "DayZ-Expansion-Bundle" to avoid double-downloading/duplicating
@@ -271,7 +277,12 @@
 # release.
 3263494703  @Search-For-Charcoal
 3237950572  @Old-Food
-3498006019  @Zens-Fire-Sticks
+
+# NOTE: Zens-Fire-Sticks (3498006019, ZenFireplaceStick) used to be a
+# separate mod here - lets a SharpWoodenStick be attached to an existing
+# fireplace to extend its burn time. Author's page permits redistribution;
+# merged into serverpack/addons/zenfireplacestick, ships inside
+# @DZSurvivalServerPack instead.
 
 # NOTE: @Keep-It-Dead-ProjectBR (3417831913) was removed here. Its
 # corpse-to-zombie conversion feature (SpawnZombieOnPlayersDeath) fires for
@@ -329,7 +340,13 @@
 2289461232  @Namalsk-Survival
 2065443797  @AirRaid
 2975514806  @CJ187-RandomMineFields
-2002754349  @HeliWreckNoLoot
+
+# NOTE: HeliWreckNoLoot (2002754349) used to be a separate mod here -
+# config-only tweak stripping loot slots from a set of Nitrix_Wreck_*/
+# vehicle-wreck/melee-weapon props (no scripts, just CfgVehicles
+# overrides). Author's page permits redistribution; merged into
+# serverpack/addons/heliwrecknoloot, ships inside @DZSurvivalServerPack
+# instead.
 3788476225  @Zens-Shooting-Stars
 3726714048  @IronhordeLighting
 3659550946  @Signal-Overnight-Stay
@@ -456,18 +473,31 @@
 #     mission is Chernarus (dayzOffline.chernarusplus) - it'd just be a
 #     broken/pointless item showing the wrong island here.
 #   - "Old Food" (3237950572) is already above, in Food/survival mechanics.
-#   - "SimpleMatch" (2848676009) is skipped: it and "Zens-Zippo-Lighter"
-#     (below) both rework the vanilla PetrolLighter class as a refillable
-#     light source, and running both crashes the server during config
-#     compile every time (confirmed by bisecting down to just this pair, in
-#     both load orders - a genuine mutual incompatibility, not an ordering
-#     fix). Zens-Zippo-Lighter is kept, being the mod explicitly named in
-#     the reference pack's own list.
+#   - "SimpleMatch" (2848676009) is skipped: it and Zens-Zippo-Lighter's
+#     ZenPetrolLighter/ZenZippoLighter classes (now bundled below) both
+#     rework the vanilla PetrolLighter class as a refillable light source,
+#     and running both crashes the server during config compile every
+#     time (confirmed by bisecting down to just this pair, in both load
+#     orders - a genuine mutual incompatibility, not an ordering fix).
+#     Zens-Zippo-Lighter's content is kept, being the mod explicitly named
+#     in the reference pack's own list.
 # What's left, all standalone content with no further setup needed: ---
 3229104508  @A-Hunters-Ritual
 2834577714  @Burning-Mutant
 2867537797  @Freezing-Mutant
-3170285574  @Zens-Zippo-Lighter
+
+# NOTE: Zens-Zippo-Lighter (3170285574, ZenZippo) used to be a separate
+# mod here - refillable Zippo-style lighter (ZenPetrolLighter/
+# ZenZippoLighter and colour variants). Author's page permits
+# redistribution; merged into serverpack/addons/zenzippo, ships inside
+# @DZSurvivalServerPack instead. Its reference types.xml was already
+# merged into the mission's db/types.xml by src/modTypes.ts while this
+# mod was still standalone - those entries persist untouched (additive
+# merge, never removed - see modTypes.ts's own comment), so its items
+# keep spawning in the loot economy with no further action needed. The
+# now-unused "@Zens-Zippo-Lighter" entry left in modTypes.ts's
+# MOD_TYPES_SOURCES is harmless dead weight (a Set lookup that simply
+# never matches again).
 3036748011  @Buddys-BoltZ
 
 # Server-side-only AI extras (loaded via -servermod=, not downloaded by

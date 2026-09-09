@@ -1,5 +1,8 @@
-// Forever_Burning_Campfire (@Forever_Burning_Campfire) wires its ambience
-// light/fire props into the custom trader city via DayZ-Expansion-Core's
+// Forever_Burning_Campfire's FBF_* classes (originally the standalone
+// @Forever_Burning_Campfire mod, since repacked into
+// serverpack/addons/forever_burning_campfire - see mods.txt - so they're
+// now always present via @DZSurvivalServerPack) wire ambience light/fire
+// props into the custom trader city via DayZ-Expansion-Core's
 // EXPANSION_OBJECTS_DIR placed-object file, the same mechanism traders.ts's
 // traderMapLine() uses for trader NPCs.
 //
@@ -20,7 +23,6 @@ import type { Mod } from "./mods.ts";
 import { exists } from "./steam.ts";
 import { ok } from "./ui.ts";
 
-const MOD_NAME = "@Forever_Burning_Campfire";
 const OBJECTS_FILE = `${EXPANSION_OBJECTS_DIR}/ForeverBurningCampfire.map`;
 
 interface CampfirePlacement {
@@ -55,8 +57,7 @@ function objectMapLine(p: CampfirePlacement, origin: [number, number, number]): 
   return `${p.className}|${pos}|${orientation}|0|0|`;
 }
 
-export async function ensureForeverBurningCampfireWired(mods: Mod[]): Promise<void> {
-  if (!mods.some((m) => m.name === MOD_NAME)) return;
+export async function ensureForeverBurningCampfireWired(_mods: Mod[]): Promise<void> {
   if (!CUSTOM_POSITION) return; // same guard as traders.ts's own placements
   const origin = CUSTOM_POSITION;
 
@@ -68,7 +69,7 @@ export async function ensureForeverBurningCampfireWired(mods: Mod[]): Promise<vo
 
   await Deno.writeTextFile(OBJECTS_FILE, body);
   ok(
-    `Wrote ${PLACEMENTS.length} ${MOD_NAME} ambience prop(s) to ${OBJECTS_FILE} ` +
+    `Wrote ${PLACEMENTS.length} Forever_Burning_Campfire ambience prop(s) to ${OBJECTS_FILE} ` +
       "(FBF_Fireplace itself is spawned/ignited separately - see " +
       "serverpack/addons/DZSurvivalTraderFireplace)",
   );
