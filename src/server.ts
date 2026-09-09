@@ -37,6 +37,7 @@ import { ensureNecromutantWired } from "./necromutant.ts";
 import { ensureForeverBurningCampfireWired } from "./foreverBurningCampfire.ts";
 import { ensureNatureOverhaulWired } from "./natureOverhaul.ts";
 import { ensureDecoyGrenadeTypeWired } from "./decoyGrenades.ts";
+import { ensureExpansionLootGapsWired } from "./expansionLootGaps.ts";
 import { ensureOpticsWired } from "./optics.ts";
 import { ensureTgkWeaponPackWired } from "./tgkWeaponPack.ts";
 import {
@@ -304,6 +305,7 @@ export async function doStart(s: Settings): Promise<void> {
   await ensureTgkWeaponPackWired(allMods);
   await ensureCustomKeycardsTypesWired(allMods);
   await ensureDecoyGrenadeTypeWired(allMods);
+  await ensureExpansionLootGapsWired(allMods);
   await ensureCustomKeycardsLootTables(allMods);
   await ensureCustomKeycardsSecuredBuildings(allMods);
   await ensureMilitaryMonsterGarrisons(allMods);
