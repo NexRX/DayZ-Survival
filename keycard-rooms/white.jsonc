@@ -1,0 +1,100 @@
+// berinzino building door id 0 & 3
+{
+  "BuildingClassName": "Land_House_2B02",
+  "BuildingPosition": [12272.5927734375, 25.024688720703126, 9474.1142578125],
+  "BuildingDoors": [
+    {
+      "DoorId": 0,
+      "AutoCloseTime": 60.0,
+      "ItemsToOpen": ["evg_keycards_Tisy01", "evg_keycards_Red"],
+      "DamageToItem": 30.0,
+      "OpenSound": 1,
+      "ErrorSound": 1,
+      "CloseSound": 1,
+      "AlarmSound": 0,
+      "AlarmSoundSetName": "CK_KeycardAlarm_SoundSet",
+      "AlarmPositions": [[0.0, 0.0, 0.0]],
+      "Notification": 0,
+      "NotificationLocationName": "Zelenogorsk",
+      "NotificationText": "Keycard Room was unlocked at %1",
+      "NotificationTime": 15,
+      "LootCrates": [
+        {
+          "ClassName": "evg_MediumCrate_01",
+          "Position": [
+            1234.5670166015626, 1234.5670166015626, 1234.5670166015626,
+          ],
+          "Orientation": [0.0, 0.0, 0.0],
+          "SpawnChance": 25.0,
+          "SpawnType": 0,
+          "UnlockTime": 5,
+          "ItemsToOpen": ["Lockpick"],
+          "DamageToItem": 25.0,
+          "LootTableNames": ["0_DefaultLootTable"],
+        },
+      ],
+    },
+  ],
+}
+
+// Building door id 0
+{
+    "BuildingClassName": "Land_House_1W09_Yellow",
+    "BuildingPosition": [
+        3272.26953125,
+        194.380126953125,
+        3880.176513671875
+    ],
+    "BuildingDoors": [
+        {
+            "DoorId": 0,
+            "AutoCloseTime": 60.0,
+            "ItemsToOpen": [
+                "evg_keycards_Tisy01",
+                "evg_keycards_Red"
+            ],
+            "DamageToItem": 30.0,
+            "OpenSound": 1,
+            "ErrorSound": 1,
+            "CloseSound": 1,
+            "AlarmSound": 0,
+            "AlarmSoundSetName": "CK_KeycardAlarm_SoundSet",
+            "AlarmPositions": [
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            ],
+            "Notification": 0,
+            "NotificationLocationName": "Zelenogorsk",
+            "NotificationText": "Keycard Room was unlocked at %1",
+            "NotificationTime": 15,
+            "LootCrates": [
+                {
+                    "ClassName": "evg_MediumCrate_01",
+                    "Position": [
+                        1234.5670166015626,
+                        1234.5670166015626,
+                        1234.5670166015626
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "SpawnChance": 25.0,
+                    "SpawnType": 0,
+                    "UnlockTime": 5,
+                    "ItemsToOpen": [
+                        "Lockpick"
+                    ],
+                    "DamageToItem": 25.0,
+                    "LootTableNames": [
+                        "0_DefaultLootTable"
+                    ]
+                }
+            ]
+        }
+    ]
+}

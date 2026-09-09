@@ -1,0 +1,226 @@
+// Main door ID 1, has another side door ID 0
+{
+  "BuildingClassName": "Land_Repair_Center",
+  "BuildingPosition": [1521.462646484375, 455.3061828613281, 14060.7705078125],
+  "BuildingDoors": [
+    {
+      "DoorId": 0,
+      "AutoCloseTime": 60.0,
+      "ItemsToOpen": ["evg_keycards_Tisy01", "evg_keycards_Red"],
+      "DamageToItem": 30.0,
+      "OpenSound": 1,
+      "ErrorSound": 1,
+      "CloseSound": 1,
+      "AlarmSound": 0,
+      "AlarmSoundSetName": "CK_KeycardAlarm_SoundSet",
+      "AlarmPositions": [[0.0, 0.0, 0.0]],
+      "Notification": 0,
+      "NotificationLocationName": "Zelenogorsk",
+      "NotificationText": "Keycard Room was unlocked at %1",
+      "NotificationTime": 15,
+      "LootCrates": [
+        {
+          "ClassName": "evg_MediumCrate_01",
+          "Position": [
+            1234.5670166015626, 1234.5670166015626, 1234.5670166015626
+          ],
+          "Orientation": [0.0, 0.0, 0.0],
+          "SpawnChance": 25.0,
+          "SpawnType": 0,
+          "UnlockTime": 5,
+          "ItemsToOpen": ["Lockpick"],
+          "DamageToItem": 25.0,
+          "LootTableNames": ["0_DefaultLootTable"]
+        }
+      ]
+    }
+  ]
+}
+
+// Big Bunker kind: Two main doors ID 1 and 0
+{
+    "BuildingClassName": "Land_Tisy_Garages",
+    "BuildingPosition": [
+        1539.5443115234376,
+        455.61492919921877,
+        14175.9208984375
+    ],
+    "BuildingDoors": [
+        {
+            "DoorId": 0,
+            "AutoCloseTime": 60.0,
+            "ItemsToOpen": [
+                "evg_keycards_Tisy01",
+                "evg_keycards_Red"
+            ],
+            "DamageToItem": 30.0,
+            "OpenSound": 1,
+            "ErrorSound": 1,
+            "CloseSound": 1,
+            "AlarmSound": 0,
+            "AlarmSoundSetName": "CK_KeycardAlarm_SoundSet",
+            "AlarmPositions": [
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            ],
+            "Notification": 0,
+            "NotificationLocationName": "Zelenogorsk",
+            "NotificationText": "Keycard Room was unlocked at %1",
+            "NotificationTime": 15,
+            "LootCrates": [
+                {
+                    "ClassName": "evg_MediumCrate_01",
+                    "Position": [
+                        1234.5670166015626,
+                        1234.5670166015626,
+                        1234.5670166015626
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "SpawnChance": 25.0,
+                    "SpawnType": 0,
+                    "UnlockTime": 5,
+                    "ItemsToOpen": [
+                        "Lockpick"
+                    ],
+                    "DamageToItem": 25.0,
+                    "LootTableNames": [
+                        "0_DefaultLootTable"
+                    ]
+                }
+            ]
+        }
+    ]
+}
+
+
+// MILITARY CONTAINER DOOR ID 1 & 0
+{
+    "BuildingClassName": "Land_Container_1Mo",
+    "BuildingPosition": [
+        1550.60693359375,
+        453.7609558105469,
+        14128.9111328125
+    ],
+    "BuildingDoors": [
+        {
+            "DoorId": 0,
+            "AutoCloseTime": 60.0,
+            "ItemsToOpen": [
+                "evg_keycards_Tisy01",
+                "evg_keycards_Red"
+            ],
+            "DamageToItem": 30.0,
+            "OpenSound": 1,
+            "ErrorSound": 1,
+            "CloseSound": 1,
+            "AlarmSound": 0,
+            "AlarmSoundSetName": "CK_KeycardAlarm_SoundSet",
+            "AlarmPositions": [
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            ],
+            "Notification": 0,
+            "NotificationLocationName": "Zelenogorsk",
+            "NotificationText": "Keycard Room was unlocked at %1",
+            "NotificationTime": 15,
+            "LootCrates": [
+                {
+                    "ClassName": "evg_MediumCrate_01",
+                    "Position": [
+                        1234.5670166015626,
+                        1234.5670166015626,
+                        1234.5670166015626
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "SpawnChance": 25.0,
+                    "SpawnType": 0,
+                    "UnlockTime": 5,
+                    "ItemsToOpen": [
+                        "Lockpick"
+                    ],
+                    "DamageToItem": 25.0,
+                    "LootTableNames": [
+                        "0_DefaultLootTable"
+                    ]
+                }
+            ]
+        }
+    ]
+}
+
+
+// Big Mil BUilding Door id 0
+{
+    "BuildingClassName": "Land_Mil_Barracks5",
+    "BuildingPosition": [
+        1693.4127197265626,
+        457.40460205078127,
+        14179.1728515625
+    ],
+    "BuildingDoors": [
+        {
+            "DoorId": 0,
+            "AutoCloseTime": 60.0,
+            "ItemsToOpen": [
+                "evg_keycards_Tisy01",
+                "evg_keycards_Red"
+            ],
+            "DamageToItem": 30.0,
+            "OpenSound": 1,
+            "ErrorSound": 1,
+            "CloseSound": 1,
+            "AlarmSound": 0,
+            "AlarmSoundSetName": "CK_KeycardAlarm_SoundSet",
+            "AlarmPositions": [
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            ],
+            "Notification": 0,
+            "NotificationLocationName": "Zelenogorsk",
+            "NotificationText": "Keycard Room was unlocked at %1",
+            "NotificationTime": 15,
+            "LootCrates": [
+                {
+                    "ClassName": "evg_MediumCrate_01",
+                    "Position": [
+                        1234.5670166015626,
+                        1234.5670166015626,
+                        1234.5670166015626
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "SpawnChance": 25.0,
+                    "SpawnType": 0,
+                    "UnlockTime": 5,
+                    "ItemsToOpen": [
+                        "Lockpick"
+                    ],
+                    "DamageToItem": 25.0,
+                    "LootTableNames": [
+                        "0_DefaultLootTable"
+                    ]
+                }
+            ]
+        }
+    ]
+}

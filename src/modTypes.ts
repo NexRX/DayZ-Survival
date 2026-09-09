@@ -58,6 +58,7 @@ const MOD_TYPES_SOURCES = new Set([
   "@TP-Apoc-M1025",
   "@TP-Apoc-Pickup",
   "@AnimatedDynamicHelicopters",
+  "@Terje-Radiation",
 ]);
 
 const TYPE_BLOCK = /<type name="([^"]+)">[\s\S]*?<\/type>/g;

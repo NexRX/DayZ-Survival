@@ -203,11 +203,6 @@ export const AIRBORNE_AI_SETTINGS = `${PROFILE_DIR}/AirborneAI/AirborneAI_Settin
 // zones already pre-populated. See aiWorldEvents.ts.
 export const AI_WARZONES_SETTINGS = `${PROFILE_DIR}/AIWarZones/AIWarZones_Settings.json`;
 
-// hSF Zombie Horde Event self-generates these on first world load. See
-// aiWorldEvents.ts.
-export const ZOMBIE_HORDE_GENERAL_SETTINGS =
-  `${PROFILE_DIR}/ZombieHorde/Settings/GeneralSettings.json`;
-
 // Weather Lighting Control self-generates this (with its own default
 // 30-pattern/9-sequence config) on first world load - see wlcWeather.ts,
 // which patches in 2 custom snow patterns without touching the rest.

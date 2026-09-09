@@ -59,6 +59,13 @@
         "MaxPlayers": 255,
         "MaxPatrols": 9
       }
+    ],
+    "RadiationGuards": [
+      {
+        "MinPlayers": 0,
+        "MaxPlayers": 255,
+        "MaxPatrols": 2
+      }
     ]
   },
   "Patrols": [
@@ -677,6 +684,55 @@
       "WaypointInterpolation": "",
       "UseRandomWaypointAsStartPoint": 0,
       "Waypoints": [[7650.0, 400.0, 11150.0]]
+    },
+    {
+      "Name": "Radiation_Guards_StarySobor",
+      "Persist": 1,
+      "Faction": "Raiders",
+      "Formation": "RANDOM",
+      "FormationScale": -1.0,
+      "FormationLooseness": 0.5,
+      "Loadout": "NBCLoadout",
+      "Units": [],
+      "NumberOfAI": -4,
+      "Behaviour": "ROAMING",
+      "LootingBehaviour": "DEFAULT | UPGRADE",
+      "Speed": "RANDOM_NONSTATIC",
+      "UnderThreatSpeed": "SPRINT",
+      "DefaultStance": "STANDING",
+      "DefaultLookAngle": 0.0,
+      "CanBeLooted": 1,
+      "UnlimitedReload": 0,
+      "SniperProneDistanceThreshold": 100.0,
+      "AccuracyMin": -1.0,
+      "AccuracyMax": -1.0,
+      "ThreatDistanceLimit": -1.0,
+      "NoiseInvestigationDistanceLimit": -1.0,
+      "MaxFlankingDistance": -1.0,
+      "EnableFlankingOutsideCombat": -1,
+      "DamageMultiplier": -1.0,
+      "DamageReceivedMultiplier": -1.0,
+      "HeadshotResistance": 0.0,
+      "CanSpawnInContaminatedArea": 1,
+      "CanBeTriggeredByAI": 1,
+      "MinDistRadius": 100.0,
+      "MaxDistRadius": 500.0,
+      "DespawnRadius": 800.0,
+      "MinSpreadRadius": 0.0,
+      "MaxSpreadRadius": 0.0,
+      "Chance": 1.0,
+      "DespawnTime": -1.0,
+      "RespawnTime": 1800.0,
+      "LoadBalancingCategory": "RadiationGuards",
+      "ObjectClassName": "",
+      "WaypointInterpolation": "",
+      "UseRandomWaypointAsStartPoint": 0,
+      "Waypoints": [
+        [6067.79, 200.0, 7766.76],
+        [6150.0, 200.0, 7700.0],
+        [5980.0, 200.0, 7830.0],
+        [6020.0, 200.0, 7680.0]
+      ]
     }
   ]
 }

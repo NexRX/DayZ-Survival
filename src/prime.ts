@@ -29,7 +29,6 @@ import {
   TERJE_RESPAWNS,
   TERJE_START_SCREEN_CFG,
   VEHICLE_3PP_WHITELIST,
-  ZOMBIE_HORDE_GENERAL_SETTINGS,
 } from "./paths.ts";
 import { log, ok, warn } from "./ui.ts";
 import { exists } from "./steam.ts";
@@ -54,7 +53,6 @@ const PRIME_TARGETS = [
   KNOCK_KNOCK_ZOMBIES_SETTINGS,
   AIRBORNE_AI_SETTINGS,
   AI_WARZONES_SETTINGS,
-  ZOMBIE_HORDE_GENERAL_SETTINGS,
   CLIMATE_ZONES_SETTINGS,
 ];
 

@@ -164,15 +164,9 @@
 3472298147  @Airborne-AI
 3521304609  @Ai-Warzone
 
-# NOTE: hSF-Zombie-Horde-Event (3689174025) used to be a separate mod here.
-# Author's page permits redistribution; merged into
-# serverpack/addons/zombiehorde, ships inside @DZSurvivalServerPack
-# instead.
-
-# Sector 31 - Dynamic Hordes: persistent, roaming (not one-off event) infected
-# hordes that travel between weighted POIs, react to gunfire/explosions/
-# engine noise, and hunt players - distinct from the one-shot hSF-Zombie-
-# Horde-Event above. 100% server-side (confirmed via Steam Web API
+# Sector 31 - Dynamic Hordes: persistent, roaming infected hordes that
+# travel between weighted POIs, react to gunfire/explosions/engine noise,
+# and hunt players. 100% server-side (confirmed via Steam Web API
 # GetPublishedFileDetails: result=1, banned=0, visibility=0/public - its own
 # Community page renders a stale "removed for guideline violation" banner
 # alongside live comments/stats, which is misleading; the API is

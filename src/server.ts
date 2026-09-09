@@ -26,7 +26,7 @@ import { LIGHTING_PRESET, tuneLightingConfig } from "./lighting.ts";
 import { tuneExtendedTouristMap, tuneMapGameplayConfig } from "./extendedTouristMap.ts";
 import { tuneWeather } from "./weather.ts";
 import { tuneWlcWeather } from "./wlcWeather.ts";
-import { tuneHazardZones } from "./hazards.ts";
+import { ensureStarySoborRadiationZone, tuneHazardZones } from "./hazards.ts";
 import { ensureClimateZones } from "./climateZones.ts";
 import { tuneNoBuildZones } from "./noBuildZones.ts";
 import { ensureWildlifeTerritories } from "./wildlifeTerritories.ts";
@@ -46,6 +46,8 @@ import {
   ensureCustomKeycardsTypesWired,
 } from "./customKeycards.ts";
 import { ensureMilitaryMonsterGarrisons } from "./militaryMonsters.ts";
+import { ensureStarySoborRadiationGarrisonAndLoot } from "./starySoborRadiationZone.ts";
+import { ensureStarySoborToxicZone } from "./starySoborToxicZone.ts";
 import { tuneExpansionMarket } from "./market.ts";
 import { ensureMarketGapFill } from "./marketGapFill.ts";
 import { ensureCustomTrader } from "./traders.ts";
@@ -318,6 +320,7 @@ export async function doStart(s: Settings): Promise<void> {
   await ensureCustomKeycardsLootTables(allMods);
   await ensureCustomKeycardsSecuredBuildings(allMods);
   await ensureMilitaryMonsterGarrisons(allMods);
+  await ensureStarySoborRadiationGarrisonAndLoot(allMods);
   await ensureAIPatrols();
   await ensureAIBanditsDensity();
   await ensureSpatialAI();
@@ -348,6 +351,8 @@ export async function doStart(s: Settings): Promise<void> {
   await tuneWeather();
   await tuneWlcWeather(earlyWinter);
   await tuneHazardZones();
+  await ensureStarySoborRadiationZone();
+  await ensureStarySoborToxicZone();
   await tuneNoBuildZones();
   await ensureClimateZones();
   await ensureFuelSystemVehicles(allMods);
