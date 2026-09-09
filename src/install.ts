@@ -68,25 +68,20 @@ async function findKeyDir(dir: string): Promise<string | null> {
 }
 
 /**
- * Some mods ship a `meta.cpp` with the wrong `publishedid` baked in (an
- * authoring mistake, e.g. `@Necromutant` shipping `publishedid = 0`). DayZ
- * reports that id as-is to the master server / clients, so fix it up using
- * the real id from mods.txt - cheap and idempotent, safe on every install.
+ * `fixMetaCpp` used to patch this up (see git history) - reasoned that DayZ
+ * only reports this id cosmetically (server browser mod list / Steam
+ * hyperlink). That was wrong: every real client downloads the SAME
+ * unpatched meta.cpp straight from Steam Workshop (we have no way to fix a
+ * mod's published content), so once our server-side copy silently
+ * "corrected" the id, the server ended up requiring a publishedid no real
+ * client could ever match - producing a permanent, unfixable-by-the-player
+ * "Client is missing a mod which is on the server" kick for exactly the
+ * mods this touched (confirmed live: @Necromutant/@DecoyGrenades, both
+ * kicking every connecting client even fresh off a clean resubscribe).
+ * Deliberately left unpatched now so our copy stays byte-for-byte identical
+ * to whatever Steam serves every client - a wrong-but-consistent id beats a
+ * correct-but-mismatched one.
  */
-async function fixMetaCpp(dst: string, mod: Mod): Promise<void> {
-  const path = `${dst}/meta.cpp`;
-  const text = await Deno.readTextFile(path).catch(() => null);
-  if (text === null) return;
-  const match = /publishedid\s*=\s*(\d+)\s*;/.exec(text);
-  if (!match || match[1] === mod.id) return;
-  await Deno.writeTextFile(
-    path,
-    text.replace(/publishedid\s*=\s*\d+\s*;/, `publishedid = ${mod.id};`),
-  );
-  warn(
-    `${mod.name}'s meta.cpp had the wrong publishedid (${match[1]}) - corrected to ${mod.id}`,
-  );
-}
 
 /** Copy one downloaded mod into the server dir and collect its .bikey files. */
 export async function installOneMod(
@@ -109,8 +104,6 @@ export async function installOneMod(
   } else {
     await Deno.symlink(src, dst);
   }
-
-  await fixMetaCpp(dst, mod);
 
   const keydir = (await findKeyDir(dst)) ?? (await findKeyDir(src));
   if (keydir) {
@@ -143,6 +136,18 @@ export async function downloadOne(
   if (!force && (await hasAddonPbo(mod.id))) {
     ok(`${mod.name} already present (${bytesH(await workshopBytes(mod.id))}) — up to date`);
     return;
+  }
+
+  if (force) {
+    // DepotDownloader's `-validate` only adds/fixes files still present in
+    // the *current* manifest - it doesn't necessarily prune files left over
+    // from an older manifest revision if a mod's update restructures/moves
+    // things around. Wiping the raw download dir first forces a truly clean
+    // full re-sync instead of an incremental one, so a restructured mod
+    // can never leave a stale, no-longer-published orphan file sitting
+    // alongside the new content (general hardening - not a confirmed cause
+    // of any specific issue seen so far, just a real risk this avoids).
+    await Deno.remove(out, { recursive: true }).catch(() => {});
   }
 
   await ensureDepotLogin(s);
