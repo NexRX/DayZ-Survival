@@ -1,0 +1,138 @@
+modded class MissionGameplay
+{
+	override void OnInit()
+	{
+		super.OnInit();
+		GetTerjeRPC().RegisterHandler("startscreen.ctx", this, "OnTerjeStartScreenParamsReceived");
+		GetTerjeRPC().RegisterHandler("startscreen.close", this, "OnTerjeStartScreenCloseReceived");
+		GetTerjeRPC().RegisterHandler("startscreen.ready", this, "OnTerjeStartScreenReadyReceived");
+	}
+	
+	override void OnUpdateTerjeCustomBadges(PlayerBase player, bool detailedDiseaseHudBadges, bool detailedHealingHudBadges)
+	{
+		super.OnUpdateTerjeCustomBadges(player, detailedDiseaseHudBadges, detailedHealingHudBadges);
+
+		if ((m_Hud != null) && (m_Hud.TERJE_BADGE_SOULS != -1))
+		{
+			if (player && (player.GetTerjeSouls() != null) && (player.GetTerjeSouls().IsEnabled()) && (GetTerjeSettingBool(TerjeSettingsCollection.STARTSCREEN_SOULS_BADGE)))
+			{
+				m_Hud.DisplayBadge(m_Hud.TERJE_BADGE_SOULS, player.GetTerjeSouls().GetCount());
+			}
+			else
+			{
+				m_Hud.DisplayBadge(m_Hud.TERJE_BADGE_SOULS, 0);
+			}
+		}
+	}
+	
+	override void OnUpdate(float timeslice)
+	{
+		super.OnUpdate(timeslice);
+		
+		PlayerBase player = PlayerBase.Cast(GetGame().GetPlayer());
+		if (player && (player.m_terjeStartScreenClientReady == false))
+		{
+			if (player.IsAlive())
+			{
+				TerjeStartScreenMenu startScreenMenu = TerjeStartScreenMenu.Cast(GetUIManager().GetMenu());
+				if (startScreenMenu == null)
+				{
+					GetUIManager().CloseAll();
+					startScreenMenu = TerjeStartScreenMenu.Cast(TerjeUiManager.GetInstance().ShowScriptedMenu(TerjeStartScreenMenu));
+				}
+				
+				if ((startScreenMenu != null) && (startScreenMenu.HasTerjeParams() == false) && (player.m_terjeStartScreenParams != null))
+				{
+					startScreenMenu.SetTerjeParams(player.m_terjeStartScreenParams);
+				}
+			}
+			else
+			{
+				player.m_terjeStartScreenClientReady = true;
+				player.m_terjeStartScreenParams = null;
+				GetUIManager().CloseAll();
+				InGameMenu inGameMenu = InGameMenu.Cast(GetUIManager().EnterScriptedMenu( MENU_INGAME, null ));
+				if (inGameMenu != null)
+				{
+					inGameMenu.TerjeGameRespawn();
+				}
+			}
+		}
+	}
+	
+	override int GetRespawnModeClient()
+	{
+		return GameConstants.RESPAWN_MODE_RANDOM;
+	}
+	
+	private void OnTerjeStartScreenParamsReceived(ParamsReadContext ctx, PlayerIdentity sender)
+	{
+		PlayerBase player = PlayerBase.Cast(GetGame().GetPlayer());
+		if (player)
+		{
+			player.m_terjeStartScreenParams = new TerjeStartScreenParams;
+			if(!player.m_terjeStartScreenParams.Deserialize(ctx)) 
+			{
+				player.m_terjeStartScreenParams = null;
+				return;
+			}
+		}
+	}
+	
+	private void OnTerjeStartScreenReadyReceived(ParamsReadContext ctx, PlayerIdentity sender)
+	{
+		PlayerBase player = PlayerBase.Cast(GetGame().GetPlayer());
+		if (player)
+		{
+			player.m_terjeStartScreenParams = null;
+			player.m_terjeStartScreenClientReady = true;
+		}
+		
+		TerjeStartScreenMenu menu = TerjeStartScreenMenu.Cast(GetUIManager().GetMenu());
+		if (menu != null)
+		{
+			menu.PushCommandClose();
+		}
+	}
+	
+	private void OnTerjeStartScreenCloseReceived(ParamsReadContext ctx, PlayerIdentity sender)
+	{
+		PlayerBase player = PlayerBase.Cast(GetGame().GetPlayer());
+		if (player)
+		{
+			player.m_terjeStartScreenParams = null;
+			player.m_terjeStartScreenClientReady = true;
+			
+			vector pos;
+			if (!ctx.Read(pos))
+				return;
+			
+			vector rot;
+			if (!ctx.Read(rot))
+				return;
+			
+			OnTerjeStartScreenCloseApply(player, pos, rot);
+		}
+	}
+	
+	private void OnTerjeStartScreenCloseApply(PlayerBase player, vector pos, vector rot)
+	{
+		TerjeStartScreenMenu menu = TerjeStartScreenMenu.Cast(GetUIManager().GetMenu());
+		if ((menu != null) && player && player.IsAlive())
+		{
+			player.SetPosition(pos);
+			player.SetOrientation(rot);
+			
+			if (!player.GetTerjeNoSimulateMode() && !player.GetTerjeMaintenanceMode() && (vector.Distance(player.GetWorldPosition(), pos) < 1))
+			{
+				// Player ready, close start screen menu
+				menu.PushCommandClose();
+			}
+			else
+			{
+				// Waiting for player synchronization from server
+				GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallLater(OnTerjeStartScreenCloseApply, 100, false, player, pos, rot);
+			}
+		}
+	}
+}

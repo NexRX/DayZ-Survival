@@ -1,0 +1,216 @@
+EffectDef {
+ Emitors {
+  EmitorDef cow {
+   ShapeType Box
+   ShapeSize 2 4 2
+   ConeAngle 90 90 0
+   MaxNum 1
+   BirthRate 5
+   BirthRateRND 1
+   BirthRateVel 1
+   Angles 0 0 0
+   LocalTransform 0
+   Material "{8F700858242BEA4B}TerjeSkills/Graphics/emat/cow.emat"
+   ScaleX 0.232
+   ScaleY 0.232
+   SizeMultiplier 1
+   SizeRND 0
+   RandomRotDir 1
+   RotMultiplier 3
+   RandomAngle 0
+   BillboardingType Full
+   Velocity 2
+   VelocityRND 0.01
+   VelAffect 0
+   AirResistance 1
+   AirResistanceRND 0
+   Spring 0.03
+   AnimFPS 10
+   LifeTime 6
+   Color {
+    0 0.6772 0.3734 0 1 0.7342 0.6392 0.3671
+   }
+   Alpha {
+    0 0.06329 0.46449 0.3481 1 0
+   }
+   RotationSpeed {
+    0 1 0.50426 0.22152 1 1
+   }
+   EffectTime 1
+  }
+  EmitorDef boar {
+   ShapeType Box
+   ShapeSize 2 1 2
+   ConeAngle 180 90 0
+   MaxNum 1
+   BirthRate 5
+   BirthRateRND 1
+   BirthRateVel 1
+   Angles 0 0 0
+   Material "{CAFE83A11B36F84E}TerjeSkills/Graphics/emat/boar.emat"
+   ScaleX 0.1
+   ScaleY 0.1
+   SizeMultiplier 1
+   SizeRND 1
+   RandomRotDir 1
+   RotMultiplier 5
+   RandomAngle 0
+   Velocity 2
+   VelocityRND 0.01
+   VelAffect 0
+   AirResistance 1
+   AirResistanceRND 0
+   Spring 0.015
+   AnimFPS 5
+   LifeTime 4
+   Color {
+    0 0.6772 0.3734 0 1 0.7342 0.6392 0.3671
+   }
+   Alpha {
+    0 0.06329 0.46449 0.3481 1 0
+   }
+   RotationSpeed {
+    0 1 0.50426 0.22152 1 1
+   }
+   EffectTime 5
+  }
+  EmitorDef deer {
+   ShapeType Box
+   ShapeSize 2 3 2
+   ConeAngle 90 180 0
+   MaxNum 1
+   BirthRate 5
+   BirthRateRND 1
+   BirthRateVel 1
+   Angles 0 0 0
+   Material "{6703C73D744D429A}TerjeSkills/Graphics/emat/deer.emat"
+   ScaleX 0.191
+   ScaleY 0.191
+   SizeMultiplier 1
+   SizeRND 1
+   RandomRotDir 1
+   RotMultiplier 5
+   RandomAngle 0
+   Velocity 2
+   VelocityRND 0.01
+   VelAffect 0
+   AirResistance 1
+   AirResistanceRND 0
+   Spring 0.02
+   AnimFPS 5
+   LifeTime 7
+   Color {
+    0 0.6772 0.3734 0 1 0.7342 0.6392 0.3671
+   }
+   Alpha {
+    0 0.06329 0.46449 0.3481 1 0
+   }
+   RotationSpeed {
+    0 1 0.50426 0.22152 1 1
+   }
+   EffectTime 5
+  }
+  EmitorDef fox {
+   ShapeType Box
+   ShapeSize 2 5 2
+   ConeAngle 180 180 0
+   MaxNum 1
+   BirthRate 5
+   BirthRateRND 1
+   BirthRateVel 1
+   Angles 0 0 0
+   Material "{7D414328857608D0}TerjeSkills/Graphics/emat/fox.emat"
+   ScaleX 0.191
+   ScaleY 0.191
+   SizeMultiplier 1
+   SizeRND 1
+   RandomRotDir 1
+   RotMultiplier 5
+   RandomAngle 0
+   Velocity 2
+   VelocityRND 0.01
+   VelAffect 0
+   AirResistanceRND 0
+   Spring 0.025
+   AnimFPS 10
+   Color {
+    0 0.6772 0.3734 0 1 0.7342 0.6392 0.3671
+   }
+   Alpha {
+    0 0.06329 0.46449 0.3481 1 0
+   }
+   RotationSpeed {
+    0 1 0.50426 0.22152 1 1
+   }
+  }
+  EmitorDef pig {
+   ShapeType Box
+   ShapeSize 2 6 2
+   ConeAngle 180 360 0
+   MaxNum 1
+   BirthRate 5
+   BirthRateRND 1
+   BirthRateVel 1
+   Angles 0 0 0
+   Material "{5C2C5B5A290FBE30}TerjeSkills/Graphics/emat/pig.emat"
+   ScaleX 0.191
+   ScaleY 0.191
+   SizeMultiplier 1
+   SizeRND 1
+   RandomRotDir 1
+   RotMultiplier 5
+   RandomAngle 0
+   Velocity 2
+   VelocityRND 0.01
+   VelAffect 0
+   AirResistanceRND 0
+   Spring 0.022
+   AnimFPS 10
+   LifeTime 4
+   Color {
+    0 0.6772 0.3734 0 1 0.7342 0.6392 0.3671
+   }
+   Alpha {
+    0 0.06329 0.46449 0.3481 1 0
+   }
+   RotationSpeed {
+    0 1 0.50426 0.22152 1 1
+   }
+  }
+  EmitorDef sheep {
+   ShapeType Box
+   ShapeSize 2 7 2
+   ConeAngle 360 180 0
+   MaxNum 1
+   BirthRate 5
+   BirthRateRND 1
+   BirthRateVel 1
+   Angles 0 0 0
+   Material "{1D275D9543E8F605}TerjeSkills/Graphics/emat/sheep.emat"
+   ScaleX 0.191
+   ScaleY 0.191
+   SizeMultiplier 1
+   SizeRND 0
+   RandomRotDir 1
+   RotMultiplier 5
+   RandomAngle 0
+   Velocity 2
+   VelocityRND 0.01
+   VelAffect 0
+   AirResistanceRND 0
+   Spring 0.018
+   AnimFPS 10
+   LifeTime 5
+   Color {
+    0 0.6772 0.3734 0 1 0.7342 0.6392 0.3671
+   }
+   Alpha {
+    0 0.06329 0.46449 0.3481 1 0
+   }
+   RotationSpeed {
+    0 1 0.50426 0.22152 1 1
+   }
+   EffectTime 1
+  }
+ }
+}

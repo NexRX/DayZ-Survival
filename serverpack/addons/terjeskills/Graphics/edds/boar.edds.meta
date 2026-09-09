@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{E34BDAB41B050356}TerjeSkills/Graphics/edds/boar.edds"
+ Author "kaban-pc"
+ ChangeDate 17101151
+ Configurations {
+  PNGResourceClass PC {
+   SourceFile "boar.png"
+  }
+  PNGResourceClass XBOX_ONE : PC {
+  }
+  PNGResourceClass PS4 : PC {
+  }
+  PNGResourceClass LINUX : PC {
+  }
+ }
+}

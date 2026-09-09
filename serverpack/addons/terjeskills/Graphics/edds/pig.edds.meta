@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{41FDCE2D85D5717A}TerjeSkills/Graphics/edds/pig.edds"
+ Author "kaban-pc"
+ ChangeDate -1708330657
+ Configurations {
+  PNGResourceClass PC {
+   SourceFile "pig.png"
+  }
+  PNGResourceClass XBOX_ONE : PC {
+  }
+  PNGResourceClass PS4 : PC {
+  }
+  PNGResourceClass LINUX : PC {
+  }
+ }
+}

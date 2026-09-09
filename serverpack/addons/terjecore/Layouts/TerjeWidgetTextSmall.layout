@@ -1,0 +1,16 @@
+TextWidgetClass TerjeWidgetText {
+ disabled 0
+ ignorepointer 1
+ color 0.7843 0.7843 0.7843 1
+ position 0 0
+ size 1 16
+ hexactpos 1
+ vexactpos 1
+ hexactsize 0
+ vexactsize 1
+ style Light
+ text ""
+ "exact text" 0
+ "size to text h" 0
+ "size to text v" 1
+}

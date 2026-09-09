@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{7D414328857608D0}TerjeSkills/Graphics/emat/fox.emat"
+ Author "kaban-pc"
+ ChangeDate 320663903
+ Configurations {
+  EMATResourceClass PC {
+  }
+  EMATResourceClass XBOX_ONE : PC {
+  }
+  EMATResourceClass PS4 : PC {
+  }
+  EMATResourceClass LINUX : PC {
+  }
+ }
+}

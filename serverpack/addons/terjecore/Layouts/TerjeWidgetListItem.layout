@@ -1,0 +1,61 @@
+PanelWidgetClass TerjeListItemRoot {
+ ignorepointer 1
+ color 0 0 0 0
+ size 1 20
+ hexactpos 1
+ vexactpos 1
+ hexactsize 0
+ vexactsize 1
+ style blank
+ {
+  PanelWidgetClass TerjeListItemBac {
+   visible 1
+   ignorepointer 1
+   color 0 0 0 1
+   size 12 1
+   valign center_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 0
+   style rover_sim_colorable
+  }
+  ButtonWidgetClass TerjeListItemBtn {
+   color 0 0 0 0.2353
+   size 1 1
+   halign center_ref
+   valign center_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 0
+   style EmptyHighlight
+  }
+  WrapSpacerWidgetClass TerjeListItemContent {
+   ignorepointer 1
+   position 12 0
+   size 1 40
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 1
+   Padding 0
+   Margin 10
+   "Size To Content V" 1
+  }
+  PanelWidgetClass SeparatorPanel {
+   ignorepointer 1
+   color 0.05 0.05 0.05 1
+   size 1 1
+   halign center_ref
+   valign bottom_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 1
+   scaled 0
+   priority 10
+   style rover_sim_colorable
+  }
+ }
+}

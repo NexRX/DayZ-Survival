@@ -1,0 +1,76 @@
+GridSpacerWidgetClass TerjeWidgetRoot {
+ disabled 0
+ clipchildren 1
+ ignorepointer 1
+ position 0 0
+ size 1000 32
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ scaled 1
+ style Empty
+ Padding 0
+ Margin 0
+ "Size To Content H" 1
+ "Size To Content V" 1
+ Columns 2
+ Rows 1
+ {
+  TextWidgetClass TerjeWidgetText {
+   disabled 0
+   clipchildren 1
+   ignorepointer 1
+   color 0.4157 0.6 0.8353 1
+   position 0 0
+   size 100 16
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   scaled 1
+   style Normal
+   font "gui/fonts/sdf_MetronLight24"
+   "text offset" 0 -2
+   "exact text" 1
+   "exact text size" 16
+   "size to text h" 1
+   "size to text v" 0
+   {
+    PanelWidgetClass SeparatorPanel {
+     visible 0
+     ignorepointer 1
+     color 0.4157 0.6 0.8353 1
+     size 1 1
+     halign center_ref
+     valign bottom_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 1
+     scaled 0
+     priority 10
+     style rover_sim_colorable
+    }
+    ButtonWidgetClass ButtonWidget0 {
+     position 0 0
+     size 1 1
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 0
+     style Empty
+    }
+   }
+  }
+  PanelWidgetClass PanelWidget0 {
+   ignorepointer 1
+   position 10 10
+   size 1 1
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 1
+  }
+ }
+}

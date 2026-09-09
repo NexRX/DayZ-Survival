@@ -1,0 +1,6 @@
+Particle {
+ AlbedoMap "{92A19D2F88F12501}TerjeSkills/Graphics/edds/cow.edds" 
+ Color 0.6863 0.5804 0.2588 1
+ TileU 6
+ TileV 3
+}

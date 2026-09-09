@@ -1,0 +1,226 @@
+FrameWidgetClass terjePageRootName {
+ position 0 0
+ size 1 1
+ halign center_ref
+ valign center_ref
+ hexactpos 1
+ vexactpos 1
+ hexactsize 0
+ vexactsize 0
+ {
+  ButtonWidgetClass ButtonNoFocus {
+   color 0 0 0 0
+   position 0 0
+   size 1 1
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 0
+   style Empty
+  }
+  WrapSpacerWidgetClass GridSpacerPanel {
+   ignorepointer 1
+   color 0.1176 0.1176 0.1176 0.9804
+   position 0 -150
+   size 600 0
+   halign center_ref
+   valign center_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   Padding 0
+   Margin 0
+   "Size To Content V" 1
+   {
+    PanelWidgetClass HeaderPanel {
+     ignorepointer 1
+     position 0 0
+     size 1 120
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 1
+     {
+      TextWidgetClass WindowLabel {
+       disabled 0
+       ignorepointer 1
+       position 0 20
+       size 1 30
+       halign center_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 0
+       vexactsize 1
+       style Bold
+       text "#STR_TERJESTARTSCREEN_OVERVIEW_TITLE"
+       font "gui/fonts/sdf_MetronBook72"
+       "exact text" 0
+       "text halign" center
+       "text valign" center
+      }
+      PanelWidgetClass SeparatorPanel {
+       ignorepointer 1
+       color 0.7569 0.0941 0.0941 0.7843
+       position 0 60
+       size 0.85 3
+       halign center_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 0
+       vexactsize 1
+       scaled 1
+       priority 10
+       style rover_sim_colorable
+      }
+      TextWidgetClass CharName {
+       visible 1
+       ignorepointer 1
+       position 0 80
+       size 1 24
+       halign center_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 0
+       vexactsize 1
+       text "CALIBRATION TEXT"
+       font "gui/fonts/sdf_MetronLight24"
+       "exact text" 0
+       "exact text size" 18
+       "size to text h" 1
+       "size to text v" 1
+       "text valign" center
+      }
+     }
+    }
+    PanelWidgetClass DeletionPanel {
+     visible 0
+     ignorepointer 1
+     position 0 0
+     size 1 60
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 1
+     {
+      PanelWidgetClass DeletionPanelContent {
+       color 0 0 0 0
+       position 0 0
+       size 500 40
+       halign center_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       style blank
+      }
+     }
+    }
+    PanelWidgetClass SoulsPanel {
+     visible 0
+     ignorepointer 1
+     position 0 0
+     size 1 130
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 1
+     {
+      TextWidgetClass YourSouls {
+       visible 1
+       ignorepointer 1
+       position 0 20
+       size 1 24
+       halign center_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 0
+       vexactsize 1
+       text "#STR_TERJESTARTSCREEN_SOUL_TITLE"
+       font "gui/fonts/sdf_MetronLight24"
+       "exact text" 0
+       "exact text size" 18
+       "size to text h" 1
+       "size to text v" 1
+       "text valign" center
+      }
+      GridSpacerWidgetClass SoulsPanelGrid {
+       clipchildren 0
+       ignorepointer 1
+       position 0 60
+       size 400 40
+       halign center_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       Padding 8
+       Margin 0
+       "Size To Content H" 1
+       content_halign center
+       Columns 2
+       Rows 1
+       {
+        ImageWidgetClass SoulsIcon {
+         position 0 0
+         size 40 40
+         halign center_ref
+         hexactpos 1
+         vexactpos 1
+         hexactsize 1
+         vexactsize 1
+         mode blend
+         "src alpha" 1
+         "clamp mode" wrap
+         "stretch mode" stretch_w_h
+        }
+        TextWidgetClass SoulsCount {
+         visible 1
+         ignorepointer 1
+         position 0 0
+         size 377 40
+         halign center_ref
+         hexactpos 1
+         vexactpos 1
+         hexactsize 1
+         vexactsize 1
+         text "0"
+         font "gui/fonts/sdf_MetronLight24"
+         "exact text" 0
+         "exact text size" 18
+         "size to text h" 1
+         "size to text v" 1
+         "text valign" center
+        }
+       }
+      }
+     }
+    }
+    PanelWidgetClass NextPanel {
+     visible 0
+     ignorepointer 1
+     position 0 0
+     size 1 64
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 1
+     {
+      PanelWidgetClass NextPanelContent {
+       ignorepointer 1
+       color 0 0 0 0
+       position 0 0
+       size 250 40
+       halign center_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       style blank
+      }
+     }
+    }
+   }
+  }
+ }
+}

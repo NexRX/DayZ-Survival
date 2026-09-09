@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{6703C73D744D429A}TerjeSkills/Graphics/emat/deer.emat"
+ Author "kaban-pc"
+ ChangeDate 85782879
+ Configurations {
+  EMATResourceClass PC {
+  }
+  EMATResourceClass XBOX_ONE : PC {
+  }
+  EMATResourceClass PS4 : PC {
+  }
+  EMATResourceClass LINUX : PC {
+  }
+ }
+}

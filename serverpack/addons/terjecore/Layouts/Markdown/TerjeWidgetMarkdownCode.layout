@@ -1,0 +1,38 @@
+GridSpacerWidgetClass TerjeWidgetRoot {
+ disabled 0
+ clipchildren 0
+ ignorepointer 1
+ color 1 1 1 0.0784
+ position 0 0
+ size 1000 32
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ style Colorable
+ Padding 0
+ Margin 4
+ Columns 1
+ Rows 1
+ {
+  RichTextWidgetClass TerjeWidgetText {
+   disabled 0
+   clipchildren 1
+   ignorepointer 1
+   position 0 0
+   size 1 24
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 1
+   style DayZNormal
+   text "PATATA"
+   font "system/system"
+   "size to text h" 0
+   "size to text v" 0
+   "text valign" center
+   wrap 0
+   "content offset" 2
+  }
+ }
+}

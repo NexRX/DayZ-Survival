@@ -1,0 +1,52 @@
+ContentWidgetClass TerjeWidgetPointsRoot {
+ clipchildren 0
+ ignorepointer 1
+ position 12 0
+ size 0 28
+ halign right_ref
+ valign center_ref
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ {
+  ImageWidgetClass TerjeWidgetPointsImage {
+   visible 1
+   ignorepointer 1
+   position 0 0
+   size 28 28
+   halign right_ref
+   valign center_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   scaled 1
+   mode blend
+   "src alpha" 1
+   "clamp mode" wrap
+   "stretch mode" stretch_w_h
+  }
+  TextWidgetClass TerjeWidgetPointsText {
+   visible 1
+   ignorepointer 1
+   position 36 0
+   size 0 32
+   halign right_ref
+   valign center_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   style Light
+   text "0"
+   font "gui/fonts/sdf_MetronLight24"
+   "exact text" 1
+   "exact text size" 16
+   "size to text h" 1
+   "size to text v" 1
+   "text halign" right
+   "text valign" center
+  }
+ }
+}

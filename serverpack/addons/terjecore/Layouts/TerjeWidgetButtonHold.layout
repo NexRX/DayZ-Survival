@@ -1,0 +1,65 @@
+PanelWidgetClass TerjeWidgetBtnBackground {
+ ignorepointer 1
+ color 1 0 0 0.2353
+ position 0 0
+ size 1 1
+ hexactpos 1
+ vexactpos 1
+ hexactsize 0
+ vexactsize 0
+ style rover_sim_colorable
+ {
+  ButtonWidgetClass TerjeWidgetBtn {
+   visible 1
+   color 1 0 0 1
+   position 0 0
+   size 1 1
+   halign right_ref
+   valign bottom_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 0
+   style EmptyHighlight
+   "next left" ""
+   "next right" ""
+   "next up" ""
+   "next down" ""
+   text_proportion 0.5
+   font "gui/fonts/sdf_MetronBook24"
+   "disabled text color" 0.3412 0.3412 0.3412 1
+   {
+    TextWidgetClass TerjeWidgetTxt {
+     ignorepointer 1
+     size 0 1
+     halign center_ref
+     valign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 0
+     text "Next"
+     "text offset" 0 -2
+     "exact text" 0
+     text_proportion 0.5
+     "size to text h" 1
+     "text halign" center
+     "text valign" center
+    }
+    ProgressBarWidgetClass TerjeWidgetBar {
+     visible 0
+     ignorepointer 1
+     size 1 8
+     valign bottom_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 1
+     style Stamina
+     maximum 1
+     current 0
+    }
+   }
+  }
+ }
+}

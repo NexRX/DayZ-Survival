@@ -1,0 +1,14 @@
+WrapSpacerWidgetClass TerjeWidgetRoot {
+ ignorepointer 1
+ position 0 0
+ size 1000 1
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ scaled 1
+ style Colorable
+ Padding 0
+ Margin 0
+ "Size To Content V" 1
+}

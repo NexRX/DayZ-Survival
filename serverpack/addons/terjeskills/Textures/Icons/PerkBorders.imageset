@@ -1,0 +1,44 @@
+ImageSetClass {
+ Name "TerjeSkillBorders_icon"
+ RefSize 512 128
+ Textures {
+  ImageSetTextureClass {
+   mpix 1
+   path "{F9D801B01288BB23}TerjeSkills/Textures/Icons/PerkBorders.edds"
+  }
+ }
+ Images {
+  ImageSetDefClass ts_ui_perk_border0 {
+   Name "ts_ui_perk_border0"
+   Pos 4 23
+   Size 80 80
+   Flags 0
+  }
+  ImageSetDefClass ts_ui_perk_border1 {
+   Name "ts_ui_perk_border1"
+   Pos 88 23
+   Size 80 80
+   Flags 0
+  }
+  ImageSetDefClass ts_ui_perk_border2 {
+   Name "ts_ui_perk_border2"
+   Pos 172 23
+   Size 80 80
+   Flags 0
+  }
+  ImageSetDefClass ts_ui_perk_border3 {
+   Name "ts_ui_perk_border3"
+   Pos 256 23
+   Size 80 80
+   Flags 0
+  }
+  ImageSetDefClass ts_ui_skill_reset {
+   Name "ts_ui_skill_reset"
+   Pos 429 23
+   Size 80 80
+   Flags 0
+  }
+ }
+ Groups {
+ }
+}

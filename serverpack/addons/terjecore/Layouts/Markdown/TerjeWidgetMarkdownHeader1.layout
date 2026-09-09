@@ -1,0 +1,35 @@
+RichTextWidgetClass TerjeWidgetText {
+ disabled 0
+ clipchildren 1
+ ignorepointer 1
+ position 0 0
+ size 1000 32
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ style DayZNormal
+ font "gui/fonts/sdf_MetronLight24"
+ "exact text" 1
+ "exact text size" 28
+ "size to text h" 0
+ "size to text v" 1
+ wrap 1
+ "content offset" -3
+ {
+  PanelWidgetClass SeparatorPanel {
+   ignorepointer 1
+   color 0.4667 0.4667 0.4667 0.4667
+   position 0 0
+   size 1 1
+   halign center_ref
+   valign bottom_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 1
+   scaled 0
+   style rover_sim_colorable
+  }
+ }
+}

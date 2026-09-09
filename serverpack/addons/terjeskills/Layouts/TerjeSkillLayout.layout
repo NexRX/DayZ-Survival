@@ -1,0 +1,218 @@
+WrapSpacerWidgetClass terje_skill_body {
+ visible 1
+ ignorepointer 0
+ color 1 1 1 0
+ position 0 0
+ size 1 0
+ halign center_ref
+ hexactpos 1
+ vexactpos 1
+ hexactsize 0
+ vexactsize 1
+ Padding 0
+ Margin 0
+ "Size To Content H" 1
+ "Size To Content V" 1
+ content_halign center
+ {
+  ImageWidgetClass terje_skill_header {
+   visible 1
+   clipchildren 1
+   inheritalpha 0
+   ignorepointer 0
+   color 0 0 0 0.8
+   size 1 40
+   halign center_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 1
+   draggable 1
+   scriptclass ""
+   image0 "set:dayz_gui image:inv_header_1"
+   mode blend
+   "src alpha" 1
+   "clamp mode" clamp
+   "stretch mode" stretch_w_h
+   filter 1
+   {
+    TextWidgetClass terje_skill_header_points {
+     clipchildren 1
+     ignorepointer 1
+     color 0.3804 0.8431 0.4863 1
+     position 48 0
+     size 80 0.9
+     halign right_ref
+     valign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 0
+     style Normal
+     text "+2"
+     font "gui/fonts/sdf_MetronLight24"
+     "exact text" 1
+     "exact text size" 20
+     "size to text v" 1
+     "text halign" right
+     "text valign" center
+    }
+    ImageWidgetClass terje_skill_header_icon {
+     ignorepointer 1
+     position 8 0
+     size 32 32
+     valign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     image0 ""
+     mode blend
+     "src alpha" 1
+     "clamp mode" wrap
+     "stretch mode" fit_w
+     filter 1
+    }
+    TextWidgetClass terje_skill_header_info {
+     clipchildren 1
+     ignorepointer 1
+     position 0 0
+     size 0.8 0.9
+     halign center_ref
+     valign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 0
+     style Normal
+     text "Athletic (15/80)"
+     font "gui/fonts/sdf_MetronLight24"
+     "exact text" 1
+     "exact text size" 20
+     "size to text v" 0
+     "text halign" center
+     "text valign" center
+    }
+    TextWidgetClass terje_skill_header_level {
+     clipchildren 1
+     ignorepointer 1
+     position 52 0
+     size 64 0.9
+     valign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 0
+     style Normal
+     text "99"
+     font "gui/fonts/sdf_MetronLight24"
+     "exact text" 1
+     "exact text size" 20
+     "size to text v" 1
+     "text valign" center
+    }
+    ImageWidgetClass terje_skill_header_reset {
+     ignorepointer 0
+     position 8 0
+     size 32 32
+     halign right_ref
+     valign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     image0 "set:TerjeSkillBorders_icon image:ts_ui_skill_reset"
+     mode blend
+     "src alpha" 1
+     "clamp mode" wrap
+     "stretch mode" fit_w
+     filter 1
+     {
+      PanelWidgetClass terje_skill_header_reset_hover {
+       ignorepointer 0
+       color 0 0 0 0
+       size 1 1
+       halign center_ref
+       valign center_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 0
+       vexactsize 0
+       style rover_sim_colorable
+      }
+     }
+    }
+   }
+  }
+  PanelWidgetClass terje_skill_panel_exp {
+   visible 1
+   ignorepointer 1
+   color 0 0 0 0.8
+   size 1 8
+   halign center_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 1
+   style rover_sim_colorable
+   {
+    ProgressBarWidgetClass terje_skill_header_exp {
+     visible 1
+     ignorepointer 1
+     color 0.4745 0.4745 0.4745 0.8667
+     size 1 8
+     halign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 1
+     style Stamina
+    }
+   }
+  }
+  WrapSpacerWidgetClass terje_skill_perks_grid {
+   visible 1
+   clipchildren 1
+   inheritalpha 0
+   ignorepointer 0
+   color 0 0 0 0.7059
+   size 1 0
+   halign center_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 1
+   scaled 1
+   fixaspect fixwidth
+   draggable 0
+   scriptclass ""
+   style DayZDefaultPanelBottom
+   Padding 0
+   Margin 4
+   "Size To Content V" 1
+  }
+  PanelWidgetClass terje_skill_blank {
+   ignorepointer 1
+   color 1 1 1 0
+   position 0 0
+   size 0 0
+   halign center_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   style blank
+  }
+  PanelWidgetClass terje_skill_end {
+   ignorepointer 1
+   color 1 1 1 0
+   size 1 8
+   halign center_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 1
+   style blank
+  }
+ }
+}

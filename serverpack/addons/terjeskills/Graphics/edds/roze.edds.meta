@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{F680D086EF545A77}TerjeSkills/Graphics/edds/roze.edds"
+ Author "kaban-pc"
+ ChangeDate 588050783
+ Configurations {
+  PNGResourceClass PC {
+   SourceFile "roze.png"
+  }
+  PNGResourceClass XBOX_ONE : PC {
+  }
+  PNGResourceClass PS4 : PC {
+  }
+  PNGResourceClass LINUX : PC {
+  }
+ }
+}

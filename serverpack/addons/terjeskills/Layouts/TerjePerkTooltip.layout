@@ -1,0 +1,160 @@
+FrameWidgetClass terje_perk_tooltip_frame {
+ ignorepointer 1
+ position 10 10
+ size 550 300
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ priority 953
+ {
+  PanelWidgetClass terje_perk_tooltip_panel {
+   visible 1
+   clipchildren 0
+   ignorepointer 1
+   position 0 0
+   size 550 300
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   style blank
+   {
+    ImageWidgetClass terje_perk_tooltip_header {
+     clipchildren 0
+     ignorepointer 1
+     color 0.0288 0.0288 0.0288 0.9804
+     size 1 32
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 1
+     image0 "set:dayz_gui image:inv_header_3"
+     mode blend
+     "src alpha" 1
+     "clamp mode" clamp
+     "stretch mode" stretch_w_h
+     {
+      TextWidgetClass terje_perk_tooltip_name {
+       clipchildren 0
+       ignorepointer 1
+       position 36 0
+       size 300 16
+       valign center_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       priority 1
+       style Normal
+       text "PERK NAME"
+       font "gui/fonts/sdf_MetronBook24"
+       "exact text" 1
+       "exact text size" 16
+       "size to text h" 0
+       "size to text v" 0
+       "text valign" center
+      }
+      TextWidgetClass terje_perk_tooltip_level {
+       clipchildren 0
+       ignorepointer 1
+       position 16 0
+       size 200 16
+       halign right_ref
+       valign center_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       style Normal
+       text "Level: 1/5"
+       font "gui/fonts/sdf_MetronLight24"
+       "text color" 1 1 1 1
+       "exact text" 1
+       "exact text size" 16
+       "size to text h" 0
+       "size to text v" 0
+       "text halign" right
+       "text valign" center
+      }
+      ImageWidgetClass terje_perk_tooltip_icon {
+       visible 1
+       clipchildren 0
+       inheritalpha 0
+       ignorepointer 1
+       position 4 0
+       size 24 24
+       valign center_ref
+       hexactpos 1
+       vexactpos 0
+       hexactsize 1
+       vexactsize 1
+       image0 "set:dayz_gui image:circle"
+       mode additive
+       "src alpha" 1
+       "clamp mode" clamp
+       "stretch mode" stretch_w_h
+       filter 1
+      }
+     }
+    }
+    GridSpacerWidgetClass terje_perk_tooltip_content {
+     clipchildren 1
+     ignorepointer 1
+     color 0.1069 0.1069 0.1069 0.9804
+     position 0 32
+     size 1 1
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 0
+     style Colorable
+     Padding 0
+     Margin 0
+     "Size To Content H" 1
+     "Size To Content V" 1
+     Columns 2
+     Rows 1
+     {
+      WrapSpacerWidgetClass terje_perk_tooltip_content_spacer {
+       clipchildren 1
+       ignorepointer 1
+       position 0 0
+       size 1 0
+       hexactpos 1
+       vexactpos 1
+       hexactsize 0
+       vexactsize 1
+       priority 202
+       style Colorable
+       Padding 8
+       Margin 4
+       "Size To Content V" 1
+       content_halign center
+       {
+        RichTextWidgetClass terje_perk_tooltip_info {
+         clipchildren 1
+         ignorepointer 1
+         size 0.98 1
+         halign center_ref
+         hexactpos 1
+         vexactpos 1
+         hexactsize 0
+         vexactsize 0
+         style DayZNormal
+         text "Relatively heavy stone, can be used for enclosure fireplace, or broken into smaller parts.<br/>Test ASDJLAKSJDLASDJLA"
+         font "gui/fonts/sdf_MetronLight24"
+         "exact text" 1
+         "exact text size" 16
+         "size to text h" 1
+         "size to text v" 1
+         wrap 1
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{CAFE83A11B36F84E}TerjeSkills/Graphics/emat/boar.emat"
+ Author "kaban-pc"
+ ChangeDate 1561653599
+ Configurations {
+  EMATResourceClass PC {
+  }
+  EMATResourceClass XBOX_ONE : PC {
+  }
+  EMATResourceClass PS4 : PC {
+  }
+  EMATResourceClass LINUX : PC {
+  }
+ }
+}

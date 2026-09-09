@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{4EB69E28747EB982}TerjeSkills/Graphics/edds/deer.edds"
+ Author "kaban-pc"
+ ChangeDate -198905505
+ Configurations {
+  PNGResourceClass PC {
+   SourceFile "deer.png"
+  }
+  PNGResourceClass XBOX_ONE : PC {
+  }
+  PNGResourceClass PS4 : PC {
+  }
+  PNGResourceClass LINUX : PC {
+  }
+ }
+}

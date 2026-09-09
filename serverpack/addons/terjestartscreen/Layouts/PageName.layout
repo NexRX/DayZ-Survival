@@ -1,0 +1,281 @@
+FrameWidgetClass terjePageRootName {
+ size 1 1
+ halign center_ref
+ valign center_ref
+ hexactpos 1
+ vexactpos 1
+ hexactsize 0
+ vexactsize 0
+ {
+  ButtonWidgetClass ButtonNoFocus {
+   color 0 0 0 0
+   position 0 0
+   size 1 1
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 0
+   style Empty
+  }
+  WrapSpacerWidgetClass TextInputDialogWindow {
+   clipchildren 1
+   ignorepointer 1
+   color 0.1176 0.1176 0.1176 0.9804
+   position 0 0
+   size 600 340
+   halign center_ref
+   valign center_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   priority 1
+   style Colorable
+   Padding 0
+   Margin 0
+   "Size To Content V" 1
+   {
+    PanelWidgetClass PanelWidgetHeader {
+     ignorepointer 1
+     position 0 0
+     size 1 48
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 1
+     {
+      TextWidgetClass WindowLabel {
+       disabled 0
+       ignorepointer 1
+       size 1 30
+       halign center_ref
+       valign bottom_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 0
+       vexactsize 1
+       style Bold
+       text "#STR_TERJESTARTSCREEN_PAGE_NAME_TITLE"
+       font "gui/fonts/sdf_MetronBook72"
+       "exact text" 0
+       "text halign" center
+       "text valign" center
+      }
+     }
+    }
+    PanelWidgetClass PanelWidgetSeparator {
+     ignorepointer 1
+     position 0 0
+     size 1 24
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 1
+     {
+      PanelWidgetClass SeparatorPanel {
+       ignorepointer 1
+       color 0.7569 0.0941 0.0941 0.7843
+       size 0.85 3
+       halign center_ref
+       valign center_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 0
+       vexactsize 1
+       scaled 1
+       style rover_sim_colorable
+      }
+     }
+    }
+    PanelWidgetClass PanelWidgetFirstName {
+     ignorepointer 1
+     position 0 0
+     size 1 90
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 1
+     {
+      TextWidgetClass PrimaryLabel {
+       ignorepointer 1
+       position 20 16
+       size 60 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "#STR_TERJESTARTSCREEN_PAGE_NAME_FN"
+       font "gui/fonts/sdf_MetronLight24"
+       "exact text" 0
+       "exact text size" 18
+       "size to text h" 1
+       "size to text v" 1
+       "text valign" center
+      }
+      PanelWidgetClass PanelWidget0 {
+       ignorepointer 1
+       color 0 0 0 0.4706
+       position 20 48
+       size 560 32
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       style rover_sim_colorable
+       {
+        EditBoxWidgetClass PrimaryEditBox {
+         size 1 1
+         hexactpos 1
+         vexactpos 1
+         hexactsize 0
+         vexactsize 0
+         style Default
+         "next left" "PrimaryEditBox"
+         "next right" "PrimaryEditBox"
+         "next up" "SecondaryEditBox"
+         "next down" "SecondaryEditBox"
+         "exact text" 0
+         font "gui/fonts/sdf_MetronLight24"
+        }
+       }
+      }
+     }
+    }
+    PanelWidgetClass PanelWidgetLastName {
+     ignorepointer 1
+     position 0 0
+     size 1 90
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 1
+     {
+      TextWidgetClass SecondaryLabel {
+       visible 1
+       ignorepointer 1
+       position 20 16
+       size 60 20
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "#STR_TERJESTARTSCREEN_PAGE_NAME_SN"
+       font "gui/fonts/sdf_MetronLight24"
+       "exact text" 0
+       "exact text size" 18
+       "size to text h" 1
+       "size to text v" 1
+       "text valign" center
+      }
+      PanelWidgetClass PanelWidget1 {
+       ignorepointer 1
+       color 0 0 0 0.4706
+       position 20 48
+       size 560 32
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       style rover_sim_colorable
+       {
+        EditBoxWidgetClass SecondEditBox {
+         position 0 0
+         size 1 1
+         hexactpos 1
+         vexactpos 1
+         hexactsize 0
+         vexactsize 0
+         style Default
+         "next left" "PrimaryEditBox"
+         "next right" "PrimaryEditBox"
+         "next up" "SecondaryEditBox"
+         "next down" "SecondaryEditBox"
+         "exact text" 0
+         font "gui/fonts/sdf_MetronLight24"
+        }
+       }
+      }
+     }
+    }
+    PanelWidgetClass PanelWidgetInfo {
+     ignorepointer 1
+     position 0 0
+     size 1 32
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 1
+     {
+      TextWidgetClass MessageText {
+       visible 1
+       clipchildren 0
+       ignorepointer 1
+       color 0.7804 0 0 1
+       size 560 30
+       halign center_ref
+       valign center_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "Test text"
+       font "gui/fonts/sdf_MetronLight24"
+       "exact text" 1
+       "exact text size" 22
+       "size to text h" 0
+       "size to text v" 0
+       "text valign" center
+      }
+     }
+    }
+    PanelWidgetClass PanelWidgetNext {
+     ignorepointer 1
+     position 0 0
+     size 1 80
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 1
+     {
+      PanelWidgetClass PanelWidget2 {
+       ignorepointer 1
+       color 1 0 0 0.2353
+       position 0 20
+       size 200 40
+       halign center_ref
+       valign bottom_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       style rover_sim_colorable
+       {
+        ButtonWidgetClass ButtonOk {
+         visible 1
+         color 1 0 0 1
+         position 0 0
+         size 1 1
+         halign right_ref
+         valign bottom_ref
+         hexactpos 1
+         vexactpos 1
+         hexactsize 0
+         vexactsize 0
+         style EmptyHighlight
+         "next left" ""
+         "next right" ""
+         "next up" ""
+         "next down" ""
+         text "#STR_USRACT_NEXT_ACTION"
+         text_proportion 0.5
+         font "gui/fonts/sdf_MetronBook24"
+         "disabled text color" 0.3412 0.3412 0.3412 1
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}

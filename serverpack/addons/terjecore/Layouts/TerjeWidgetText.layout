@@ -1,0 +1,10 @@
+TextWidgetClass TerjeWidgetText {
+ ignorepointer 1
+ scaled 0
+ style DayZNormal
+ "exact text" 1
+ "text halign" left
+ wrap 1
+ "condense whitespace" 1
+ "strip newlines" 1
+}

@@ -76,17 +76,29 @@
 # Zens ExpansionAI Audio: ambient audio/voice/footstep cues layered onto the
 # DayZ-Expansion-AI patrols above - same author as Zens-Repairable-Wells/
 # Zens-Zippo-Lighter/Zens-COT-Plus-Fix (all already trusted here).
-3321340470  @Zens-ExpansionAI-Audio
+#
+# NOTE: Zens-ExpansionAI-Audio (3321340470) used to be a separate mod here
+# (2 addons: zenexpansionaudioai_scripts, zenexpansionaudioai_soundsets).
+# Author's page permits redistribution; merged into
+# serverpack/addons/zenexpansionaudioai_scripts and
+# serverpack/addons/zenexpansionaudioai_soundsets, ships inside
+# @DZSurvivalServerPack instead.
 
-# --- Terje suite (Core first; Skills before Medicine, since Medicine's
-# Immunity/Medicine skills require it; Compatibility-COT needs Terje-Core +
-# Community-Online-Tools, both already above) ---
-3649957186  @Terje-Core
-3649958397  @Terje-Skills
+# --- Terje suite ---
+# NOTE: Terje-Core (3649957186), Terje-Skills (3649958397), Terje-Start-
+# Screen (3649959402), and Terje-Compatibility-COT (3649959707) used to be
+# separate mods here. All 4 are small enough to repack (author's page
+# permits redistribution); merged into serverpack/addons/terjecore,
+# terjeskills, terjestartscreen, terjecompatibilitycot respectively, ship
+# inside @DZSurvivalServerPack instead. Terje-Medicine and Terje-Radiation
+# stay separate standalone mods below - both are large (180M+) content
+# packs, deliberately left out of the repack to avoid bloating this git
+# repo with binary assets (no Git LFS configured). Their CfgPatches
+# requiredAddons[] ("TerjeCore") is a real engine-level dependency
+# declaration, resolved by class name regardless of which PBO defines it -
+# not by mods.txt/-mod= order - so splitting the suite this way is safe.
 3649957536  @Terje-Medicine
 3649958757  @Terje-Radiation
-3649959402  @Terje-Start-Screen
-3649959707  @Terje-Compatibility-COT
 3690738331  @Zens-COT-Plus-Fix
 
 # --- "s" suite (sGunplay/sVisual need sFramework; NOT related to CFTools
@@ -108,14 +120,20 @@
 # --- Zombie/bandit AI, on top of DayZ-Expansion-AI's human patrols above:
 # InediaInfectedAI/CreepyZombies target infected, AI Bandits adds standalone
 # human threats — complementary, not a replacement, for the roaming patrols
-# tuned in src/ai.ts. The FIX must load after InediaInfectedAI. ---
+# tuned in src/ai.ts. The FIX must load after InediaInfectedAI (a real
+# CfgPatches requiredAddons dependency, resolved by class name regardless
+# of mods.txt order). ---
 3031784065  @InediaInfectedAI
-3119213010  @InediaInfectedAI-Underwater-Fix
 2990236173  @InediaStamina
 1866298408  @CreepyZombies
 3628006769  @AI-Bandits
 2394804821  @Zombie-Sound
 3499461862  @Knock-Knock-Zombies
+# NOTE: BMM-Chemical-Zombie (3510772253) stays a separate standalone mod -
+# its config.bin uses a rapified value type armake2 (this project's PBO
+# tool) doesn't support decompiling ("Unrecognized variable entry subtype:
+# 6"), so it can't go through the same unpack/derapify/rebuild pipeline as
+# the other repacked mods here.
 3510772253  @BMM-Chemical-Zombie
 
 # Custom Zombies - The Astronaut, The Butcher & The Zombie Bear
@@ -135,7 +153,11 @@
 # otherwise stack with InediaStamina/InediaPain/InediaMovement/InediaInfectedAI
 # to trivialize weight/stamina/fracture mechanics. Author's own load-order
 # guidance: doesn't matter relative to the other mods above.
-3471553607  @InediaTerjeCompatibility
+#
+# NOTE: InediaTerjeCompatibility (3471553607) used to be a separate mod
+# here. Author's page permits redistribution; merged into
+# serverpack/addons/inediaterjecompatibility, ships inside
+# @DZSurvivalServerPack instead.
 
 # --- Additional AI events, layered on top of the zombie/bandit AI above -
 # a mobile convoy patrol, airborne troop insertions, a broader "warzone"
@@ -151,7 +173,11 @@
 2912241382  @Admirals-Parachute-Mod
 3472298147  @Airborne-AI
 3521304609  @Ai-Warzone
-3689174025  @hSF-Zombie-Horde-Event
+
+# NOTE: hSF-Zombie-Horde-Event (3689174025) used to be a separate mod here.
+# Author's page permits redistribution; merged into
+# serverpack/addons/zombiehorde, ships inside @DZSurvivalServerPack
+# instead.
 
 # Sector 31 - Dynamic Hordes: persistent, roaming (not one-off event) infected
 # hordes that travel between weighted POIs, react to gunfire/explosions/
@@ -209,10 +235,14 @@
 # tables); actual Keycard Door/Building placement is NOT done yet - see
 # that file's own header comment for why (needs real in-game coordinates). ---
 2810212624  @Custom-Keycards
-3238690259  @CS-Modular-Cave
-2924580520  @Zens-Repairable-Wells
 3083277274  @Risus-Bases
 2670506982  @Building-Fortifications
+
+# NOTE: CS-Modular-Cave (3238690259) and Zens-Repairable-Wells
+# (2924580520) used to be separate mods here. Both author pages permit
+# redistribution; merged into serverpack/addons/cs_modular_cave and
+# serverpack/addons/zenrepairwells respectively, ship inside
+# @DZSurvivalServerPack instead.
 1646187754  @Code-Lock
 3647777793  @Peek-Doors
 2860643107  @BoomLays-Things
@@ -230,9 +260,19 @@
 3149798901  @MoreMaterials
 3311720441  @Gas-Mask-Overhaul
 2891614133  @Hardcore-Backpack
-2926289548  @Survivor-Backpack
 3571068454  @Optics
+# NOTE: Hunter-Bow (3464752232) stays a separate standalone mod - its PBO
+# ships with obfuscated/scrambled internal filenames (armake2 partially
+# unpacks it into a suspicious "deobfuscated_file0" then fails with "Failed
+# to create output folder"), a deliberate anti-decompile measure, so it
+# can't go through the same unpack/derapify/rebuild pipeline as the other
+# repacked mods here.
 3464752232  @Hunter-Bow
+
+# NOTE: Survivor-Backpack (2926289548) used to be a separate mod here.
+# Author's page permits redistribution; merged into
+# serverpack/addons/projecthopebackpack, ships inside
+# @DZSurvivalServerPack instead.
 # DecoyGrenades: throws a decoy that imitates gunfire from a random weapon
 # for ~30s then does a weak final explosion - pulls zombie/AI aggro toward
 # the decoy's noise instead of the player. Its own Community page renders a
@@ -347,9 +387,13 @@
 # overrides). Author's page permits redistribution; merged into
 # serverpack/addons/heliwrecknoloot, ships inside @DZSurvivalServerPack
 # instead.
-3788476225  @Zens-Shooting-Stars
-3726714048  @IronhordeLighting
 3659550946  @Signal-Overnight-Stay
+
+# NOTE: Zens-Shooting-Stars (3788476225) and IronhordeLighting (3726714048)
+# used to be separate mods here. Both author pages permit redistribution;
+# merged into serverpack/addons/zenshootingstars and
+# serverpack/addons/ironhordelighting respectively, ship inside
+# @DZSurvivalServerPack instead.
 
 # Weather Lighting Control (WLC): server-side-only weather system (30
 # built-in patterns + 9 scripted sequences, weighted random selection,

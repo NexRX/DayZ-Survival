@@ -1,0 +1,8 @@
+Particle {
+ AlbedoMap "{2E6C6FD65BB37E92}graphics/Textures/efx/coronalens.edds" 
+ Color 0.749 0.6549 0.3725 1
+ Diffuse 0.6863 0.5804 0.2588 1
+ Ambient 0.6863 0.5804 0.2588 1
+ Emissive 0.6863 0.5804 0.2588 1
+ BlendMode Additive_AlphaModulate
+}

@@ -1,0 +1,41 @@
+EffectDef {
+ Emitors {
+  EmitorDef mushrooms {
+   ShapeType Sphere
+   ShapeSize 0.5 1 0.5
+   ConeAngle 360 360 0
+   MaxNum 25
+   BirthRate 5
+   BirthRateRND 1
+   BirthRateVel 1
+   Offset 0 0.5 0
+   Angles 0 0 0
+   Material "{CF4354C41EDC3694}TerjeSkills/Graphics/emat/spark.emat"
+   ScaleX 0.2
+   ScaleY 0.2
+   SizeMultiplier 0.5
+   SizeRND 0.5
+   RandomRotDir 1
+   RotMultiplier 5
+   RandomAngle 1
+   Velocity 1
+   VelocityRND 1
+   VelAffect 1
+   AirResistance 2
+   AirResistanceRND 1
+   GravityMultiply -0.05
+   GravityMultiplyRND 0
+   Spring 0
+   AnimFPS 10
+   Color {
+    0 0.2152 0.2658 1 1 0.1899 0.2405 1
+   }
+   Alpha {
+    0 0.06329 0.50149 0.5 1 0
+   }
+   RotationSpeed {
+    0 1 0.50426 0.22152 1 1
+   }
+  }
+ }
+}

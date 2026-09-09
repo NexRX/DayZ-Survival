@@ -1,0 +1,5 @@
+Particle {
+ AlbedoMap "{F680D086EF545A77}TerjeSkills/Graphics/edds/roze.edds" 
+ TileU 6
+ TileV 3
+}

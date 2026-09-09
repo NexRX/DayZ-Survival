@@ -1,0 +1,18 @@
+TextWidgetClass TerjeWidgetText {
+ ignorepointer 1
+ color 0.9412 0.9412 0.9412 1
+ size 1 18
+ halign center_ref
+ valign center_ref
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ font "gui/fonts/sdf_MetronLight24"
+ "outline size" 2
+ "outline color" 0 0 0 0.2353
+ "exact text" 0
+ "size to text h" 1
+ "size to text v" 1
+ "text halign" center
+}

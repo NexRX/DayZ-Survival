@@ -1,0 +1,109 @@
+class TerjeScriptedWidget : ScriptedWidgetEventHandler
+{	
+	protected Widget m_Root;
+	protected ref array<ref TerjeWidgetBase> m_terjeWidgets = new array<ref TerjeWidgetBase>;
+
+	void TerjeScriptedWidget(Widget parent)
+	{
+		OnCreate(parent);
+		OnInit();
+		OnUpdate(0);
+	}
+	
+	protected void OnCreate(Widget parent)
+	{
+		m_Root = GetGame().GetWorkspace().CreateWidgets(GetNativeLayout(), parent);
+		if (m_Root != null)
+		{
+			string backgroundImage = GetBackgroundImage();
+			if (backgroundImage != string.Empty)
+			{
+				ImageWidget.Cast(m_Root).LoadImageFile(0, backgroundImage);
+			}
+			
+			m_Root.SetColor(GetBackgroundColor());
+			m_Root.SetHandler(this);
+		}
+	}
+	
+	protected void OnInit()
+	{
+	
+	}
+	
+	string GetNativeLayout()
+	{
+		return "TerjeCore/Layouts/TerjeScriptedMenu.layout";
+	}
+	
+	Widget GetNativeWidget()
+	{
+		return m_Root;
+	}
+	
+	protected int GetBackgroundColor()
+	{
+		return ARGB(0, 0, 0, 0);
+	}
+	
+	protected string GetBackgroundImage()
+	{
+		return "";
+	}
+	
+	protected TerjeWidgetBase CreateTerjeWidget(typename name)
+	{
+		ref TerjeWidgetBase widget = TerjeWidgetBase.Cast(name.Spawn());
+		if (widget)
+		{
+			widget.OnCreate(GetNativeWidget());
+			widget.OnInit();
+			m_terjeWidgets.Insert(widget);
+			return widget;
+		}
+		
+		TerjeLog_Error("Failed to crate terje widget: " + name.ToString());
+		return null;
+	}
+	
+	protected void DestroyAllChildren()
+	{
+		foreach (TerjeWidgetBase child : m_terjeWidgets)
+		{
+			if (child && child.GetNativeWidget())
+			{
+				child.GetNativeWidget().Unlink();
+			}
+		}
+		
+		m_terjeWidgets.Clear();
+	}
+	
+	protected void DestroyTerjeWidget(TerjeWidgetBase widget)
+	{
+		if (widget)
+		{
+			int index = m_terjeWidgets.Find(widget);
+			if (index != -1)
+			{
+				if (widget.GetNativeWidget())
+				{
+					widget.GetNativeWidget().Unlink();
+				}
+				
+				m_terjeWidgets.Remove(index);
+			}
+		}
+	}
+	
+	void OnUpdate(float timeslice)
+	{
+		foreach (ref TerjeWidgetBase tw : m_terjeWidgets)
+		{
+			if (tw != null)
+			{
+				tw.OnUpdate(timeslice);
+			}
+		}
+	}
+}

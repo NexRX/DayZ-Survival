@@ -1,0 +1,6 @@
+Particle {
+ AlbedoMap "{B32A8969158F3DF3}TerjeSkills/Graphics/edds/sheep.edds" 
+ Color 0.749 0.6549 0.3725 1
+ TileU 5
+ TileV 3
+}

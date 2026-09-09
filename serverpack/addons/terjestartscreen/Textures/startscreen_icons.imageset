@@ -1,0 +1,44 @@
+ImageSetClass {
+ Name "TerjeStartScreen_icons"
+ RefSize 512 512
+ Textures {
+  ImageSetTextureClass {
+   mpix 1
+   path "{DB27696915D0F4A6}TerjeStartScreen/Textures/startscreen_icons.edds"
+  }
+ }
+ Images {
+  ImageSetDefClass tss_point {
+   Name "tss_point"
+   Pos 1 86
+   Size 64 64
+   Flags 0
+  }
+  ImageSetDefClass tss_soul {
+   Name "tss_soul"
+   Pos 0 0
+   Size 70 70
+   Flags 0
+  }
+  ImageSetDefClass tss_soul_badge {
+   Name "tss_soul_badge"
+   Pos 83 0
+   Size 70 70
+   Flags 0
+  }
+  ImageSetDefClass tss_bed {
+   Name "tss_bed"
+   Pos 3 154
+   Size 70 70
+   Flags 0
+  }
+  ImageSetDefClass tss_lock {
+   Name "tss_lock"
+   Pos 0 232
+   Size 70 70
+   Flags 0
+  }
+ }
+ Groups {
+ }
+}

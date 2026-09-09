@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{2B1D23B0910ADC5A}TerjeCore/Textures/mod_icon.edds"
+ Author "terje"
+ ChangeDate 315666773
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "../../References/TerjeCore/Textures/mod_icon.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+  TGAResourceClass LINUX : PC {
+  }
+ }
+}

@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{CF4354C41EDC3694}TerjeSkills/Graphics/emat/spark.emat"
+ Author "kaban-pc"
+ ChangeDate 2008248662
+ Configurations {
+  EMATResourceClass PC {
+  }
+  EMATResourceClass XBOX_ONE : PC {
+  }
+  EMATResourceClass PS4 : PC {
+  }
+  EMATResourceClass LINUX : PC {
+  }
+ }
+}

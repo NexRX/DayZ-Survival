@@ -1,0 +1,179 @@
+FrameWidgetClass rootFrame {
+ visible 0
+ position 0 0
+ size 1 1
+ hexactpos 1
+ vexactpos 1
+ hexactsize 0
+ vexactsize 0
+ {
+  PanelWidgetClass TendencyTemplate {
+   clipchildren 1
+   inheritalpha 0
+   position 0 0
+   size 35 81
+   halign right_ref
+   valign center_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   fixaspect fixwidth
+   style blank
+   {
+    ImageWidgetClass IconTendencyTemplate {
+     color 0.8627 0.8627 0.8627 1
+     position 0 0
+     size 35 35
+     halign center_ref
+     valign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     fixaspect fixwidth
+     image0 ""
+     imageTexture "{2B1D23B0910ADC5A}TerjeCore/Textures/mod_icon.edds"
+     mode blend
+     "src alpha" 1
+     "clamp mode" clamp
+     "stretch mode" stretch_w_h
+     "flip u" 0
+     "flip v" 0
+     filter 1
+     nocache 1
+    }
+    ImageWidgetClass TendencyTemplateArrowUp3 {
+     visible 0
+     clipchildren 0
+     color 0.8627 0.8627 0.8627 1
+     position 0 -27
+     size 22 17
+     halign center_ref
+     valign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     priority 999
+     image0 "set:dayz_gui image:iconArrowUp3"
+     mode blend
+     "src alpha" 1
+     "clamp mode" clamp
+     "flip v" 1
+     filter 1
+     nocache 0
+    }
+    ImageWidgetClass TendencyTemplateArrowUp2 {
+     visible 0
+     clipchildren 1
+     inheritalpha 0
+     color 0.8627 0.8627 0.8627 1
+     position 0 -25
+     size 22 12
+     halign center_ref
+     valign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     priority 999
+     image0 "set:dayz_gui image:iconArrowUp2"
+     mode blend
+     "src alpha" 1
+     "clamp mode" clamp
+     "flip v" 1
+     filter 1
+     nocache 0
+    }
+    ImageWidgetClass TendencyTemplateArrowUp1 {
+     visible 0
+     clipchildren 1
+     inheritalpha 0
+     color 0.8627 0.8627 0.8627 1
+     position 0 -22
+     size 22 7
+     halign center_ref
+     valign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     priority 999
+     image0 "set:dayz_gui image:iconArrowUp1"
+     mode blend
+     "src alpha" 1
+     "clamp mode" clamp
+     "flip v" 1
+     filter 1
+     nocache 0
+    }
+    ImageWidgetClass TendencyTemplateArrowDown1 {
+     visible 0
+     clipchildren 1
+     color 0.8627 0.8627 0.8627 1
+     position 0 22
+     size 22 7
+     halign center_ref
+     valign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     priority 999
+     image0 "set:dayz_gui image:iconArrowUp1"
+     mode blend
+     "src alpha" 1
+     "clamp mode" clamp
+     "flip v" 0
+     filter 1
+     nocache 0
+    }
+    ImageWidgetClass TendencyTemplateArrowDown2 {
+     visible 0
+     clipchildren 1
+     inheritalpha 0
+     color 0.8627 0.8627 0.8627 1
+     position 0 25
+     size 22 12
+     halign center_ref
+     valign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     priority 999
+     image0 "set:dayz_gui image:iconArrowUp2"
+     mode blend
+     "src alpha" 1
+     "clamp mode" clamp
+     "flip v" 0
+     filter 1
+     nocache 0
+    }
+    ImageWidgetClass TendencyTemplateArrowDown3 {
+     visible 0
+     clipchildren 1
+     inheritalpha 0
+     color 0.8627 0.8627 0.8627 1
+     position 0 27
+     size 22 17
+     halign center_ref
+     valign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     priority 999
+     image0 "set:dayz_gui image:iconArrowUp3"
+     mode blend
+     "src alpha" 1
+     "clamp mode" clamp
+     "flip v" 0
+     filter 1
+     nocache 0
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,202 @@
+FrameWidgetClass terje_skill_tooltip_frame {
+ clipchildren 0
+ ignorepointer 1
+ position 0 0
+ size 550 300
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ priority 953
+ {
+  PanelWidgetClass terje_skill_tooltip_panel {
+   visible 1
+   clipchildren 0
+   ignorepointer 1
+   position 0 0
+   size 550 300
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   style blank
+   {
+    ImageWidgetClass terje_skill_tooltip_header {
+     clipchildren 0
+     ignorepointer 1
+     color 0.0288 0.0288 0.0288 0.9804
+     size 1 48
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 1
+     image0 "set:dayz_gui image:inv_header_3"
+     mode blend
+     "src alpha" 1
+     "clamp mode" clamp
+     "stretch mode" stretch_w_h
+     {
+      ImageWidgetClass terje_skill_tooltip_icon {
+       visible 1
+       clipchildren 0
+       inheritalpha 0
+       ignorepointer 1
+       position 8 0
+       size 32 32
+       valign center_ref
+       hexactpos 1
+       vexactpos 0
+       hexactsize 1
+       vexactsize 1
+       image0 "set:dayz_gui image:circle"
+       mode additive
+       "src alpha" 1
+       "clamp mode" clamp
+       "stretch mode" stretch_w_h
+       filter 1
+      }
+      TextWidgetClass terje_skill_tooltip_name {
+       clipchildren 0
+       ignorepointer 1
+       position 48 6
+       size 246 16
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       priority 1
+       style Normal
+       text "SKILL NAME"
+       font "gui/fonts/sdf_MetronBook24"
+       "exact text" 1
+       "exact text size" 16
+       "size to text h" 0
+       "size to text v" 0
+       "text valign" center
+      }
+      TextWidgetClass terje_skill_tooltip_level {
+       clipchildren 0
+       ignorepointer 1
+       position 48 6
+       size 246 16
+       valign bottom_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       style Normal
+       text "Level: 51"
+       font "gui/fonts/sdf_MetronLight24"
+       "text color" 1 1 1 1
+       "text spacing" 2 0
+       "exact text" 1
+       "exact text size" 16
+       "size to text h" 0
+       "size to text v" 0
+       "text valign" center
+      }
+      TextWidgetClass terje_skill_tooltip_points {
+       clipchildren 0
+       ignorepointer 1
+       position 16 6
+       size 240 16
+       halign right_ref
+       valign bottom_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       style Normal
+       text "Perk points: 0"
+       font "gui/fonts/sdf_MetronLight24"
+       "text color" 1 1 1 1
+       "exact text" 1
+       "exact text size" 16
+       "size to text h" 0
+       "size to text v" 0
+       "text halign" right
+       "text valign" center
+      }
+      TextWidgetClass terje_skill_tooltip_exp {
+       clipchildren 0
+       ignorepointer 1
+       position 16 6
+       size 240 16
+       halign right_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       style Normal
+       text "Experience: 555555/555555"
+       font "gui/fonts/sdf_MetronLight24"
+       "text color" 1 1 1 1
+       "exact text" 1
+       "exact text size" 16
+       "size to text h" 0
+       "size to text v" 0
+       "text halign" right
+       "text valign" center
+      }
+     }
+    }
+    GridSpacerWidgetClass terje_skill_tooltip_content {
+     clipchildren 1
+     ignorepointer 1
+     color 0.1069 0.1069 0.1069 0.9804
+     position 0 48
+     size 1 1
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 0
+     style Colorable
+     Padding 0
+     Margin 0
+     "Size To Content H" 1
+     "Size To Content V" 1
+     Columns 2
+     Rows 1
+     {
+      WrapSpacerWidgetClass terje_skill_tooltip_content_spacer {
+       clipchildren 1
+       ignorepointer 1
+       position 0 0
+       size 1 0
+       hexactpos 1
+       vexactpos 1
+       hexactsize 0
+       vexactsize 1
+       priority 202
+       style Colorable
+       Padding 8
+       Margin 4
+       "Size To Content V" 1
+       content_halign center
+       {
+        RichTextWidgetClass terje_skill_tooltip_info {
+         clipchildren 1
+         ignorepointer 1
+         size 0.98 1
+         halign center_ref
+         hexactpos 1
+         vexactpos 1
+         hexactsize 0
+         vexactsize 0
+         style DayZNormal
+         text "Text"
+         font "gui/fonts/sdf_MetronLight24"
+         "exact text" 1
+         "exact text size" 16
+         "size to text h" 1
+         "size to text v" 1
+         wrap 1
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}

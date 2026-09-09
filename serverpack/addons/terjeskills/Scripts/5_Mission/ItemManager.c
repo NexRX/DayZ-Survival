@@ -1,0 +1,70 @@
+modded class ItemManager
+{
+	private ref Widget m_terjeSkillsTooltip = null;
+	private ref Timer m_terjeSkillsToolTipTimer = null;
+	
+	override void HideTooltip()
+	{
+		super.HideTooltip();
+		
+		if (m_terjeSkillsToolTipTimer != null)
+		{
+			delete m_terjeSkillsToolTipTimer;
+			m_terjeSkillsToolTipTimer = null;
+		}
+		
+		if (m_terjeSkillsTooltip != null)
+		{
+			m_terjeSkillsTooltip.Unlink();
+			m_terjeSkillsTooltip = null;
+		}
+	}
+	
+	ref Widget GetTerjeSkillsRoot()
+	{
+		return m_RootWidget;
+	}
+	
+	void TerjeSkillsSetupTooltipWidget(Widget tooltipWidget, int x, int y)
+	{
+		HideTooltip();
+		
+		int screen_w;
+		int screen_h;
+		float width;
+		float height;
+		GetScreenSize(screen_w, screen_h);
+		tooltipWidget.GetScreenSize(width,height);
+		GetMousePos(x,y);
+		
+		screen_w -= 10;
+		screen_h -= 10;
+		
+		int rightEdge = x + width;
+		if (rightEdge > screen_w)
+		{
+			x = screen_w - width;
+		}
+		
+		int bottomEdge = y + height;
+		if (bottomEdge > screen_h)
+		{
+			y = screen_h - height;
+		}
+		
+		tooltipWidget.SetPos(x, y);
+		
+		m_terjeSkillsToolTipTimer = new Timer();
+		m_terjeSkillsToolTipTimer.Run( TOOLTIP_DELAY, this, "ShowTerjeSkillsTooltip" );
+		m_terjeSkillsTooltip = tooltipWidget;
+	}
+	
+	void ShowTerjeSkillsTooltip()
+	{
+		if (m_terjeSkillsTooltip != null)
+		{
+			m_terjeSkillsTooltip.Show(true);
+			m_terjeSkillsTooltip.Update();
+		}
+	}
+}

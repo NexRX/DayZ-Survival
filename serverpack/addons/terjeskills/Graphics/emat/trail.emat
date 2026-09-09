@@ -1,0 +1,8 @@
+Particle {
+ AlbedoMap "{0312C28673247B19}TerjeSkills/Graphics/edds/trail.edds" "{69E030A5603F544C}alpha" anim( 0 ) 
+ Color 0.8941 0 0 1
+ Ambient 1 0 0 1
+ Emissive 1 1 1 0
+ Sort opaque
+ Softness 2
+}

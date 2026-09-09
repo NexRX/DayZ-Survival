@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{B32A8969158F3DF3}TerjeSkills/Graphics/edds/sheep.edds"
+ Author "kaban-pc"
+ ChangeDate 285536607
+ Configurations {
+  PNGResourceClass PC {
+   SourceFile "sheep.png"
+  }
+  PNGResourceClass XBOX_ONE : PC {
+  }
+  PNGResourceClass PS4 : PC {
+  }
+  PNGResourceClass LINUX : PC {
+  }
+ }
+}

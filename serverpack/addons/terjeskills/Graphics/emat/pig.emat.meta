@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{5C2C5B5A290FBE30}TerjeSkills/Graphics/emat/pig.emat"
+ Author "kaban-pc"
+ ChangeDate 1260187999
+ Configurations {
+  EMATResourceClass PC {
+  }
+  EMATResourceClass XBOX_ONE : PC {
+  }
+  EMATResourceClass PS4 : PC {
+  }
+  EMATResourceClass LINUX : PC {
+  }
+ }
+}

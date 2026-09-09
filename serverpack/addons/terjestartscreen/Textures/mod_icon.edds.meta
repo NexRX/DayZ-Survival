@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{C165F39188F5C153}TerjeStartScreen/Textures/mod_icon.edds"
+ Author "terje"
+ ChangeDate -455265685
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "../../References/TerjeStartScreen/Textures/mod_icon.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+  TGAResourceClass LINUX : PC {
+  }
+ }
+}

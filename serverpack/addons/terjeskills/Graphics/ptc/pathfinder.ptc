@@ -1,0 +1,44 @@
+EffectDef {
+ Emitors {
+  EmitorDef pathfinder {
+   ShapeType Sphere
+   ShapeSize 0.5 0.5 0.5
+   ConeAngle 360 360 0
+   MaxNum 300
+   BirthRate 5
+   BirthRateRND 0
+   BirthRateVel 0
+   Offset 0 1.5 0
+   Angles 0 0 0
+   Material "{CF4354C41EDC3694}TerjeSkills/Graphics/emat/spark.emat"
+   ScaleX 1
+   ScaleY 1
+   SizeMultiplier 0.2
+   SizeRND 0.1
+   RandomRotDir 1
+   RotMultiplier 5
+   RandomAngle 1
+   Velocity 0.5
+   VelocityRND 0.5
+   VelAffect 0
+   AirResistance 5
+   AirResistanceRND 1
+   GravityMultiply 0.005
+   GravityMultiplyRND 0.005
+   Spring 0
+   Wind 0
+   AnimFPS 30
+   LifeTime 60
+   Color {
+    0 1 0.0759 0.1392 1 1 0 0
+   }
+   Alpha {
+    0 0.06329 0.02753 0.75316 0.125 1 0.87574 0.74684 1 0
+   }
+   RotationSpeed {
+    0 0 0.50074 0.10759 1 0
+   }
+   EffectTime 60
+  }
+ }
+}

@@ -1,0 +1,132 @@
+FrameWidgetClass terjePageRootName {
+ size 1 1
+ halign center_ref
+ valign center_ref
+ hexactpos 1
+ vexactpos 1
+ hexactsize 0
+ vexactsize 0
+ {
+  WindowWidgetClass TextInputDialogWindow {
+   clipchildren 1
+   ignorepointer 1
+   color 0.1176 0.1176 0.1176 0.9804
+   position 0 0
+   size 880 800
+   halign center_ref
+   valign center_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   priority 1
+   style Colorable
+   {
+    ButtonWidgetClass ButtonNoFocus {
+     color 0 0 0 0
+     position 0 0
+     size 1 1
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 0
+     style Empty
+    }
+    PanelWidgetClass PanelWidget2 {
+     ignorepointer 1
+     color 1 0 0 0.2353
+     position 0 20
+     size 200 40
+     halign center_ref
+     valign bottom_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     style rover_sim_colorable
+     {
+      ButtonWidgetClass ButtonOk {
+       visible 1
+       color 1 0 0 1
+       position 0 0
+       size 1 1
+       halign right_ref
+       valign bottom_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 0
+       vexactsize 0
+       style EmptyHighlight
+       "next left" ""
+       "next right" ""
+       "next up" ""
+       "next down" ""
+       text "#STR_USRACT_NEXT_ACTION"
+       text_proportion 0.5
+       font "gui/fonts/sdf_MetronBook24"
+       "disabled text color" 0.3412 0.3412 0.3412 1
+      }
+     }
+    }
+    TextWidgetClass WindowLabel {
+     disabled 0
+     ignorepointer 1
+     position 0 20
+     size 1 30
+     halign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 1
+     style Bold
+     text "#STR_TERJESTARTSCREEN_PAGE_SKILLS_TITLE"
+     font "gui/fonts/sdf_MetronBook72"
+     "exact text" 0
+     "text halign" center
+     "text valign" center
+    }
+    PanelWidgetClass SeparatorPanel {
+     ignorepointer 1
+     color 0.7569 0.0941 0.0941 0.7843
+     position 0 60
+     size 0.85 3
+     halign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 1
+     scaled 1
+     priority 10
+     style rover_sim_colorable
+    }
+    TextWidgetClass WindowInfo {
+     disabled 0
+     ignorepointer 1
+     position 0 75
+     size 1 24
+     halign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 1
+     style Bold
+     text "#STR_TERJESTARTSCREEN_PAGE_SKILLS_INFO"
+     font "gui/fonts/sdf_MetronBook72"
+     "exact text" 0
+     "text halign" center
+     "text valign" center
+    }
+    PanelWidgetClass SkillsPanel {
+     ignorepointer 1
+     position 0 110
+     size 835 610
+     halign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,37 @@
+EffectDef {
+ Emitors {
+  EmitorDef plume {
+   ShapeType Box
+   ShapeSize 2 2 2
+   ConeAngle 360 360 0
+   MaxNum 25
+   BirthRate 5
+   BirthRateRND 1
+   BirthRateVel 1
+   Angles 0 0 0
+   Material "{2F4F986451AA15FF}TerjeSkills/Graphics/emat/plume.emat"
+   ScaleX 0.191
+   ScaleY 0.191
+   SizeMultiplier 1
+   SizeRND 1
+   RandomRotDir 1
+   RotMultiplier 5
+   RandomAngle 1
+   Velocity 2
+   VelocityRND 0.01
+   VelAffect 1
+   AirResistanceRND 1
+   Spring 0.02
+   AnimFPS 10
+   Color {
+    0 0.6772 0.3734 0 1 0.7342 0.6392 0.3671
+   }
+   Alpha {
+    0 0.06329 0.46449 0.3481 1 0
+   }
+   RotationSpeed {
+    0 1 0.50426 0.22152 1 1
+   }
+  }
+ }
+}

@@ -1,0 +1,7 @@
+ImageWidgetClass TerjeWidgetImage {
+ ignorepointer 1
+ scaled 0
+ mode blend
+ "clamp mode" clamp
+ "stretch mode" stretch_w_h
+}

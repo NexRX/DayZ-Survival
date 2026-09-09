@@ -1,0 +1,6 @@
+Particle {
+ AlbedoMap "{41FDCE2D85D5717A}TerjeSkills/Graphics/edds/pig.edds" 
+ Color 0.8118 0.7373 0.5059 1
+ TileU 4
+ TileV 3
+}

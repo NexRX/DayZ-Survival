@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{81424C9807CDDE09}TerjeSkills/Graphics/edds/plume.edds"
+ Author "kaban-pc"
+ ChangeDate -999509665
+ Configurations {
+  PNGResourceClass PC {
+   SourceFile "plume.png"
+  }
+  PNGResourceClass XBOX_ONE : PC {
+  }
+  PNGResourceClass PS4 : PC {
+  }
+  PNGResourceClass LINUX : PC {
+  }
+ }
+}

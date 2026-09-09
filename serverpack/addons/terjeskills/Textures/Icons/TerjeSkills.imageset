@@ -1,0 +1,68 @@
+ImageSetClass {
+ Name "TerjeSkills_icon"
+ RefSize 1024 1024
+ Textures {
+  ImageSetTextureClass {
+   mpix 1
+   path "{F3627A856B8157A9}TerjeSkills/Textures/Icons/TerjeSkills.edds"
+  }
+ }
+ Images {
+  ImageSetDefClass ts_athletic {
+   Name "ts_athletic"
+   Pos 169 11
+   Size 128 128
+   Flags 0
+  }
+  ImageSetDefClass ts_strength {
+   Name "ts_strength"
+   Pos 13 12
+   Size 128 128
+   Flags 0
+  }
+  ImageSetDefClass ts_metablsm {
+   Name "ts_metablsm"
+   Pos 170 632
+   Size 128 128
+   Flags 0
+  }
+  ImageSetDefClass ts_stealth {
+   Name "ts_stealth"
+   Pos 13 792
+   Size 128 128
+   Flags 0
+  }
+  ImageSetDefClass ts_survival {
+   Name "ts_survival"
+   Pos 342 473
+   Size 128 128
+   Flags 0
+  }
+  ImageSetDefClass ts_immun {
+   Name "ts_immun"
+   Pos 506 310
+   Size 128 128
+   Flags 0
+  }
+  ImageSetDefClass ts_med {
+   Name "ts_med"
+   Pos 169 313
+   Size 128 128
+   Flags 0
+  }
+  ImageSetDefClass ts_hunting {
+   Name "ts_hunting"
+   Pos 495 11
+   Size 128 128
+   Flags 0
+  }
+  ImageSetDefClass ts_fushing {
+   Name "ts_fushing"
+   Pos 326 11
+   Size 128 128
+   Flags 0
+  }
+ }
+ Groups {
+ }
+}

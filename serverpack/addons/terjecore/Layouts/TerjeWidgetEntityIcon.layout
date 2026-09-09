@@ -1,0 +1,163 @@
+PanelWidgetClass TerjeWidgetEntityIconRoot {
+ clipchildren 0
+ ignorepointer 0
+ position 0 0
+ size 1 1
+ hexactpos 1
+ vexactpos 1
+ hexactsize 0
+ vexactsize 0
+ scaled 1
+ "no focus" 1
+ {
+  PanelWidgetClass TerjeWidgetIconColor {
+   visible 0
+   clipchildren 0
+   ignorepointer 1
+   color 1 1 1 0.0392
+   position 0 0
+   size 1 1
+   halign center_ref
+   valign center_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 0
+   priority 10
+   draggable 0
+   style rover_sim_colorable
+  }
+  ItemPreviewWidgetClass TerjeWidgetIconRender {
+   visible 0
+   clipchildren 0
+   ignorepointer 0
+   color 0.702 0.702 0.702 1
+   size 1 1
+   halign center_ref
+   valign center_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 0
+   priority 150
+   draggable 0
+  }
+  ImageWidgetClass TerjeWidgetIconGhost {
+   visible 0
+   clipchildren 0
+   ignorepointer 0
+   color 1 1 1 0.2039
+   size 1 1
+   halign center_ref
+   valign center_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 0
+   fixaspect fixwidth
+   priority 100
+   image0 "set:dayz_inventory image:missing"
+   mode blend
+   "src alpha" 1
+   "clamp mode" clamp
+   "stretch mode" stretch_w_h
+  }
+  FrameWidgetClass TerjeWidgetIconQuantityPanel {
+   visible 0
+   clipchildren 1
+   inheritalpha 1
+   ignorepointer 1
+   size 1 1
+   valign bottom_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 0
+   priority 606
+   draggable 0
+   {
+    ProgressBarWidgetClass TerjeWidgetIconQuantityBar {
+     visible 1
+     ignorepointer 1
+     position 0 2
+     size 0.9 3
+     halign center_ref
+     valign bottom_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 1
+     style Quantity
+     current 70
+     vertical 0
+     flipped 0
+    }
+    GridSpacerWidgetClass TerjeWidgetIconQuantityStackPanel {
+     clipchildren 0
+     inheritalpha 0
+     ignorepointer 1
+     color 0 0 0 0.7843
+     position 1 1
+     size 29 18
+     halign right_ref
+     valign bottom_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     priority 600
+     draggable 0
+     style Colorable
+     Padding 0
+     Margin 3
+     "Size To Content H" 1
+     "Size To Content V" 1
+     content_halign center
+     content_valign center
+     Columns 1
+     Rows 1
+     {
+      TextWidgetClass TerjeWidgetIconQuantity {
+       clipchildren 1
+       inheritalpha 0
+       ignorepointer 1
+       size 1 1
+       halign right_ref
+       valign bottom_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 0
+       vexactsize 0
+       priority 500
+       style Light
+       text "100"
+       font "gui/fonts/sdf_MetronLight24"
+       "exact text" 1
+       "exact text size" 15
+       "size to text h" 1
+       "size to text v" 0
+       "text halign" right
+       "text valign" center
+      }
+     }
+    }
+   }
+  }
+  PanelWidgetClass TerjeWidgetIconCursor {
+   visible 0
+   clipchildren 1
+   ignorepointer 1
+   position 0 0
+   size 1 1
+   halign center_ref
+   valign center_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 0
+   priority 999
+   draggable 0
+   style Outline
+  }
+ }
+}

@@ -1,0 +1,12 @@
+EmbededWidgetClass TerjeWidgetEntityIconRoot {
+ clipchildren 0
+ ignorepointer 1
+ position 0 0
+ size 48 48
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ scaled 1
+ layout "{CB2409D72C1FB385}TerjeCore/Layouts/TerjeWidgetEntityIcon.layout"
+}

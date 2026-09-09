@@ -1,0 +1,5 @@
+Particle {
+ AlbedoMap "{81424C9807CDDE09}TerjeSkills/Graphics/edds/plume.edds" 
+ TileU 5
+ TileV 5
+}

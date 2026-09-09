@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{8F700858242BEA4B}TerjeSkills/Graphics/emat/cow.emat"
+ Author "kaban-pc"
+ ChangeDate 1527574879
+ Configurations {
+  EMATResourceClass PC {
+  }
+  EMATResourceClass XBOX_ONE : PC {
+  }
+  EMATResourceClass PS4 : PC {
+  }
+  EMATResourceClass LINUX : PC {
+  }
+ }
+}

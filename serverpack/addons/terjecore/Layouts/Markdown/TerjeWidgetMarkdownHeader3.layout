@@ -1,0 +1,19 @@
+RichTextWidgetClass TerjeWidgetText {
+ disabled 0
+ clipchildren 1
+ ignorepointer 1
+ position 0 0
+ size 1000 32
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ style DayZNormal
+ font "gui/fonts/sdf_MetronLight24"
+ "exact text" 1
+ "exact text size" 18
+ "size to text h" 0
+ "size to text v" 1
+ wrap 1
+ "content offset" -1
+}

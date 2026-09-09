@@ -1,0 +1,11 @@
+PanelWidgetClass SeparatorPanel {
+ ignorepointer 1
+ color 0.3137 0.3137 0.3137 0.3137
+ size 1000 1
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ scaled 0
+ style rover_sim_colorable
+}

@@ -1,0 +1,86 @@
+ImageSetClass {
+ Name "TerjePerkLevels_icon"
+ RefSize 512 256
+ Textures {
+  ImageSetTextureClass {
+   mpix 1
+   path "{1B57C99543FF5383}TerjeSkills/Textures/Icons/PerkLevels.edds"
+  }
+ }
+ Images {
+  ImageSetDefClass L1 {
+   Name "L1"
+   Pos 0 0
+   Size 80 80
+   Flags 0
+  }
+  ImageSetDefClass L2 {
+   Name "L2"
+   Pos 80 0
+   Size 80 80
+   Flags 0
+  }
+  ImageSetDefClass L3 {
+   Name "L3"
+   Pos 160 0
+   Size 80 80
+   Flags 0
+  }
+  ImageSetDefClass L4 {
+   Name "L4"
+   Pos 240 0
+   Size 80 80
+   Flags 0
+  }
+  ImageSetDefClass L5 {
+   Name "L5"
+   Pos 320 0
+   Size 80 80
+   Flags 0
+  }
+  ImageSetDefClass L6 {
+   Name "L6"
+   Pos 0 80
+   Size 80 80
+   Flags 0
+  }
+  ImageSetDefClass L7 {
+   Name "L7"
+   Pos 80 80
+   Size 80 80
+   Flags 0
+  }
+  ImageSetDefClass L8 {
+   Name "L8"
+   Pos 160 80
+   Size 80 80
+   Flags 0
+  }
+  ImageSetDefClass L9 {
+   Name "L9"
+   Pos 240 80
+   Size 80 80
+   Flags 0
+  }
+  ImageSetDefClass L10 {
+   Name "L10"
+   Pos 320 80
+   Size 80 80
+   Flags 0
+  }
+  ImageSetDefClass L_NONE {
+   Name "L_NONE"
+   Pos 80 160
+   Size 80 80
+   Flags 0
+  }
+  ImageSetDefClass L_MAX {
+   Name "L_MAX"
+   Pos 0 160
+   Size 80 80
+   Flags 0
+  }
+ }
+ Groups {
+ }
+}

@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{6090D65F29ACC79A}TerjeSkills/Graphics/edds/fox.edds"
+ Author "kaban-pc"
+ ChangeDate -1976766113
+ Configurations {
+  PNGResourceClass PC {
+   SourceFile "fox.png"
+  }
+  PNGResourceClass XBOX_ONE : PC {
+  }
+  PNGResourceClass PS4 : PC {
+  }
+  PNGResourceClass LINUX : PC {
+  }
+ }
+}

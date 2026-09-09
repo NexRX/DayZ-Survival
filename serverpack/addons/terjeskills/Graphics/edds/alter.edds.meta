@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{0AE17B39CAECF2BE}TerjeSkills/Graphics/edds/alter.edds"
+ Author "kaban-pc"
+ ChangeDate -1336594081
+ Configurations {
+  PNGResourceClass PC {
+   SourceFile "alter.png"
+  }
+  PNGResourceClass XBOX_ONE : PC {
+  }
+  PNGResourceClass PS4 : PC {
+  }
+  PNGResourceClass LINUX : PC {
+  }
+ }
+}

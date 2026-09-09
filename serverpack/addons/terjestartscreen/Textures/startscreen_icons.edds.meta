@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{DB27696915D0F4A6}TerjeStartScreen/Textures/startscreen_icons.edds"
+ Author "terje"
+ ChangeDate -1737444665
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "../../References/TerjeStartScreen/Textures/startscreen_icons.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+  TGAResourceClass LINUX : PC {
+  }
+ }
+}

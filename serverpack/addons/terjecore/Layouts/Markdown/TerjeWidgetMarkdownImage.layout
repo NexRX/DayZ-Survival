@@ -1,0 +1,28 @@
+WrapSpacerWidgetClass TerjeWidgetRoot {
+ disabled 0
+ ignorepointer 1
+ position 0 0
+ size 1000 1
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ Padding 0
+ Margin 0
+ "Size To Content V" 1
+ {
+  ImageWidgetClass TerjeWidgetImage {
+   ignorepointer 1
+   position 0 0
+   size 512 512
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   mode blend
+   "src alpha" 1
+   "clamp mode" clamp
+   "stretch mode" stretch_w_h
+  }
+ }
+}

@@ -1,0 +1,6 @@
+Particle {
+ AlbedoMap "{4EB69E28747EB982}TerjeSkills/Graphics/edds/deer.edds" 
+ Color 0.749 0.6549 0.3725 1
+ TileU 4
+ TileV 2
+}

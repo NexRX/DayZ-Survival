@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{D351888F93E5B412}TerjeSkills/Graphics/edds/lightning.edds"
+ Author "kaban-pc"
+ ChangeDate -238784161
+ Configurations {
+  PNGResourceClass PC {
+   SourceFile "lightning.png"
+  }
+  PNGResourceClass XBOX_ONE : PC {
+  }
+  PNGResourceClass PS4 : PC {
+  }
+  PNGResourceClass LINUX : PC {
+  }
+ }
+}

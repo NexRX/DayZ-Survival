@@ -1,0 +1,86 @@
+PanelWidgetClass TerjeFaceItemRoot {
+ color 0.1176 0.1176 0.1176 1
+ size 80 80
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ style rover_sim_colorable
+ {
+  ImageWidgetClass TerjeFaceItemBac {
+   ignorepointer 1
+   position 0 0
+   size 1 1
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 0
+   image0 "TerjeStartScreen\\Faces\\Background.paa"
+   mode blend
+   "src alpha" 1
+   "clamp mode" clamp
+   "stretch mode" stretch_w_h
+   filter 1
+  }
+  ImageWidgetClass TerjeFaceItemImg {
+   ignorepointer 1
+   position 0 0
+   size 1 1
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 0
+   image0 "TerjeStartScreen\\Faces\\Unknown.paa"
+   mode blend
+   "src alpha" 1
+   "clamp mode" clamp
+   "stretch mode" stretch_w_h
+   filter 1
+  }
+  ButtonWidgetClass TerjeFaceItemBtn {
+   color 0 0 0 0.2353
+   position 0 0
+   size 1 1
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 0
+   style EmptyHighlight
+  }
+  ImageWidgetClass TerjeFaceItemFor {
+   visible 1
+   ignorepointer 1
+   color 0 0 0 1
+   position 0 0
+   size 1 1
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 0
+   image0 "TerjeStartScreen\\Faces\\Foreground.paa"
+   mode blend
+   "src alpha" 1
+   "clamp mode" wrap
+   "stretch mode" stretch_w_h
+   {
+    ImageWidgetClass TerjeFaceItemLock {
+     visible 1
+     ignorepointer 1
+     position 0 0
+     size 0.5 0.5
+     halign center_ref
+     valign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 0
+     image0 "set:TerjeStartScreen_icons image:tss_lock"
+     mode blend
+     "src alpha" 1
+     "clamp mode" wrap
+     "stretch mode" stretch_w_h
+    }
+   }
+  }
+ }
+}

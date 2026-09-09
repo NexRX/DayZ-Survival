@@ -1,0 +1,13 @@
+MetaFileClass {
+ Name "{A7C5485E4E2D3B91}IronhordeLighting/graphics/Particles/materials/fire/IH_GasLamp_Flame.emat"
+ Author "IronhordeLighting"
+ ChangeDate 1786741800
+ Configurations {
+  EMATResourceClass PC {
+  }
+  EMATResourceClass XBOX_ONE : PC {
+  }
+  EMATResourceClass PS4 : PC {
+  }
+ }
+}
