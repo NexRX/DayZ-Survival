@@ -75,30 +75,20 @@
 
 # Zens ExpansionAI Audio: ambient audio/voice/footstep cues layered onto the
 # DayZ-Expansion-AI patrols above - same author as Zens-Repairable-Wells/
-# Zens-Zippo-Lighter/Zens-COT-Plus-Fix (all already trusted here).
-#
-# NOTE: Zens-ExpansionAI-Audio (3321340470) used to be a separate mod here
-# (2 addons: zenexpansionaudioai_scripts, zenexpansionaudioai_soundsets).
-# Author's page permits redistribution; merged into
-# serverpack/addons/zenexpansionaudioai_scripts and
-# serverpack/addons/zenexpansionaudioai_soundsets, ships inside
-# @DZSurvivalServerPack instead.
+# Zens-Zippo-Lighter/Zens-COT-Plus-Fix (all already trusted here). Too
+# large to repack into git (20M+ combined) - kept standalone.
+3321340470  @Zens-ExpansionAI-Audio
 
-# --- Terje suite ---
-# NOTE: Terje-Core (3649957186), Terje-Skills (3649958397), Terje-Start-
-# Screen (3649959402), and Terje-Compatibility-COT (3649959707) used to be
-# separate mods here. All 4 are small enough to repack (author's page
-# permits redistribution); merged into serverpack/addons/terjecore,
-# terjeskills, terjestartscreen, terjecompatibilitycot respectively, ship
-# inside @DZSurvivalServerPack instead. Terje-Medicine and Terje-Radiation
-# stay separate standalone mods below - both are large (180M+) content
-# packs, deliberately left out of the repack to avoid bloating this git
-# repo with binary assets (no Git LFS configured). Their CfgPatches
-# requiredAddons[] ("TerjeCore") is a real engine-level dependency
-# declaration, resolved by class name regardless of which PBO defines it -
-# not by mods.txt/-mod= order - so splitting the suite this way is safe.
+# --- Terje suite (Core first; Skills before Medicine, since Medicine's
+# Immunity/Medicine skills require it; Compatibility-COT needs Terje-Core +
+# Community-Online-Tools, both already above). Core/Skills/Start-Screen
+# are too large to repack into git (1.2M/33M/16M) - kept standalone.
+# Terje-Compatibility-COT stays repacked (140K, see below). ---
+3649957186  @Terje-Core
+3649958397  @Terje-Skills
 3649957536  @Terje-Medicine
 3649958757  @Terje-Radiation
+3649959402  @Terje-Start-Screen
 3690738331  @Zens-COT-Plus-Fix
 
 # --- "s" suite (sGunplay/sVisual need sFramework; NOT related to CFTools
@@ -238,11 +228,10 @@
 3083277274  @Risus-Bases
 2670506982  @Building-Fortifications
 
-# NOTE: CS-Modular-Cave (3238690259) and Zens-Repairable-Wells
-# (2924580520) used to be separate mods here. Both author pages permit
-# redistribution; merged into serverpack/addons/cs_modular_cave and
-# serverpack/addons/zenrepairwells respectively, ship inside
-# @DZSurvivalServerPack instead.
+# CS Modular Cave: placeable modular cave pieces. Too large to repack into
+# git (1.8M) - kept standalone. Zens-Repairable-Wells stays repacked (see
+# serverpack/addons/zenrepairwells, 124K).
+3238690259  @CS-Modular-Cave
 1646187754  @Code-Lock
 3647777793  @Peek-Doors
 2860643107  @BoomLays-Things
@@ -269,10 +258,9 @@
 # repacked mods here.
 3464752232  @Hunter-Bow
 
-# NOTE: Survivor-Backpack (2926289548) used to be a separate mod here.
-# Author's page permits redistribution; merged into
-# serverpack/addons/projecthopebackpack, ships inside
-# @DZSurvivalServerPack instead.
+# Survivor-Backpack: too large to repack into git (18M) - kept standalone.
+2926289548  @Survivor-Backpack
+
 # DecoyGrenades: throws a decoy that imitates gunfire from a random weapon
 # for ~30s then does a weak final explosion - pulls zombie/AI aggro toward
 # the decoy's noise instead of the player. Its own Community page renders a
@@ -393,11 +381,10 @@
 # instead.
 3659550946  @Signal-Overnight-Stay
 
-# NOTE: Zens-Shooting-Stars (3788476225) and IronhordeLighting (3726714048)
-# used to be separate mods here. Both author pages permit redistribution;
-# merged into serverpack/addons/zenshootingstars and
-# serverpack/addons/ironhordelighting respectively, ship inside
-# @DZSurvivalServerPack instead.
+# IronhordeLighting: too large to repack into git (29M) - kept standalone.
+# Zens-Shooting-Stars stays repacked (see serverpack/addons/zenshootingstars,
+# 72K).
+3726714048  @IronhordeLighting
 
 # Weather Lighting Control (WLC): server-side-only weather system (30
 # built-in patterns + 9 scripted sequences, weighted random selection,
@@ -521,31 +508,22 @@
 #     mission is Chernarus (dayzOffline.chernarusplus) - it'd just be a
 #     broken/pointless item showing the wrong island here.
 #   - "Old Food" (3237950572) is already above, in Food/survival mechanics.
-#   - "SimpleMatch" (2848676009) is skipped: it and Zens-Zippo-Lighter's
-#     ZenPetrolLighter/ZenZippoLighter classes (now bundled below) both
-#     rework the vanilla PetrolLighter class as a refillable light source,
-#     and running both crashes the server during config compile every
-#     time (confirmed by bisecting down to just this pair, in both load
-#     orders - a genuine mutual incompatibility, not an ordering fix).
-#     Zens-Zippo-Lighter's content is kept, being the mod explicitly named
-#     in the reference pack's own list.
+#   - SimpleMatch (2848676009) is skipped: it and Zens-Zippo-Lighter's
+#     ZenPetrolLighter/ZenZippoLighter classes (below) both rework the
+#     vanilla PetrolLighter class as a refillable light source, and running
+#     both crashes the server during config compile every time (confirmed
+#     by bisecting down to just this pair, in both load orders - a genuine
+#     mutual incompatibility, not an ordering fix). Zens-Zippo-Lighter is
+#     kept, being the mod explicitly named in the reference pack's own list.
 # What's left, all standalone content with no further setup needed: ---
 3229104508  @A-Hunters-Ritual
 2834577714  @Burning-Mutant
 2867537797  @Freezing-Mutant
 
-# NOTE: Zens-Zippo-Lighter (3170285574, ZenZippo) used to be a separate
-# mod here - refillable Zippo-style lighter (ZenPetrolLighter/
-# ZenZippoLighter and colour variants). Author's page permits
-# redistribution; merged into serverpack/addons/zenzippo, ships inside
-# @DZSurvivalServerPack instead. Its reference types.xml was already
-# merged into the mission's db/types.xml by src/modTypes.ts while this
-# mod was still standalone - those entries persist untouched (additive
-# merge, never removed - see modTypes.ts's own comment), so its items
-# keep spawning in the loot economy with no further action needed. The
-# now-unused "@Zens-Zippo-Lighter" entry left in modTypes.ts's
-# MOD_TYPES_SOURCES is harmless dead weight (a Set lookup that simply
-# never matches again).
+# Zens-Zippo-Lighter: refillable Zippo-style lighter (ZenPetrolLighter/
+# ZenZippoLighter and colour variants). Too large to repack into git
+# (3.8M) - kept standalone.
+3170285574  @Zens-Zippo-Lighter
 3036748011  @Buddys-BoltZ
 
 # Server-side-only AI extras (loaded via -servermod=, not downloaded by

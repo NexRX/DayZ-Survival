@@ -1,3 +1,0 @@
-class TerjeBookBase : ItemBook
-{
-}
