@@ -513,6 +513,16 @@
 #     map item illustrating Namalsk's geography specifically, and our
 #     mission is Chernarus (dayzOffline.chernarusplus) - it'd just be a
 #     broken/pointless item showing the wrong island here.
+
+# --- Extended Tourist Map (3788295678): replaces this project's own
+# DZSurvivalMapGate addon (removed) as the map-access gate. Rather than
+# gating the vanilla M-key fullscreen map (what DZSurvivalMapGate did),
+# this enhances the actual held Tourist Map item with a live 3D marker,
+# gated by its own server-side GPS-receiver settings - see
+# src/extendedTouristMap.ts for the settings this project forces (GPS
+# receiver required + slotted/powered) and the MapData.ignoreMapOwnership
+# revert / UIData.use3DMap flip that come with the swap.
+3788295678  @Extended-Tourist-Map
 #   - "Old Food" (3237950572) is already above, in Food/survival mechanics.
 #   - SimpleMatch (2848676009) is skipped: it and Zens-Zippo-Lighter's
 #     ZenPetrolLighter/ZenZippoLighter classes (below) both rework the

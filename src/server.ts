@@ -23,7 +23,7 @@ import { ensureCustomVehicleSpawns } from "./vehicleSpawns.ts";
 
 import { ensureFuelSystemVehicles } from "./fuelSystem.ts";
 import { LIGHTING_PRESET, tuneLightingConfig } from "./lighting.ts";
-import { tuneMapAccess } from "./mapAccess.ts";
+import { tuneExtendedTouristMap, tuneMapGameplayConfig } from "./extendedTouristMap.ts";
 import { tuneWeather } from "./weather.ts";
 import { tuneWlcWeather } from "./wlcWeather.ts";
 import { tuneHazardZones } from "./hazards.ts";
@@ -334,7 +334,8 @@ export async function doStart(s: Settings): Promise<void> {
   await ensureForeverBurningCampfireWired(allMods);
   await ensureNatureOverhaulWired(allMods);
   await tuneLightingConfig();
-  await tuneMapAccess();
+  await tuneMapGameplayConfig();
+  await tuneExtendedTouristMap();
   await tuneWeather();
   await tuneWlcWeather(earlyWinter);
   await tuneHazardZones();

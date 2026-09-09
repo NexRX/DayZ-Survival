@@ -189,6 +189,13 @@ export const CFG_GAMEPLAY_FILE = `${MISSION_DIR}/cfggameplay.json`;
 export const KNOCK_KNOCK_ZOMBIES_SETTINGS =
   `${PROFILE_DIR}/KnockKnockZombies/KnockKnockZombies_Settings.json`;
 
+// Extended Tourist Map (@Extended-Tourist-Map) self-generates this on first
+// server start (P3DMM_Settings::LoadServer(), confirmed via its own
+// unpacked scripts/3_Game/ExtendedTouristMap/P3DMM_Settings.c - real path
+// is "$profile:ExtendedTouristMap\\Settings.json"). See
+// extendedTouristMap.ts.
+export const EXTENDED_TOURIST_MAP_SETTINGS = `${PROFILE_DIR}/ExtendedTouristMap/Settings.json`;
+
 // Airborne AI self-generates this on first world load. See aiWorldEvents.ts.
 export const AIRBORNE_AI_SETTINGS = `${PROFILE_DIR}/AirborneAI/AirborneAI_Settings.json`;
 
