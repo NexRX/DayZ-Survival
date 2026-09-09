@@ -84,7 +84,7 @@ export async function tuneFoodScarcity(): Promise<void> {
 }
 
 // --- Animal populations (events.xml, Animal* events) ---
-const ANIMAL_NOMINAL_MULTIPLIER = 2.1; // a bit higher than before - more huntable game
+const ANIMAL_NOMINAL_MULTIPLIER = 4; // pretty common now - 2.1x still felt sparse for hunting
 
 // Unlike FOOD_MARKER/MONEY_MARKER above (pure one-shot flags), this marker
 // embeds the multiplier it was last tuned with. That lets bumping
