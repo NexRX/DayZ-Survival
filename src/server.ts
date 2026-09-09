@@ -91,7 +91,7 @@ disableCrosshair  = 0;
 
 serverTime                  = "SystemTime";
 serverTimeAcceleration      = 8;
-serverNightTimeAcceleration = 2;
+serverNightTimeAcceleration = 4; // halved night length (was 2) - user found nights too long
 serverTimePersistent        = 0;
 lightingConfig              = ${LIGHTING_PRESET};
 

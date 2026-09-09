@@ -325,6 +325,30 @@ const INEDIA_ZOMBIE_STAGGER_TARGETS: Record<string, InediaTierTargets> = {
   DamageToZombieShockToStunIgnoreMeleeHitChancePercent: { all: 0 },
 };
 
+// Slow down how easily infected break through doors. The per-attempt tick
+// rate itself (~once per second while actively trying to get in) is a
+// hardcoded script literal in InediaInfectedAI, not exposed via config - so
+// this can only lower the odds per attempt, not add a literal cooldown.
+// Statistically that still means it takes noticeably longer on average
+// before a door opens/breaks, giving players a real window to reinforce or
+// flee rather than doors folding almost immediately.
+//
+// - BreakingDoorsOpenChancePercent / ...DestroyAfterOpenChancePercent: cut
+//   roughly in half from the shipped 30/30/40/50 (all/lowstr/mediumstr/
+//   highstr) baseline.
+// - BreakingDoorsLossInterestAfterHitChancePercent / ...LockPickChancePercent:
+//   raised so a zombie that isn't actively chasing you gives up on the door
+//   sooner instead of grinding away at it indefinitely.
+// - Crawlers intentionally left alone (already 0 - can't break doors at
+//   all), and BreakingDoorsHandlerIsActive left on (the ask is "slower", not
+//   "disabled").
+const INEDIA_DOOR_BREAKING_TARGETS: Record<string, InediaTierTargets> = {
+  BreakingDoorsOpenChancePercent: { all: 12, lowstr: 12, mediumstr: 18, highstr: 22 },
+  BreakingDoorsDestroyAfterOpenChancePercent: { all: 12, lowstr: 12, mediumstr: 18, highstr: 22 },
+  BreakingDoorsLossInterestAfterHitChancePercent: { all: 15 },
+  BreakingDoorsLossInterestAfterHitLockPickChancePercent: { all: 40 },
+};
+
 // No bullet sponges: a clean headshot should never be worth *less* than a
 // full-power hit (the mod's own default is already 1.0 - this only guards
 // against a host accidentally nerfing it).
@@ -377,6 +401,7 @@ export async function tuneInediaInfectedAIDifficulty(): Promise<void> {
       ...INEDIA_PLAYER_DAMAGE_TARGETS,
       ...INEDIA_ZOMBIE_STAGGER_TARGETS,
       ...INEDIA_ZOMBIE_AGGRESSION_TARGETS,
+      ...INEDIA_DOOR_BREAKING_TARGETS,
     })
   ) {
     let updated: boolean;

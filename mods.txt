@@ -343,7 +343,13 @@
 # vanilla bug where the Hand Drill Kit recipe never matches the current
 # Bark_Birch/Bark_Oak classnames (combine menu shows a scrollable second
 # option next to Fireplace, but it never resolves - not a client cache
-# issue, relogging/restarting doesn't fix it). ---
+# issue, relogging/restarting doesn't fix it). Also DZSurvivalReliableFire,
+# which drops vanilla Fireplace's immediate rain/wind ignition gate (its
+# roof-detection raycast misses natural cover like tree canopies, so
+# players sheltering under a tree during rain were denied ignition even
+# though they're reasonably covered) - every other real ignition mechanic
+# (kindling, indoor low-ceiling smoke, water surface, already-soaked fuel)
+# is untouched. ---
 3789404408  @DZSurvivalServerPack
 
 # --- Environment/atmosphere/events ---

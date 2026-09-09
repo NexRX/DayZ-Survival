@@ -92,6 +92,14 @@ class ActionFindStoneOnPath : ActionContinuousBase
 	// one of these tokens - adjust this list after testing on your map(s)
 	// if a particular path surface isn't being detected.
 	//
+	// Narrowed on purpose: this action is meant to trigger only on train-
+	// track ballast, dirt roads, and dirt/gravel trail paths - NOT on every
+	// stony/muddy surface in the game. "road" (catches vanilla paved
+	// roads), "mud", "stone", and "rock" (catch riverbanks, cliffs,
+	// mountainsides, etc. far beyond dirt roads/paths) were removed as too
+	// broad. "dirt" and "path" are kept since they legitimately cover dirt
+	// roads and gravel/dirt trail paths.
+	//
 	// Confirmed working: dirt/gravel paths. Confirmed NOT matching: the
 	// stony ballast sections of railway tracks - the real surface
 	// classname there evidently doesn't contain "rail" or "ballast" as
@@ -100,7 +108,7 @@ class ActionFindStoneOnPath : ActionContinuousBase
 	// surface name to profiles/script.log so the right token can be added
 	// once known - remove that logging once the railway ballast case is
 	// confirmed fixed.
-	protected ref array<string> m_ValidSurfaceTokens = {"gravel", "dirt", "rail", "ballast", "road", "path", "mud", "stone", "rock", "sleeper", "track"};
+	protected ref array<string> m_ValidSurfaceTokens = {"gravel", "dirt", "rail", "ballast", "sleeper", "track", "path"};
 
 	protected float m_SuccessChance = 0.65; // 65% chance per completed search
 	protected float m_LastDebugLogTime = 0; // TEMPORARY - throttles the diagnostic print below
