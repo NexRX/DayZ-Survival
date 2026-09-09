@@ -68,20 +68,36 @@ async function findKeyDir(dir: string): Promise<string | null> {
 }
 
 /**
- * `fixMetaCpp` used to patch this up (see git history) - reasoned that DayZ
- * only reports this id cosmetically (server browser mod list / Steam
- * hyperlink). That was wrong: every real client downloads the SAME
- * unpatched meta.cpp straight from Steam Workshop (we have no way to fix a
- * mod's published content), so once our server-side copy silently
- * "corrected" the id, the server ended up requiring a publishedid no real
- * client could ever match - producing a permanent, unfixable-by-the-player
- * "Client is missing a mod which is on the server" kick for exactly the
- * mods this touched (confirmed live: @Necromutant/@DecoyGrenades, both
- * kicking every connecting client even fresh off a clean resubscribe).
- * Deliberately left unpatched now so our copy stays byte-for-byte identical
- * to whatever Steam serves every client - a wrong-but-consistent id beats a
- * correct-but-mismatched one.
+ * Some mods ship a `meta.cpp` with the wrong `publishedid` baked in (an
+ * authoring mistake, e.g. `@Necromutant`/`@DecoyGrenades` shipping
+ * `publishedid = 0`). Third-party launchers (DZSA, etc.) read this id to
+ * resolve/auto-subscribe each required mod against the Steam Workshop API -
+ * with it left at 0 they can't recognize the mod at all and refuse to even
+ * attempt a connection ("Server has invalid mods that are not recognized by
+ * Steam"), which is strictly worse than the problem this was meant to dodge.
+ *
+ * This was previously removed on a theory that the in-game "Client is
+ * missing a mod which is on the server" kick was caused by this same
+ * server-only patch diverging from every client's own unpatched copy - but
+ * that was never actually confirmed (DZSA's own pre-connect check started
+ * blocking first, before any client could get far enough to test the
+ * in-game kick with a matching id). Restored until that theory is verified
+ * with real evidence; the in-game kick needs a different root cause.
  */
+async function fixMetaCpp(dst: string, mod: Mod): Promise<void> {
+  const path = `${dst}/meta.cpp`;
+  const text = await Deno.readTextFile(path).catch(() => null);
+  if (text === null) return;
+  const match = /publishedid\s*=\s*(\d+)\s*;/.exec(text);
+  if (!match || match[1] === mod.id) return;
+  await Deno.writeTextFile(
+    path,
+    text.replace(/publishedid\s*=\s*\d+\s*;/, `publishedid = ${mod.id};`),
+  );
+  warn(
+    `${mod.name}'s meta.cpp had the wrong publishedid (${match[1]}) - corrected to ${mod.id}`,
+  );
+}
 
 /** Copy one downloaded mod into the server dir and collect its .bikey files. */
 export async function installOneMod(
@@ -104,6 +120,8 @@ export async function installOneMod(
   } else {
     await Deno.symlink(src, dst);
   }
+
+  await fixMetaCpp(dst, mod);
 
   const keydir = (await findKeyDir(dst)) ?? (await findKeyDir(src));
   if (keydir) {
