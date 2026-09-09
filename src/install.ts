@@ -35,7 +35,24 @@ function bytesH(n: number): string {
   return `${v.toFixed(i ? 1 : 0)}${units[i]}`;
 }
 
-/** Recursively lowercase every file/dir name under `dir` (deepest first). */
+// Real DayZ clients keep Steam's original, byte-for-byte mod download
+// forever - filenames included. The connect-time "Client is missing a mod
+// which is on the server" / "Missing PBO" check matches an addon by its
+// exact-case PBO filename (not just its internal CfgPatches class name), so
+// if a mod ships a mixed-case addon (e.g. `Nature_Overhaul_Redux.pbo`) and
+// our server-side copy gets lowercased to `nature_overhaul_redux.pbo`, the
+// server ends up requiring an addon name no real client's original-case
+// download can ever exactly match - a permanent, unfixable-by-the-player
+// kick (confirmed live: @Necromutant/@DecoyGrenades/@Nature-Overhaul-Redux,
+// the only 3 mods in mods.txt whose upstream .pbo/.bisign/.bikey filenames
+// happen to contain uppercase - every other mod already ships all-lowercase
+// so this never showed up before). Never rename those three extensions;
+// still lowercase everything else (folder names like `Addons` -> `addons`,
+// which the *engine* needs to find case-sensitively on Linux, plus any
+// other loose files a mod ships with internally-mismatched-case references).
+const NEVER_LOWERCASE = /\.(pbo|bisign|bikey)$/i;
+
+/** Recursively lowercase every file/dir name under `dir` (deepest first), except signed addon files (see NEVER_LOWERCASE above). */
 async function lowercaseTree(dir: string): Promise<void> {
   const paths: string[] = [];
   const walk = async (d: string) => {
@@ -49,6 +66,7 @@ async function lowercaseTree(dir: string): Promise<void> {
   for (const p of paths) {
     const slash = p.lastIndexOf("/");
     const base = p.slice(slash + 1);
+    if (NEVER_LOWERCASE.test(base)) continue;
     const low = base.toLowerCase();
     if (base === low) continue;
     await Deno.rename(p, `${p.slice(0, slash)}/${low}`).catch(() => {});
