@@ -20,8 +20,10 @@ import {
   AIRBORNE_AI_SETTINGS,
   CLIMATE_ZONES_SETTINGS,
   DYNAMIC_MISSIONS_SETTINGS,
+  EXPANSION_QUESTS_NPCS_DIR,
   INEDIA_SETTINGS,
   KNOCK_KNOCK_ZOMBIES_SETTINGS,
+  OFG_NUCLEAR_ZONE_LOOT_SETTINGS,
   PROFILE_DIR,
   SERVER_DIR,
   SPATIAL_SETTINGS,
@@ -54,6 +56,18 @@ const PRIME_TARGETS = [
   AIRBORNE_AI_SETTINGS,
   AI_WARZONES_SETTINGS,
   CLIMATE_ZONES_SETTINGS,
+  // OFG Nuclear Zone's configs only self-generate once its MissionServer
+  // constructor runs on first mission load - see ofgNuclearZone.ts's header
+  // comment.
+  OFG_NUCLEAR_ZONE_LOOT_SETTINGS,
+  // DayZ-Expansion-Quests only creates its NPCs/ subfolder once its whole
+  // Quests/ tree is generated in the same pass. This project's own
+  // quests.ts replaces the mod's example NPC files (QuestNPC_1/2/3.json)
+  // with a single custom-named one and deletes the examples outright (see
+  // quests.ts's cleanupDefaultQuestExamples()) - so the mod's own example
+  // filename can never be used as the representative target here; it must
+  // be this project's own NPC file instead.
+  `${EXPANSION_QUESTS_NPCS_DIR}/DZSurvival_NPC_Quartermaster.json`,
 ];
 
 const PRIME_TIMEOUT_MS = 15 * 60_000;

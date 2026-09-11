@@ -17,9 +17,19 @@
 // every run (only that field, only for patrols we ourselves added by name)
 // - this lets a patrol's category be changed later (e.g. splitting NWAF
 // into its own `MilitaryPatrols` pool) actually take effect on a server
-// that already merged it under an old category in an earlier run. Same
+// already merged it under an old category in an earlier run. Same
 // idea for a category's own `MaxPatrols` threshold: raised, never lowered,
-// in case an admin tuned one even higher by hand.
+// in case an admin tuned one even higher by hand. `NumberOfAI` is
+// reconciled the same raise-only way, compared by magnitude (Expansion-AI's
+// own convention: negative means "random 1..abs(value)", so a bigger
+// absolute value is strictly more AI) - lets a patrol's headcount be bumped
+// later (e.g. Stary Sobor's radiation guards) and actually reach an
+// already-deployed server. `Waypoints` is reconciled unconditionally (a
+// whole-array replace, not raise-only - there's no natural "bigger is
+// better" ordering for a route) whenever it differs from the template, so
+// re-centering a zone's patrol (e.g. Stary Sobor's radiation guards moving
+// with hazards.ts's zone epicenter) actually reaches an already-deployed
+// server too.
 
 import { AI_PATROL_SETTINGS, AI_TEMPLATE_DIR } from "./paths.ts";
 import { log, ok } from "./ui.ts";
@@ -63,12 +73,34 @@ export async function ensureAIPatrols(): Promise<void> {
   const added = template.Patrols.filter((p) => p.Name && !existingNames.has(p.Name));
 
   let reconciled = 0;
+  let raisedHeadcounts = 0;
+  let movedWaypoints = 0;
   for (const templatePatrol of template.Patrols) {
-    if (!templatePatrol.Name || !templatePatrol.LoadBalancingCategory) continue;
+    if (!templatePatrol.Name) continue;
     const existing = settings.Patrols.find((p) => p.Name === templatePatrol.Name);
-    if (existing && existing.LoadBalancingCategory !== templatePatrol.LoadBalancingCategory) {
+    if (!existing) continue;
+    if (
+      templatePatrol.LoadBalancingCategory &&
+      existing.LoadBalancingCategory !== templatePatrol.LoadBalancingCategory
+    ) {
       existing.LoadBalancingCategory = templatePatrol.LoadBalancingCategory;
       reconciled++;
+    }
+    const templateCount = templatePatrol.NumberOfAI as number | undefined;
+    const existingCount = existing.NumberOfAI as number | undefined;
+    if (
+      templateCount !== undefined && existingCount !== undefined &&
+      Math.abs(templateCount) > Math.abs(existingCount)
+    ) {
+      existing.NumberOfAI = templateCount;
+      raisedHeadcounts++;
+    }
+    if (
+      templatePatrol.Waypoints !== undefined &&
+      JSON.stringify(existing.Waypoints) !== JSON.stringify(templatePatrol.Waypoints)
+    ) {
+      existing.Waypoints = templatePatrol.Waypoints;
+      movedWaypoints++;
     }
   }
 
@@ -101,7 +133,7 @@ export async function ensureAIPatrols(): Promise<void> {
 
   if (
     added.length === 0 && addedCategories.length === 0 && reconciled === 0 &&
-    raisedThresholds === 0
+    raisedThresholds === 0 && raisedHeadcounts === 0 && movedWaypoints === 0
   ) return;
 
   settings.Patrols.push(...added);
@@ -114,8 +146,14 @@ export async function ensureAIPatrols(): Promise<void> {
   if (reconciled > 0) {
     parts.push(`${reconciled} patrol load-balancing categor(y/ies) re-synced`);
   }
+  if (raisedHeadcounts > 0) {
+    parts.push(`${raisedHeadcounts} patrol headcount(s) raised`);
+  }
   if (raisedThresholds > 0) {
     parts.push(`${raisedThresholds} density threshold(s) raised`);
+  }
+  if (movedWaypoints > 0) {
+    parts.push(`${movedWaypoints} patrol route(s) moved`);
   }
   ok(`Added ${parts.join(" and ")} to ${AI_PATROL_SETTINGS}`);
 }

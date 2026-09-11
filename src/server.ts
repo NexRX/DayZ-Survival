@@ -26,7 +26,11 @@ import { LIGHTING_PRESET, tuneLightingConfig } from "./lighting.ts";
 import { tuneExtendedTouristMap, tuneMapGameplayConfig } from "./extendedTouristMap.ts";
 import { tuneWeather } from "./weather.ts";
 import { tuneWlcWeather } from "./wlcWeather.ts";
-import { ensureStarySoborRadiationZone, tuneHazardZones } from "./hazards.ts";
+import {
+  ensureSkalistyMilitaryRadiationZone,
+  ensureStarySoborRadiationZone,
+  tuneHazardZones,
+} from "./hazards.ts";
 import { ensureClimateZones } from "./climateZones.ts";
 import { tuneNoBuildZones } from "./noBuildZones.ts";
 import { ensureWildlifeTerritories } from "./wildlifeTerritories.ts";
@@ -48,9 +52,14 @@ import {
 import { ensureMilitaryMonsterGarrisons } from "./militaryMonsters.ts";
 import { ensureStarySoborRadiationGarrisonAndLoot } from "./starySoborRadiationZone.ts";
 import { ensureStarySoborToxicZone } from "./starySoborToxicZone.ts";
+import { ensureSkalistyMilitaryRadiationGarrison } from "./skalistyMilitaryRadiationZone.ts";
+import { ensureSkalistyMilitaryToxicZone } from "./skalistyMilitaryToxicZone.ts";
+import { ensureSkalistyMilitaryMapping } from "./skalistyMilitaryMapping.ts";
+import { ensureOfgNuclearZoneWired } from "./ofgNuclearZone.ts";
 import { tuneExpansionMarket } from "./market.ts";
 import { ensureMarketGapFill } from "./marketGapFill.ts";
 import { ensureCustomTrader } from "./traders.ts";
+import { ensureQuests } from "./quests.ts";
 import { tuneNewAIEventMods } from "./aiWorldEvents.ts";
 import {
   tuneAirdropLoot,
@@ -144,7 +153,9 @@ adminLogPlayerList     = 1;
 
 // Crash-recovery watchdog for the actual server launch (the last step of
 // doStart()): auto-restarts on an unexpected exit with a short backoff,
-// but stops cleanly (no restart) on an intentional Ctrl-C/SIGTERM.
+// but stops cleanly (no restart) on an intentional Ctrl-C/SIGTERM. Also
+// drives the wall-clock scheduled restarts every 12h at 03:00/15:00 - see
+// scheduleNextAutoRestart() below.
 const CRASH_LOG = `${PROFILE_DIR}/crashes.log`;
 // Below this much runtime, an exit counts as a "fast crash" for the
 // give-up logic below rather than a normal shutdown after a real play
@@ -163,6 +174,11 @@ const GRACEFUL_STOP_TIMEOUT_MS = 30_000;
 let stopRequested = false;
 let stopRequestedAt = 0;
 let currentChild: Deno.ChildProcess | null = null;
+// Set right before a scheduled restart's SIGTERM goes out, cleared once the
+// watchdog loop below observes the resulting exit - lets that loop log a
+// clear "this was scheduled" message instead of the generic crash/clean-exit
+// warnings, without changing any of the actual restart/backoff behavior.
+let scheduledRestartInProgress = false;
 
 // A single Ctrl-C often reaches this process as more than one signal - e.g.
 // the terminal delivers SIGINT to the whole foreground process group while
@@ -178,6 +194,54 @@ function forceKill(): void {
   } catch {
     // already exited - nothing to kill
   }
+}
+
+// Wall-clock restarts every 12h at 03:00 and 15:00 (local server time), on
+// top of - not instead of - the crash-recovery watchdog below: this just
+// SIGTERMs the current child the same way requestStop() does, but without
+// ever setting `stopRequested`, so the watchdog's own while(true) loop
+// treats the resulting clean exit exactly like any other and relaunches
+// immediately - no special-casing needed there beyond the log message.
+const SCHEDULED_RESTART_HOURS = [3, 15];
+
+function msUntilNextScheduledRestart(now = new Date()): number {
+  const next = Math.min(
+    ...SCHEDULED_RESTART_HOURS.map((h) => {
+      const d = new Date(now);
+      d.setHours(h, 0, 0, 0);
+      if (d.getTime() <= now.getTime()) d.setDate(d.getDate() + 1);
+      return d.getTime();
+    }),
+  );
+  return next - now.getTime();
+}
+
+function scheduleNextAutoRestart(): void {
+  const delay = msUntilNextScheduledRestart();
+  log(`Next scheduled restart: ${new Date(Date.now() + delay).toLocaleString()}`);
+  setTimeout(() => {
+    if (currentChild) {
+      log("Scheduled restart (03:00/15:00) - stopping the server gracefully...");
+      scheduledRestartInProgress = true;
+      try {
+        currentChild.kill("SIGTERM");
+      } catch {
+        // already exited - the watchdog loop below will notice via child.status
+      }
+      setTimeout(() => {
+        if (scheduledRestartInProgress && currentChild) {
+          warn(
+            `Server didn't exit within ${GRACEFUL_STOP_TIMEOUT_MS / 1000}s of the scheduled ` +
+              "restart's SIGTERM - force-killing.",
+          );
+          forceKill();
+        }
+      }, GRACEFUL_STOP_TIMEOUT_MS);
+    }
+    // Reschedule regardless of whether a child was running at the moment
+    // this fired (e.g. mid-crash-backoff) - next occurrence is still 12h out.
+    scheduleNextAutoRestart();
+  }, delay);
 }
 
 function requestStop(): void {
@@ -218,6 +282,7 @@ async function logCrash(code: number, ranMs: number): Promise<void> {
 async function runServerWithWatchdog(args: string[]): Promise<never> {
   Deno.addSignalListener("SIGINT", requestStop);
   Deno.addSignalListener("SIGTERM", requestStop);
+  scheduleNextAutoRestart();
 
   let consecutiveFastCrashes = 0;
   while (true) {
@@ -241,7 +306,10 @@ async function runServerWithWatchdog(args: string[]): Promise<never> {
 
     if (stopRequested) Deno.exit(code);
 
-    if (code === 0) {
+    if (scheduledRestartInProgress) {
+      scheduledRestartInProgress = false;
+      log("Scheduled restart: server stopped cleanly, relaunching now.");
+    } else if (code === 0) {
       warn("Server exited cleanly (code 0) without a stop request - restarting anyway.");
     } else {
       warn(`Server crashed (exit code ${code}) after running for ${Math.round(ranMs / 1000)}s.`);
@@ -321,6 +389,9 @@ export async function doStart(s: Settings): Promise<void> {
   await ensureCustomKeycardsSecuredBuildings(allMods);
   await ensureMilitaryMonsterGarrisons(allMods);
   await ensureStarySoborRadiationGarrisonAndLoot(allMods);
+  await ensureSkalistyMilitaryRadiationGarrison(allMods);
+  await ensureSkalistyMilitaryMapping(allMods);
+  await ensureOfgNuclearZoneWired(allMods);
   await ensureAIPatrols();
   await ensureAIBanditsDensity();
   await ensureSpatialAI();
@@ -343,6 +414,7 @@ export async function doStart(s: Settings): Promise<void> {
   await tuneExpansionMarket();
   await ensureMarketGapFill();
   await ensureCustomTrader();
+  await ensureQuests();
   await ensureForeverBurningCampfireWired(allMods);
   await ensureNatureOverhaulWired(allMods);
   await tuneLightingConfig();
@@ -353,6 +425,8 @@ export async function doStart(s: Settings): Promise<void> {
   await tuneHazardZones();
   await ensureStarySoborRadiationZone();
   await ensureStarySoborToxicZone();
+  await ensureSkalistyMilitaryRadiationZone();
+  await ensureSkalistyMilitaryToxicZone();
   await tuneNoBuildZones();
   await ensureClimateZones();
   await ensureFuelSystemVehicles(allMods);

@@ -1,0 +1,226 @@
+// Entries here shouldnt be keycard protected because they are in a dangerous zone, gate by gear needed to survive
+// crate 1 - miltary
+{
+  "BuildingClassName": "Land_Mil_Barracks_Round",
+  "BuildingPosition": [13961.8466796875, 24.46680450439453, 2859.828369140625],
+  "BuildingDoors": [
+    {
+      "DoorId": 0,
+      "AutoCloseTime": 60.0,
+      "ItemsToOpen": ["evg_keycards_Tisy01", "evg_keycards_Red"],
+      "DamageToItem": 30.0,
+      "OpenSound": 1,
+      "ErrorSound": 1,
+      "CloseSound": 1,
+      "AlarmSound": 0,
+      "AlarmSoundSetName": "CK_KeycardAlarm_SoundSet",
+      "AlarmPositions": [[0.0, 0.0, 0.0]],
+      "Notification": 0,
+      "NotificationLocationName": "Zelenogorsk",
+      "NotificationText": "Keycard Room was unlocked at %1",
+      "NotificationTime": 15,
+      "LootCrates": [
+        {
+          "ClassName": "evg_MediumCrate_01",
+          "Position": [
+            1234.5670166015626, 1234.5670166015626, 1234.5670166015626,
+          ],
+          "Orientation": [0.0, 0.0, 0.0],
+          "SpawnChance": 25.0,
+          "SpawnType": 0,
+          "UnlockTime": 5,
+          "ItemsToOpen": ["Lockpick"],
+          "DamageToItem": 25.0,
+          "LootTableNames": ["0_DefaultLootTable"],
+        },
+      ],
+    },
+  ],
+}
+
+// crate 2 - anything
+{
+    "BuildingClassName": "Land_House_1W09_Yellow",
+    "BuildingPosition": [
+        13865.6103515625,
+        35.889564514160159,
+        2919.49609375
+    ],
+    "BuildingDoors": [
+        {
+            "DoorId": 0,
+            "AutoCloseTime": 60.0,
+            "ItemsToOpen": [
+                "evg_keycards_Tisy01",
+                "evg_keycards_Red"
+            ],
+            "DamageToItem": 30.0,
+            "OpenSound": 1,
+            "ErrorSound": 1,
+            "CloseSound": 1,
+            "AlarmSound": 0,
+            "AlarmSoundSetName": "CK_KeycardAlarm_SoundSet",
+            "AlarmPositions": [
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            ],
+            "Notification": 0,
+            "NotificationLocationName": "Zelenogorsk",
+            "NotificationText": "Keycard Room was unlocked at %1",
+            "NotificationTime": 15,
+            "LootCrates": [
+                {
+                    "ClassName": "evg_MediumCrate_01",
+                    "Position": [
+                        1234.5670166015626,
+                        1234.5670166015626,
+                        1234.5670166015626
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "SpawnChance": 25.0,
+                    "SpawnType": 0,
+                    "UnlockTime": 5,
+                    "ItemsToOpen": [
+                        "Lockpick"
+                    ],
+                    "DamageToItem": 25.0,
+                    "LootTableNames": [
+                        "0_DefaultLootTable"
+                    ]
+                }
+            ]
+        }
+    ]
+}
+
+// CRATE 2 crate must be at POSITION THOUGH BECAUSE WEIRD BUILDING  <13680.3, 30.0542, 2815.76>
+{
+    "BuildingClassName": "Land_CementWorks_ExpeditionA",
+    "BuildingPosition": [
+        13696.4345703125,
+        35.122501373291019,
+        2812.2587890625
+    ],
+    "BuildingDoors": [
+        {
+            "DoorId": 0,
+            "AutoCloseTime": 60.0,
+            "ItemsToOpen": [
+                "evg_keycards_Tisy01",
+                "evg_keycards_Red"
+            ],
+            "DamageToItem": 30.0,
+            "OpenSound": 1,
+            "ErrorSound": 1,
+            "CloseSound": 1,
+            "AlarmSound": 0,
+            "AlarmSoundSetName": "CK_KeycardAlarm_SoundSet",
+            "AlarmPositions": [
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            ],
+            "Notification": 0,
+            "NotificationLocationName": "Zelenogorsk",
+            "NotificationText": "Keycard Room was unlocked at %1",
+            "NotificationTime": 15,
+            "LootCrates": [
+                {
+                    "ClassName": "evg_MediumCrate_01",
+                    "Position": [
+                        1234.5670166015626,
+                        1234.5670166015626,
+                        1234.5670166015626
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "SpawnChance": 25.0,
+                    "SpawnType": 0,
+                    "UnlockTime": 5,
+                    "ItemsToOpen": [
+                        "Lockpick"
+                    ],
+                    "DamageToItem": 25.0,
+                    "LootTableNames": [
+                        "0_DefaultLootTable"
+                    ]
+                }
+            ]
+        }
+    ]
+}
+
+
+// crate 3
+{
+    "BuildingClassName": "Land_Mil_Barracks3",
+    "BuildingPosition": [
+        13644.5966796875,
+        46.70256805419922,
+        2937.896240234375
+    ],
+    "BuildingDoors": [
+        {
+            "DoorId": 0,
+            "AutoCloseTime": 60.0,
+            "ItemsToOpen": [
+                "evg_keycards_Tisy01",
+                "evg_keycards_Red"
+            ],
+            "DamageToItem": 30.0,
+            "OpenSound": 1,
+            "ErrorSound": 1,
+            "CloseSound": 1,
+            "AlarmSound": 0,
+            "AlarmSoundSetName": "CK_KeycardAlarm_SoundSet",
+            "AlarmPositions": [
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            ],
+            "Notification": 0,
+            "NotificationLocationName": "Zelenogorsk",
+            "NotificationText": "Keycard Room was unlocked at %1",
+            "NotificationTime": 15,
+            "LootCrates": [
+                {
+                    "ClassName": "evg_MediumCrate_01",
+                    "Position": [
+                        1234.5670166015626,
+                        1234.5670166015626,
+                        1234.5670166015626
+                    ],
+                    "Orientation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "SpawnChance": 25.0,
+                    "SpawnType": 0,
+                    "UnlockTime": 5,
+                    "ItemsToOpen": [
+                        "Lockpick"
+                    ],
+                    "DamageToItem": 25.0,
+                    "LootTableNames": [
+                        "0_DefaultLootTable"
+                    ]
+                }
+            ]
+        }
+    ]
+}

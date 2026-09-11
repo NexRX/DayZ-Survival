@@ -220,6 +220,54 @@ export const CLIMATE_ZONES_SETTINGS = `${PROFILE_DIR}/DDP/DDP_ClimateZones/Confi
 // chain matching), not just an exact classname. See fuelSystem.ts.
 export const FUEL_SYSTEM_VEHICLES = `${PROFILE_DIR}/iTzMods/FuelSystem/vehicles.xml`;
 
+// OFG Nuclear Zone (@OFG-Nuclear-Zone) self-generates all three of these on
+// first mission load (its own `modded class MissionServer` constructor loads/
+// saves defaults unconditionally, confirmed by unpacking the mod's own PBO -
+// no need to wait for an actual toxic zone to spawn first). See
+// ofgNuclearZone.ts.
+export const OFG_NUCLEAR_ZONE_DIR = `${PROFILE_DIR}/OFG/ContaminatedZone`;
+export const OFG_NUCLEAR_ZONE_MAIN_SETTINGS =
+  `${OFG_NUCLEAR_ZONE_DIR}/OFG_ContaminatedDefaults.json`;
+export const OFG_NUCLEAR_ZONE_LOOT_SETTINGS = `${OFG_NUCLEAR_ZONE_DIR}/OFG_LootConfig.json`;
+export const OFG_NUCLEAR_ZONE_EXPANSION_AI_SETTINGS =
+  `${OFG_NUCLEAR_ZONE_DIR}/OFG_ExpansionAIConfig.json`;
+
+// DayZ-Expansion-Quests self-generates this whole folder tree on first
+// server start (ExpansionQuestModule::ServerModuleInit(), confirmed via the
+// mod's own DayZExpansion_Quest_Constants.c: EXPANSION_QUESTS_FOLDER =
+// EXPANSION_FOLDER + "Quests\\") - ships with ~24 example quests/3 example
+// NPCs the first time each Objectives/<Type>/NPCs/Quests folder is created.
+// See quests.ts, which deletes those known example files and writes its own
+// (all prefixed "DZSurvival_" so they never collide by name with the mod's
+// own "Quest_<n>.json"/"QuestNPC_<n>.json"/"Objective_<X>_<n>.json" pattern).
+export const EXPANSION_QUESTS_DIR = `${PROFILE_DIR}/ExpansionMod/Quests`;
+export const EXPANSION_QUESTS_QUESTS_DIR = `${EXPANSION_QUESTS_DIR}/Quests`;
+export const EXPANSION_QUESTS_NPCS_DIR = `${EXPANSION_QUESTS_DIR}/NPCs`;
+export const EXPANSION_QUESTS_OBJECTIVES_DIR = `${EXPANSION_QUESTS_DIR}/Objectives`;
+export const EXPANSION_QUESTS_OBJECTIVES_TRAVEL_DIR = `${EXPANSION_QUESTS_OBJECTIVES_DIR}/Travel`;
+export const EXPANSION_QUESTS_OBJECTIVES_TARGET_DIR = `${EXPANSION_QUESTS_OBJECTIVES_DIR}/Target`;
+export const EXPANSION_QUESTS_OBJECTIVES_DELIVERY_DIR =
+  `${EXPANSION_QUESTS_OBJECTIVES_DIR}/Delivery`;
+export const EXPANSION_QUESTS_OBJECTIVES_COLLECTION_DIR =
+  `${EXPANSION_QUESTS_OBJECTIVES_DIR}/Collection`;
+export const EXPANSION_QUESTS_OBJECTIVES_CRAFTING_DIR =
+  `${EXPANSION_QUESTS_OBJECTIVES_DIR}/Crafting`;
+// Not used by any objective this project authors (see quests.ts's header
+// comment for why), but the mod still ships example files here that need
+// cleaning up alongside everything else.
+export const EXPANSION_QUESTS_OBJECTIVES_ACTION_DIR = `${EXPANSION_QUESTS_OBJECTIVES_DIR}/Action`;
+export const EXPANSION_QUESTS_OBJECTIVES_TREASUREHUNT_DIR =
+  `${EXPANSION_QUESTS_OBJECTIVES_DIR}/TreasureHunt`;
+export const EXPANSION_QUESTS_OBJECTIVES_AIPATROL_DIR =
+  `${EXPANSION_QUESTS_OBJECTIVES_DIR}/AIPatrol`;
+export const EXPANSION_QUESTS_OBJECTIVES_AICAMP_DIR = `${EXPANSION_QUESTS_OBJECTIVES_DIR}/AICamp`;
+export const EXPANSION_QUESTS_OBJECTIVES_AIVIP_DIR = `${EXPANSION_QUESTS_OBJECTIVES_DIR}/AIVIP`;
+
+// DayZ-Expansion-Core's per-module settings folder - QuestSettings.json is
+// self-generated alongside the Quests folder tree above, defaulting to
+// EnableQuests=true already (see quests.ts's ensureQuestsEnabled()).
+export const EXPANSION_QUEST_SETTINGS = `${PROFILE_DIR}/ExpansionMod/Settings/QuestSettings.json`;
+
 // This project's own custom DayZ addons, bundled into a single Workshop mod
 // ("the server pack") - built/signed with armake2 rather than Windows DayZ
 // Tools (see src/modBuild.ts). Each immediate subdirectory of the pack's
@@ -258,6 +306,21 @@ export const DAYZ_EDITOR_SAVE_DIR = `${
   Deno.env.get("HOME")
 }/.local/share/Steam/steamapps/compatdata/${DAYZ_CLIENT_APPID}/pfx/drive_c/users/steamuser/Documents/DayZ/Editor`;
 export const EDITOR_FILES_DIR = `${MISSION_DIR}/EditorFiles`;
+
+// Vanilla static-building-group loot economy files, shipped as part of the
+// mission itself (same category as ECONOMY_TYPES_FILE/ECONOMY_EVENTS_FILE
+// above). mapgroupproto.xml defines each named group's loot container
+// points; mapgrouppos.xml lists where in the world each named group
+// instance actually sits. See skalistyMilitaryMapping.ts, which merges
+// @Mapping_Skalisty_Military's own shipped fragments of both into these.
+export const MISSION_MAPGROUPPROTO_FILE = `${MISSION_DIR}/mapgroupproto.xml`;
+export const MISSION_MAPGROUPPOS_FILE = `${MISSION_DIR}/mapgrouppos.xml`;
+
+// @Mapping_Skalisty_Military's own mod folder - read directly (not synced
+// into any generated location) by skalistyMilitaryMapping.ts, which merges
+// its shipped raw XML/dze fragments into the mission the same way an admin
+// would by hand per the mod's own readme-infos.txt.
+export const SKALISTY_MILITARY_MOD_DIR = `${SERVER_DIR}/@Mapping_Skalisty_Military`;
 
 // Real Bohemia DayZ Tools (Steam app 830640, Windows-only) run via Wine -
 // needed only for `DSSignFile.exe`. armake2's packing is fine, but its

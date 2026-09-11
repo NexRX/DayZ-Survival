@@ -223,9 +223,10 @@ const MANUAL_EXCLUSIONS = new Set<string>(
 
     // @CJ187-MoreMoney: not currently in mods.txt (its 50-stack-cap "Coin"
     // currency was considered, then dropped in favor of Expansion Core's own
-    // ExpansionGoldNugget - see traders.ts's GOLD_CURRENCY_CLASSNAME, which
-    // has a 50,000 stack cap). Kept denylisted as defense-in-depth in case
-    // the mod is ever reinstalled.
+    // ExpansionGoldNugget - see traders.ts's GOLD_CURRENCY_CLASSNAME, patched
+    // to a real 50,000 stack cap by serverpack/addons/DZSurvivalGoldStack).
+    // Kept denylisted as defense-in-depth in case the mod is ever
+    // reinstalled.
     "coin",
     "bitcoin",
     "ring_ruby",

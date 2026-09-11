@@ -4,9 +4,14 @@
 //
 // Roster: one general "Everything" trader plus one "Vehicle" trader.
 // DayZ-Expansion-Market's 17 default trader identities (under
-// profiles/ExpansionMod/Traders/) ship untouched for later use (see
-// ensureCustomTraderIdentities()); only these two custom identities are
-// referenced by the actual NPCs below.
+// profiles/ExpansionMod/Traders/) are left in place, unreferenced by any
+// live NPC, for later use (see ensureCustomTraderIdentities()); only these
+// two custom identities are referenced by the actual NPCs below. Their own
+// "Categories" still get kept valid against src/market.ts's post-merge
+// category names though (see fixDefaultTraderIdentityCategories()) -
+// otherwise they'd silently bit-rot into a wall of boot-time "TRADER
+// CONFIGURATION ERROR" log spam and be broken the day anyone actually
+// wants to stand one up.
 //
 // This only defines the zone's shape (radius/pricing) and NPC roster. The
 // world position must be scouted manually in-game as admin (COT's free cam/
@@ -87,8 +92,17 @@ export const CUSTOM_SAFE_ZONE_RADIUS = 175;
 // classname, but GetMoneyPrice() unconditionally strips any
 // "_insanitystack" suffix before every lookup - so this variant can never
 // find its own price and SpawnMoneyInCurrency() silently spawns zero
-// currency on sale/purchase. Plain ExpansionGoldNugget's native 50,000
-// stack cap is still more than enough for this project's economy.
+// currency on sale/purchase.
+//
+// ExpansionGoldNugget's OWN native stack cap (confirmed by derapifying the
+// mod's shipped config) is actually only 100, not the 50,000 this project
+// previously assumed here - with quest rewards up to 1500 gold and trader
+// prices well into four digits, that forced routine payouts to spill across
+// 10-15+ separate inventory slots. Patched to a real 50,000 cap (matching
+// Expansion's own default banknote currencies) via serverpack/addons/
+// DZSurvivalGoldStack - a config.cpp "class X: X {}" reopen of this same
+// classname, not a different item, so this constant/the branding below
+// don't need to change.
 const GOLD_CURRENCY_CLASSNAME = "ExpansionGoldNugget";
 
 interface TraderIdentity {
@@ -243,9 +257,48 @@ const TRADER_VEHICLE_GEAR: GearSlot[] = [
   { slot: "Melee", className: "FirefighterAxe_Black" },
 ];
 
+// Taskmaster Daniels' (quests.ts's mission-giver NPC) own outfit - he used
+// to reuse TraderBlueLoadout wholesale (making him a visual clone of the
+// General Trader), so this is deliberately a fresh mix: distinct headgear/
+// hoodie/vest/pants combo (as if patched together on-site), but keeping
+// Armband_Blue since that's this server's shared faction/trader marking.
+// Every classname here was already verified spawnable elsewhere in this
+// file (TRADER_BLUE_GEAR/TRADER_VEHICLE_GEAR) - only FirefighterAxe_Black
+// carries over as-is for a working melee item.
+const TASKMASTER_GEAR: GearSlot[] = [
+  { slot: "Headgear", className: "BaseballCap_Black" },
+  { slot: "Gloves", className: "LeatherGloves_Natural" },
+  { slot: "Armband", className: "Armband_Blue" },
+  { slot: "Body", className: "Hoodie_Black" },
+  { slot: "Feet", className: "AthleticShoes_Blue" },
+  { slot: "Hips", className: "HipPack_Black" },
+  { slot: "Legs", className: "CanvasPants_Grey" },
+  { slot: "Vest", className: "PressVest_Blue" },
+  { slot: "Melee", className: "FirefighterAxe_Black" },
+];
+
+// The two static guards flanking Taskmaster Daniels (quests.ts) - a
+// matching dark, uniformed look (security detail, not a shopkeeper),
+// armed with a real rifle instead of a hand tool. AKM is a well-known,
+// long-standing vanilla classname; every other slot reuses gear already
+// verified above.
+const GUARD_GEAR: GearSlot[] = [
+  { slot: "Headgear", className: "BaseballCap_Black" },
+  { slot: "Gloves", className: "LeatherGloves_Black" },
+  { slot: "Armband", className: "Armband_Blue" },
+  { slot: "Body", className: "Hoodie_Black" },
+  { slot: "Feet", className: "AthleticShoes_Black" },
+  { slot: "Hips", className: "HipPack_Black" },
+  { slot: "Legs", className: "CanvasPants_Grey" },
+  { slot: "Vest", className: "LeatherStorageVest_Black" },
+  { slot: "Melee", className: "AKM" },
+];
+
 const CUSTOM_LOADOUTS: { name: string; gear: GearSlot[] }[] = [
   { name: "TraderBlueLoadout", gear: TRADER_BLUE_GEAR },
   { name: "TraderVehicleLoadout", gear: TRADER_VEHICLE_GEAR },
+  { name: "TaskmasterLoadout", gear: TASKMASTER_GEAR },
+  { name: "GuardLoadout", gear: GUARD_GEAR },
 ];
 
 // Small starting roster - one general trader, one vehicle trader. More
@@ -425,6 +478,159 @@ async function ensureCustomTraderIdentities(): Promise<void> {
   }
 }
 
+// DayZ-Expansion-Market ships 17 default trader identities (Weapons,
+// Clothing, Consumables, etc. - untouched by ensureCustomTraderIdentities()
+// above, kept "for later use" per this file's own header comment) whose own
+// "Categories" arrays reference the mod's PRE-MERGE category names
+// (Assault_Rifles, Helmets, Food, ...). src/market.ts's category merge
+// (MERGED_CATEGORIES) consolidates/renames every one of those into a new
+// set (Guns_Military, Clothing_Head_Civilian, Consumables, ...) and
+// quarantines the old source file (renamed to ".orphaned-source" - see
+// market.ts's quarantineConsumedSourceCategories()), so every one of these
+// 17 defaults' old category references now point at a filename that no
+// longer exists - confirmed in the RPT log as a wall of "TRADER
+// CONFIGURATION ERROR: Category X in Y does not exist!" on every boot.
+// None of these 17 are currently referenced by a live NPC (only
+// "Everything"/"Vehicle" from CUSTOM_TRADER_IDENTITIES are), so this is
+// harmless today, but leaves them broken if ever activated, and spams the
+// log every single boot. Fixed by rewriting each stale entry to the new
+// merged category name(s) that now contain the same items (a couple of old
+// categories split into a Military/Civilian pair post-merge, so those map
+// to two new entries instead of one) - restores the "left ready for later
+// use" promise instead of leaving it quietly broken.
+const ORPHANED_CATEGORY_REPLACEMENTS: Record<string, string[]> = {
+  // Weapons
+  Assault_Rifles: ["Guns_Military"],
+  Submachine_Guns: ["Guns_Military", "Guns_Civilian"],
+  Rifles: ["Guns_Military", "Guns_Civilian"],
+  Pistols: ["Guns_Military", "Guns_Civilian"],
+  Sniper_Rifles: ["Guns_Military", "Guns_Civilian"],
+  Shotguns: ["Guns_Military", "Guns_Civilian"],
+  Crossbows: ["Guns_Civilian"],
+  Melee_Weapons: ["Tools_And_Melee"],
+  Ammo: ["Gun_Ammo"],
+  Ammo_Boxes: ["Gun_Ammo"],
+  Knifes: ["Tools_And_Melee"],
+  Magazines: ["Gun_Attachments_Military", "Gun_Attachments_Civilian"],
+  Muzzles: ["Gun_Attachments_Military", "Gun_Attachments_Civilian"],
+  Bayonets: ["Gun_Attachments_Military", "Gun_Attachments_Civilian"],
+  Optics: ["Gun_Attachments_Military", "Gun_Attachments_Civilian"],
+  Buttstocks: ["Gun_Attachments_Military", "Gun_Attachments_Civilian"],
+  Handguards: ["Gun_Attachments_Military"],
+  Explosives_And_Grenades: ["Explosives"],
+  // Bulk of Lights'/Electronics' items land in Utility post-merge (a
+  // handful of specific classnames - universallight/tlrlight/nvgoggles -
+  // were split into Gun_Attachments_Military/Clothing_Head_Military
+  // instead, but Utility covers everything else in both categories).
+  Lights: ["Utility"],
+  Electronics: ["Utility"],
+  // Clothing
+  Helmets: ["Clothing_Head_Military", "Clothing_Head_Civilian"],
+  Caps: ["Clothing_Head_Military", "Clothing_Head_Civilian"],
+  Hats_And_Hoods: ["Clothing_Head_Military", "Clothing_Head_Civilian"],
+  Masks: ["Clothing_Head_Military", "Clothing_Head_Civilian"],
+  Eyewear: ["Clothing_Head_Military", "Clothing_Head_Civilian"],
+  Coats_And_Jackets: ["Clothing_Top_Military", "Clothing_Top_Civilian"],
+  Shirts_And_TShirts: ["Clothing_Top_Military", "Clothing_Top_Civilian"],
+  Sweaters_And_Hoodies: ["Clothing_Top_Military", "Clothing_Top_Civilian"],
+  Vests: ["Clothing_Top_Military", "Clothing_Top_Civilian"],
+  Blouses_And_Suits: ["Clothing_Top_Civilian"],
+  Pants_And_Shorts: ["Clothing_Bottom_Military", "Clothing_Bottom_Civilian"],
+  Boots_And_Shoes: ["Clothing_Bottom_Military", "Clothing_Bottom_Civilian"],
+  Skirts_And_Dresses: ["Clothing_Bottom_Civilian"],
+  Backpacks: ["Clothing_Back_Military", "Clothing_Back_Civilian"],
+  Gloves: ["Clothing_Misc_Military", "Clothing_Misc_Civilian"],
+  Armbands: ["Clothing_Misc_Military", "Clothing_Misc_Civilian"],
+  Belts: ["Clothing_Misc_Military", "Clothing_Misc_Civilian"],
+  Holsters_And_Pouches: ["Clothing_Misc_Military", "Clothing_Misc_Civilian"],
+  Bandanas: ["Clothing_Misc_Civilian"],
+  // Consumables
+  Food: ["Consumables"],
+  Drinks: ["Consumables"],
+  Fruit_And_Vegetables: ["Consumables"],
+  Meat: ["Consumables"],
+  Fish: ["Consumables"],
+  // Base building / utility
+  Tents: ["Base_Building"],
+  Locks: ["Base_Building"],
+  Containers: ["Base_Building"],
+  Flags: ["Base_Building"],
+  Furnishings: ["Base_Building"],
+  // Supplies got split (bulk crafting mats stayed Uncommon in Base_Building,
+  // the rest moved to Utility) - list both, same reasoning as Lights above.
+  Supplies: ["Base_Building", "Utility"],
+  Gardening: ["Utility"],
+  Kits: ["Utility"],
+  Navigation: ["Utility"],
+  Fishing: ["Utility"],
+  Spraycans: ["Utility"],
+  Liquids: ["Utility"],
+  Tools: ["Tools_And_Melee"],
+  // Vehicles
+  Cars: ["Vehicles_Cars"],
+  Helicopters: ["Vehicles_Helicopters"],
+  // Dead per marketGapFill.ts's DEAD_MARKET_FILES (Event/Clothing_Military/
+  // Clothing_Civilian/Weapon_Attachments) or never shipped by the mod at
+  // all in the first place (Launchers - no Launchers.json ever existed
+  // here, orphaned or otherwise) - no real items to point at, so these are
+  // just dropped rather than invented.
+  Event: [],
+  Launchers: [],
+  Weapon_Attachments: [],
+  Clothing_Military: [],
+  Clothing_Civilian: [],
+};
+
+function splitCategoryEntry(entry: string): [name: string, suffix: string] {
+  const i = entry.indexOf(":");
+  return i === -1 ? [entry, ""] : [entry.slice(0, i), entry.slice(i)];
+}
+
+interface TraderIdentityFile {
+  Categories?: string[];
+  [key: string]: unknown;
+}
+
+async function fixDefaultTraderIdentityCategories(): Promise<void> {
+  if (!(await exists(EXPANSION_TRADERS_DIR))) return; // logged by ensureCustomTraderIdentities() already
+
+  let fixedFiles = 0;
+  for await (const entry of Deno.readDir(EXPANSION_TRADERS_DIR)) {
+    if (!entry.isFile || !entry.name.endsWith(".json")) continue;
+    const path = `${EXPANSION_TRADERS_DIR}/${entry.name}`;
+    const data: TraderIdentityFile = JSON.parse(await Deno.readTextFile(path));
+    if (!data.Categories || data.Categories.length === 0) continue;
+
+    let replacedAny = false;
+    const rebuilt: string[] = [];
+    for (const rawEntry of data.Categories) {
+      const [name, suffix] = splitCategoryEntry(rawEntry);
+      const replacements = ORPHANED_CATEGORY_REPLACEMENTS[name];
+      if (replacements === undefined) {
+        if (!rebuilt.includes(rawEntry)) rebuilt.push(rawEntry);
+        continue;
+      }
+      replacedAny = true;
+      for (const replacement of replacements) {
+        const replacementEntry = `${replacement}${suffix}`;
+        if (!rebuilt.includes(replacementEntry)) rebuilt.push(replacementEntry);
+      }
+    }
+    if (!replacedAny) continue;
+
+    data.Categories = rebuilt;
+    await Deno.writeTextFile(path, JSON.stringify(data, null, 4));
+    fixedFiles++;
+  }
+
+  if (fixedFiles > 0) {
+    ok(
+      `Repointed ${fixedFiles} default trader identity file(s) in ${EXPANSION_TRADERS_DIR} at ` +
+        "post-merge Market category names (see ORPHANED_CATEGORY_REPLACEMENTS)",
+    );
+  }
+}
+
 function traderMapLine(npc: CustomTraderNpc, origin: [number, number, number]): string {
   const pos = origin.map((v, i) => v + npc.offset[i]).map((n) => n.toFixed(3)).join(" ");
   const orientation = npc.orientation.join(" ");
@@ -470,7 +676,7 @@ async function ensureCustomZone(): Promise<void> {
   // ensureCustomTrader()).
   const zone: CustomZoneFile = existing ?? {
     m_Version: 6,
-    m_DisplayName: "Custom Trading Zone",
+    m_DisplayName: "Romashka Farm",
     Position: CUSTOM_POSITION,
     Radius: CUSTOM_RADIUS,
     BuyPricePercent: 100.0,
@@ -783,6 +989,7 @@ async function ensureHardcoreSellPricePercent(): Promise<void> {
 export async function ensureCustomTrader(): Promise<void> {
   await removeDefaultZones();
   await ensureCustomTraderIdentities();
+  await fixDefaultTraderIdentityCategories();
   await ensureCustomTraderGear();
   await ensureCustomZone();
   await ensureCustomTraderSafeZone();

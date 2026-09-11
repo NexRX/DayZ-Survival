@@ -49,6 +49,27 @@
 # see the items you placed"). ---
 2961092390  @R22R-Fortifications-Assets
 
+# --- Objects_Free_Mapping: Canadian_Sniper's free "_CS" object pack, kept
+# alive by the community after the original free objects vanished from
+# Steam (see this pack's own description) - several free mapping addons
+# (including @Mapping_Skalisty_Military below) build on it. Same reasoning
+# as @R22R-Fortifications-Assets above: real placed content, not an editor
+# tool, so it must load on both server AND client. ---
+2866394785  @Objects_Free_Mapping
+
+# --- Mapping_Skalisty_Military: adds a hidden military base/prison-yard
+# build-out to Skalisty Island (Chernarus' small NW island) using
+# @Objects_Free_Mapping's object pack, placed via @DayZ-Editor-Loader's own
+# .dze mechanism. Server-only per the mod's own docs (its placement step is
+# server-authoritative, same reasoning as @DayZ-Editor-Loader itself above -
+# players already get the visible objects from @Objects_Free_Mapping, so
+# there's nothing of the client's to load here). This mod ships its own
+# "toxic area" feature, but per the author's own pinned discussion thread
+# it's known broken/deals no damage - skalistyMilitaryRadiationZone.ts
+# layers this project's own radiation zone on top instead (same recipe as
+# Stary Sobor's). ---
+2967438123  @Mapping_Skalisty_Military   server
+
 # NOTE: Forever_Burning_Campfire (1890912719) used to be a separate
 # Workshop mod here - static/permanent light-source prop pack, used to
 # actually light up the trader town (the DayZ-Editor NetworkLight/
@@ -72,6 +93,11 @@
 2572324799  @DayZ-Expansion-Book
 2572328470  @DayZ-Expansion-Market
 2792982069  @DayZ-Expansion-AI
+
+# DayZ-Expansion-Quests: NOT bundled in Core/Bundle despite the name - a
+# fully separate Workshop mod. Requires CF, Dabs Framework and Core (all
+# already above). Drives the mission-giver NPC + quest line in src/quests.ts.
+2828486817  @DayZ-Expansion-Quests
 
 # Zens ExpansionAI Audio: ambient audio/voice/footstep cues layered onto the
 # DayZ-Expansion-AI patrols above - same author as Zens-Repairable-Wells/
@@ -209,6 +235,12 @@
 3693114761  @Necromutant
 2950280649  @DayZ-Rat
 2471347750  @DayZ-Dog
+
+# Ambient Animals Pack (Hunterz): rabbits, squirrels, snakes, rats, seagulls,
+# otters. Ships its own raven + rat territory files too, but those are
+# skipped in src/wildlifeTerritories.ts in favor of the dedicated @DayZ-Raven
+# / @DayZ-Rat mods above (avoids duplicate/colliding territory names).
+3114410963  @Ambient-Animals-Pack
 
 # --- Base building / access control. Custom Keycards and Code Lock are
 # different mechanics — door codes vs. keycard readers — not a conflict.
@@ -372,6 +404,18 @@
 2289461232  @Namalsk-Survival
 2065443797  @AirRaid
 2975514806  @CJ187-RandomMineFields
+
+# OFG Nuclear Zone: hooks into vanilla's own ContaminatedArea_Dynamic (the
+# same toxic gas cloud vanilla's dynamic events already spawn) and drops a
+# few lootable "OFG barrels" around each cloud once it appears, with fully
+# self-cleaning despawn when the zone ends - no new CE event/position of our
+# own needed, since it rides vanilla's existing toxic-zone spawns rather than
+# creating new ones. Ships both client (barrel model/texture) and server
+# scripts, so it's a normal (non-server-only) entry. Its
+# Profiles/OFG/ContaminatedZone/OFG_LootConfig.json is tuned by
+# src/ofgNuclearZone.ts to match this project's own loot ethos (see that
+# file for specifics) instead of the mod's own out-of-the-box defaults.
+3608781425  @OFG-Nuclear-Zone
 
 # NOTE: HeliWreckNoLoot (2002754349) used to be a separate mod here -
 # config-only tweak stripping loot slots from a set of Nitrix_Wreck_*/

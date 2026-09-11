@@ -197,6 +197,13 @@ const TERJE_STARTING_KIT_ITEMS: string[] = [
   // (0 is the starting BaseballBat) so it's actually reachable in a hurry
   // rather than buried in inventory.
   '<Item classname="TRQ_DecoyGrenade" quickbar="1" />',
+  // @Terje-Radiation's basic civilian dosimeter (no Military usage/Tier
+  // restriction in the mod's own types.xml, unlike TerjeDosimetrMkc01A/
+  // TerjeDosimetrCdv700 - those two stay rare military loot). Drops into
+  // cargo like Rag/Map above so every survivor can tell when they're
+  // wandering into Stary Sobor/Skalisty Island's radiation zones before
+  // it's too late.
+  '<Item classname="TerjeDosimetrDpg05" />',
 ];
 
 // Terje's own shipped default "survivor" loadout already includes a RANDOM

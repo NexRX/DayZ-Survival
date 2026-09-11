@@ -436,6 +436,9 @@ export async function tuneInediaInfectedAIDifficulty(): Promise<void> {
 // much smaller melee cost is scaled down by the same ratio for consistency.
 interface InediaStaminaCategory {
   CostPerMeleeAttackPercent?: number;
+  CostPerSecondJogPercent?: number;
+  CostPerSecondCrouchSprintPercent?: number;
+  CostPerSecondSprintPercent?: number;
   WeightOverloadThresholdKg?: number;
   WeightOverloadMultiplierMax?: number;
   [key: string]: unknown;
@@ -450,6 +453,21 @@ interface InediaStaminaConfig {
 const INEDIA_STAMINA_MELEE_COST_TARGETS = {
   StaminaGeneralOptions: -0.15,
   StaminaSleepOptions: -0.005,
+};
+
+// Movement stamina costs (StaminaGeneralOptions only - StaminaSleepOptions'
+// jog/sprint costs are already tiny fractions tied to the separate sleep/
+// fatigue meter, not the stamina bar that determines how long a player can
+// keep running from Infected, so they're left alone). Defaults ship at
+// CostPerSecondJogPercent -0.05, CostPerSecondCrouchSprintPercent -0.15,
+// CostPerSecondSprintPercent -0.5 - roughly halved-to-a-third here so a
+// player can sprint substantially farther/longer before running dry,
+// making it actually possible to outrun a chasing Infected on foot instead
+// of getting run down mid-sprint.
+const INEDIA_STAMINA_MOVEMENT_COST_TARGETS = {
+  CostPerSecondJogPercent: -0.02,
+  CostPerSecondCrouchSprintPercent: -0.05,
+  CostPerSecondSprintPercent: -0.15,
 };
 
 // The mod's default weight-overload curve (28kg threshold, up to a 10x
@@ -474,6 +492,21 @@ function setMeleeCost(
   }
   c.CostPerMeleeAttackPercent = target;
   return [c, true];
+}
+
+function setMovementCost(
+  category: InediaStaminaCategory | undefined,
+  targets: typeof INEDIA_STAMINA_MOVEMENT_COST_TARGETS,
+): [InediaStaminaCategory, boolean] {
+  const c = category ?? {};
+  let changed = false;
+  for (const [key, target] of Object.entries(targets)) {
+    const current = c[key] as number | undefined;
+    if (current !== undefined && Math.abs(current - target) <= INEDIA_EPSILON) continue;
+    c[key] = target;
+    changed = true;
+  }
+  return [c, changed];
 }
 
 function setWeightOverload(
@@ -522,11 +555,16 @@ export async function tuneInediaStaminaDifficulty(): Promise<void> {
   changed ||= updated;
   [settings.StaminaGeneralOptions, updated] = setWeightOverload(settings.StaminaGeneralOptions);
   changed ||= updated;
+  [settings.StaminaGeneralOptions, updated] = setMovementCost(
+    settings.StaminaGeneralOptions,
+    INEDIA_STAMINA_MOVEMENT_COST_TARGETS,
+  );
+  changed ||= updated;
 
   if (!changed) return;
   await Deno.writeTextFile(INEDIA_STAMINA_SETTINGS, JSON.stringify(settings, null, 4));
   ok(
-    `Halved melee-attack stamina cost and raised weight-overload threshold in ${INEDIA_STAMINA_SETTINGS}`,
+    `Halved melee-attack stamina cost, cut sprint/jog stamina drain, and raised weight-overload threshold in ${INEDIA_STAMINA_SETTINGS}`,
   );
 }
 
