@@ -12,7 +12,7 @@
     "admin": "deno run -A src/main.ts admin",
     "wipe": "deno run -A src/main.ts wipe",
     "build-serverpack": "deno run -A src/main.ts build-serverpack",
-    "publish-serverpack": "deno run -A src/main.ts publish-serverpack",
+
     "verify-serverpack": "deno run -A src/main.ts verify-serverpack",
     "build-custom-map": "deno run -A src/main.ts build-custom-map",
     "sync-editor": "deno run -A src/main.ts sync-editor",

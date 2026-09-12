@@ -78,7 +78,7 @@
 # Its author's Steam page permits redistribution, so its content (all
 # FBF_* classes/scripts) is now merged as-is into
 # serverpack/addons/forever_burning_campfire and ships inside
-# @DZSurvivalServerPack instead - one less mod players need to subscribe
+# serverpack instead - one less mod players need to subscribe
 # to. See src/foreverBurningCampfire.ts (updated to no longer gate on this
 # mod's own presence in mods.txt, since its classes are now always
 # present via the server pack).
@@ -173,7 +173,7 @@
 # NOTE: InediaTerjeCompatibility (3471553607) used to be a separate mod
 # here. Author's page permits redistribution; merged into
 # serverpack/addons/inediaterjecompatibility, ships inside
-# @DZSurvivalServerPack instead.
+# ServerPack instead.
 
 # --- Additional AI events, layered on top of the zombie/bandit AI above -
 # a mobile convoy patrol, airborne troop insertions, a broader "warzone"
@@ -336,7 +336,7 @@
 # separate mod here - lets a SharpWoodenStick be attached to an existing
 # fireplace to extend its burn time. Author's page permits redistribution;
 # merged into serverpack/addons/zenfireplacestick, ships inside
-# @DZSurvivalServerPack instead.
+# ServerPack instead.
 
 # NOTE: @Keep-It-Dead-ProjectBR (3417831913) was removed here. Its
 # corpse-to-zombie conversion feature (SpawnZombieOnPlayersDeath) fires for

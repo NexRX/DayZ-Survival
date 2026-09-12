@@ -43,17 +43,9 @@ starts the server). `up` is idempotent — safe to re-run any time.
 
 `serverpack/addons/` holds this project's own custom Enforce Script addons,
 packed with `armake2` and signed with the real Bohemia `DSSignFile.exe` (via
-Wine), then published as one Workshop mod (`@DZSurvivalServerPack`).
+Wine). Upload to the Workshop via dayz-tools — make sure
+`serverpack/@serverpack/mod.cpp` exists before uploading.
 
-Just run:
+### Publishing
 
-```
-deno task publish-serverpack
-```
-
-This builds, verifies (boots the real server briefly to catch script compile
-errors), and publishes/updates the Workshop item in one go — **don't run
-`verify-serverpack` first**, it's the same boot-and-wait check `publish-
-serverpack` already runs internally, so doing both means waiting for two full
-verification boots for no extra benefit. Only reach for `verify-serverpack`
-on its own if you want to sanity-check a change without publishing yet.
+1. Use Dayz Tools

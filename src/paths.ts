@@ -278,23 +278,12 @@ export interface ServerPackConfig {
   /** Source dir - contains addons/, mod.cpp, .workshop_id, preview.png. */
   dir: string;
   addonsDir: string;
-  /** Generated, machine-local, never committed: this pack's own armake2 signing keypair. */
-  keysDir: string;
-  /** Generated, machine-local, never committed: this pack's assembled @<name>/ PBO build output. */
-  buildDir: string;
-  workshopIdFile: string;
-  /** meta.cpp's `name` field / this pack's Workshop item title. */
-  displayName: string;
 }
 
 export const SERVERPACK: ServerPackConfig = {
   name: "DZSurvivalServerPack",
   dir: `${ROOT}/serverpack`,
   addonsDir: `${ROOT}/serverpack/addons`,
-  keysDir: `${ROOT}/.serverpack-keys`,
-  buildDir: `${ROOT}/.serverpack-build`,
-  workshopIdFile: `${ROOT}/serverpack/.workshop_id`,
-  displayName: "DayZ Survival - Server Pack",
 };
 
 // DayZ-Editor (the offline client-side building tool) saves its .dze files

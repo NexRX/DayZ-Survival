@@ -20,22 +20,19 @@ alpha channel, so fully-opaque RGB is what actually ships either way.
 
 ## Building
 
-After editing, just build/publish as usual - it re-encodes automatically:
+After editing, just build - it re-encodes automatically:
 
 ```
 deno task build-serverpack
-deno task publish-serverpack
 ```
 
-Both re-encode both PNGs into
-`serverpack/addons/DZSurvivalCustomMap/tourist/data/*.paa` via the real
-Bohemia `ImageToPAA.exe` (part of the DayZ Tools install already used for
-PBO signing - see `src/customMap.ts` for exactly how/why) as their first
-step. Only source files that exist get re-encoded; the other stays
-untouched.
+This re-encodes both PNGs into `serverpack/addons/DZSurvivalCustomMap/tourist/data/*.paa`
+via the real Bohemia `ImageToPAA.exe` (part of the DayZ Tools install already used for
+PBO signing - see `src/customMap.ts` for exactly how/why). Only source files that exist get
+re-encoded.
 
-If you just want to sanity-check an edit without a full build, run the
-re-encode step on its own (inside `nix develop`):
+If you just want to sanity-check an edit without a full build, run the re-encode step on its
+own (inside `nix develop`):
 
 ```
 deno task build-custom-map

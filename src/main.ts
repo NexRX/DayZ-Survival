@@ -11,8 +11,6 @@ import { dynamicMissionsConfigured } from "./dynamicMissions.ts";
 import { doStart } from "./server.ts";
 import { doWipe } from "./wipe.ts";
 import { loadMods, resolveMods, searchMods } from "./mods.ts";
-import { buildServerPack } from "./modBuild.ts";
-import { publishServerPack } from "./modPublish.ts";
 import { verifyServerPackScripts } from "./modVerify.ts";
 import { doSyncEditor } from "./editorSync.ts";
 import { auditMarket } from "./marketAudit.ts";
@@ -116,14 +114,12 @@ async function menu(s: Settings): Promise<void> {
           await buildServerPack();
           break;
         case "12":
-          await publishServerPack(s);
-          break;
-        case "13":
           await doSyncEditor();
           break;
-        case "14":
+        case "13":
           await verifyServerPackScripts(await buildServerPack());
           break;
+        case "14":
         case "15":
           await auditMarket();
           break;
@@ -161,18 +157,14 @@ const HELP = `Usage: deno task dayz [command]
                       serverpack/assets/DZSurvivalCustomMap/*.png into the
                       custom map addon's textures automatically (see
                       build-custom-map below)
-  publish-serverpack  Build, verify (boots the real server briefly to catch
-                      script compile errors), then publish/update the
-                      server pack as the one Workshop item bundling all
-                      custom addons
+
   verify-serverpack   Build the server pack and verify its scripts actually
-                      compile, without publishing (same check publish-
-                      serverpack runs automatically first)
+                      compile, without publishing
   build-custom-map    Re-encode serverpack/assets/DZSurvivalCustomMap/*.png
                       into the DZSurvivalCustomMap addon's .paa textures on
                       their own, without a full build-serverpack run - handy
                       for quickly sanity-checking an edit (build-serverpack
-                      and publish-serverpack already do this step too)
+
   sync-editor   Copy the newest DayZ-Editor .dze save into the mission's
                 EditorFiles/ folder, ready for @DayZ-Editor-Loader to load
                 on next server start
@@ -224,9 +216,6 @@ async function main(): Promise<void> {
       break;
     case "build-serverpack":
       await buildServerPack();
-      break;
-    case "publish-serverpack":
-      await publishServerPack(s);
       break;
     case "verify-serverpack":
       await verifyServerPackScripts(await buildServerPack());

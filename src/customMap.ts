@@ -94,7 +94,7 @@ export async function buildCustomMapTextures(): Promise<void> {
       );
     }
     ok(`Custom map textures rebuilt in ${CUSTOM_MAP_ADDON_DATA_DIR}.`);
-    hint("Run 'deno task build-serverpack' (or publish-serverpack) to bundle the change.");
+    hint("Run 'deno task build-serverpack' to bundle the change.");
   } finally {
     await Deno.remove(tmpDir, { recursive: true }).catch(() => {});
   }
