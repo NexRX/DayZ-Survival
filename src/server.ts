@@ -123,8 +123,12 @@ instanceId     = 1;
 storageAutoFix = 1;
 respawnTime    = 5;
 
-steamQueryPort = ${s.QUERY_PORT};
-steamProtocolMaxDataSize = 4096;
+steamQueryPort     = ${s.QUERY_PORT};
+// With 100+ client mods, the default 4096-byte Steam protocol limit is too
+// small for the combined Workshop description payload sent during player join.
+// Raised to 32KB (a standard value on large DayZ servers) to avoid the
+// "unable to transmit all data" kick seen at lower values.
+steamProtocolMaxDataSize = 32768;
 
 class Missions
 {
