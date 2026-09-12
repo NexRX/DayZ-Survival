@@ -376,7 +376,7 @@
 # though they're reasonably covered) - every other real ignition mechanic
 # (kindling, indoor low-ceiling smoke, water surface, already-soaked fuel)
 # is untouched. ---
-3789404408  @DZSurvivalServerPack
+3800261242  @DZSurvivalServerPack
 
 # --- Environment/atmosphere/events ---
 # Nature Overhaul Redux is not a normal script mod - it ships a set of
