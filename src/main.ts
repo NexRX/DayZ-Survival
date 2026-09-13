@@ -111,19 +111,13 @@ async function menu(s: Settings): Promise<void> {
           await doWipe();
           break;
         case "11":
-          await buildServerPack();
-          break;
-        case "12":
           await doSyncEditor();
           break;
+        case "12":
         case "13":
-          await verifyServerPackScripts(await buildServerPack());
-          break;
-        case "14":
-        case "15":
           await auditMarket();
           break;
-        case "16":
+        case "14":
           Deno.exit(0);
           break;
         default:
@@ -152,14 +146,6 @@ const HELP = `Usage: deno task dayz [command]
   status        Show setup status
   admin         Grant AI-menu / Community Online Tools admin access
   wipe          Reset world state, or remove the install entirely
-  build-serverpack    Build serverpack/ (this project's own custom addons)
-                      into one publish-ready Workshop mod - also re-encodes
-                      serverpack/assets/DZSurvivalCustomMap/*.png into the
-                      custom map addon's textures automatically (see
-                      build-custom-map below)
-
-  verify-serverpack   Build the server pack and verify its scripts actually
-                      compile, without publishing
   build-custom-map    Re-encode serverpack/assets/DZSurvivalCustomMap/*.png
                       into the DZSurvivalCustomMap addon's .paa textures on
                       their own, without a full build-serverpack run - handy
@@ -213,12 +199,6 @@ async function main(): Promise<void> {
       break;
     case "wipe":
       await doWipe();
-      break;
-    case "build-serverpack":
-      await buildServerPack();
-      break;
-    case "verify-serverpack":
-      await verifyServerPackScripts(await buildServerPack());
       break;
     case "build-custom-map":
       await buildCustomMapTextures();

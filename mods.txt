@@ -139,7 +139,7 @@
 # tuned in src/ai.ts. The FIX must load after InediaInfectedAI (a real
 # CfgPatches requiredAddons dependency, resolved by class name regardless
 # of mods.txt order). ---
-3031784065  @InediaInfectedAI
+# 3031784065  @InediaInfectedAI # makes things too hard
 2990236173  @InediaStamina
 1866298408  @CreepyZombies
 3628006769  @AI-Bandits
@@ -234,7 +234,7 @@
 2901480106  @Yuretskiy-Creatures
 3693114761  @Necromutant
 2950280649  @DayZ-Rat
-2471347750  @DayZ-Dog
+2471347750  @DayZ-Dog # caused bleed issues before
 
 # Ambient Animals Pack (Hunterz): rabbits, squirrels, snakes, rats, seagulls,
 # otters. Ships its own raven + rat territory files too, but those are

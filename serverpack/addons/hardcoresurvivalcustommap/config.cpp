@@ -18,20 +18,3 @@ class CfgPatches {
     requiredAddons[] = {"DZ_Data", "DZ_Structures_Signs"};
   };
 };
-class CfgMods {
-  class DZSurvivalCustomMap {
-    dir = "DZSurvivalCustomMap";
-    picture = "";
-    action = "";
-    hideName = 1;
-    hidePicture = 1;
-    name = "DZSurvivalCustomMap";
-    credits = "DayZ-Survival project";
-    author = "DayZ-Survival";
-    authorID = "0";
-    version = "1.0.0";
-    extra = 0;
-    type = "mod";
-    dependencies[] = {"Game", "World", "Mission"};
-  };
-};

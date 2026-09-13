@@ -82,6 +82,7 @@ import { loadMods, modParam, serverModParam } from "./mods.ts";
 import { filterModsForSeason, rollEarlyWinter } from "./season.ts";
 import { ensureConfig, type Settings } from "./config.ts";
 import { primeModConfigsIfNeeded } from "./prime.ts";
+import { ensureOverrides } from "./overrides.ts";
 
 export async function genConfig(s: Settings): Promise<void> {
   const cfg = `${SERVER_DIR}/serverDZ.cfg`;
@@ -435,6 +436,7 @@ export async function doStart(s: Settings): Promise<void> {
   await ensureClimateZones();
   await ensureFuelSystemVehicles(allMods);
   await tuneNewAIEventMods();
+  await ensureOverrides();
 
   await pruneOldLogs();
   await backupWorldState();

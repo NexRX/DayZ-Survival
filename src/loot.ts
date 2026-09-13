@@ -187,23 +187,11 @@ const TERJE_STARTING_WEAPON_ITEM_INHANDS = '<Item classname="BaseballBat" positi
 const TERJE_STARTING_WEAPON_ITEM = '<Item classname="BaseballBat" position="Melee" quickbar="0" />';
 
 const TERJE_STARTING_KIT_ITEMS: string[] = [
-  '<Item classname="Rag" count="4" />',
-  '<Item classname="Map" />',
-  // @DecoyGrenades (3788373552): imitates gunfire from a random weapon for
-  // ~30s then a weak final explosion, pulling zombie/AI aggro toward the
-  // decoy instead of the player. No dedicated attachment slot needed for
-  // quickbar binding - it just needs to be somewhere on the character, so
-  // this drops into cargo (pockets) like Rag/Map above, bound to slot 1
-  // (0 is the starting BaseballBat) so it's actually reachable in a hurry
-  // rather than buried in inventory.
   '<Item classname="TRQ_DecoyGrenade" quickbar="1" />',
-  // @Terje-Radiation's basic civilian dosimeter (no Military usage/Tier
-  // restriction in the mod's own types.xml, unlike TerjeDosimetrMkc01A/
-  // TerjeDosimetrCdv700 - those two stay rare military loot). Drops into
-  // cargo like Rag/Map above so every survivor can tell when they're
-  // wandering into Stary Sobor/Skalisty Island's radiation zones before
-  // it's too late.
+  '<Item classname="ChernarusMap" quickbar="2"/>',
+  '<Item classname="Rag" count="4" quickbar="4"/>',
   '<Item classname="TerjeDosimetrDpg05" />',
+  '<Item classname="Battery9V" />',
 ];
 
 // Terje's own shipped default "survivor" loadout already includes a RANDOM
