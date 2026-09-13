@@ -38,6 +38,7 @@
 # here would only force every real player to download 151MB of a tool
 # they'd never be able to use. ---
 2276010135  @DayZ-Editor-Loader          server
+2482312670  @SpawnerBubaku          server
 
 # --- Land_R22R_Base_Fortifications_Assets: placeable prop pack (walls,
 # sandbags, spikes, walkways, etc. under the Land_R22R_ class prefix) used
