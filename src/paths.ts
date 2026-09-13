@@ -12,6 +12,8 @@ export const SERVER_DIR = `${ROOT}/server`;
 export const STEAMCMD_DIR = `${ROOT}/steamcmd`; // project-local Steam HOME
 export const PROFILE_DIR = `${ROOT}/profiles`;
 export const AI_TEMPLATE_DIR = `${ROOT}/ai`;
+export const EDITOR_STORED_DIR = `${ROOT}/data/editor`;
+export const SERVERONLYPACK_DIR = `${ROOT}/serveronlypack/@serveronlypack`;
 
 export const LOGIN_MARKER = `${STEAMCMD_DIR}/.dayz_login_ok`;
 export const DD_LOGIN_MARKER = `${STEAMCMD_DIR}/.dd_login_ok`;
@@ -135,10 +137,6 @@ export const AIRDROP_SETTINGS = `${PROFILE_DIR}/ExpansionMod/Settings/AirdropSet
 // `Admins` array, generated alongside AIPatrolSettings.json.
 export const AI_SETTINGS = `${PROFILE_DIR}/ExpansionMod/Settings/AISettings.json`;
 
-// InediaInfectedAI self-regenerates its config in the server profile (see
-// the mod's wiki: github.com/ysaroka/InediaInfectedAI/wiki).
-export const INEDIA_SETTINGS = `${PROFILE_DIR}/Inedia/InediaInfectedAIConfig.json`;
-
 // InediaStamina self-regenerates its config in the same profile folder (see
 // the mod's wiki: github.com/ysaroka/InediaStamina/wiki).
 export const INEDIA_STAMINA_SETTINGS = `${PROFILE_DIR}/Inedia/InediaStaminaConfig.json`;
@@ -207,13 +205,6 @@ export const AI_WARZONES_SETTINGS = `${PROFILE_DIR}/AIWarZones/AIWarZones_Settin
 // 30-pattern/9-sequence config) on first world load - see wlcWeather.ts,
 // which patches in 2 custom snow patterns without touching the rest.
 export const WLC_CONFIG_FILE = `${PROFILE_DIR}/WLC/weather_config.json`;
-
-// DDP Server Climate Zones self-generates this on first world load with a
-// default-template Zones array. Note: the mod's Steam page says
-// "profiles\DDP_ClimateZones\Config.json", but its actual runtime log says
-// otherwise - the real path has an extra DDP/ parent directory. See
-// climateZones.ts.
-export const CLIMATE_ZONES_SETTINGS = `${PROFILE_DIR}/DDP/DDP_ClimateZones/Config.json`;
 
 // Fuel-System self-generates this on first world load. Matches vehicle fuel
 // type/consumption by classname; `type` can be a base class (inheritance-
@@ -293,7 +284,7 @@ export const SERVERPACK: ServerPackConfig = {
 // which copies the newest save from one to the other.
 export const DAYZ_EDITOR_SAVE_DIR = `${
   Deno.env.get("HOME")
-}/.local/share/Steam/steamapps/compatdata/${DAYZ_CLIENT_APPID}/pfx/drive_c/users/steamuser/Documents/DayZ/Editor`;
+}/.local/share/Steam/steamapps/compatdata/221100/pfx/drive_c/users/steamuser/Documents/DayZ/Editor`;
 export const EDITOR_FILES_DIR = `${MISSION_DIR}/EditorFiles`;
 
 // Vanilla static-building-group loot economy files, shipped as part of the

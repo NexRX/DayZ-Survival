@@ -1,21 +1,29 @@
 class CfgPatches {
-  class DZSurvivalTraderWarmth {
+  class DZSurvivalFindStone {
     units[] = {};
     weapons[] = {};
     requiredVersion = 0.1;
-    // Pure vanilla mechanic (PlayerBase.GetStatHeatComfort(), confirmed via
-    // DZ's own scripts.pbo) - no Expansion/other mod dependency needed.
     requiredAddons[] = {"DZ_Data", "DZ_Scripts"};
   };
 };
+
+class CfgVehicles {
+  class StoneKnife;
+  class SharpStone : StoneKnife {
+    scope = 2;
+    displayName = "Sharp Stone";
+    descriptionShort = "A stone chipped to a sharp edge - crude, but it cuts.";
+  };
+};
+
 class CfgMods {
-  class DZSurvivalTraderWarmth {
-    dir = "DZSurvivalTraderWarmth";
+  class DZSurvivalFindStone {
+    dir = "DZSurvivalFindStone";
     picture = "";
     action = "";
     hideName = 1;
     hidePicture = 1;
-    name = "DZSurvivalTraderWarmth";
+    name = "DZSurvivalFindStone";
     credits = "DayZ-Survival project";
     author = "DayZ-Survival";
     authorID = "0";
@@ -26,11 +34,7 @@ class CfgMods {
     class defs {
       class worldScriptModule {
         value = "";
-        files[] = {"DZSurvivalTraderWarmth/scripts/4_world"};
-      };
-      class missionScriptModule {
-        value = "";
-        files[] = {"DZSurvivalTraderWarmth/scripts/5_mission"};
+        files[] = {"DZSurvivalFindStone/scripts/4_world"};
       };
     };
   };

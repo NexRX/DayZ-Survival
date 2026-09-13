@@ -383,47 +383,6 @@ function raiseInediaFloor(
   return [v, true];
 }
 
-export async function tuneInediaInfectedAIDifficulty(): Promise<void> {
-  if (!(await exists(INEDIA_SETTINGS))) {
-    log(
-      "InediaInfectedAIConfig.json not generated yet — InediaInfectedAI will create it " +
-        "(already tuned for hardcore play by default) on first server start",
-    );
-    return;
-  }
-
-  const settings: InediaConfig = JSON.parse(await Deno.readTextFile(INEDIA_SETTINGS));
-  const zombies = settings.Zombies ?? (settings.Zombies = {});
-  let changed = false;
-
-  for (
-    const [key, targets] of Object.entries({
-      ...INEDIA_PLAYER_DAMAGE_TARGETS,
-      ...INEDIA_ZOMBIE_STAGGER_TARGETS,
-      ...INEDIA_ZOMBIE_AGGRESSION_TARGETS,
-      ...INEDIA_DOOR_BREAKING_TARGETS,
-    })
-  ) {
-    let updated: boolean;
-    [zombies[key], updated] = setInediaTiers(
-      zombies[key] as InediaScaledValue | undefined,
-      targets,
-    );
-    changed ||= updated;
-  }
-
-  let raised: boolean;
-  [zombies.DamageToZombieHeadRangeMultiplier, raised] = raiseInediaFloor(
-    zombies.DamageToZombieHeadRangeMultiplier,
-    INEDIA_HEADSHOT_MULTIPLIER_FLOOR,
-  );
-  changed ||= raised;
-
-  if (!changed) return;
-  await Deno.writeTextFile(INEDIA_SETTINGS, JSON.stringify(settings, null, 4));
-  ok(`Rebalanced infected combat difficulty in ${INEDIA_SETTINGS}`);
-}
-
 // --- InediaStamina melee attack cost (Inedia/InediaStaminaConfig.json) ---
 //
 // The mod's own default docs describe a light melee swing costing -0.5%

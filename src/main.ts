@@ -11,7 +11,6 @@ import { dynamicMissionsConfigured } from "./dynamicMissions.ts";
 import { doStart } from "./server.ts";
 import { doWipe } from "./wipe.ts";
 import { loadMods, resolveMods, searchMods } from "./mods.ts";
-import { verifyServerPackScripts } from "./modVerify.ts";
 import { doSyncEditor } from "./editorSync.ts";
 import { auditMarket } from "./marketAudit.ts";
 import { buildCustomMapTextures } from "./customMap.ts";

@@ -1,6 +1,13 @@
 // serverDZ.cfg generation and launching the server under steam-run.
 
-import { MISSION_TEMPLATE, PROFILE_DIR, SERVER_DIR } from "./paths.ts";
+import {
+  EDITOR_FILES_DIR,
+  EDITOR_STORED_DIR,
+  MISSION_TEMPLATE,
+  PROFILE_DIR,
+  SERVER_DIR,
+  SERVERONLYPACK_DIR,
+} from "./paths.ts";
 import { log, ok, warn } from "./ui.ts";
 import { requireTools } from "./proc.ts";
 import { ensureServer, serverBinary } from "./steam.ts";
@@ -31,7 +38,6 @@ import {
   ensureStarySoborRadiationZone,
   tuneHazardZones,
 } from "./hazards.ts";
-import { ensureClimateZones } from "./climateZones.ts";
 import { tuneNoBuildZones } from "./noBuildZones.ts";
 import { ensureWildlifeTerritories } from "./wildlifeTerritories.ts";
 import { ensureYuretskiyWired } from "./yuretskiy.ts";
@@ -72,7 +78,6 @@ import {
 import {
   tuneAIBanditsDifficulty,
   tuneAIDifficulty,
-  tuneInediaInfectedAIDifficulty,
   tuneInediaStaminaDifficulty,
   tuneMissionDifficulty,
   tuneSpatialAIDifficulty,
@@ -83,6 +88,120 @@ import { filterModsForSeason, rollEarlyWinter } from "./season.ts";
 import { ensureConfig, type Settings } from "./config.ts";
 import { primeModConfigsIfNeeded } from "./prime.ts";
 import { ensureOverrides } from "./overrides.ts";
+
+// Deploy the committed editor save (.dze) into the mission's EditorFiles/
+// folder where @DayZ-Editor-Loader reads it. The file lives in the repo
+// (data/editor/) for version control; this copies it to the live directory
+// on every server start so it's always up to date.
+async function deployEditorSave(): Promise<void> {
+  try {
+    await Deno.mkdir(EDITOR_FILES_DIR, { recursive: true });
+  } catch (e) {
+    if (!(e instanceof Deno.errors.AlreadyExists)) throw e;
+  }
+
+  // Copy every .dze from the stored dir into EditorFiles/.
+  // Editor-Loader loads ALL .dze files it finds, so any file we commit
+  // gets deployed. The user controls what ends up there by committing it.
+  let deployed = 0;
+  try {
+    for await (const entry of Deno.readDir(EDITOR_STORED_DIR)) {
+      if (!entry.isFile || !entry.name.toLowerCase().endsWith(".dze")) continue;
+      const src = `${EDITOR_STORED_DIR}/${entry.name}`;
+      const dest = `${EDITOR_FILES_DIR}/${entry.name}`;
+      await Deno.copyFile(src, dest);
+      deployed++;
+    }
+  } catch (e) {
+    if (e instanceof Deno.errors.NotFound) {
+      // data/editor/ hasn't been created yet — nothing to deploy
+      return;
+    }
+    throw e;
+  }
+
+  if (deployed > 0) {
+    log(`Deployed ${deployed} editor save(s) to EditorFiles/`);
+  }
+}
+
+// Deploy the locally-built server-only pack into the server's mod folder.
+// The signed PBOs live in the repo (serveronlypack/@serveronlypack/) and are
+// copied to @DZSurvivalServerOnlyPack in the server dir. This removes the
+// need to download the pack from the Steam Workshop.
+//
+// Orphaned files in the destination (present on disk but not in the repo)
+// are deleted so the server dir stays in sync with the committed pack.
+async function deployServerOnlyPack(): Promise<void> {
+  const dest = `${SERVER_DIR}/@DZSurvivalServerOnlyPack`;
+
+  // Copy addon PBOs + signatures, collecting source names for orphan cleanup
+  try {
+    await Deno.mkdir(`${dest}/addons`, { recursive: true });
+    const srcAddons = new Set<string>();
+    for await (const entry of Deno.readDir(`${SERVERONLYPACK_DIR}/addons`)) {
+      if (!entry.isFile || !entry.name.toLowerCase().match(/\.(pbo|bisign|bikey)$/)) continue;
+      const name = entry.name;
+      srcAddons.add(name);
+      await Deno.copyFile(
+        `${SERVERONLYPACK_DIR}/addons/${name}`,
+        `${dest}/addons/${name}`,
+      );
+    }
+    // Remove orphaned addon files
+    let removed = 0;
+    for await (const entry of Deno.readDir(`${dest}/addons`)) {
+      if (entry.isFile && entry.name.toLowerCase().match(/\.(pbo|bisign|bikey)$/)) {
+        if (!srcAddons.has(entry.name)) {
+          await Deno.remove(`${dest}/addons/${entry.name}`);
+          removed++;
+        }
+      }
+    }
+    if (removed > 0) {
+      log(`Removed ${removed} orphaned addon file(s) from @DZSurvivalServerOnlyPack/addons`);
+    }
+  } catch (e) {
+    if (e instanceof Deno.errors.NotFound) {
+      warn(`Server-only pack source not found at ${SERVERONLYPACK_DIR}/addons — skipping deploy`);
+      return;
+    }
+    throw e;
+  }
+
+  // Copy keys if present, and clean up orphaned ones
+  try {
+    await Deno.mkdir(`${dest}/keys`, { recursive: true });
+    const srcKeys = new Set<string>();
+    for await (const entry of Deno.readDir(`${SERVERONLYPACK_DIR}/keys`)) {
+      if (!entry.isFile || !entry.name.toLowerCase().endsWith(".bikey")) continue;
+      const name = entry.name;
+      srcKeys.add(name);
+      await Deno.copyFile(
+        `${SERVERONLYPACK_DIR}/keys/${name}`,
+        `${dest}/keys/${name}`,
+      );
+    }
+    // Remove orphaned keys
+    let removed = 0;
+    for await (const entry of Deno.readDir(`${dest}/keys`)) {
+      if (entry.isFile && entry.name.toLowerCase().endsWith(".bikey")) {
+        if (!srcKeys.has(entry.name)) {
+          await Deno.remove(`${dest}/keys/${entry.name}`);
+          removed++;
+        }
+      }
+    }
+    if (removed > 0) {
+      log(`Removed ${removed} orphaned key(s) from @DZSurvivalServerOnlyPack/keys`);
+    }
+  } catch (e) {
+    if (!(e instanceof Deno.errors.NotFound)) throw e;
+    // keys/ may not exist — not fatal
+  }
+
+  log(`Deployed @DZSurvivalServerOnlyPack from repo → ${dest}`);
+}
 
 export async function genConfig(s: Settings): Promise<void> {
   const cfg = `${SERVER_DIR}/serverDZ.cfg`;
@@ -104,7 +223,7 @@ disableCrosshair  = 0;
 serverTime                  = "SystemTime";
 serverTimeAcceleration      = 8;
 serverNightTimeAcceleration = 4; // halved night length (was 2) - user found nights too long
-serverTimePersistent        = 0;
+serverTimePersistent        = 1;
 lightingConfig              = ${LIGHTING_PRESET};
 
 // Without this, the mission's cfggameplay.json (UIData.use3DMap,
@@ -410,7 +529,6 @@ export async function doStart(s: Settings): Promise<void> {
   await tuneAIDifficulty();
   await tuneSpatialAIDifficulty();
   await tuneMissionDifficulty();
-  await tuneInediaInfectedAIDifficulty();
   await tuneInediaStaminaDifficulty();
   await tuneAIBanditsDifficulty();
   await tuneFoodScarcity();
@@ -433,10 +551,12 @@ export async function doStart(s: Settings): Promise<void> {
   await ensureSkalistyMilitaryRadiationZone();
   await ensureSkalistyMilitaryToxicZone();
   await tuneNoBuildZones();
-  await ensureClimateZones();
   await ensureFuelSystemVehicles(allMods);
   await tuneNewAIEventMods();
   await ensureOverrides();
+
+  await deployEditorSave();
+  await deployServerOnlyPack();
 
   await pruneOldLogs();
   await backupWorldState();

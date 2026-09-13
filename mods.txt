@@ -8,13 +8,6 @@
 #     server-side-only, loading it via -servermod= instead of -mod= so
 #     players never need to download it.
 #
-# Content pack modeled on "RemnantZ - BARBA RIJA HARDCORE", a Chernarus
-# hardcore server the maintainers of this project like. Skipped from that
-# server's list: "RemnantZ serverpack" (3768481791), which its own Steam
-# description says is "designed to be used by livonia Barba Rija Hardcore
-# server" — Livonia-specific and incompatible with our
-# dayzOffline.chernarusplus mission.
-#
 # Add your own mods below, keeping the load order sane
 # (frameworks first, content next, tweaks last).
 
@@ -22,71 +15,19 @@
 2545327648  @Dabs_Framework
 1564026768  @Community-Online-Tools
 
-# --- World-building: DayZ-Editor-Loader is the server-side companion to
-# @DayZ-Editor, used to design/build the custom trader town (see
-# src/traders.ts for the full workflow). It reads whatever .dze build file(s) an
-# admin drops into this mission's own EditorFiles/ folder (auto-created at
-# the mission root on first load once this mod is active) and spawns those
-# objects on every mission load - data-driven, not persistence-based, so it
-# survives `deno run wipe`.
-#
-# @DayZ-Editor itself is deliberately NOT listed here - it's an
-# OFFLINE-ONLY editing tool (its own author's restriction), used in a
-# separate local/offline singleplayer session on the admin's own machine
-# (subscribe to it directly via Steam, independent of this server's mod
-# list) - it plays no part in the live multiplayer server, so adding it
-# here would only force every real player to download 151MB of a tool
-# they'd never be able to use. ---
+# --- World-building, Loaders & Spawners ---
 2276010135  @DayZ-Editor-Loader          server
 2482312670  @SpawnerBubaku          server
+3638393043  @KnockKnockAIBandits          server
 
-# --- Land_R22R_Base_Fortifications_Assets: placeable prop pack (walls,
-# sandbags, spikes, walkways, etc. under the Land_R22R_ class prefix) used
-# while building the trader town in DayZ-Editor. Unlike @DayZ-Editor-Loader
-# above, this is NOT an editor tool - it's real world content referenced by
-# class name in the saved .dze, so it must load on both server AND client
-# (players need it too, to see/render the placed props; the author's own
-# instructions say to install it "as a client side mod so other players can
-# see the items you placed"). ---
+# --- Assets ---
 2961092390  @R22R-Fortifications-Assets
-
-# --- Objects_Free_Mapping: Canadian_Sniper's free "_CS" object pack, kept
-# alive by the community after the original free objects vanished from
-# Steam (see this pack's own description) - several free mapping addons
-# (including @Mapping_Skalisty_Military below) build on it. Same reasoning
-# as @R22R-Fortifications-Assets above: real placed content, not an editor
-# tool, so it must load on both server AND client. ---
 2866394785  @Objects_Free_Mapping
 
-# --- Mapping_Skalisty_Military: adds a hidden military base/prison-yard
-# build-out to Skalisty Island (Chernarus' small NW island) using
-# @Objects_Free_Mapping's object pack, placed via @DayZ-Editor-Loader's own
-# .dze mechanism. Server-only per the mod's own docs (its placement step is
-# server-authoritative, same reasoning as @DayZ-Editor-Loader itself above -
-# players already get the visible objects from @Objects_Free_Mapping, so
-# there's nothing of the client's to load here). This mod ships its own
-# "toxic area" feature, but per the author's own pinned discussion thread
-# it's known broken/deals no damage - skalistyMilitaryRadiationZone.ts
-# layers this project's own radiation zone on top instead (same recipe as
-# Stary Sobor's). ---
+# --- Areas & POI ---
 2967438123  @Mapping_Skalisty_Military   server
 
-# NOTE: Forever_Burning_Campfire (1890912719) used to be a separate
-# Workshop mod here - static/permanent light-source prop pack, used to
-# actually light up the trader town (the DayZ-Editor NetworkLight/
-# NetworkSpotLight helper objects placed earlier turned out not to render
-# in the live mission - these are real always-on fire/lamp props instead).
-# Its author's Steam page permits redistribution, so its content (all
-# FBF_* classes/scripts) is now merged as-is into
-# serverpack/addons/forever_burning_campfire and ships inside
-# serverpack instead - one less mod players need to subscribe
-# to. See src/foreverBurningCampfire.ts (updated to no longer gate on this
-# mod's own presence in mods.txt, since its classes are now always
-# present via the server pack).
-
-# --- DayZ Expansion, modular set (matches RemnantZ; replaces the old
-# all-in-one "DayZ-Expansion-Bundle" to avoid double-downloading/duplicating
-# the same content under two different mods) ---
+# --- DayZ Expansion ---
 2291785308  @DayZ-Expansion-Core
 2116151222  @DayZ-Expansion
 2116157322  @DayZ-Expansion-Licensed
@@ -94,23 +35,12 @@
 2572324799  @DayZ-Expansion-Book
 2572328470  @DayZ-Expansion-Market
 2792982069  @DayZ-Expansion-AI
-
-# DayZ-Expansion-Quests: NOT bundled in Core/Bundle despite the name - a
-# fully separate Workshop mod. Requires CF, Dabs Framework and Core (all
-# already above). Drives the mission-giver NPC + quest line in src/quests.ts.
 2828486817  @DayZ-Expansion-Quests
 
-# Zens ExpansionAI Audio: ambient audio/voice/footstep cues layered onto the
-# DayZ-Expansion-AI patrols above - same author as Zens-Repairable-Wells/
-# Zens-Zippo-Lighter/Zens-COT-Plus-Fix (all already trusted here). Too
-# large to repack into git (20M+ combined) - kept standalone.
+# --- AI ---
 3321340470  @Zens-ExpansionAI-Audio
 
-# --- Terje suite (Core first; Skills before Medicine, since Medicine's
-# Immunity/Medicine skills require it; Compatibility-COT needs Terje-Core +
-# Community-Online-Tools, both already above). Core/Skills/Start-Screen
-# are too large to repack into git (1.2M/33M/16M) - kept standalone.
-# Terje-Compatibility-COT stays repacked (140K, see below). ---
+# --- Terje suite ---
 3649957186  @Terje-Core
 3649958397  @Terje-Skills
 3649957536  @Terje-Medicine
@@ -118,11 +48,7 @@
 3649959402  @Terje-Start-Screen
 3690738331  @Zens-COT-Plus-Fix
 
-# --- "s" suite (sGunplay/sVisual need sFramework; NOT related to CFTools
-# "GameLabs" despite similar naming/grouping on other servers - GameLabs is
-# a separate CFTools Cloud integration that requires its own CFTools account
-# + API key and can shut the server down on start without one, so it's
-# intentionally left out here) ---
+# --- "s" suite (sGunplay/sVisual need sFramework; NOT related to CFTools ---
 2863299105  @sFramework
 2863305254  @sGunplay
 2863300519  @sVisual
@@ -134,75 +60,20 @@
 2999983984  @NCPR-Sewing
 2999984359  @NCPR-Signs-Canvas
 
-# --- Zombie/bandit AI, on top of DayZ-Expansion-AI's human patrols above:
-# InediaInfectedAI/CreepyZombies target infected, AI Bandits adds standalone
-# human threats — complementary, not a replacement, for the roaming patrols
-# tuned in src/ai.ts. The FIX must load after InediaInfectedAI (a real
-# CfgPatches requiredAddons dependency, resolved by class name regardless
-# of mods.txt order). ---
+# --- Zombie/bandit AI ---
+3321340470  @Zens-ExpansionAI-Audio
 # 3031784065  @InediaInfectedAI # makes things too hard
 2990236173  @InediaStamina
 1866298408  @CreepyZombies
 3628006769  @AI-Bandits
 2394804821  @Zombie-Sound
 3499461862  @Knock-Knock-Zombies
-# NOTE: BMM-Chemical-Zombie (3510772253) stays a separate standalone mod -
-# its config.bin uses a rapified value type armake2 (this project's PBO
-# tool) doesn't support decompiling ("Unrecognized variable entry subtype:
-# 6"), so it can't go through the same unpack/derapify/rebuild pipeline as
-# the other repacked mods here.
-3510772253  @BMM-Chemical-Zombie
-
-# Custom Zombies - The Astronaut, The Butcher & The Zombie Bear
-# (OldGuyFrags, id 3557687387). 3 custom zombie models. Has 2 live bug
-# reports on its own Comments tab: "astronauts are invincible" (6 Nov 2025)
-# and "Client has pbo that is not part of the server" (25 Oct 2025) -
-# neither was ever directly acknowledged by the author. A later "Fixed"
-# reply (8 Dec 2025) appears (by comment ordering/reply nesting) to address
-# a DIFFERENT report - a mod-not-loading/folder-naming issue from "Tempest"
-# (7 Dec 2025) - not either of the two above, so treat both as UNCONFIRMED
-# either way. Real classnames confirmed via the author's own comment (5 Jan):
-# TCHCAI_TheAstronaut_Zombie_1/_2, TCHC_TheButcher_Zombie, TCHC_ZombieBear.
+3510772253  @BMM-Chemical-Zombie # NOTE: BMM-Chemical-Zombie (3510772253) stays a separate standalone mod - its config.bin uses a rapified value type armake2 (this project's PBO tool) doesn't support decompiling ("Unrecognized variable entry subtype: 6"), so it can't go through the same unpack/derapify/rebuild pipeline as the other repacked mods here.
 3557687387  @Custom-Zombies
-
-# InediaTerjeCompatibility: rebalances several Terje-Skills perks (HeavyWeight,
-# StrongBones, HeavyAttacksForce, ExperiencedHunter, KnowledgeAnatomy) that
-# otherwise stack with InediaStamina/InediaPain/InediaMovement/InediaInfectedAI
-# to trivialize weight/stamina/fracture mechanics. Author's own load-order
-# guidance: doesn't matter relative to the other mods above.
-#
-# NOTE: InediaTerjeCompatibility (3471553607) used to be a separate mod
-# here. Author's page permits redistribution; merged into
-# serverpack/addons/inediaterjecompatibility, ships inside
-# ServerPack instead.
-
-# --- Additional AI events, layered on top of the zombie/bandit AI above -
-# a mobile convoy patrol, airborne troop insertions, a broader "warzone"
-# density mod (capped to maxConcurrentZones=2 via src/aiWorldEvents.ts for
-# FPS safety), and an occasional zombie-horde event (its SafeZones config
-# is patched via src/aiWorldEvents.ts to exclude the trader city). ---
 3767913539  @Moving-AI-Convoy
-
-# Admiral's Parachute Mod: hard requirement of @Airborne-AI below (confirmed via
-# its own Steam page - "Yes you need Admirals Parachute Mod"; without it the
-# whole World script module fails to compile at all - ADM_ParachuteBag_Base
-# is undefined - and the server can't start). Must load before Airborne-AI.
 2912241382  @Admirals-Parachute-Mod
 3472298147  @Airborne-AI
 3521304609  @Ai-Warzone
-
-# Sector 31 - Dynamic Hordes: persistent, roaming infected hordes that
-# travel between weighted POIs, react to gunfire/explosions/engine noise,
-# and hunt players. 100% server-side (confirmed via Steam Web API
-# GetPublishedFileDetails: result=1, banned=0, visibility=0/public - its own
-# Community page renders a stale "removed for guideline violation" banner
-# alongside live comments/stats, which is misleading; the API is
-# authoritative and says it's live). Self-generates Settings.json and
-# Maps/dayzOffline.chernarusplus.json in the profile folder on first start
-# with a built-in Chernarus waypoint network, so no manual waypoint setup is
-# needed. The "move PBO from optional to addons" step in its own
-# instructions is Namalsk-only and doesn't apply to our Chernarus mission.
-3777397357  @Sector31-DynamicHordes       server
 
 # --- Vehicles ---
 3160244059  @UAZ-31514
@@ -212,18 +83,6 @@
 1931069341  @MoreCars
 2048694610  @JunkYardDog
 3533929661  @Fuel-System
-
-# --- "Apocalypse" styled vehicles (same theme as the MBM trucks above) and
-# a helicopter mod. TP-Apoc-SUV/M1025/Pickup are fully wired: typed via
-# modTypes.ts, fueled via fuelSystem.ts, 3rd-person-whitelisted via
-# vehicle3pp.ts, priced/stocked at the Vehicle Dealer via
-# src/data/marketGapFill.json (SUV=Rare, Pickup=Uncommon, the armed M1025
-# Humvee=Legendary/trader-only by design), and SUV+Pickup (not the M1025 -
-# see vehicleSpawns.ts's own comment) also world-spawn on the vanilla
-# VehicleOffroad02 event. AnimatedDynamicHelicopters only adds crash/flight
-# scripting to DayZ-Expansion's EXISTING helicopters (confirmed: its own
-# types.xml ships zero new vehicle classnames, just smoke-grenade ammo) -
-# no separate market wiring needed for it. ---
 3738839427  @TP-Apoc-SUV
 3737385977  @TP-Apoc-M1025
 3738834788  @TP-Apoc-Pickup
@@ -236,28 +95,13 @@
 3693114761  @Necromutant
 2950280649  @DayZ-Rat
 2471347750  @DayZ-Dog # caused bleed issues before
-
-# Ambient Animals Pack (Hunterz): rabbits, squirrels, snakes, rats, seagulls,
-# otters. Ships its own raven + rat territory files too, but those are
-# skipped in src/wildlifeTerritories.ts in favor of the dedicated @DayZ-Raven
-# / @DayZ-Rat mods above (avoids duplicate/colliding territory names).
 3114410963  @Ambient-Animals-Pack
 
-# --- Base building / access control. Custom Keycards and Code Lock are
-# different mechanics — door codes vs. keycard readers — not a conflict.
-# Custom Keycards previously hung the server at mission/script compile (see
-# the old note further down in this file, kept for history) - retested
-# clean (twice, real boots) after the mod's own 8 Apr update, so it's back.
-# Wired via src/customKeycards.ts (trader-stub item types + curated loot
-# tables); actual Keycard Door/Building placement is NOT done yet - see
-# that file's own header comment for why (needs real in-game coordinates). ---
+# --- Base building / access control ---
 2810212624  @Custom-Keycards
 3083277274  @Risus-Bases
 2670506982  @Building-Fortifications
 
-# CS Modular Cave: placeable modular cave pieces. Too large to repack into
-# git (1.8M) - kept standalone. Zens-Repairable-Wells stays repacked (see
-# serverpack/addons/zenrepairwells, 124K).
 3238690259  @CS-Modular-Cave
 1646187754  @Code-Lock
 3647777793  @Peek-Doors
@@ -277,38 +121,10 @@
 3311720441  @Gas-Mask-Overhaul
 2891614133  @Hardcore-Backpack
 3571068454  @Optics
-# NOTE: Hunter-Bow (3464752232) stays a separate standalone mod - its PBO
-# ships with obfuscated/scrambled internal filenames (armake2 partially
-# unpacks it into a suspicious "deobfuscated_file0" then fails with "Failed
-# to create output folder"), a deliberate anti-decompile measure, so it
-# can't go through the same unpack/derapify/rebuild pipeline as the other
-# repacked mods here.
 3464752232  @Hunter-Bow
-
-# Survivor-Backpack: too large to repack into git (18M) - kept standalone.
 2926289548  @Survivor-Backpack
 
-# DecoyGrenades: throws a decoy that imitates gunfire from a random weapon
-# for ~30s then does a weak final explosion - pulls zombie/AI aggro toward
-# the decoy's noise instead of the player. Its own Community page renders a
-# stale/misleading "removed for guideline violation" banner (the same
-# false-positive already seen on Sector31-DynamicHordes/DDP-Climate-Zones/
-# Tent-Actions-Fix above); confirmed live via Steam Web API
-# (GetPublishedFileDetails: result=1, banned=0, visibility=0/public) - the
-# API is authoritative. General classname (all weapon sounds):
-# TRQ_DecoyGrenade - see loot.ts's starting-kit entry for player spawn.
 3788373552  @DecoyGrenades
-# TGK-WeaponPack (~280 Russian-special-forces-themed weapons/attachments/
-# melee items, aka "SOBR"/"SM_" pack) is fully wired: typed via
-# tgkWeaponPack.ts as nominal=0 trader-only stubs (never spawn in the
-# world, same pattern as @Optics - see that file's own comment) and priced/
-# stocked via src/data/marketGapFill.json - ammo/boxes/crates into Gun_Ammo
-# (Common/Uncommon/Rare), magazines/furniture/optics/suppressors into
-# Gun_Attachments_Military (Uncommon, Rare for suppressors specifically),
-# melee into Tools_And_Melee (Rare), and the guns themselves into
-# Guns_Military split Rare (standard rifles/SMGs/shotguns/pistols) vs
-# Legendary (heavy MGs, dedicated sniper rifles, the 40mm grenade
-# launcher).
 3444350187  @TGK-WeaponPack
 
 # --- Clothing ---
@@ -320,85 +136,13 @@
 3728619225  @P2P-Trading-Board
 
 # --- Food/survival mechanics ---
-# NOTE: @Search-For-Loot-Improved (3200745813) was removed here. Its 22 Aug
-# 2026 update added a new "areaflags.map" disk-cache/tier feature whose
-# service (AFR_AreaFlagsService::SkipAreaFlagsUsageChunk) crashes the server
-# on every start with this mod list (crash is reproducible even against a
-# freshly-rebuilt cache, so it isn't stale-data - it's a bug in the new
-# feature). The item has since been pulled from the Workshop entirely ("This
-# item has been removed from the community because it violates Steam
-# Community & Content Guidelines" / "incompatible with DayZ"), so there is no
-# supported version to pin. Revisit only if the author ships a fixed/restored
-# release.
 3263494703  @Search-For-Charcoal
 3237950572  @Old-Food
 
-# NOTE: Zens-Fire-Sticks (3498006019, ZenFireplaceStick) used to be a
-# separate mod here - lets a SharpWoodenStick be attached to an existing
-# fireplace to extend its burn time. Author's page permits redistribution;
-# merged into serverpack/addons/zenfireplacestick, ships inside
-# ServerPack instead.
-
-# NOTE: @Keep-It-Dead-ProjectBR (3417831913) was removed here. Its
-# corpse-to-zombie conversion feature (SpawnZombieOnPlayersDeath) fires for
-# AI-mod bots too (they're PlayerBase-derived internally, and the mod has no
-# way to distinguish real players from AI), and reproducibly crashed the
-# server with a NULL pointer to instance VM exception in
-# ZmbF_CitizenANormal_LT_Base::HandleDeath (5-mod override chain: Keep-It-
-# Dead -> vanilla -> Terje-Radiation -> DayZExpansion-Core -> DayZExpansion-
-# AI) after an AI died in combat during heavy AI-mod activity. The mod's own
-# Workshop page has other users reporting the same AI-triggered crash with
-# no config option to disable it for AI specifically. Revisit only if the
-# author ships a fix for AI-triggered corpse conversion.
-
-# NOTE: @Custom-Keycards (2810212624) previously caused the server to hang
-# indefinitely at mission/script compile when added to this mod list
-# (confirmed by repeated real boots, and a differential test showing the
-# same list booted cleanly without it). RETESTED after the mod's own 8 Apr
-# update: two clean boots in a row, mod's own startup log line present
-# (script.log: "Successfully loaded... location(s)"), no fatal RPT/crash-log
-# pattern. It's back, in the "Base building / access control" section
-# above, wired via src/customKeycards.ts.
-
-# --- This project's own custom content (serverpack/ - a single Workshop
-# mod bundling every addon we write ourselves). Currently: DZSurvivalFindStone,
-# a hold-to-search action letting players reliably find a Stone on
-# gravel/dirt/rail-ballast paths (train tracks, dirt trails) as the route to
-# crafting materials for a butchering tool - no knife/blade is handed out at
-# spawn (see src/loot.ts's tuneStartingKit()). Also registers two recipes
-# (HandDrillKitFromBirchBark.c / HandDrillKitFromOakBark.c) fixing a
-# vanilla bug where the Hand Drill Kit recipe never matches the current
-# Bark_Birch/Bark_Oak classnames (combine menu shows a scrollable second
-# option next to Fireplace, but it never resolves - not a client cache
-# issue, relogging/restarting doesn't fix it). Also DZSurvivalReliableFire,
-# which drops vanilla Fireplace's immediate rain/wind ignition gate (its
-# roof-detection raycast misses natural cover like tree canopies, so
-# players sheltering under a tree during rain were denied ignition even
-# though they're reasonably covered) - every other real ignition mechanic
-# (kindling, indoor low-ceiling smoke, water surface, already-soaked fuel)
-# is untouched. ---
+# --- This project's own custom content ----
 3800261242  @DZSurvivalServerPack
 
 # --- Environment/atmosphere/events ---
-# Nature Overhaul Redux is not a normal script mod - it ships a set of
-# vanilla-format "Static Object Spawner" JSON files that the mission has to
-# load directly via cfggameplay.json's WorldsData.objectSpawnersArr (see
-# src/natureOverhaul.ts, which copies its custom/*.json files into the
-# mission root and wires the array entries in). ~8,300 static objects across
-# 25 files - watch server FPS after a fresh deploy; @BuilderItems (Misc/QoL
-# section below) must stay loaded since a handful of placements use its
-# bldr_ classnames. Its actual .pbo is a near-empty stub (just a ReadMe.txt,
-# no CfgPatches/assets) - all placed objects render using classnames from
-# other already-required mods, so clients never need this in their -mod=
-# list at all; server-only avoids requiring it as a Workshop download and
-# sidesteps a connect-time "Missing PBO" kick some clients hit against it.
-3795177246  @Nature-Overhaul-Redux    server
-# Chernarus Overhaul - Standalone: town/city prop dressing (wrecks, roadblocks,
-# garbage, decals - no trees/bushes/clutter, by design, so it can be mixed
-# with any Nature Overhaul mod). Hooks in via a proper `modded class
-# MissionServer.OnInit()` (chains safely with other mods doing the same,
-# unlike the raw init.c-overwrite technique some older overhaul mods use) -
-# no mission-file wiring needed on our end.
 3632726388  @Chernarus-Overhaul-Standalone
 3012019528  @Lads-Lighting-Overhaul
 2536780687  @SkyZ-Skybox-Overhaul
@@ -406,113 +150,18 @@
 2065443797  @AirRaid
 2975514806  @CJ187-RandomMineFields
 
-# OFG Nuclear Zone: hooks into vanilla's own ContaminatedArea_Dynamic (the
-# same toxic gas cloud vanilla's dynamic events already spawn) and drops a
-# few lootable "OFG barrels" around each cloud once it appears, with fully
-# self-cleaning despawn when the zone ends - no new CE event/position of our
-# own needed, since it rides vanilla's existing toxic-zone spawns rather than
-# creating new ones. Ships both client (barrel model/texture) and server
-# scripts, so it's a normal (non-server-only) entry. Its
-# Profiles/OFG/ContaminatedZone/OFG_LootConfig.json is tuned by
-# src/ofgNuclearZone.ts to match this project's own loot ethos (see that
-# file for specifics) instead of the mod's own out-of-the-box defaults.
 3608781425  @OFG-Nuclear-Zone
 
-# NOTE: HeliWreckNoLoot (2002754349) used to be a separate mod here -
-# config-only tweak stripping loot slots from a set of Nitrix_Wreck_*/
-# vehicle-wreck/melee-weapon props (no scripts, just CfgVehicles
-# overrides). Author's page permits redistribution; merged into
-# serverpack/addons/heliwrecknoloot, ships inside @DZSurvivalServerPack
-# instead.
 3659550946  @Signal-Overnight-Stay
 
-# IronhordeLighting: too large to repack into git (29M) - kept standalone.
-# Zens-Shooting-Stars stays repacked (see serverpack/addons/zenshootingstars,
-# 72K).
 3726714048  @IronhordeLighting
 
-# Weather Lighting Control (WLC): server-side-only weather system (30
-# built-in patterns + 9 scripted sequences, weighted random selection,
-# built-in anti-repeat so it doesn't get stuck raining for hours - see
-# src/wlcWeather.ts) replacing this project's old hand-authored
-# cfgweather.xml tuning. Self-generates $ServerProfile/WLC/weather_config.json
-# on first launch. No client download needed. Requires vanilla weather
-# disabled - see src/weather.ts, which forces cfgweather.xml to enable="0"
-# every start. Always active, every session, regardless of the Early Winter
-# roll below (see src/season.ts) - Early Winter is visual-only and never
-# conflicts with it.
 3660359997  @WeatherLightingControl     server
-
-# Weather Lighting Control - COT Control Panel: optional companion sub-mod
-# adding an in-game admin GUI (via Community Online Tools, already above)
-# for WLC - force/preview patterns, live-edit fields, start sequences,
-# reload config from disk - without chat commands or manual JSON editing.
-# Requires @CF + @Community-Online-Tools (both already above) + WLC core
-# above. NOT server-only - admin clients need their own copy too (players
-# don't). Steam page renders a stale/misleading "removed" banner like
-# Sector31-DynamicHordes and DDP-Climate-Zones above; verified live via the
-# same Steam Web API check (result=1, banned=0, visibility=0/public).
-#
-# IMPORTANT TRADEOFF (found by unpacking WLC core's own MissionServer.c,
-# not just its docs): the panel's buttons only work once
-# "enable_testing_mode": 1 is set in weather_config.json (src/wlcWeather.ts
-# sets this unconditionally so the panel always works) - but that same flag
-# is ALSO what gates WLC's plain chat commands (/w next, /w random, etc.),
-# and WLC's own chat-command handler does NOT check admin/permission status
-# at all, only this one global flag. The panel itself IS admin-gated (COT's
-# Weather.WLC permission, via the standard Admin role's wildcard), but
-# turning it on necessarily also lets ANY connected player type /w commands
-# and change the whole server's weather. If that's not acceptable here,
-# either flip enable_testing_mode back to 0 by hand (breaks the panel too -
-# there's no way to separate the two) or drop this sub-mod and stick to
-# editing weather_config.json directly.
 3720376716  @WeatherLightingControl-COT-Control-Panel
 
-# Early Winter or late Fall in Chernarus: full whole-map winter/late-fall
-# reskin (ground satmap texture, plant/tree models, footstep sounds, and
-# per-overcast-band sky/cloud lighting) - previously rejected for having no
-# position-gated option (see the DDP-Climate-Zones note above), now embraced
-# as a whole-session toggle instead. VERIFIED (unpacked the mod's actual
-# config.cpp directly, not just taken on faith from a Steam comment): it is
-# visual-only - CfgWorlds > ChernarusPlus > Weather > Overcast > lighting
-# classes plus model/sound overrides, no CfgWeather/precipitation logic of
-# its own - so it does NOT conflict with @WeatherLightingControl above, and
-# both run every session. Only this mod's presence in the actual launch
-# line is toggled by the roll (see src/season.ts's filterModsForSeason());
-# WLC itself is unaffected either way. Real client-facing asset mod (not
-# server-only) - always downloaded/kept up to date so it's ready the moment
-# a restart rolls it "on".
 3303988563  @Early-Winter-Chernarus
 
-# DDP Server Climate Zones: server-side-only mod (confirmed via Steam Web
-# API GetPublishedFileDetails: result=1, banned=0, visibility=0/public - its
-# own Community page renders a stale/misleading "removed" banner, same as
-# Sector31-DynamicHordes above; don't trust that page) that overrides
-# WorldData.GetTemperature() for admin-defined circular zones. Self-
-# generates profiles/DDP_ClimateZones/Config.json on first world load; see
-# src/climateZones.ts, which lays down a 3-ring cold gradient centered deep
-# in the NW quadrant (coldest there, fading back to unmodified vanilla
-# temperature - the map's natural baseline - by the SE), per the project
-# owner's own request. Temperature only - no ground texture, tree, or
-# weather-VFX changes (the mod's own author confirmed in a Steam comment
-# this is temperature-only for now).
-#
-# REVISED: a matching visual snow look is now included after all, but as a
-# whole-map, whole-SESSION toggle rather than a permanent or NW-gated
-# change - "Early Winter or late Fall in Chernarus" (3303988563) reskins
-# via whole-map shared config classes with no position-gated option (would
-# snow-reskin the ENTIRE map, not just the NW), which is exactly why it was
-# rejected before. Now embraced instead of worked around: src/season.ts
-# rolls a fresh "is this session Early Winter?" coin flip on every server
-# restart (EARLY_WINTER_CHANCE_PERCENT, currently 40% - restarts are
-# common here and wipes are meant to stay rare, so tying this to a wipe
-# would make it fixed indefinitely once the server is stable). See the
-# Environment/atmosphere/events section below for the actual mod entry.
-# @WeatherLightingControl (WLC) drives actual precipitation every session
-# regardless of this roll - see src/wlcWeather.ts, which weights its own
-# custom snow patterns higher (snow occurs slightly more often than not)
-# specifically on Early Winter sessions, and to 0 otherwise.
-3759083264  @DDP-Climate-Zones          server
+# 3759083264  @DDP-Climate-Zones          server # might replace later
 
 # --- Misc/QoL ---
 3690267695  @Admirals-Advanced-Hologram-Mod
@@ -521,68 +170,16 @@
 2918418331  @Survivor-Animations
 1565871491  @BuilderItems
 
-# Tent Actions Fix - 1.29 "Road To Buglands" hotfix: restores tent UI
-# actions (packing, opening/closing flaps) broken by a vanilla 1.29
-# ActionTargets change that stopped accepting some tent model proxies as
-# valid action targets - without this, players can get stuck unable to
-# open/close or pack any tent. Confirmed live via Steam Web API
-# (GetPublishedFileDetails: result=1, banned=0, visibility=0/public) - its
-# own Community page renders a stale/misleading "removed for guideline
-# violation" banner, same false-positive already seen on Sector31-
-# DynamicHordes/DDP-Climate-Zones above; the API is authoritative. Must be
-# on BOTH client and server (confirmed via the author's own comments -
-# a client without it can't even connect to a server running it), so this
-# is a normal (not -servermod=) entry despite being a pure bugfix. The
-# author explicitly asks it not be repacked, so it stays a separate
-# Workshop entry rather than folding into this project's own serverpack.
-3765278986  @Tent-Actions-Fix
+3765278986  @Tent-Actions-Fix # Tent Actions Fix - 1.29 "Road To Buglands" hotfix: restores tent UI
 
-# --- "BARBA RIJA HARDCORE SERVER PACK" (3085139498), the reference
-# server's own custom content bundle. Not all of it made the cut:
-#   - The pack itself and its "dzr_hardcore_tweaks" piece (2678427280) are
-#     both since pulled from the Workshop entirely ("removed... violates
-#     Steam Community & Content Guidelines" / "incompatible with DayZ") -
-#     unavailable regardless of interest.
-#   - "Attachable Gas Mask" (3233855767) is skipped: it's the same author's
-#     (Bloodshot_vp) own earlier, smaller mod that "Gas Mask Overhaul"
-#     (above, in Weapons/equipment) directly supersedes - same belt-
-#     holster/canteen-slot attachment mechanic, just fewer masks/filters.
-#     Running both would duplicate/conflict over the same vanilla slots.
-#   - "Namalsk Tourist Map" (2315833790) is skipped: it's a lootable paper
-#     map item illustrating Namalsk's geography specifically, and our
-#     mission is Chernarus (dayzOffline.chernarusplus) - it'd just be a
-#     broken/pointless item showing the wrong island here.
-
-# --- Extended Tourist Map (3788295678): replaces this project's own
-# DZSurvivalMapGate addon (removed) as the map-access gate. Rather than
-# gating the vanilla M-key fullscreen map (what DZSurvivalMapGate did),
-# this enhances the actual held Tourist Map item with a live 3D marker,
-# gated by its own server-side GPS-receiver settings - see
-# src/extendedTouristMap.ts for the settings this project forces (GPS
-# receiver required + slotted/powered) and the MapData.ignoreMapOwnership
-# revert / UIData.use3DMap flip that come with the swap.
 3788295678  @Extended-Tourist-Map
-#   - "Old Food" (3237950572) is already above, in Food/survival mechanics.
-#   - SimpleMatch (2848676009) is skipped: it and Zens-Zippo-Lighter's
-#     ZenPetrolLighter/ZenZippoLighter classes (below) both rework the
-#     vanilla PetrolLighter class as a refillable light source, and running
-#     both crashes the server during config compile every time (confirmed
-#     by bisecting down to just this pair, in both load orders - a genuine
-#     mutual incompatibility, not an ordering fix). Zens-Zippo-Lighter is
-#     kept, being the mod explicitly named in the reference pack's own list.
-# What's left, all standalone content with no further setup needed: ---
 3229104508  @A-Hunters-Ritual
 2834577714  @Burning-Mutant
 2867537797  @Freezing-Mutant
-
-# Zens-Zippo-Lighter: refillable Zippo-style lighter (ZenPetrolLighter/
-# ZenZippoLighter and colour variants). Too large to repack into git
-# (3.8M) - kept standalone.
 3170285574  @Zens-Zippo-Lighter
 3036748011  @Buddys-BoltZ
 
-# Server-side-only AI extras (loaded via -servermod=, not downloaded by
-# players).
+# Server-side-only AI extras
 2874589934  @DayZ-Dynamic-AI-Addon        server
 3277130230  @Dynamic-AI-Missions          server
 3773597150  @Dynamic-AI-Missions-Extended server
