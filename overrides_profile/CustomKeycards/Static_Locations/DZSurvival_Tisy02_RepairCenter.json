@@ -1,0 +1,87 @@
+{
+    "LocationName": "Tisy Repair Center (Tisy02)",
+    "KeycardBuildings": [
+        {
+            "BuildingClassName": "Land_Repair_Center",
+            "BuildingPosition": [
+                1521.462646484375,
+                455.3061828613281,
+                14060.7705078125
+            ],
+            "BuildingDoors": [
+                {
+                    "DoorId": 1,
+                    "AutoCloseTime": 60,
+                    "ItemsToOpen": [
+                        "evg_keycards_Tisy02"
+                    ],
+                    "DamageToItem": 50,
+                    "OpenSound": 1,
+                    "ErrorSound": 1,
+                    "CloseSound": 1,
+                    "AlarmSound": 0,
+                    "AlarmSoundSetName": "CK_KeycardAlarm_SoundSet",
+                    "AlarmPositions": [
+                        [
+                            0,
+                            0,
+                            0
+                        ]
+                    ],
+                    "Notification": 0,
+                    "NotificationLocationName": "Tisy Repair Center (Tisy02)",
+                    "NotificationText": "Keycard Room was unlocked at %1",
+                    "NotificationTime": 15,
+                    "LootCrates": [
+                        {
+                            "ClassName": "evg_MediumCrate_01",
+                            "Position": [
+                                1521.462646484375,
+                                455.3061828613281,
+                                14060.7705078125
+                            ],
+                            "Orientation": [
+                                0,
+                                0,
+                                0
+                            ],
+                            "SpawnChance": 100,
+                            "SpawnType": 0,
+                            "UnlockTime": 0,
+                            "ItemsToOpen": [],
+                            "DamageToItem": 0,
+                            "LootTableNames": [
+                                "DZSurvival_Loot_VeryRare"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "DoorId": 0,
+                    "AutoCloseTime": 60,
+                    "ItemsToOpen": [
+                        "evg_keycards_Tisy02"
+                    ],
+                    "DamageToItem": 50,
+                    "OpenSound": 1,
+                    "ErrorSound": 1,
+                    "CloseSound": 1,
+                    "AlarmSound": 0,
+                    "AlarmSoundSetName": "CK_KeycardAlarm_SoundSet",
+                    "AlarmPositions": [
+                        [
+                            0,
+                            0,
+                            0
+                        ]
+                    ],
+                    "Notification": 0,
+                    "NotificationLocationName": "Tisy Repair Center (Tisy02)",
+                    "NotificationText": "Keycard Room was unlocked at %1",
+                    "NotificationTime": 15,
+                    "LootCrates": []
+                }
+            ]
+        }
+    ]
+}

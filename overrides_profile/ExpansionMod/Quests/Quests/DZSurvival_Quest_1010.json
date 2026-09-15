@@ -1,0 +1,65 @@
+{
+  "ConfigVersion": 3,
+  "ID": 1010,
+  "Type": 0,
+  "Title": "Wheels Up",
+  "Descriptions": [
+    "Got a vehicle up on blocks that just needs parts. Bring me a battery and a couple of spark plugs and we'll get it running again.",
+    "One Car Battery, two Spark Plugs. Garages and gas stations are your best bet.",
+    "That'll do it. Give it a week and this thing'll be back on the road."
+  ],
+  "ObjectiveText": "Deliver 1x Car Battery and 2x Spark Plug.",
+  "FollowUpQuest": "",
+  "Repeatable": false,
+  "IsDailyQuest": false,
+  "IsWeeklyQuest": false,
+  "CancelQuestOnPlayerDeath": false,
+  "Autocomplete": false,
+  "IsGroupQuest": false,
+  "ObjectSetFileName": "",
+  "QuestItems": [],
+  "Rewards": [
+    {
+      "ClassName": "ExpansionGoldNugget",
+      "Amount": 7000,
+      "Attachments": [],
+      "DamagePercent": 0,
+      "QuestID": "",
+      "Chance": 100
+    }
+  ],
+  "NeedToSelectReward": false,
+  "RandomReward": false,
+  "RandomRewardAmount": 0,
+  "RewardsForGroupOwnerOnly": false,
+  "RewardBehavior": 0,
+  "QuestGiverIDs": [
+    1
+  ],
+  "QuestTurnInIDs": [
+    1
+  ],
+  "IsAchievement": false,
+  "Objectives": [
+    {
+      "ConfigVersion": 1,
+      "ID": 3002,
+      "ObjectiveType": 0
+    }
+  ],
+  "QuestColor": "#FFFFFF",
+  "ReputationReward": 0,
+  "ReputationRequirement": 0,
+  "PreQuestIDs": [
+    1009
+  ],
+  "RequiredFaction": "",
+  "FactionReward": "",
+  "PlayerNeedQuestItems": false,
+  "DeleteQuestItems": false,
+  "SequentialObjectives": false,
+  "FactionReputationRequirements": [],
+  "FactionReputationRewards": [],
+  "SuppressQuestLogOnCompetion": false,
+  "Active": true
+}

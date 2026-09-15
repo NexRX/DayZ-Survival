@@ -1,0 +1,63 @@
+{
+  "ConfigVersion": 3,
+  "ID": 1102,
+  "Type": 0,
+  "Title": "Bottled Sunshine",
+  "Descriptions": [
+    "Clean water's always worth something. Bring me five bottles and I'll pay - once a day, no more.",
+    "Five Water Bottles. Any well or pump will do.",
+    "That'll keep us going a while longer. Come back tomorrow."
+  ],
+  "ObjectiveText": "Gather 5x Water Bottle.",
+  "FollowUpQuest": "",
+  "Repeatable": true,
+  "IsDailyQuest": true,
+  "IsWeeklyQuest": false,
+  "CancelQuestOnPlayerDeath": false,
+  "Autocomplete": false,
+  "IsGroupQuest": false,
+  "ObjectSetFileName": "",
+  "QuestItems": [],
+  "Rewards": [
+    {
+      "ClassName": "ExpansionGoldNugget",
+      "Amount": 2500,
+      "Attachments": [],
+      "DamagePercent": 0,
+      "QuestID": "",
+      "Chance": 100
+    }
+  ],
+  "NeedToSelectReward": false,
+  "RandomReward": false,
+  "RandomRewardAmount": 0,
+  "RewardsForGroupOwnerOnly": false,
+  "RewardBehavior": 0,
+  "QuestGiverIDs": [
+    1
+  ],
+  "QuestTurnInIDs": [
+    1
+  ],
+  "IsAchievement": false,
+  "Objectives": [
+    {
+      "ConfigVersion": 1,
+      "ID": 4002,
+      "ObjectiveType": 0
+    }
+  ],
+  "QuestColor": "#FFFFFF",
+  "ReputationReward": 0,
+  "ReputationRequirement": 0,
+  "PreQuestIDs": [],
+  "RequiredFaction": "",
+  "FactionReward": "",
+  "PlayerNeedQuestItems": false,
+  "DeleteQuestItems": false,
+  "SequentialObjectives": false,
+  "FactionReputationRequirements": [],
+  "FactionReputationRewards": [],
+  "SuppressQuestLogOnCompetion": false,
+  "Active": true
+}

@@ -1,0 +1,22 @@
+{
+    "m_Version": 13,
+    "DisplayName": "Vehicle Dealer",
+    "MinRequiredReputation": 0,
+    "MaxRequiredReputation": 2147483647,
+    "RequiredFaction": "",
+    "RequiredCompletedQuestID": -1,
+    "TraderIcon": "Car",
+    "Currencies": [
+        "ExpansionGoldNugget"
+    ],
+    "DisplayCurrencyValue": 1,
+    "DisplayCurrencyName": "Gold Coin",
+    "UseCategoryOrder": 0,
+    "Categories": [
+        "Vehicles_Cars",
+        "Vehicles_Helicopters",
+        "Vehicle_Parts",
+        "Batteries"
+    ],
+    "Items": {}
+}

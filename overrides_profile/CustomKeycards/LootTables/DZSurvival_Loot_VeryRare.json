@@ -1,0 +1,176 @@
+{
+    "LootTable": [
+        {
+            "SpawnChance": 35,
+            "VariantsClassNames": [
+                "SVD"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 70,
+            "MaxHealth": 100,
+            "Attachments": [
+                {
+                    "SpawnChance": 90,
+                    "VariantsClassNames": [
+                        "Mag_SVD_10Rnd"
+                    ],
+                    "MinAmount": 1,
+                    "MaxAmount": 1,
+                    "MinQuantity": 5,
+                    "MaxQuantity": 10,
+                    "MinHealth": 70,
+                    "MaxHealth": 100,
+                    "Attachments": [],
+                    "Cargo": []
+                },
+                {
+                    "SpawnChance": 40,
+                    "VariantsClassNames": [
+                        "PUScopeOptic"
+                    ],
+                    "MinAmount": 1,
+                    "MaxAmount": 1,
+                    "MinQuantity": -1,
+                    "MaxQuantity": -1,
+                    "MinHealth": 70,
+                    "MaxHealth": 100,
+                    "Attachments": [],
+                    "Cargo": []
+                }
+            ],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 30,
+            "VariantsClassNames": [
+                "FAMAS"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 70,
+            "MaxHealth": 100,
+            "Attachments": [
+                {
+                    "SpawnChance": 80,
+                    "VariantsClassNames": [
+                        "Mag_FAMAS_25Rnd"
+                    ],
+                    "MinAmount": 1,
+                    "MaxAmount": 1,
+                    "MinQuantity": 12,
+                    "MaxQuantity": 25,
+                    "MinHealth": 70,
+                    "MaxHealth": 100,
+                    "Attachments": [],
+                    "Cargo": []
+                }
+            ],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 25,
+            "VariantsClassNames": [
+                "M4_Suppressor"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 70,
+            "MaxHealth": 100,
+            "Attachments": [],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 20,
+            "VariantsClassNames": [
+                "GhillieSuit_Woodland",
+                "GhillieSuit_Tan"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 70,
+            "MaxHealth": 100,
+            "Attachments": [],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 25,
+            "VariantsClassNames": [
+                "NVGoggles"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 70,
+            "MaxHealth": 100,
+            "Attachments": [
+                {
+                    "SpawnChance": 100,
+                    "VariantsClassNames": [
+                        "Battery9V"
+                    ],
+                    "MinAmount": 1,
+                    "MaxAmount": 1,
+                    "MinQuantity": 80,
+                    "MaxQuantity": 100,
+                    "MinHealth": 70,
+                    "MaxHealth": 100,
+                    "Attachments": [],
+                    "Cargo": []
+                }
+            ],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 35,
+            "VariantsClassNames": [
+                "SalineBagIV"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 70,
+            "MaxHealth": 100,
+            "Attachments": [],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 30,
+            "VariantsClassNames": [
+                "BloodBagIV"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 70,
+            "MaxHealth": 100,
+            "Attachments": [],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 25,
+            "VariantsClassNames": [
+                "AntiChemInjector"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 70,
+            "MaxHealth": 100,
+            "Attachments": [],
+            "Cargo": []
+        }
+    ]
+}

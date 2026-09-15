@@ -12,11 +12,11 @@ import {
   SERVER_DIR,
   STEAMCMD_DIR,
   WORKSHOP_SUBPATH,
-} from "./paths.ts";
+} from "./constants/paths.ts";
 import { requireTools, runCapture, runFiltered, runInherit, runInheritCapture } from "./proc.ts";
 import { askSecret, die, hint, log, ok } from "./ui.ts";
-import { ensureConfig, type Settings } from "./config.ts";
-import { loadMods } from "./mods.ts";
+import { ensureConfig, type Settings } from "./config/settings.ts";
+import { loadMods } from "./server/mods.ts";
 
 /** Known-benign SteamCMD Linux log spam to filter out of install/download output. */
 const BENIGN =
@@ -81,7 +81,7 @@ async function runSteamcmdQuiet(args: string[]): Promise<number> {
  * for Windows-only apps (e.g. DayZ Tools, app 830640) since Linux SteamCMD
  * otherwise refuses them with "Invalid platform".
  */
-export async function runSteamcmdQuietForceWindows(args: string[]): Promise<number> {
+export function runSteamcmdQuietForceWindows(args: string[]): Promise<number> {
   return runSteamcmdQuiet(["+@sSteamCmdForcePlatformType", "windows", ...args]);
 }
 

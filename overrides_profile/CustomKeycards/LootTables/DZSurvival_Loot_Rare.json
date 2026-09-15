@@ -1,0 +1,161 @@
+{
+    "LootTable": [
+        {
+            "SpawnChance": 50,
+            "VariantsClassNames": [
+                "AKM"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 65,
+            "MaxHealth": 100,
+            "Attachments": [
+                {
+                    "SpawnChance": 90,
+                    "VariantsClassNames": [
+                        "Mag_AKM_30Rnd"
+                    ],
+                    "MinAmount": 1,
+                    "MaxAmount": 1,
+                    "MinQuantity": 15,
+                    "MaxQuantity": 30,
+                    "MinHealth": 70,
+                    "MaxHealth": 100,
+                    "Attachments": [],
+                    "Cargo": []
+                },
+                {
+                    "SpawnChance": 25,
+                    "VariantsClassNames": [
+                        "AK_Suppressor"
+                    ],
+                    "MinAmount": 1,
+                    "MaxAmount": 1,
+                    "MinQuantity": -1,
+                    "MaxQuantity": -1,
+                    "MinHealth": 70,
+                    "MaxHealth": 100,
+                    "Attachments": [],
+                    "Cargo": []
+                }
+            ],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 35,
+            "VariantsClassNames": [
+                "M4A1"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 65,
+            "MaxHealth": 100,
+            "Attachments": [
+                {
+                    "SpawnChance": 85,
+                    "VariantsClassNames": [
+                        "Mag_STANAG_30Rnd"
+                    ],
+                    "MinAmount": 1,
+                    "MaxAmount": 1,
+                    "MinQuantity": 15,
+                    "MaxQuantity": 30,
+                    "MinHealth": 70,
+                    "MaxHealth": 100,
+                    "Attachments": [],
+                    "Cargo": []
+                }
+            ],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 30,
+            "VariantsClassNames": [
+                "HighCapacityVest_Black"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 80,
+            "MaxHealth": 100,
+            "Attachments": [],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 40,
+            "VariantsClassNames": [
+                "MountainBag_Green",
+                "MountainBag_Orange"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 70,
+            "MaxHealth": 100,
+            "Attachments": [],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 20,
+            "VariantsClassNames": [
+                "ACOGOptic"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 70,
+            "MaxHealth": 100,
+            "Attachments": [],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 20,
+            "VariantsClassNames": [
+                "Rangefinder"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 70,
+            "MaxHealth": 100,
+            "Attachments": [],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 30,
+            "VariantsClassNames": [
+                "Epinephrine"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 70,
+            "MaxHealth": 100,
+            "Attachments": [],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 20,
+            "VariantsClassNames": [
+                "BloodTestKit"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 70,
+            "MaxHealth": 100,
+            "Attachments": [],
+            "Cargo": []
+        }
+    ]
+}

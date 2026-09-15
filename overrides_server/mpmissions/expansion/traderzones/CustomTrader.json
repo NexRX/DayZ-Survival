@@ -1,0 +1,13 @@
+{
+    "m_Version": 6,
+    "m_DisplayName": "Custom Trading Zone",
+    "Position": [
+        7991.59,
+        221.09,
+        11312.5
+    ],
+    "Radius": 150,
+    "BuyPricePercent": 100.0,
+    "SellPricePercent": -1.0,
+    "Stock": {}
+}

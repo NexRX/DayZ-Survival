@@ -1,0 +1,19 @@
+{
+  "ConfigVersion": 1,
+  "ID": 4002,
+  "ObjectiveType": 4,
+  "ObjectiveText": "Gather 5x Water Bottle.",
+  "TimeLimit": 3600,
+  "Active": true,
+  "Collections": [
+    {
+      "Amount": 5,
+      "ClassName": "WaterBottle",
+      "QuantityPercent": 100,
+      "MinQuantityPercent": 100
+    }
+  ],
+  "ShowDistance": true,
+  "AddItemsToNearbyMarketZone": false,
+  "NeedAnyCollection": false
+}

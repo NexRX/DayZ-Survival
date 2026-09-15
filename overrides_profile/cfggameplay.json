@@ -1,0 +1,14 @@
+{
+    "WorldsData": {
+        "lightingConfig": 2222
+    },
+    "UIData": {
+        "use3DMap": true
+    },
+    "MapData": {
+        "ignoreMapOwnership": false
+    },
+    "PlayerData": {
+        "disable2dMap": true
+    }
+}

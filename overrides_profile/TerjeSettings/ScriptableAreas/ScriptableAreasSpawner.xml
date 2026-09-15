@@ -1,0 +1,41 @@
+<Areas>
+    <Area>
+        <Active>1</Active>
+        <Classname>TerjeRadioactiveScriptableArea</Classname>
+        <Position>5000.0 0 5000.0</Position>
+        <SpawnChance>1.0</SpawnChance>
+        <Data>
+            <OuterRadius>500</OuterRadius>
+            <InnerRadius>400</InnerRadius>
+            <HeightMin>-100</HeightMin>
+            <HeightMax>100</HeightMax>
+            <Power>2.5</Power>
+        </Data>
+    </Area>
+    <Area>
+        <Active>1</Active>
+        <Classname>TerjeRadioactiveScriptableArea</Classname>
+        <Position>6220.72 0 7762.35</Position>
+        <SpawnChance>1.0</SpawnChance>
+        <Data>
+            <OuterRadius>300</OuterRadius>
+            <InnerRadius>50</InnerRadius>
+            <HeightMin>-100</HeightMin>
+            <HeightMax>100</HeightMax>
+            <Power>4.0</Power>
+        </Data>
+    </Area>
+    <Area>
+        <Active>1</Active>
+        <Classname>TerjeRadioactiveScriptableArea</Classname>
+        <Position>13675.37 0 3036.81</Position>
+        <SpawnChance>1.0</SpawnChance>
+        <Data>
+            <OuterRadius>400</OuterRadius>
+            <InnerRadius>40</InnerRadius>
+            <HeightMin>-100</HeightMin>
+            <HeightMax>100</HeightMax>
+            <Power>3.5</Power>
+        </Data>
+    </Area>
+</Areas>

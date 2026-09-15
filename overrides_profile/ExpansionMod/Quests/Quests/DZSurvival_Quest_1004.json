@@ -1,0 +1,65 @@
+{
+  "ConfigVersion": 3,
+  "ID": 1004,
+  "Type": 0,
+  "Title": "Supply Run",
+  "Descriptions": [
+    "We're running low on stock. Bring me five tins of tuna and five bottles of water and I'll make it worth your while.",
+    "Five Tuna Cans, five Water Bottles. Scavenge them or trade for them, I don't care which.",
+    "That'll do. This place doesn't run itself."
+  ],
+  "ObjectiveText": "Deliver 5x Tuna Can and 5x Water Bottle.",
+  "FollowUpQuest": "",
+  "Repeatable": false,
+  "IsDailyQuest": false,
+  "IsWeeklyQuest": false,
+  "CancelQuestOnPlayerDeath": false,
+  "Autocomplete": false,
+  "IsGroupQuest": false,
+  "ObjectSetFileName": "",
+  "QuestItems": [],
+  "Rewards": [
+    {
+      "ClassName": "ExpansionGoldNugget",
+      "Amount": 6000,
+      "Attachments": [],
+      "DamagePercent": 0,
+      "QuestID": "",
+      "Chance": 100
+    }
+  ],
+  "NeedToSelectReward": false,
+  "RandomReward": false,
+  "RandomRewardAmount": 0,
+  "RewardsForGroupOwnerOnly": false,
+  "RewardBehavior": 0,
+  "QuestGiverIDs": [
+    1
+  ],
+  "QuestTurnInIDs": [
+    1
+  ],
+  "IsAchievement": false,
+  "Objectives": [
+    {
+      "ConfigVersion": 1,
+      "ID": 3000,
+      "ObjectiveType": 0
+    }
+  ],
+  "QuestColor": "#FFFFFF",
+  "ReputationReward": 0,
+  "ReputationRequirement": 0,
+  "PreQuestIDs": [
+    1003
+  ],
+  "RequiredFaction": "",
+  "FactionReward": "",
+  "PlayerNeedQuestItems": false,
+  "DeleteQuestItems": false,
+  "SequentialObjectives": false,
+  "FactionReputationRequirements": [],
+  "FactionReputationRewards": [],
+  "SuppressQuestLogOnCompetion": false,
+  "Active": true
+}

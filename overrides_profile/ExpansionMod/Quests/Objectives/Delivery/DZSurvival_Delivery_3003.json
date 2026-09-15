@@ -1,0 +1,20 @@
+{
+  "ConfigVersion": 1,
+  "ID": 3003,
+  "ObjectiveType": 3,
+  "ObjectiveText": "Deliver 1x Green Keycard to Taskmaster Daniels.",
+  "TimeLimit": 3600,
+  "Active": true,
+  "Collections": [
+    {
+      "Amount": 1,
+      "ClassName": "evg_keycards_Green",
+      "QuantityPercent": 100,
+      "MinQuantityPercent": 100
+    }
+  ],
+  "ShowDistance": true,
+  "AddItemsToNearbyMarketZone": false,
+  "MaxDistance": 100,
+  "MarkerName": ""
+}

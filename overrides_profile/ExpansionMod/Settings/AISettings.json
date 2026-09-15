@@ -1,0 +1,13 @@
+{
+    "AccuracyMin": 0.45,
+    "AccuracyMax": 0.95,
+    "ThreatDistanceLimit": 1200,
+    "NoiseInvestigationDistanceLimit": 650,
+    "MaxFlankingDistance": 300,
+    "EnableFlankingOutsideCombat": 1,
+    "DamageMultiplier": 1.15,
+    "DamageReceivedMultiplier": 1,
+    "AggressionTimeout": 180,
+    "GuardAggressionTimeout": 240,
+    "Admins": []
+}

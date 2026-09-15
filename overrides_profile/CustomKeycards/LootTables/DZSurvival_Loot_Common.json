@@ -1,0 +1,105 @@
+{
+    "LootTable": [
+        {
+            "SpawnChance": 45,
+            "VariantsClassNames": [
+                "CZ75"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 55,
+            "MaxHealth": 100,
+            "Attachments": [
+                {
+                    "SpawnChance": 70,
+                    "VariantsClassNames": [
+                        "Mag_CZ75_15Rnd"
+                    ],
+                    "MinAmount": 1,
+                    "MaxAmount": 1,
+                    "MinQuantity": 10,
+                    "MaxQuantity": 15,
+                    "MinHealth": 70,
+                    "MaxHealth": 100,
+                    "Attachments": [],
+                    "Cargo": []
+                }
+            ],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 35,
+            "VariantsClassNames": [
+                "FNX45"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 55,
+            "MaxHealth": 100,
+            "Attachments": [
+                {
+                    "SpawnChance": 70,
+                    "VariantsClassNames": [
+                        "Mag_FNX45_15Rnd"
+                    ],
+                    "MinAmount": 1,
+                    "MaxAmount": 1,
+                    "MinQuantity": 10,
+                    "MaxQuantity": 15,
+                    "MinHealth": 70,
+                    "MaxHealth": 100,
+                    "Attachments": [],
+                    "Cargo": []
+                }
+            ],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 45,
+            "VariantsClassNames": [
+                "TaloonBag_Green",
+                "TaloonBag_Orange"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 70,
+            "MaxHealth": 100,
+            "Attachments": [],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 30,
+            "VariantsClassNames": [
+                "SalineBagIV"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 70,
+            "MaxHealth": 100,
+            "Attachments": [],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 20,
+            "VariantsClassNames": [
+                "Epinephrine"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 70,
+            "MaxHealth": 100,
+            "Attachments": [],
+            "Cargo": []
+        }
+    ]
+}

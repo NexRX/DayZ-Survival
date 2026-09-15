@@ -1,0 +1,190 @@
+{
+    "LootTable": [
+        {
+            "SpawnChance": 35,
+            "VariantsClassNames": [
+                "TerjeDosimetrMkc01A",
+                "TerjeDosimetrCdv700"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 70,
+            "MaxHealth": 100,
+            "Attachments": [],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 40,
+            "VariantsClassNames": [
+                "AntiChemInjector"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 70,
+            "MaxHealth": 100,
+            "Attachments": [],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 40,
+            "VariantsClassNames": [
+                "AKM"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 65,
+            "MaxHealth": 100,
+            "Attachments": [
+                {
+                    "SpawnChance": 85,
+                    "VariantsClassNames": [
+                        "Mag_AKM_30Rnd"
+                    ],
+                    "MinAmount": 1,
+                    "MaxAmount": 1,
+                    "MinQuantity": 15,
+                    "MaxQuantity": 30,
+                    "MinHealth": 70,
+                    "MaxHealth": 100,
+                    "Attachments": [],
+                    "Cargo": []
+                },
+                {
+                    "SpawnChance": 30,
+                    "VariantsClassNames": [
+                        "AK_Suppressor"
+                    ],
+                    "MinAmount": 1,
+                    "MaxAmount": 1,
+                    "MinQuantity": -1,
+                    "MaxQuantity": -1,
+                    "MinHealth": 70,
+                    "MaxHealth": 100,
+                    "Attachments": [],
+                    "Cargo": []
+                }
+            ],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 30,
+            "VariantsClassNames": [
+                "M4A1"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 65,
+            "MaxHealth": 100,
+            "Attachments": [
+                {
+                    "SpawnChance": 80,
+                    "VariantsClassNames": [
+                        "Mag_STANAG_30Rnd"
+                    ],
+                    "MinAmount": 1,
+                    "MaxAmount": 1,
+                    "MinQuantity": 15,
+                    "MaxQuantity": 30,
+                    "MinHealth": 70,
+                    "MaxHealth": 100,
+                    "Attachments": [],
+                    "Cargo": []
+                }
+            ],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 20,
+            "VariantsClassNames": [
+                "GhillieSuit_Woodland"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 70,
+            "MaxHealth": 100,
+            "Attachments": [],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 25,
+            "VariantsClassNames": [
+                "NVGoggles"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 70,
+            "MaxHealth": 100,
+            "Attachments": [
+                {
+                    "SpawnChance": 100,
+                    "VariantsClassNames": [
+                        "Battery9V"
+                    ],
+                    "MinAmount": 1,
+                    "MaxAmount": 1,
+                    "MinQuantity": 80,
+                    "MaxQuantity": 100,
+                    "MinHealth": 70,
+                    "MaxHealth": 100,
+                    "Attachments": [],
+                    "Cargo": []
+                }
+            ],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 35,
+            "VariantsClassNames": [
+                "SalineBagIV"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 70,
+            "MaxHealth": 100,
+            "Attachments": [],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 30,
+            "VariantsClassNames": [
+                "BloodBagIV"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 70,
+            "MaxHealth": 100,
+            "Attachments": [],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 25,
+            "VariantsClassNames": [
+                "BloodTestKit"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 70,
+            "MaxHealth": 100,
+            "Attachments": [],
+            "Cargo": []
+        }
+    ]
+}

@@ -1,0 +1,11 @@
+{
+    "NoBuildZones": [
+        {
+            "Name": "NWAF",
+            "Description": "the Northwest Airfield",
+            "X": 4501.0,
+            "Y": 10231.0,
+            "Radius": 300.0
+        }
+    ]
+}

@@ -1,0 +1,62 @@
+{
+    "LocationName": "Shipping Container (Violet)",
+    "KeycardBuildings": [
+        {
+            "BuildingClassName": "Land_Container_1Moh",
+            "BuildingPosition": [
+                11956.197265625,
+                141.20924377441406,
+                12479.7822265625
+            ],
+            "BuildingDoors": [
+                {
+                    "DoorId": 0,
+                    "AutoCloseTime": 60,
+                    "ItemsToOpen": [
+                        "evg_keycards_Violet"
+                    ],
+                    "DamageToItem": 50,
+                    "OpenSound": 1,
+                    "ErrorSound": 1,
+                    "CloseSound": 1,
+                    "AlarmSound": 0,
+                    "AlarmSoundSetName": "CK_KeycardAlarm_SoundSet",
+                    "AlarmPositions": [
+                        [
+                            0,
+                            0,
+                            0
+                        ]
+                    ],
+                    "Notification": 0,
+                    "NotificationLocationName": "Shipping Container (Violet)",
+                    "NotificationText": "Keycard Room was unlocked at %1",
+                    "NotificationTime": 15,
+                    "LootCrates": [
+                        {
+                            "ClassName": "evg_MediumCrate_01",
+                            "Position": [
+                                11956.197265625,
+                                141.20924377441406,
+                                12479.7822265625
+                            ],
+                            "Orientation": [
+                                0,
+                                0,
+                                0
+                            ],
+                            "SpawnChance": 100,
+                            "SpawnType": 0,
+                            "UnlockTime": 0,
+                            "ItemsToOpen": [],
+                            "DamageToItem": 0,
+                            "LootTableNames": [
+                                "DZSurvival_Loot_Rare"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,24 @@
+{
+  "ConfigVersion": 3,
+  "ID": 3,
+  "ClassName": "ExpansionQuestNPCKaito",
+  "Position": [
+    8009.860000000001,
+    223.647,
+    11300.2
+  ],
+  "Orientation": [
+    75.2741,
+    0,
+    0
+  ],
+  "NPCName": "Compound Guard",
+  "DefaultNPCText": "Eyes open. Wouldn't want trouble finding the Taskmaster.",
+  "NPCLoadoutFile": "GuardLoadout",
+  "NPCInteractionEmoteID": 13,
+  "NPCQuestCancelEmoteID": 14,
+  "NPCQuestStartEmoteID": 15,
+  "NPCQuestCompleteEmoteID": 16,
+  "NPCType": 2,
+  "Active": true
+}

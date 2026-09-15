@@ -1,0 +1,24 @@
+{
+  "ConfigVersion": 3,
+  "ID": 2,
+  "ClassName": "ExpansionQuestNPCBoris",
+  "Position": [
+    8010.17,
+    223.236,
+    11308.6
+  ],
+  "Orientation": [
+    99.8114,
+    0,
+    0
+  ],
+  "NPCName": "Compound Guard",
+  "DefaultNPCText": "Move along. Taskmaster's business is his own.",
+  "NPCLoadoutFile": "GuardLoadout",
+  "NPCInteractionEmoteID": 13,
+  "NPCQuestCancelEmoteID": 14,
+  "NPCQuestStartEmoteID": 15,
+  "NPCQuestCompleteEmoteID": 16,
+  "NPCType": 2,
+  "Active": true
+}

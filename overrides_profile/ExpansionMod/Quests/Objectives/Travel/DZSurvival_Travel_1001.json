@@ -1,0 +1,18 @@
+{
+  "ConfigVersion": 1,
+  "ID": 1001,
+  "ObjectiveType": 1,
+  "ObjectiveText": "Scout the old Water Station north of here.",
+  "TimeLimit": 3600,
+  "Active": true,
+  "Position": [
+    5004.95,
+    320.6,
+    5588.04
+  ],
+  "MaxDistance": 25,
+  "MarkerName": "Water Station",
+  "ShowDistance": true,
+  "TriggerOnEnter": true,
+  "TriggerOnExit": false
+}

@@ -1,0 +1,62 @@
+{
+    "LocationName": "NWAF Aircraft Shelter (NWAF02)",
+    "KeycardBuildings": [
+        {
+            "BuildingClassName": "Land_Mil_AircraftShelter",
+            "BuildingPosition": [
+                4866.0239257825,
+                339,
+                10207.9931640625
+            ],
+            "BuildingDoors": [
+                {
+                    "DoorId": 2,
+                    "AutoCloseTime": 60,
+                    "ItemsToOpen": [
+                        "evg_keycards_NWAF02"
+                    ],
+                    "DamageToItem": 50,
+                    "OpenSound": 1,
+                    "ErrorSound": 1,
+                    "CloseSound": 1,
+                    "AlarmSound": 0,
+                    "AlarmSoundSetName": "CK_KeycardAlarm_SoundSet",
+                    "AlarmPositions": [
+                        [
+                            0,
+                            0,
+                            0
+                        ]
+                    ],
+                    "Notification": 0,
+                    "NotificationLocationName": "NWAF Aircraft Shelter (NWAF02)",
+                    "NotificationText": "Keycard Room was unlocked at %1",
+                    "NotificationTime": 15,
+                    "LootCrates": [
+                        {
+                            "ClassName": "evg_MediumCrate_01",
+                            "Position": [
+                                4866.0239257825,
+                                339,
+                                10207.9931640625
+                            ],
+                            "Orientation": [
+                                0,
+                                0,
+                                0
+                            ],
+                            "SpawnChance": 100,
+                            "SpawnType": 0,
+                            "UnlockTime": 0,
+                            "ItemsToOpen": [],
+                            "DamageToItem": 0,
+                            "LootTableNames": [
+                                "DZSurvival_Loot_Rare"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

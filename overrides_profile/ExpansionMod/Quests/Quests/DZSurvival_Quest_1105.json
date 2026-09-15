@@ -1,0 +1,63 @@
+{
+  "ConfigVersion": 3,
+  "ID": 1105,
+  "Type": 0,
+  "Title": "Small Game",
+  "Descriptions": [
+    "Quick work if you've got a light touch. Five rabbits or squirrels, any mix, whenever you've got them.",
+    "Five rabbits or squirrels. No need to wait between trips.",
+    "Not much, but it adds up. Come back whenever."
+  ],
+  "ObjectiveText": "Kill 5 rabbits or squirrels.",
+  "FollowUpQuest": "",
+  "Repeatable": true,
+  "IsDailyQuest": false,
+  "IsWeeklyQuest": false,
+  "CancelQuestOnPlayerDeath": false,
+  "Autocomplete": false,
+  "IsGroupQuest": false,
+  "ObjectSetFileName": "",
+  "QuestItems": [],
+  "Rewards": [
+    {
+      "ClassName": "ExpansionGoldNugget",
+      "Amount": 3000,
+      "Attachments": [],
+      "DamagePercent": 0,
+      "QuestID": "",
+      "Chance": 100
+    }
+  ],
+  "NeedToSelectReward": false,
+  "RandomReward": false,
+  "RandomRewardAmount": 0,
+  "RewardsForGroupOwnerOnly": false,
+  "RewardBehavior": 0,
+  "QuestGiverIDs": [
+    1
+  ],
+  "QuestTurnInIDs": [
+    1
+  ],
+  "IsAchievement": false,
+  "Objectives": [
+    {
+      "ConfigVersion": 1,
+      "ID": 2007,
+      "ObjectiveType": 0
+    }
+  ],
+  "QuestColor": "#FFFFFF",
+  "ReputationReward": 0,
+  "ReputationRequirement": 0,
+  "PreQuestIDs": [],
+  "RequiredFaction": "",
+  "FactionReward": "",
+  "PlayerNeedQuestItems": false,
+  "DeleteQuestItems": false,
+  "SequentialObjectives": false,
+  "FactionReputationRequirements": [],
+  "FactionReputationRewards": [],
+  "SuppressQuestLogOnCompetion": false,
+  "Active": true
+}

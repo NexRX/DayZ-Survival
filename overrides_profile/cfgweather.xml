@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!-- dayz-survival:vanilla-weather-disabled -->
+<!-- 'reset' and 'enable' are a bool, and therefore supports: 0/1, true/false, yes/no -->
+<!-- 'reset' controls whether you want to load in the weather from storage or not (false by default) -->
+<!-- 'enable' controls whether this file is enabled or not (true by default) -->
+<!-- Kept disabled: weather is always managed by Weather Lighting Control
+     (see src/wlcWeather.ts). @Early-Winter-Chernarus (src/season.ts) is a
+     visual-only reskin with no weather logic of its own, so it never
+     conflicts with this. -->
+<weather reset="0" enable="0">
+</weather>

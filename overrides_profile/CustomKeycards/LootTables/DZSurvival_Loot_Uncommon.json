@@ -1,0 +1,147 @@
+{
+    "LootTable": [
+        {
+            "SpawnChance": 45,
+            "VariantsClassNames": [
+                "AK101"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 60,
+            "MaxHealth": 100,
+            "Attachments": [
+                {
+                    "SpawnChance": 80,
+                    "VariantsClassNames": [
+                        "Mag_AK101_30Rnd"
+                    ],
+                    "MinAmount": 1,
+                    "MaxAmount": 1,
+                    "MinQuantity": 15,
+                    "MaxQuantity": 30,
+                    "MinHealth": 70,
+                    "MaxHealth": 100,
+                    "Attachments": [],
+                    "Cargo": []
+                }
+            ],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 30,
+            "VariantsClassNames": [
+                "Deagle"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 60,
+            "MaxHealth": 100,
+            "Attachments": [
+                {
+                    "SpawnChance": 70,
+                    "VariantsClassNames": [
+                        "Mag_Deagle_9rnd"
+                    ],
+                    "MinAmount": 1,
+                    "MaxAmount": 1,
+                    "MinQuantity": 5,
+                    "MaxQuantity": 9,
+                    "MinHealth": 70,
+                    "MaxHealth": 100,
+                    "Attachments": [],
+                    "Cargo": []
+                }
+            ],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 30,
+            "VariantsClassNames": [
+                "PlateCarrierVest"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 75,
+            "MaxHealth": 100,
+            "Attachments": [],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 40,
+            "VariantsClassNames": [
+                "CoyoteBag_Brown"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 70,
+            "MaxHealth": 100,
+            "Attachments": [],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 15,
+            "VariantsClassNames": [
+                "NVGoggles"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 70,
+            "MaxHealth": 100,
+            "Attachments": [
+                {
+                    "SpawnChance": 90,
+                    "VariantsClassNames": [
+                        "Battery9V"
+                    ],
+                    "MinAmount": 1,
+                    "MaxAmount": 1,
+                    "MinQuantity": 70,
+                    "MaxQuantity": 100,
+                    "MinHealth": 70,
+                    "MaxHealth": 100,
+                    "Attachments": [],
+                    "Cargo": []
+                }
+            ],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 30,
+            "VariantsClassNames": [
+                "SalineBagIV"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 70,
+            "MaxHealth": 100,
+            "Attachments": [],
+            "Cargo": []
+        },
+        {
+            "SpawnChance": 25,
+            "VariantsClassNames": [
+                "BloodBagIV"
+            ],
+            "MinAmount": 1,
+            "MaxAmount": 1,
+            "MinQuantity": -1,
+            "MaxQuantity": -1,
+            "MinHealth": 70,
+            "MaxHealth": 100,
+            "Attachments": [],
+            "Cargo": []
+        }
+    ]
+}

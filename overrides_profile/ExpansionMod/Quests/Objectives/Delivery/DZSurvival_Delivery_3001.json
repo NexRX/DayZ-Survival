@@ -1,0 +1,20 @@
+{
+  "ConfigVersion": 1,
+  "ID": 3001,
+  "ObjectiveType": 3,
+  "ObjectiveText": "Deliver 10x Wooden Log to Taskmaster Daniels.",
+  "TimeLimit": 3600,
+  "Active": true,
+  "Collections": [
+    {
+      "Amount": 10,
+      "ClassName": "WoodenLog",
+      "QuantityPercent": 100,
+      "MinQuantityPercent": 100
+    }
+  ],
+  "ShowDistance": true,
+  "AddItemsToNearbyMarketZone": false,
+  "MaxDistance": 100,
+  "MarkerName": ""
+}

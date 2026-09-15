@@ -1,0 +1,73 @@
+{
+  "ConfigVersion": 3,
+  "ID": 1011,
+  "Type": 0,
+  "Title": "Key to the Vault",
+  "Descriptions": [
+    "I've got a contact who can cut you a better key, but he wants a common one to work from. Bring me a Green Keycard and I'll see what I can arrange.",
+    "One Green Keycard. Plenty of those turn up if you know where to look.",
+    "Good. Here - this one opens doors that green never could. Don't waste it."
+  ],
+  "ObjectiveText": "Deliver 1x Green Keycard.",
+  "FollowUpQuest": "",
+  "Repeatable": false,
+  "IsDailyQuest": false,
+  "IsWeeklyQuest": false,
+  "CancelQuestOnPlayerDeath": false,
+  "Autocomplete": false,
+  "IsGroupQuest": false,
+  "ObjectSetFileName": "",
+  "QuestItems": [],
+  "Rewards": [
+    {
+      "ClassName": "ExpansionGoldNugget",
+      "Amount": 20000,
+      "Attachments": [],
+      "DamagePercent": 0,
+      "QuestID": "",
+      "Chance": 100
+    },
+    {
+      "ClassName": "evg_keycards_Violet",
+      "Amount": 1,
+      "Attachments": [],
+      "DamagePercent": 0,
+      "QuestID": "",
+      "Chance": 100
+    }
+  ],
+  "NeedToSelectReward": false,
+  "RandomReward": false,
+  "RandomRewardAmount": 0,
+  "RewardsForGroupOwnerOnly": false,
+  "RewardBehavior": 0,
+  "QuestGiverIDs": [
+    1
+  ],
+  "QuestTurnInIDs": [
+    1
+  ],
+  "IsAchievement": false,
+  "Objectives": [
+    {
+      "ConfigVersion": 1,
+      "ID": 3003,
+      "ObjectiveType": 0
+    }
+  ],
+  "QuestColor": "#FFFFFF",
+  "ReputationReward": 0,
+  "ReputationRequirement": 0,
+  "PreQuestIDs": [
+    1010
+  ],
+  "RequiredFaction": "",
+  "FactionReward": "",
+  "PlayerNeedQuestItems": false,
+  "DeleteQuestItems": false,
+  "SequentialObjectives": false,
+  "FactionReputationRequirements": [],
+  "FactionReputationRewards": [],
+  "SuppressQuestLogOnCompetion": false,
+  "Active": true
+}

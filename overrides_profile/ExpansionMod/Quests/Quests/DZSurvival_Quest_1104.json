@@ -1,0 +1,63 @@
+{
+  "ConfigVersion": 3,
+  "ID": 1104,
+  "Type": 0,
+  "Title": "Firewood for the Fire",
+  "Descriptions": [
+    "Nights get cold and the fire doesn't feed itself. Bring me ten wooden logs and I'll pay for the trouble - once a day.",
+    "Ten Wooden Logs. Any treeline will do.",
+    "That'll keep the fire going a good while. Come back tomorrow."
+  ],
+  "ObjectiveText": "Deliver 10x Wooden Log.",
+  "FollowUpQuest": "",
+  "Repeatable": true,
+  "IsDailyQuest": true,
+  "IsWeeklyQuest": false,
+  "CancelQuestOnPlayerDeath": false,
+  "Autocomplete": false,
+  "IsGroupQuest": false,
+  "ObjectSetFileName": "",
+  "QuestItems": [],
+  "Rewards": [
+    {
+      "ClassName": "ExpansionGoldNugget",
+      "Amount": 1500,
+      "Attachments": [],
+      "DamagePercent": 0,
+      "QuestID": "",
+      "Chance": 100
+    }
+  ],
+  "NeedToSelectReward": false,
+  "RandomReward": false,
+  "RandomRewardAmount": 0,
+  "RewardsForGroupOwnerOnly": false,
+  "RewardBehavior": 0,
+  "QuestGiverIDs": [
+    1
+  ],
+  "QuestTurnInIDs": [
+    1
+  ],
+  "IsAchievement": false,
+  "Objectives": [
+    {
+      "ConfigVersion": 1,
+      "ID": 3001,
+      "ObjectiveType": 0
+    }
+  ],
+  "QuestColor": "#FFFFFF",
+  "ReputationReward": 0,
+  "ReputationRequirement": 0,
+  "PreQuestIDs": [],
+  "RequiredFaction": "",
+  "FactionReward": "",
+  "PlayerNeedQuestItems": false,
+  "DeleteQuestItems": false,
+  "SequentialObjectives": false,
+  "FactionReputationRequirements": [],
+  "FactionReputationRewards": [],
+  "SuppressQuestLogOnCompetion": false,
+  "Active": true
+}

@@ -74,6 +74,7 @@
 2912241382  @Admirals-Parachute-Mod
 3472298147  @Airborne-AI
 3521304609  @Ai-Warzone
+2936212352  @Tarkov-Expansion-AI
 
 # --- Vehicles ---
 3160244059  @UAZ-31514

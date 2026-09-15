@@ -1,0 +1,131 @@
+{
+    "MaxItemsPerBarrel": 12,
+    "DefaultMaxStacksPerType": 2,
+    "MaxWeaponsPerBarrel": 0,
+    "MaxMedicalPerBarrel": 2,
+    "MaxAmmoPerBarrel": 2,
+    "MaxUtilityPerBarrel": 4,
+    "Loot": [
+        {
+            "ClassName": "Ammo_762x54",
+            "Magazine_ClassName": "",
+            "Spawn_Chance": 35,
+            "Max_Spawnable": 2,
+            "Quantity": 20,
+            "Category": "ammo",
+            "Attach": [],
+            "Extra_Items": [],
+            "Alternatives": ["Ammo_308Win", "Ammo_545x39", "Ammo_556x45"]
+        },
+        {
+            "ClassName": "Morphine",
+            "Magazine_ClassName": "",
+            "Spawn_Chance": 35,
+            "Max_Spawnable": 1,
+            "Quantity": -1,
+            "Category": "medical",
+            "Attach": [],
+            "Extra_Items": [],
+            "Alternatives": ["Epinephrine", "TetracyclineAntibiotics"]
+        },
+        {
+            "ClassName": "Canteen",
+            "Magazine_ClassName": "",
+            "Spawn_Chance": 35,
+            "Max_Spawnable": 1,
+            "Quantity": -1,
+            "Category": "utility",
+            "Attach": [],
+            "Extra_Items": [],
+            "Alternatives": ["WaterBottle"]
+        },
+        {
+            "ClassName": "Battery9V",
+            "Magazine_ClassName": "",
+            "Spawn_Chance": 35,
+            "Max_Spawnable": 2,
+            "Quantity": -1,
+            "Category": "utility",
+            "Attach": [],
+            "Extra_Items": [],
+            "Alternatives": ["WeaponCleaningKit"]
+        },
+        {
+            "ClassName": "AssaultBag_Green",
+            "Magazine_ClassName": "",
+            "Spawn_Chance": 25,
+            "Max_Spawnable": 1,
+            "Quantity": -1,
+            "Category": "bags",
+            "Attach": [],
+            "Extra_Items": [],
+            "Alternatives": ["AssaultBag_Black"]
+        },
+        {
+            "ClassName": "AliceBag_Green",
+            "Magazine_ClassName": "",
+            "Spawn_Chance": 10,
+            "Max_Spawnable": 1,
+            "Quantity": -1,
+            "Category": "bags",
+            "Attach": [],
+            "Extra_Items": [],
+            "Alternatives": []
+        },
+        {
+            "ClassName": "SmershBag",
+            "Magazine_ClassName": "",
+            "Spawn_Chance": 8,
+            "Max_Spawnable": 1,
+            "Quantity": -1,
+            "Category": "bags",
+            "Attach": [],
+            "Extra_Items": [],
+            "Alternatives": []
+        },
+        {
+            "ClassName": "HighCapacityVest_Olive",
+            "Magazine_ClassName": "",
+            "Spawn_Chance": 15,
+            "Max_Spawnable": 1,
+            "Quantity": -1,
+            "Category": "vests",
+            "Attach": [],
+            "Extra_Items": [],
+            "Alternatives": ["HighCapacityVest_Black"]
+        },
+        {
+            "ClassName": "GorkaEJacket_PautRev",
+            "Magazine_ClassName": "",
+            "Spawn_Chance": 25,
+            "Max_Spawnable": 1,
+            "Quantity": -1,
+            "Category": "clothing",
+            "Attach": [],
+            "Extra_Items": [],
+            "Alternatives": ["GorkaEJacket_Summer", "TTsKOJacket_Camo"]
+        },
+        {
+            "ClassName": "GorkaPants_PautRev",
+            "Magazine_ClassName": "",
+            "Spawn_Chance": 25,
+            "Max_Spawnable": 1,
+            "Quantity": -1,
+            "Category": "clothing",
+            "Attach": [],
+            "Extra_Items": [],
+            "Alternatives": ["GorkaPants_Summer", "TTSKOPants"]
+        },
+        {
+            "ClassName": "GasMask",
+            "Magazine_ClassName": "",
+            "Spawn_Chance": 45,
+            "Max_Spawnable": 1,
+            "Quantity": -1,
+            "Category": "headgear",
+            "Attach": [],
+            "Extra_Items": ["GasMask_Filter"],
+            "Alternatives": ["GP5GasMask"]
+        }
+    ]
+}

@@ -1,0 +1,55 @@
+<!-- dayz-survival: this file is managed by the dayz-survival installer; do not edit manually -->
+<Loadouts>
+	<Loadout id="multiselect">
+		<Items>
+			<Selector type="RANDOM">
+				<Item classname="M4A1_HWS_DBSDA" quickbar="0" />
+				<Item classname="AK101" quickbar="0" />
+				<Item classname="Sa58P_CCO" quickbar="0" />
+				<Item classname="M24" quickbar="0" />
+				<Item classname="MosinNagant" quickbar="0" />
+				<Item classname="SKS" quickbar="0" />
+				<Item classname="Win94" quickbar="0" />
+				<Item classname="FAL" quickbar="0" />
+				<Item classname="M16A2" quickbar="0" />
+				<Item classname="MosinNagant_Green" quickbar="0" />
+				<Item classname="CZ550" quickbar="0" />
+				<Item classname="SV98" quickbar="0" />
+				<Item classname="MP5A5" quickbar="0" />
+				<Item classname="Sa58" quickbar="0" />
+				<Item classname="MP5A2" quickbar="0" />
+				<Item classname="MP5A5" quickbar="0" />
+				<Item classname="MP5A2" quickbar="0" />
+				<Item classname="MP5A5" quickbar="0" />
+				<Item classname="MP5A2" quickbar="0" />
+			</Selector>
+		</Items>
+	</Loadout>
+	<Loadout id="hunter">
+		<Items>
+			<Item classname="CZ550" quickbar="0" />
+			<Item classname="Bow_Hunting" quickbar="0" />
+		</Items>
+	</Loadout>
+	<Loadout id="survivor">
+		<Items>
+			<Item classname="BaseballBat" position="Melee" quickbar="0" />
+			<Item classname="TRQ_DecoyGrenade" quickbar="1" />
+			<Item classname="ChernarusMap" quickbar="2"/>
+			<Item classname="Rag" count="4" quickbar="4"/>
+			<Item classname="TerjeDosimetrDpg05" />
+			<Item classname="Battery9V" />
+			<Selector type="RANDOM">
+				<Item classname="Plum" />
+				<Item classname="Apple" />
+				<Item classname="Pear" />
+				<Item classname="Tomato" />
+				<Item classname="Potato" />
+			</Selector>
+		</Items>
+	</Loadout>
+	<Loadout id="admin">
+		<Items>
+		</Items>
+	</Loadout>
+</Loadouts>

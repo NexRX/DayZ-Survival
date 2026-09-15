@@ -1,0 +1,26 @@
+{
+  "ConfigVersion": 1,
+  "ID": 3002,
+  "ObjectiveType": 3,
+  "ObjectiveText": "Deliver 1x Car Battery and 2x Spark Plug to Taskmaster Daniels.",
+  "TimeLimit": 3600,
+  "Active": true,
+  "Collections": [
+    {
+      "Amount": 1,
+      "ClassName": "CarBattery",
+      "QuantityPercent": 100,
+      "MinQuantityPercent": 100
+    },
+    {
+      "Amount": 2,
+      "ClassName": "SparkPlug",
+      "QuantityPercent": 100,
+      "MinQuantityPercent": 100
+    }
+  ],
+  "ShowDistance": true,
+  "AddItemsToNearbyMarketZone": false,
+  "MaxDistance": 100,
+  "MarkerName": ""
+}

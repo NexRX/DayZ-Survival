@@ -1,0 +1,13 @@
+<!-- dayz-survival: this file is managed by the dayz-survival installer; do not edit manually -->
+<Respawns>
+	<Respawn id="regional">
+		<Name>Regional Map</Name>
+		<Icon>dayz-map.paa</Icon>
+		<Items />
+	</Respawn>
+	<Respawn id="admin">
+		<Name>Admin Base</Name>
+		<Icon>dayz-base.paa</Icon>
+		<Items />
+	</Respawn>
+</Respawns>

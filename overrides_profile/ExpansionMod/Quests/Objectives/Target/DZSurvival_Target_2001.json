@@ -1,0 +1,26 @@
+{
+  "ConfigVersion": 1,
+  "ID": 2001,
+  "ObjectiveType": 2,
+  "ObjectiveText": "Kill 5 wolves.",
+  "TimeLimit": 3600,
+  "Active": true,
+  "Position": [
+    7991.59,
+    221.09,
+    11312.5
+  ],
+  "MaxDistance": 100,
+  "MinDistance": 0,
+  "Amount": 5,
+  "ClassNames": [
+    "Animal_CanisLupus_Grey",
+    "Animal_CanisLupus_White"
+  ],
+  "CountSelfKill": false,
+  "AllowedWeapons": [],
+  "ExcludedClassNames": [],
+  "CountAIPlayers": 0,
+  "AllowedTargetFactions": [],
+  "AllowedDamageZones": []
+}

@@ -1,0 +1,269 @@
+// Project layout and fixed identifiers. Everything is derived from this file's
+// location (src/paths.ts -> project root is its parent's parent), so the CLI
+// works regardless of the current working directory.
+
+const SRC_DIR = new URL("..", import.meta.url).pathname.replace(/\/$/, "");
+export const ROOT = SRC_DIR.replace(/\/[^/]*$/, ""); // .../src -> project root
+
+export const ENV_FILE = `${ROOT}/.env`;
+export const MODS_FILE = `${ROOT}/mods.txt`;
+
+export const SERVER_DIR = `${ROOT}/server`;
+export const STEAMCMD_DIR = `${ROOT}/steamcmd`; // project-local Steam HOME
+export const PROFILE_DIR = `${ROOT}/profiles`;
+export const AI_TEMPLATE_DIR = `${ROOT}/ai`;
+export const EDITOR_STORED_DIR = `${ROOT}/data/editor`;
+export const SERVERONLYPACK_DIR = `${ROOT}/serveronlypack/@serveronlypack`;
+
+export const LOGIN_MARKER = `${STEAMCMD_DIR}/.dayz_login_ok`;
+export const DD_LOGIN_MARKER = `${STEAMCMD_DIR}/.dd_login_ok`;
+
+export const DAYZ_SERVER_APPID = "223350";
+export const DAYZ_CLIENT_APPID = "221100";
+export const WORKSHOP_SUBPATH = `steamapps/workshop/content/${DAYZ_CLIENT_APPID}`;
+
+// Mission template referenced in serverDZ.cfg's `class Missions`; Expansion
+// stores per-mission settings (e.g. AI patrols) under this mission's own
+// `expansion/settings/` folder.
+export const MISSION_TEMPLATE = "dayzOffline.chernarusplus";
+export const MISSION_DIR = `${SERVER_DIR}/mpmissions/${MISSION_TEMPLATE}`;
+export const AI_PATROL_SETTINGS = `${MISSION_DIR}/expansion/settings/AIPatrolSettings.json`;
+
+// DayZ-Expansion-Core's SafeZone module config - self-generated (with
+// Chernarus' default city safe zones) on first mission load. traders.ts's
+// ensureCustomTraderSafeZone() strips every one of those defaults
+// (CircleZones/PolygonZones/CylinderZones) and keeps only a single
+// CircleZones entry for the custom trader city - this project wants
+// exactly one safe zone, not the half-dozen the mod ships with.
+export const SAFE_ZONE_SETTINGS = `${MISSION_DIR}/expansion/settings/SafeZoneSettings.json`;
+
+// DayZ-Expansion-Market's own global config - self-generated (with default
+// spawn-position entries near the vanilla trader city) on first mission
+// load. traders.ts adds more entries near the custom trader's Vehicle
+// Dealer; vehicle purchases can only spawn at a position listed here,
+// within MaxVehicleDistanceToTrader of the buying trader's NPC.
+export const MARKET_SETTINGS = `${MISSION_DIR}/expansion/settings/MarketSettings.json`;
+
+// Vanilla loot economy, shipped as part of the mission itself (not
+// mod-generated) - re-validated by steamcmd on every `install`, so any
+// tuning here must be re-applied every start (see economy.ts).
+export const ECONOMY_TYPES_FILE = `${MISSION_DIR}/db/types.xml`;
+export const ECONOMY_EVENTS_FILE = `${MISSION_DIR}/db/events.xml`;
+
+// Custom-Keycards self-generates this whole folder tree (with working
+// 0_Default*.json examples in each subfolder) on first server start. See
+// customKeycards.ts, which adds our own curated LootTables files alongside
+// the shipped defaults, plus real (in-game-verified) Static_Locations
+// entries retrofitting existing buildings into the Keycard system.
+export const CUSTOM_KEYCARDS_DIR = `${PROFILE_DIR}/CustomKeycards`;
+export const CUSTOM_KEYCARDS_LOOT_TABLES_DIR = `${CUSTOM_KEYCARDS_DIR}/LootTables`;
+export const CUSTOM_KEYCARDS_STATIC_LOCATIONS_DIR = `${CUSTOM_KEYCARDS_DIR}/Static_Locations`;
+
+// Fixed-position event spawn point registry, shipped as part of the mission
+// itself. "Herd"-type animal territories (Wolf/Deer/WildBoar/...) each need
+// a matching self-closing <event name="..." /> stub here even though their
+// actual positions come from the territory/zone file. "Ambient"-type
+// territories (Hen/Fox/Hare/Raven/Rat) do NOT need an entry here at all -
+// see economyBlocks.ts.
+export const MISSION_EVENT_SPAWNS_FILE = `${MISSION_DIR}/cfgeventspawns.xml`;
+
+// Vanilla environment config (territories, spawning zones) - modified by
+// economyBlocks.ts (cfgenvironment.xml action).
+export const CFG_ENVIRONMENT_FILE = `${MISSION_DIR}/cfgenvironment.xml`;
+
+// DayZ-Expansion-Market's per-category trader stock/price files, generated
+// under PROFILE_DIR on first server start (see market.ts).
+export const EXPANSION_MARKET_DIR = `${PROFILE_DIR}/ExpansionMod/Market`;
+
+// DayZ-Expansion-Market's trader identity files (which categories/items
+// each named trader sells) - ships 17 defaults, self-generated alongside
+// EXPANSION_MARKET_DIR. traders.ts adds custom identities here (e.g. a
+// single "Everything" trader) alongside the untouched defaults.
+export const EXPANSION_TRADERS_DIR = `${PROFILE_DIR}/ExpansionMod/Traders`;
+
+// DayZ-Expansion-Core's gear "loadout" preset files, referenced by name from
+// the `loadout:<Name>` token in a trader NPC's `.map` Gear field (see
+// traders.ts). Path per DayZ-Expansion-Core's ExpansionConstants.c
+// (EXPANSION_LOADOUT_FOLDER). Unlike EXPANSION_TRADERS_DIR above, this
+// directory is NOT pre-populated with defaults, so files here are safe to
+// write unconditionally.
+export const EXPANSION_LOADOUTS_DIR = `${PROFILE_DIR}/ExpansionMod/Loadouts`;
+
+// DayZ-Expansion-Core's generic placed-object mapping folder (auto-created
+// empty alongside traderzones/traders on first world load). Same
+// pipe-delimited format as the trader `.map` files (see traders.ts's
+// traderMapLine()) but for arbitrary decorative/static objects:
+// `<ClassName>|<Position>|<Orientation>|<Special>|<Takeable>|<Attachments>`
+// (per DayZ-Expansion-Core's ExpansionWorldObjectsModule.c GetObjectFromFile()).
+// Used to place the trader restock status board (see traders.ts's
+// ensureCustomTraderBoard()) without a manual DayZ-Editor placement step.
+export const EXPANSION_OBJECTS_DIR = `${MISSION_DIR}/expansion/objects`;
+
+// Search For Loot (Improved)'s persistent "area flags" cache: a binary index
+// of loot-searchable areas/buildings, built once and reused across restarts.
+// It is NOT part of storage_1, so a world wipe won't touch it - but it goes
+// stale (crashing the mod's loader, AFR_AreaFlagsService) whenever the
+// mission's type/spawn data changes underneath it. Deleting it is always
+// safe; the mod regenerates it fresh on next mission load.
+export const AREA_FLAGS_CACHE = `${MISSION_DIR}/areaflags.map`;
+
+// DayZ-Dynamic-AI-Addon (Spatial AI) stores its config in the *server
+// profile* (not the mission), regenerating it with defaults on first load.
+export const SPATIAL_SETTINGS = `${PROFILE_DIR}/ExpansionMod/AI/Spatial/SpatialSettings.json`;
+
+// @Dynamic-AI-Missions self-regenerates its MainConfig.json on first load.
+export const DYNAMIC_MISSIONS_SETTINGS = `${PROFILE_DIR}/AIMissions/MainConfig.json`;
+
+// DayZ-Expansion-AI's in-game AI menu (T key: spawn companions, set
+// waypoints, export patrols) is gated by SteamID64 entries in this file's
+// `Admins` array, generated alongside AIPatrolSettings.json.
+export const AI_SETTINGS = `${PROFILE_DIR}/ExpansionMod/Settings/AISettings.json`;
+
+// InediaStamina self-regenerates its config in the same profile folder (see
+// the mod's wiki: github.com/ysaroka/InediaStamina/wiki).
+export const INEDIA_STAMINA_SETTINGS = `${PROFILE_DIR}/Inedia/InediaStaminaConfig.json`;
+
+// AI-Bandits self-generates both configs in the server profile on first
+// start - Dynamic covers patrols/snipers, Static covers stationary NPCs.
+// Both share the same per-entry 0-100 "accuracy" field where applicable.
+export const AI_BANDITS_DYNAMIC_SETTINGS = `${PROFILE_DIR}/AI_Bandits/DynamicAIB.json`;
+export const AI_BANDITS_STATIC_SETTINGS = `${PROFILE_DIR}/AI_Bandits/StaticAIB.json`;
+
+// Terje-Start-Screen copies its Templates/Loadouts.xml into the profile on
+// first start - this drives the starting-gear selection screen.
+export const TERJE_LOADOUTS = `${PROFILE_DIR}/TerjeSettings/StartScreen/Loadouts.xml`;
+
+// Terje-Start-Screen's respawn-point selection screen (regional spawns,
+// admin base, plus the skill-gated/sleeping-bag/dead-body respawn options),
+// self-generated from the mod's template the same way as Loadouts.xml above.
+export const TERJE_RESPAWNS = `${PROFILE_DIR}/TerjeSettings/StartScreen/Respawns.xml`;
+
+// Terje-Start-Screen's own settings file (self-generated with defaults on
+// first world load). Governs which pages of the character-creation/respawn
+// flow are shown, including the skill-point allocation page
+// (StartScreen.SkillsPageEnabled) - separate from Terje-Skills' actual
+// skill-progression system in TerjeSettings/Skills.cfg.
+export const TERJE_START_SCREEN_CFG = `${PROFILE_DIR}/TerjeSettings/StartScreen.cfg`;
+
+// Community Online Tools (COT) grants its teleport/freecam/spawn admin menu
+// per-player via one JSON file per player in this directory, named after
+// their internal identity id (a base64 hash, NOT their SteamID64). That id
+// is printed in the server's `.ADM` admin log (`-adminlog`) the first time
+// each player connects, e.g.:
+//   Player "Nex" (id=XZ3FQuGVspzzW43W9S3B5Bmm0NSRqFosQwmYTk5kdnY=) is connecting
+export const COT_PLAYERS_DIR = `${PROFILE_DIR}/PermissionsFramework/Players`;
+
+// Vanilla mission file (shipped as part of the mission itself, not
+// mod-generated) that Lads-Lighting-Overhaul hooks into via
+// WorldsData.lightingConfig. See the lightingConfig line in
+// genConfig() (server.ts) for the server-side value. Nature mods use this
+// to merge object-spawner data into the same WorldsData section.
+export const CFG_GAMEPLAY_FILE = `${MISSION_DIR}/cfggameplay.json`;
+
+// OFG-Nuclear-Zone
+// OFG Nuclear Zone (@OFG-Nuclear-Zone) self-generates all three of these on
+// first mission load (its own `modded class MissionServer` constructor loads/
+// saves defaults unconditionally, confirmed by unpacking the mod's own PBO -
+// no need to wait for an actual toxic zone to spawn first). See
+// ofgNuclearZone.ts.
+export const OFG_NUCLEAR_ZONE_DIR = `${PROFILE_DIR}/OFG/ContaminatedZone`;
+export const OFG_NUCLEAR_ZONE_MAIN_SETTINGS =
+  `${OFG_NUCLEAR_ZONE_DIR}/OFG_ContaminatedDefaults.json`;
+export const OFG_NUCLEAR_ZONE_LOOT_SETTINGS = `${OFG_NUCLEAR_ZONE_DIR}/OFG_LootConfig.json`;
+export const OFG_NUCLEAR_ZONE_EXPANSION_AI_SETTINGS =
+  `${OFG_NUCLEAR_ZONE_DIR}/OFG_ExpansionAIConfig.json`;
+
+// DayZ-Expansion-Quests self-generates this whole folder tree on first
+// server start (ExpansionQuestModule::ServerModuleInit(), confirmed via the
+// mod's own DayZExpansion_Quest_Constants.c: EXPANSION_QUESTS_FOLDER =
+// EXPANSION_FOLDER + "Quests\\") - ships with ~24 example quests/3 example
+// NPCs the first time each Objectives/<Type>/NPCs/Quests folder is created.
+// See quests.ts, which deletes those known example files and writes its own
+// (all prefixed "DZSurvival_" so they never collide by name with the mod's
+// own "Quest_<n>.json"/"QuestNPC_<n>.json"/"Objective_<X>_<n>.json" pattern).
+export const EXPANSION_QUESTS_DIR = `${PROFILE_DIR}/ExpansionMod/Quests`;
+export const EXPANSION_QUESTS_QUESTS_DIR = `${EXPANSION_QUESTS_DIR}/Quests`;
+export const EXPANSION_QUESTS_NPCS_DIR = `${EXPANSION_QUESTS_DIR}/NPCs`;
+export const EXPANSION_QUESTS_OBJECTIVES_DIR = `${EXPANSION_QUESTS_DIR}/Objectives`;
+export const EXPANSION_QUESTS_OBJECTIVES_TRAVEL_DIR = `${EXPANSION_QUESTS_OBJECTIVES_DIR}/Travel`;
+export const EXPANSION_QUESTS_OBJECTIVES_TARGET_DIR = `${EXPANSION_QUESTS_OBJECTIVES_DIR}/Target`;
+export const EXPANSION_QUESTS_OBJECTIVES_DELIVERY_DIR =
+  `${EXPANSION_QUESTS_OBJECTIVES_DIR}/Delivery`;
+export const EXPANSION_QUESTS_OBJECTIVES_COLLECTION_DIR =
+  `${EXPANSION_QUESTS_OBJECTIVES_DIR}/Collection`;
+export const EXPANSION_QUESTS_OBJECTIVES_CRAFTING_DIR =
+  `${EXPANSION_QUESTS_OBJECTIVES_DIR}/Crafting`;
+// Not used by any objective this project authors (see quests.ts's header
+// comment for why), but the mod still ships example files here that need
+// cleaning up alongside everything else.
+export const EXPANSION_QUESTS_OBJECTIVES_ACTION_DIR = `${EXPANSION_QUESTS_OBJECTIVES_DIR}/Action`;
+export const EXPANSION_QUESTS_OBJECTIVES_TREASUREHUNT_DIR =
+  `${EXPANSION_QUESTS_OBJECTIVES_DIR}/TreasureHunt`;
+export const EXPANSION_QUESTS_OBJECTIVES_AIPATROL_DIR =
+  `${EXPANSION_QUESTS_OBJECTIVES_DIR}/AIPatrol`;
+export const EXPANSION_QUESTS_OBJECTIVES_AICAMP_DIR = `${EXPANSION_QUESTS_OBJECTIVES_DIR}/AICamp`;
+export const EXPANSION_QUESTS_OBJECTIVES_AIVIP_DIR = `${EXPANSION_QUESTS_OBJECTIVES_DIR}/AIVIP`;
+
+// DayZ-Expansion-Core's per-module settings folder - QuestSettings.json is
+// self-generated alongside the Quests folder tree above, defaulting to
+// EnableQuests=true already (see quests.ts's ensureQuestsEnabled()).
+export const EXPANSION_QUEST_SETTINGS = `${PROFILE_DIR}/ExpansionMod/Settings/QuestSettings.json`;
+
+// This project's own custom DayZ addons, bundled into a single Workshop mod
+// ("the server pack") - built/signed with armake2 rather than Windows DayZ
+// Tools (see src/modBuild.ts). Each immediate subdirectory of the pack's
+// addonsDir containing a config.cpp becomes its own PBO inside it.
+export interface ServerPackConfig {
+  /** Must match the CfgMods class name / `dir` in this pack's mod.cpp. */
+  name: string;
+  /** Source dir - contains addons/, mod.cpp, .workshop_id, preview.png. */
+  dir: string;
+  addonsDir: string;
+}
+
+export const SERVERPACK: ServerPackConfig = {
+  name: "DZSurvivalServerPack",
+  dir: `${ROOT}/serverpack`,
+  addonsDir: `${ROOT}/serverpack/addons`,
+};
+
+// DayZ-Editor (the offline client-side building tool) saves its .dze files
+// here, inside the client's Proton prefix. EDITOR_FILES_DIR is where
+// @DayZ-Editor-Loader reads them from on the server side (auto-created
+// under the mission root once that mod is active) - see editorSync.ts,
+// which copies the newest save from one to the other.
+export const DAYZ_EDITOR_SAVE_DIR = `${
+  Deno.env.get("HOME")
+}/.local/share/Steam/steamapps/compatdata/221100/pfx/drive_c/users/steamuser/Documents/DayZ/Editor`;
+export const EDITOR_FILES_DIR = `${MISSION_DIR}/EditorFiles`;
+
+// Vanilla static-building-group loot economy files, shipped as part of the
+// mission itself (same category as ECONOMY_TYPES_FILE/ECONOMY_EVENTS_FILE
+// above). mapgroupproto.xml defines each named group's loot container
+// points; mapgrouppos.xml lists where in the world each named group
+// instance actually sits. Static overrides for @Mapping_Skalisty_Military's
+// fragments are in economy_blocks.json (mapgroupproto.xml + mapgrouppos.xml).
+export const MISSION_MAPGROUPPROTO_FILE = `${MISSION_DIR}/mapgroupproto.xml`;
+export const MISSION_MAPGROUPPOS_FILE = `${MISSION_DIR}/mapgrouppos.xml`;
+
+// Real Bohemia DayZ Tools (Steam app 830640, Windows-only) run via Wine -
+// needed only for `DSSignFile.exe`. armake2's packing is fine, but its
+// paired signer, BiSignUtils, produces `.bisign` files that BiSignUtils'
+// own `checkAll` accepts yet the real `DSCheckSignatures.exe` rejects as
+// "wrong" - the exact, previously-unexplained cause of DayZ's connect-time
+// "Client has a PBO which is not part of the server" kick (see modSign.ts).
+export const DAYZ_TOOLS_APPID = "830640";
+export const DAYTOOLS_DIR = `${ROOT}/daytools`;
+export const WINE_PREFIX_DIR = `${ROOT}/.wine-daytools`;
+export const DSSIGNFILE_EXE = `${DAYTOOLS_DIR}/Bin/DsUtils/DSSignFile.exe`;
+
+// Same DayZ Tools install as above, used to re-encode the custom physical
+// map's textures (PNG -> PAA) - see src/customMap.ts.
+export const IMAGETOPAA_EXE = `${DAYTOOLS_DIR}/Bin/ImageToPAA/ImageToPAA.exe`;
+
+// Editable source artwork for the DZSurvivalCustomMap addon (see
+// serverpack/addons/DZSurvivalCustomMap) - PNGs here are the checked-in
+// source of truth; src/customMap.ts's buildCustomMapTextures() re-encodes
+// them into that addon's tourist/data/*.paa on demand.
+export const CUSTOM_MAP_ASSETS_DIR = `${SERVERPACK.dir}/assets/DZSurvivalCustomMap`;
+export const CUSTOM_MAP_ADDON_DATA_DIR = `${SERVERPACK.addonsDir}/DZSurvivalCustomMap/tourist/data`;

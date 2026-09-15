@@ -1,0 +1,25 @@
+{
+  "ConfigVersion": 1,
+  "ID": 2004,
+  "ObjectiveType": 2,
+  "ObjectiveText": "Kill 20 Infected.",
+  "TimeLimit": 3600,
+  "Active": true,
+  "Position": [
+    7991.59,
+    221.09,
+    11312.5
+  ],
+  "MaxDistance": 100,
+  "MinDistance": 0,
+  "Amount": 20,
+  "ClassNames": [
+    "ZombieBase"
+  ],
+  "CountSelfKill": false,
+  "AllowedWeapons": [],
+  "ExcludedClassNames": [],
+  "CountAIPlayers": 0,
+  "AllowedTargetFactions": [],
+  "AllowedDamageZones": []
+}

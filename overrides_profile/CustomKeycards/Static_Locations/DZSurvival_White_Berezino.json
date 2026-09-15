@@ -1,0 +1,87 @@
+{
+    "LocationName": "Berezino Warehouse (White)",
+    "KeycardBuildings": [
+        {
+            "BuildingClassName": "Land_House_2B02",
+            "BuildingPosition": [
+                12272.5927734375,
+                25.024688720703125,
+                9474.1142578125
+            ],
+            "BuildingDoors": [
+                {
+                    "DoorId": 0,
+                    "AutoCloseTime": 60,
+                    "ItemsToOpen": [
+                        "evg_keycards_White"
+                    ],
+                    "DamageToItem": 50,
+                    "OpenSound": 1,
+                    "ErrorSound": 1,
+                    "CloseSound": 1,
+                    "AlarmSound": 0,
+                    "AlarmSoundSetName": "CK_KeycardAlarm_SoundSet",
+                    "AlarmPositions": [
+                        [
+                            0,
+                            0,
+                            0
+                        ]
+                    ],
+                    "Notification": 0,
+                    "NotificationLocationName": "Berezino Warehouse (White)",
+                    "NotificationText": "Keycard Room was unlocked at %1",
+                    "NotificationTime": 15,
+                    "LootCrates": [
+                        {
+                            "ClassName": "evg_MediumCrate_01",
+                            "Position": [
+                                12272.5927734375,
+                                25.024688720703125,
+                                9474.1142578125
+                            ],
+                            "Orientation": [
+                                0,
+                                0,
+                                0
+                            ],
+                            "SpawnChance": 100,
+                            "SpawnType": 0,
+                            "UnlockTime": 0,
+                            "ItemsToOpen": [],
+                            "DamageToItem": 0,
+                            "LootTableNames": [
+                                "DZSurvival_Loot_Common"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "DoorId": 3,
+                    "AutoCloseTime": 60,
+                    "ItemsToOpen": [
+                        "evg_keycards_White"
+                    ],
+                    "DamageToItem": 50,
+                    "OpenSound": 1,
+                    "ErrorSound": 1,
+                    "CloseSound": 1,
+                    "AlarmSound": 0,
+                    "AlarmSoundSetName": "CK_KeycardAlarm_SoundSet",
+                    "AlarmPositions": [
+                        [
+                            0,
+                            0,
+                            0
+                        ]
+                    ],
+                    "Notification": 0,
+                    "NotificationLocationName": "Berezino Warehouse (White)",
+                    "NotificationText": "Keycard Room was unlocked at %1",
+                    "NotificationTime": 15,
+                    "LootCrates": []
+                }
+            ]
+        }
+    ]
+}

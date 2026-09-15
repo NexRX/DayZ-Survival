@@ -4,6 +4,7 @@
 # --- Large / generated runtime dirs ---
 steamcmd/
 server/
+!src/server/
 profiles/
 backups/
 

@@ -1,0 +1,63 @@
+{
+    "LocationName": "Skalisty Barracks 3 (Zone)",
+    "KeycardBuildings": [
+        {
+            "BuildingClassName": "Land_Mil_Barracks3",
+            "BuildingPosition": [
+                13644.5966796875,
+                46.70256805419922,
+                2937.896240234375
+            ],
+            "BuildingDoors": [
+                {
+                    "DoorId": 0,
+                    "AutoCloseTime": 60,
+                    "ItemsToOpen": [
+                        "GasMask",
+                        "GP5GasMask"
+                    ],
+                    "DamageToItem": 50,
+                    "OpenSound": 1,
+                    "ErrorSound": 1,
+                    "CloseSound": 1,
+                    "AlarmSound": 0,
+                    "AlarmSoundSetName": "CK_KeycardAlarm_SoundSet",
+                    "AlarmPositions": [
+                        [
+                            0,
+                            0,
+                            0
+                        ]
+                    ],
+                    "Notification": 0,
+                    "NotificationLocationName": "Skalisty Barracks 3 (Zone)",
+                    "NotificationText": "Keycard Room was unlocked at %1",
+                    "NotificationTime": 15,
+                    "LootCrates": [
+                        {
+                            "ClassName": "evg_MediumCrate_01",
+                            "Position": [
+                                13644.5966796875,
+                                46.70256805419922,
+                                2937.896240234375
+                            ],
+                            "Orientation": [
+                                0,
+                                0,
+                                0
+                            ],
+                            "SpawnChance": 100,
+                            "SpawnType": 0,
+                            "UnlockTime": 0,
+                            "ItemsToOpen": [],
+                            "DamageToItem": 0,
+                            "LootTableNames": [
+                                "DZSurvival_Loot_RadZone"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

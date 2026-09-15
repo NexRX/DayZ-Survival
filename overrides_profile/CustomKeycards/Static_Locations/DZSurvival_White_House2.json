@@ -1,0 +1,62 @@
+{
+    "LocationName": "Solnichniy House (White)",
+    "KeycardBuildings": [
+        {
+            "BuildingClassName": "Land_House_1W09_Yellow",
+            "BuildingPosition": [
+                3272.26953125,
+                194.380126953125,
+                3880.176513671875
+            ],
+            "BuildingDoors": [
+                {
+                    "DoorId": 0,
+                    "AutoCloseTime": 60,
+                    "ItemsToOpen": [
+                        "evg_keycards_White"
+                    ],
+                    "DamageToItem": 50,
+                    "OpenSound": 1,
+                    "ErrorSound": 1,
+                    "CloseSound": 1,
+                    "AlarmSound": 0,
+                    "AlarmSoundSetName": "CK_KeycardAlarm_SoundSet",
+                    "AlarmPositions": [
+                        [
+                            0,
+                            0,
+                            0
+                        ]
+                    ],
+                    "Notification": 0,
+                    "NotificationLocationName": "Solnichniy House (White)",
+                    "NotificationText": "Keycard Room was unlocked at %1",
+                    "NotificationTime": 15,
+                    "LootCrates": [
+                        {
+                            "ClassName": "evg_MediumCrate_01",
+                            "Position": [
+                                3272.26953125,
+                                194.380126953125,
+                                3880.176513671875
+                            ],
+                            "Orientation": [
+                                0,
+                                0,
+                                0
+                            ],
+                            "SpawnChance": 100,
+                            "SpawnType": 0,
+                            "UnlockTime": 0,
+                            "ItemsToOpen": [],
+                            "DamageToItem": 0,
+                            "LootTableNames": [
+                                "DZSurvival_Loot_Common"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

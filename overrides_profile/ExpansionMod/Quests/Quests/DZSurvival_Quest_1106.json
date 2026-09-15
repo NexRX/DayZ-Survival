@@ -1,0 +1,63 @@
+{
+  "ConfigVersion": 3,
+  "ID": 1106,
+  "Type": 0,
+  "Title": "Fuel Run",
+  "Descriptions": [
+    "Generators and vehicles both drink the stuff faster than we can find it. Bring me two canisters, whenever you've got them - once a day, mind.",
+    "Two Canister Gasoline. Gas stations are your best bet.",
+    "That'll keep the lights on a while longer. Come back tomorrow."
+  ],
+  "ObjectiveText": "Deliver 2x Canister Gasoline.",
+  "FollowUpQuest": "",
+  "Repeatable": true,
+  "IsDailyQuest": true,
+  "IsWeeklyQuest": false,
+  "CancelQuestOnPlayerDeath": false,
+  "Autocomplete": false,
+  "IsGroupQuest": false,
+  "ObjectSetFileName": "",
+  "QuestItems": [],
+  "Rewards": [
+    {
+      "ClassName": "ExpansionGoldNugget",
+      "Amount": 3000,
+      "Attachments": [],
+      "DamagePercent": 0,
+      "QuestID": "",
+      "Chance": 100
+    }
+  ],
+  "NeedToSelectReward": false,
+  "RandomReward": false,
+  "RandomRewardAmount": 0,
+  "RewardsForGroupOwnerOnly": false,
+  "RewardBehavior": 0,
+  "QuestGiverIDs": [
+    1
+  ],
+  "QuestTurnInIDs": [
+    1
+  ],
+  "IsAchievement": false,
+  "Objectives": [
+    {
+      "ConfigVersion": 1,
+      "ID": 3004,
+      "ObjectiveType": 0
+    }
+  ],
+  "QuestColor": "#FFFFFF",
+  "ReputationReward": 0,
+  "ReputationRequirement": 0,
+  "PreQuestIDs": [],
+  "RequiredFaction": "",
+  "FactionReward": "",
+  "PlayerNeedQuestItems": false,
+  "DeleteQuestItems": false,
+  "SequentialObjectives": false,
+  "FactionReputationRequirements": [],
+  "FactionReputationRewards": [],
+  "SuppressQuestLogOnCompetion": false,
+  "Active": true
+}

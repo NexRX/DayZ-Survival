@@ -1,19 +1,15 @@
 // CLI entry point: status board, interactive menu, and command dispatch.
 
 import { ask, c, DayzError, warn } from "./ui.ts";
-import { configure, loadSettings, type Settings } from "./config.ts";
+import { configure, loadSettings, type Settings } from "./config/settings.ts";
 import { doInstall, doLogin, loggedIn, serverInstalled } from "./steam.ts";
-import { doMods, modsInstalled } from "./install.ts";
-import { doAdmin } from "./admin.ts";
-import { aiPatrolsConfigured } from "./ai.ts";
-import { spatialAIConfigured } from "./spatial.ts";
-import { dynamicMissionsConfigured } from "./dynamicMissions.ts";
-import { doStart } from "./server.ts";
-import { doWipe } from "./wipe.ts";
-import { loadMods, resolveMods, searchMods } from "./mods.ts";
-import { doSyncEditor } from "./editorSync.ts";
-import { auditMarket } from "./marketAudit.ts";
-import { buildCustomMapTextures } from "./customMap.ts";
+import { doMods, modsInstalled } from "./server/install.ts";
+import { doAdmin } from "./config/admin.ts";
+import { doStart } from "./server/server.ts";
+import { doWipe } from "./tools/wipe.ts";
+import { loadMods, resolveMods, searchMods } from "./server/mods.ts";
+import { doSyncEditor } from "./tools/editorSync.ts";
+import { auditMarket } from "./tools/marketAudit.ts";
 
 function statusLine(label: string, good: boolean, extra = ""): void {
   const mark = good ? c.green("✓") : c.dim("·");
@@ -44,9 +40,6 @@ async function showStatus(s: Settings): Promise<void> {
   statusLine("Steam login", await loggedIn(s.STEAM_USER));
   statusLine("Server installed", await serverInstalled());
   statusLine("Mods installed", mods, `${nmods} in mods.txt`);
-  statusLine("Roaming AI patrols", await aiPatrolsConfigured());
-  statusLine("Spatial AI groups", await spatialAIConfigured());
-  statusLine("Dynamic AI missions", await dynamicMissionsConfigured());
   console.log("");
 }
 
@@ -145,10 +138,6 @@ const HELP = `Usage: deno task dayz [command]
   status        Show setup status
   admin         Grant AI-menu / Community Online Tools admin access
   wipe          Reset world state, or remove the install entirely
-  build-custom-map    Re-encode serverpack/assets/DZSurvivalCustomMap/*.png
-                      into the DZSurvivalCustomMap addon's .paa textures on
-                      their own, without a full build-serverpack run - handy
-                      for quickly sanity-checking an edit (build-serverpack
 
   sync-editor   Copy the newest DayZ-Editor .dze save into the mission's
                 EditorFiles/ folder, ready for @DayZ-Editor-Loader to load
@@ -198,9 +187,6 @@ async function main(): Promise<void> {
       break;
     case "wipe":
       await doWipe();
-      break;
-    case "build-custom-map":
-      await buildCustomMapTextures();
       break;
     case "sync-editor":
       await doSyncEditor();

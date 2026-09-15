@@ -1,0 +1,78 @@
+{
+  "ConfigVersion": 3,
+  "ID": 1009,
+  "Type": 0,
+  "Title": "Steady Hands",
+  "Descriptions": [
+    "You've proven you can fight and hunt. Now show me you can slow down and actually survive out here - craft a fishing rod and bring me back a couple of Mackerel.",
+    "Craft an Improvised Fishing Rod first, then go catch two Mackerel with it.",
+    "There it is. A steady hand catches dinner without wasting a single round. You'll do just fine out here."
+  ],
+  "ObjectiveText": "Craft an Improvised Fishing Rod, then catch 2x Mackerel.",
+  "FollowUpQuest": "",
+  "Repeatable": false,
+  "IsDailyQuest": false,
+  "IsWeeklyQuest": false,
+  "CancelQuestOnPlayerDeath": false,
+  "Autocomplete": false,
+  "IsGroupQuest": false,
+  "ObjectSetFileName": "",
+  "QuestItems": [],
+  "Rewards": [
+    {
+      "ClassName": "ExpansionGoldNugget",
+      "Amount": 5000,
+      "Attachments": [],
+      "DamagePercent": 0,
+      "QuestID": "",
+      "Chance": 100
+    },
+    {
+      "ClassName": "ImprovisedFishingRod",
+      "Amount": 1,
+      "Attachments": [],
+      "DamagePercent": 0,
+      "QuestID": "",
+      "Chance": 100
+    }
+  ],
+  "NeedToSelectReward": false,
+  "RandomReward": false,
+  "RandomRewardAmount": 0,
+  "RewardsForGroupOwnerOnly": false,
+  "RewardBehavior": 0,
+  "QuestGiverIDs": [
+    1
+  ],
+  "QuestTurnInIDs": [
+    1
+  ],
+  "IsAchievement": false,
+  "Objectives": [
+    {
+      "ConfigVersion": 1,
+      "ID": 6000,
+      "ObjectiveType": 0
+    },
+    {
+      "ConfigVersion": 1,
+      "ID": 4001,
+      "ObjectiveType": 0
+    }
+  ],
+  "QuestColor": "#FFFFFF",
+  "ReputationReward": 0,
+  "ReputationRequirement": 0,
+  "PreQuestIDs": [
+    1008
+  ],
+  "RequiredFaction": "",
+  "FactionReward": "",
+  "PlayerNeedQuestItems": false,
+  "DeleteQuestItems": false,
+  "SequentialObjectives": false,
+  "FactionReputationRequirements": [],
+  "FactionReputationRewards": [],
+  "SuppressQuestLogOnCompetion": false,
+  "Active": true
+}
