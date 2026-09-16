@@ -148,17 +148,9 @@ disableCrosshair  = 0;
 
 serverTime                  = "SystemTime";
 serverTimeAcceleration      = 8;
-serverNightTimeAcceleration = 4; // halved night length (was 2) - user found nights too long
+serverNightTimeAcceleration = 4;
 serverTimePersistent        = 1;
 lightingConfig              = 2222;
-
-// Without this, the mission's cfggameplay.json (UIData.use3DMap,
-// MapData.ignoreMapOwnership, PlayerData.disable2dMap, etc. - see
-// extendedTouristMap.ts) is silently ignored entirely and every field
-// falls back to its hardcoded vanilla default (use3DMap=false), no matter
-// what's written to the JSON file. lightingConfig above is unaffected by
-// this since it has its own independent serverDZ.cfg fallback, but nothing
-// else in cfggameplay.json does.
 enableCfgGameplayFile = 1;
 
 guaranteedUpdates = 1;
@@ -170,19 +162,7 @@ storageAutoFix = 1;
 respawnTime    = 5;
 
 steamQueryPort     = ${s.QUERY_PORT};
-// With 100+ client mods, the default 4096-byte Steam protocol limit is too
-// small for the combined Workshop description payload sent during player join.
-// Raised to 32KB (a standard value on large DayZ servers) to avoid the
-// "unable to transmit all data" kick seen at lower values.
 steamProtocolMaxDataSize = 32768;
-
-class Missions
-{
-    class DayZ
-    {
-        template = "${MISSION_TEMPLATE}";
-    };
-};
 
 motd[] = { "Welcome to ${s.SERVER_NAME}" };
 motdInterval = 30;
@@ -196,6 +176,15 @@ adminLogPlayerHitsOnly = 0;
 adminLogPlacement      = 1;
 adminLogBuildActions   = 1;
 adminLogPlayerList     = 1;
+
+// --- Mission / Map Loading (must be last) ---
+class Missions
+{
+    class DayZ
+    {
+        template = "${MISSION_TEMPLATE}";
+    };
+};
 `;
   await Deno.writeTextFile(cfg, body);
   ok(`Wrote ${cfg}`);

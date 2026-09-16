@@ -33,3 +33,5 @@ daytools-out/
 .direnv/
 result
 result-*
+server_backup/
+profiles_backup/

@@ -166,6 +166,7 @@ export async function downloadOne(
   s: Settings,
   mod: Mod,
   force = false,
+  loginId?: number,
 ): Promise<void> {
   const out = `${SERVER_DIR}/${WORKSHOP_SUBPATH}/${mod.id}`;
 
@@ -189,9 +190,6 @@ export async function downloadOne(
   await ensureDepotLogin(s);
   await Deno.mkdir(out, { recursive: true });
 
-  // Pace logins a bit to help avoid Steam's rate limit.
-  await new Promise<void>((resolve) => setTimeout(resolve, 2000));
-
   // DepotDownloader's `-remember-password` token doesn't reliably persist
   // across separate process runs on Linux (see the comment on getPassword()
   // in steam.ts), so when running unattended (no TTY) with STEAM_PASSWORD
@@ -208,7 +206,7 @@ export async function downloadOne(
       `Downloading ${mod.name} (${mod.id}) via DepotDownloader — ` +
         `attempt ${tries}/${maxTries} (${bytesH(await workshopBytes(mod.id))} cached)…`,
     );
-    const { code, output } = await runDepotCapture([
+    const depot = [
       "-app",
       DAYZ_CLIENT_APPID,
       "-pubfile",
@@ -217,10 +215,12 @@ export async function downloadOne(
       s.STEAM_USER,
       ...(headlessPassword ? ["-password", headlessPassword] : []),
       "-remember-password",
+      ...(loginId ? ["-loginid", String(loginId)] : []),
       "-validate",
       "-dir",
       out,
-    ]);
+    ];
+    const { code, output } = await runDepotCapture(depot);
     if (code === 0 && (await hasAddonPbo(mod.id))) {
       ok(`${mod.name} downloaded (${bytesH(await workshopBytes(mod.id))})`);
       return;
@@ -273,6 +273,32 @@ async function staleModIds(mods: Mod[]): Promise<Map<string, { ours: string; the
   return stale;
 }
 
+// Run up to `window` tasks in parallel, collecting results in input order.
+// Resolves with the full result array even if some tasks reject.
+async function runParallel<T>(
+  tasks: Array<() => Promise<T>>,
+  window = 3,
+): Promise<PromiseSettledResult<T>[]> {
+  const results: PromiseSettledResult<T>[] = new Array(tasks.length);
+  let next = 0;
+
+  async function worker(): Promise<void> {
+    while (true) {
+      const i = next++;
+      if (i >= tasks.length) break;
+      try {
+        results[i] = { status: "fulfilled", value: await tasks[i]() };
+      } catch (e) {
+        results[i] = { status: "rejected", reason: e };
+      }
+    }
+  }
+
+  const workers = Array.from({ length: Math.min(window, tasks.length) }, () => worker());
+  await Promise.all(workers);
+  return results;
+}
+
 // A persistent, append-only record of every auto-update `doMods` silently
 // applies. Logged only from `doMods` (not `ensureMods`'s pre-check), since
 // `ensureMods` always re-runs `doMods` when anything is stale, which would
@@ -315,9 +341,27 @@ export async function doMods(s: Settings, extraRefreshIds?: Set<string>): Promis
     log(`${stale.size} mod(s) updated on Steam since last check - will re-validate.`);
   }
 
+  // Single login before all downloads — DepotDownloader's cached token is
+  // reused across subsequent runs on this machine, so we don't need to log
+  // in per-mod.
+  await ensureDepotLogin(s);
+
   log(`Downloading ${mods.length} workshop mod(s)...`);
-  for (const mod of mods) {
-    await downloadOne(s, mod, refresh.has(mod.id));
+  const tasks = mods.map((mod, i) => () =>
+    downloadOne(s, mod, refresh.has(mod.id), i < 3 ? i + 1 : undefined)
+  );
+  const results = await runParallel(tasks);
+
+  const failures: string[] = [];
+  for (let i = 0; i < results.length; i++) {
+    if (results[i].status === "rejected") {
+      failures.push(mods[i].name);
+    }
+  }
+  if (failures.length > 0) {
+    die(
+      `Download failed for: ${failures.join(", ")} — re-run 'deno task mods' to resume.`,
+    );
   }
 
   log("Installing mods + keys into the server");

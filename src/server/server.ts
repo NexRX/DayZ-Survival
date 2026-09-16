@@ -271,6 +271,15 @@ async function logCrash(code: number, ranMs: number): Promise<void> {
 }
 
 async function runServerWithWatchdog(args: string[]): Promise<never> {
+  // Change to the server directory before spawning steam-run. This matters
+  // because steam-run uses `--chdir "$(pwd)"` internally — if we don't cd
+  // first, bwrap runs with the parent shell's CWD (the repo root), and the
+  // Enfusion engine resolves "$CurrentDir" there, failing to find dayz.gproj
+  // which lives in server/. The Deno spawn `cwd` option only affects the
+  // child process itself, not the $(pwd) captured inside the steam-run script.
+  Deno.chdir(SERVER_DIR);
+
+  log(`Starting Server: ${args.reduce((a, b) => `${a}\n${b}`)}`);
   Deno.addSignalListener("SIGINT", requestStop);
   Deno.addSignalListener("SIGTERM", requestStop);
   scheduleNextAutoRestart();
@@ -339,6 +348,8 @@ export async function doStart(s: Settings): Promise<void> {
   await Deno.mkdir(PROFILE_DIR, { recursive: true });
   const extra = s.EXTRA_PARAMS.trim() ? s.EXTRA_PARAMS.trim().split(/\s+/) : [];
   const args = [
+    "/nix/store/2xrxnqpkwlr4smxwhg5x34s2nbs2rpi6-gdb-17.2/bin/gdb",
+    "--args",
     await serverBinary(),
     "-config=serverDZ.cfg",
     `-port=${s.PORT}`,
