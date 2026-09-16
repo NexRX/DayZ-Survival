@@ -13,6 +13,8 @@ pkgs.mkShell {
     bashInteractive
     coreutils # cp, du used by the CLI
     gdb
+    libcap
+    stdenv.cc.cc
   ];
 
   shellHook = ''
