@@ -318,6 +318,8 @@ export async function doStart(s: Settings): Promise<void> {
     ...extra,
   ];
 
+  await ensureOverrides();
+
   await ensureModTypesMerged(allMods);
   await ensureCustomKeycardsTypesRemoved(allMods);
   await ensureKeyCardRoomsTypesRemoved();
@@ -332,8 +334,6 @@ export async function doStart(s: Settings): Promise<void> {
   await tuneExpansionMarket();
   await ensureMarketGapFill();
   await ensureCustomTrader();
-
-  await ensureOverrides();
 
   await ensureQuests();
 

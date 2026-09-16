@@ -1,0 +1,1980 @@
+{
+    "m_Version": 12,
+    "DisplayName": "Utility",
+    "Icon": "Deliver",
+    "Color": "FBFCFEFF",
+    "IsExchange": 0,
+    "InitStockPercent": 30,
+    "Items": [
+        {
+            "ClassName": "gardenlime",
+            "MaxPriceThreshold": 80,
+            "MinPriceThreshold": 30,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "pepperseedspack",
+            "MaxPriceThreshold": 878,
+            "MinPriceThreshold": 525,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "tomatoseedspack",
+            "MaxPriceThreshold": 878,
+            "MinPriceThreshold": 525,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "zucchiniseedspack",
+            "MaxPriceThreshold": 878,
+            "MinPriceThreshold": 525,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "pumpkinseedspack",
+            "MaxPriceThreshold": 878,
+            "MinPriceThreshold": 525,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "sewingkit",
+            "MaxPriceThreshold": 645,
+            "MinPriceThreshold": 390,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "leathersewingkit",
+            "MaxPriceThreshold": 780,
+            "MinPriceThreshold": 465,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "weaponcleaningkit",
+            "MaxPriceThreshold": 2520,
+            "MinPriceThreshold": 1515,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "compass",
+            "MaxPriceThreshold": 2400,
+            "MinPriceThreshold": 1440,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "orienteeringcompass",
+            "MaxPriceThreshold": 833,
+            "MinPriceThreshold": 495,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "chernarusmap",
+            "MaxPriceThreshold": 1365,
+            "MinPriceThreshold": 818,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "binoculars",
+            "MaxPriceThreshold": 2295,
+            "MinPriceThreshold": 1373,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "gpsreceiver",
+            "MaxPriceThreshold": 4276,
+            "MinPriceThreshold": 2566,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "battery9v"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "personalradio",
+            "MaxPriceThreshold": 1770,
+            "MinPriceThreshold": 1065,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "battery9v"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "megaphone",
+            "MaxPriceThreshold": 7575,
+            "MinPriceThreshold": 4545,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "battery9v"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "electronicrepairkit",
+            "MaxPriceThreshold": 1523,
+            "MinPriceThreshold": 915,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "cablereel",
+            "MaxPriceThreshold": 1373,
+            "MinPriceThreshold": 825,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "batterycharger",
+            "MaxPriceThreshold": 1673,
+            "MinPriceThreshold": 1005,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "baseradio",
+            "MaxPriceThreshold": 24240,
+            "MinPriceThreshold": 14543,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "carbattery"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "rangefinder",
+            "MaxPriceThreshold": 2033,
+            "MinPriceThreshold": 1223,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "battery9v"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "alarmclock_blue",
+            "MaxPriceThreshold": 923,
+            "MinPriceThreshold": 555,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "alarmclock_green",
+                "alarmclock_red"
+            ]
+        },
+        {
+            "ClassName": "kitchentimer",
+            "MaxPriceThreshold": 713,
+            "MinPriceThreshold": 428,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "dzn_tool_watch",
+            "MaxPriceThreshold": 150,
+            "MinPriceThreshold": 60,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "dzn_tool_watch2"
+            ]
+        },
+        {
+            "ClassName": "chemlight_blue",
+            "MaxPriceThreshold": 923,
+            "MinPriceThreshold": 555,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "chemlight_green",
+                "chemlight_red",
+                "chemlight_white",
+                "chemlight_yellow"
+            ]
+        },
+        {
+            "ClassName": "roadflare",
+            "MaxPriceThreshold": 14168,
+            "MinPriceThreshold": 8505,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "matchbox",
+            "MaxPriceThreshold": 668,
+            "MinPriceThreshold": 398,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "fireworkslauncher",
+            "MaxPriceThreshold": 1238,
+            "MinPriceThreshold": 743,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "petrollighter",
+            "MaxPriceThreshold": 675,
+            "MinPriceThreshold": 405,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "flashlight",
+            "MaxPriceThreshold": 420,
+            "MinPriceThreshold": 255,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "battery9v"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "xmaslights",
+            "MaxPriceThreshold": 645,
+            "MinPriceThreshold": 390,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "portablegaslamp",
+            "MaxPriceThreshold": 1875,
+            "MinPriceThreshold": 1125,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "mediumgascanister"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "portablegasstove",
+            "MaxPriceThreshold": 908,
+            "MinPriceThreshold": 548,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "mediumgascanister"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "headtorch_black",
+            "MaxPriceThreshold": 4433,
+            "MinPriceThreshold": 2655,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "battery9v"
+            ],
+            "Variants": [
+                "headtorch_grey"
+            ]
+        },
+        {
+            "ClassName": "spotlight",
+            "MaxPriceThreshold": 1673,
+            "MinPriceThreshold": 1005,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "worm",
+            "MaxPriceThreshold": 23,
+            "MinPriceThreshold": 8,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "hook",
+            "MaxPriceThreshold": 1155,
+            "MinPriceThreshold": 690,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "jig",
+            "MaxPriceThreshold": 1208,
+            "MinPriceThreshold": 728,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "fishingrod",
+            "MaxPriceThreshold": 1103,
+            "MinPriceThreshold": 660,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "expansionspraycanblue",
+            "MaxPriceThreshold": 300,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "expansionspraycanred",
+            "MaxPriceThreshold": 300,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "expansionspraycanredrust"
+            ]
+        },
+        {
+            "ClassName": "expansionspraycangreen",
+            "MaxPriceThreshold": 300,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "expansionspraycangreenrust",
+                "expansionspraycanlightgreen"
+            ]
+        },
+        {
+            "ClassName": "expansionspraycanblack",
+            "MaxPriceThreshold": 300,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "expansionspraycanblackrust"
+            ]
+        },
+        {
+            "ClassName": "expansionspraycanorange",
+            "MaxPriceThreshold": 300,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "expansionspraycanwhite",
+            "MaxPriceThreshold": 300,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "expansionspraycanwhiterust"
+            ]
+        },
+        {
+            "ClassName": "expansionspraycangrey",
+            "MaxPriceThreshold": 300,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "expansionspraycangreyrust"
+            ]
+        },
+        {
+            "ClassName": "expansionspraycanyellow",
+            "MaxPriceThreshold": 300,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "expansionspraycanyellowrust"
+            ]
+        },
+        {
+            "ClassName": "expansionspraycanwine",
+            "MaxPriceThreshold": 300,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "expansionspraycanwinerust"
+            ]
+        },
+        {
+            "ClassName": "expansionspraycanbanditkitty",
+            "MaxPriceThreshold": 300,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "expansionspraycancamo",
+            "MaxPriceThreshold": 300,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "expansionspraycancamomedical",
+            "MaxPriceThreshold": 300,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "expansionspraycanmh6blueline",
+            "MaxPriceThreshold": 300,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "expansionspraycanmh6digital",
+                "expansionspraycanmh6elliptical",
+                "expansionspraycanmh6furious",
+                "expansionspraycanmh6graywatcher",
+                "expansionspraycanmh6jeans",
+                "expansionspraycanmh6resistance",
+                "expansionspraycanmh6shadow",
+                "expansionspraycanmh6sheriff",
+                "expansionspraycanmh6speedy",
+                "expansionspraycanmh6sunset",
+                "expansionspraycanmh6vrana",
+                "expansionspraycanmh6wasp",
+                "expansionspraycanmh6wave"
+            ]
+        },
+        {
+            "ClassName": "expansionspraycanuh1hmedical",
+            "MaxPriceThreshold": 300,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "expansionspraycanuh1huber",
+                "expansionspraycanuh1hresistance",
+                "expansionspraycanuh1hcivilian"
+            ]
+        },
+        {
+            "ClassName": "expansionspraycanmerlindahoman",
+            "MaxPriceThreshold": 300,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "expansionspraycanmerlinion",
+                "expansionspraycanmerlinpresident",
+                "expansionspraycanmerlinvrana",
+                "expansionspraycanmerlinwave"
+            ]
+        },
+        {
+            "ClassName": "expansionspraycanbusweeb",
+            "MaxPriceThreshold": 300,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "engineoil",
+            "MaxPriceThreshold": 390,
+            "MinPriceThreshold": 120,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "canistergasoline",
+            "MaxPriceThreshold": 608,
+            "MinPriceThreshold": 368,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "paper",
+            "MaxPriceThreshold": 6,
+            "MinPriceThreshold": 3,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "giftwrappaper",
+            "MaxPriceThreshold": 900,
+            "MinPriceThreshold": 450,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "pen_black",
+            "MaxPriceThreshold": 855,
+            "MinPriceThreshold": 510,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "pen_blue",
+                "pen_green",
+                "pen_red"
+            ]
+        },
+        {
+            "ClassName": "pot",
+            "MaxPriceThreshold": 713,
+            "MinPriceThreshold": 428,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "handcuffkeys",
+            "MaxPriceThreshold": 1613,
+            "MinPriceThreshold": 968,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "handcuffs",
+            "MaxPriceThreshold": 1538,
+            "MinPriceThreshold": 923,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "netting",
+            "MaxPriceThreshold": 1245,
+            "MinPriceThreshold": 743,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "burlapsack",
+            "MaxPriceThreshold": 1271,
+            "MinPriceThreshold": 1271,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "smallgascanister",
+            "MaxPriceThreshold": 315,
+            "MinPriceThreshold": 188,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "mediumgascanister",
+            "MaxPriceThreshold": 315,
+            "MinPriceThreshold": 188,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "largegascanister",
+            "MaxPriceThreshold": 315,
+            "MinPriceThreshold": 188,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "beartrap",
+            "MaxPriceThreshold": 2235,
+            "MinPriceThreshold": 1343,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "bear_beige",
+            "MaxPriceThreshold": 533,
+            "MinPriceThreshold": 323,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "bear_dark",
+                "bear_pink",
+                "bear_white"
+            ]
+        },
+        {
+            "ClassName": "fabric",
+            "MaxPriceThreshold": 750,
+            "MinPriceThreshold": 450,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "AlarmClock_Green",
+            "MaxPriceThreshold": 923,
+            "MinPriceThreshold": 555,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "AlarmClock_Red",
+            "MaxPriceThreshold": 923,
+            "MinPriceThreshold": 555,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Bear_Dark",
+            "MaxPriceThreshold": 533,
+            "MinPriceThreshold": 323,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Bear_Pink",
+            "MaxPriceThreshold": 533,
+            "MinPriceThreshold": 323,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Bear_White",
+            "MaxPriceThreshold": 533,
+            "MinPriceThreshold": 323,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Chemlight_Green",
+            "MaxPriceThreshold": 923,
+            "MinPriceThreshold": 555,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Chemlight_Red",
+            "MaxPriceThreshold": 923,
+            "MinPriceThreshold": 555,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Chemlight_White",
+            "MaxPriceThreshold": 923,
+            "MinPriceThreshold": 555,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Chemlight_Yellow",
+            "MaxPriceThreshold": 923,
+            "MinPriceThreshold": 555,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ChernarusMap_Open",
+            "MaxPriceThreshold": 1365,
+            "MinPriceThreshold": 818,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Headtorch_Grey",
+            "MaxPriceThreshold": 4433,
+            "MinPriceThreshold": 2655,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "battery9v"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "Pen_Blue",
+            "MaxPriceThreshold": 855,
+            "MinPriceThreshold": 510,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Pen_Green",
+            "MaxPriceThreshold": 855,
+            "MinPriceThreshold": 510,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Pen_Red",
+            "MaxPriceThreshold": 855,
+            "MinPriceThreshold": 510,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "AntiPestsSpray",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Bait",
+            "MaxPriceThreshold": 80,
+            "MinPriceThreshold": 30,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "BarbedBaseballBat",
+            "MaxPriceThreshold": 700,
+            "MinPriceThreshold": 400,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Bark_Birch",
+            "MaxPriceThreshold": 80,
+            "MinPriceThreshold": 30,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Bark_Oak",
+            "MaxPriceThreshold": 80,
+            "MinPriceThreshold": 30,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "BearPelt",
+            "MaxPriceThreshold": 1200,
+            "MinPriceThreshold": 1000,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Bone",
+            "MaxPriceThreshold": 80,
+            "MinPriceThreshold": 30,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "BoneBait",
+            "MaxPriceThreshold": 80,
+            "MinPriceThreshold": 30,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "BoneHook",
+            "MaxPriceThreshold": 80,
+            "MinPriceThreshold": 30,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "BurlapSackCover",
+            "MaxPriceThreshold": 180,
+            "MinPriceThreshold": 80,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "BurlapStrip",
+            "MaxPriceThreshold": 180,
+            "MinPriceThreshold": 80,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ChickenFeather",
+            "MaxPriceThreshold": 80,
+            "MinPriceThreshold": 30,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "CookingStand",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "CowPelt",
+            "MaxPriceThreshold": 1050,
+            "MinPriceThreshold": 900,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "DeerPelt",
+            "MaxPriceThreshold": 1050,
+            "MinPriceThreshold": 900,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Firewood",
+            "MaxPriceThreshold": 50,
+            "MinPriceThreshold": 50,
+            "SellPricePercent": 100,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "FishNetTrap",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "FoxPelt",
+            "MaxPriceThreshold": 950,
+            "MinPriceThreshold": 800,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "GoatPelt",
+            "MaxPriceThreshold": 950,
+            "MinPriceThreshold": 800,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Guts",
+            "MaxPriceThreshold": 80,
+            "MinPriceThreshold": 30,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "HandDrillKit",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "HorsePelt",
+            "MaxPriceThreshold": 1200,
+            "MinPriceThreshold": 1000,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "HumanSkull",
+            "MaxPriceThreshold": 700,
+            "MinPriceThreshold": 400,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ImprovisedFishingRod",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "LongTorch",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "MorsecodeLeaflet_blood",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "MorsecodeLeaflet_coffee",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "MorsecodeLeaflet_fire",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "NailedBaseballBat",
+            "MaxPriceThreshold": 700,
+            "MinPriceThreshold": 400,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "PigPelt",
+            "MaxPriceThreshold": 1050,
+            "MinPriceThreshold": 900,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "PlantMaterial",
+            "MaxPriceThreshold": 80,
+            "MinPriceThreshold": 30,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "RabbitPelt",
+            "MaxPriceThreshold": 950,
+            "MinPriceThreshold": 800,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "RabbitSnareTrap",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Rag",
+            "MaxPriceThreshold": 80,
+            "MinPriceThreshold": 30,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ReindeerPelt",
+            "MaxPriceThreshold": 1050,
+            "MinPriceThreshold": 900,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "SheepPelt",
+            "MaxPriceThreshold": 950,
+            "MinPriceThreshold": 800,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "SmallFishTrap",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "SmallGuts",
+            "MaxPriceThreshold": 80,
+            "MinPriceThreshold": 30,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "SpearBone",
+            "MaxPriceThreshold": 80,
+            "MinPriceThreshold": 30,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "StoneKnife",
+            "MaxPriceThreshold": 300,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "TannedLeather",
+            "MaxPriceThreshold": 180,
+            "MinPriceThreshold": 80,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Torch",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "TripwireTrap",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "WildboarPelt",
+            "MaxPriceThreshold": 1050,
+            "MinPriceThreshold": 900,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "WolfPelt",
+            "MaxPriceThreshold": 1200,
+            "MinPriceThreshold": 1000,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "WoodenHook",
+            "MaxPriceThreshold": 80,
+            "MinPriceThreshold": 30,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "WoodenLog",
+            "MaxPriceThreshold": 100,
+            "MinPriceThreshold": 100,
+            "SellPricePercent": 100,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ZenPetrolLighter",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ZenPetrolLighter_Green",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ZenPetrolLighter_Purple",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ZenPetrolLighter_Red",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ZenPetrolLighter_Yellow",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ZenZippoLighter",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ZenZippoLighter_Anarchy",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ZenZippoLighter_Peace",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ZenZippoLighter_Zenarchist",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "cw_boltfinsmold",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "cw_boltshaft",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "cw_broadhead",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "cw_carbonroll",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "cw_carbonsheet",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "cw_crossbowincomplete",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "cw_crossbowstock",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "cw_crossbowupper",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "cw_glue",
+            "MaxPriceThreshold": 350,
+            "MinPriceThreshold": 150,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Bridle",
+            "MaxPriceThreshold": 1400,
+            "MinPriceThreshold": 800,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "HorseBags",
+            "MaxPriceThreshold": 1400,
+            "MinPriceThreshold": 800,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "PaperLabel",
+            "MaxPriceThreshold": 80,
+            "MinPriceThreshold": 30,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Saddle",
+            "MaxPriceThreshold": 1400,
+            "MinPriceThreshold": 800,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ScientificBriefcase",
+            "MaxPriceThreshold": 3500,
+            "MinPriceThreshold": 2000,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ScientificBriefcaseKeys",
+            "MaxPriceThreshold": 3500,
+            "MinPriceThreshold": 2000,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Stable_dayz_kit",
+            "MaxPriceThreshold": 4000,
+            "MinPriceThreshold": 2500,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "evg_keycard_holder_camo",
+            "MaxPriceThreshold": 300,
+            "MinPriceThreshold": 300,
+            "SellPricePercent": 100,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "evg_keycard_holder_leather",
+            "MaxPriceThreshold": 400,
+            "MinPriceThreshold": 400,
+            "SellPricePercent": 100,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "evg_keycards_White",
+            "MaxPriceThreshold": 500,
+            "MinPriceThreshold": 500,
+            "SellPricePercent": 100,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "evg_keycards_Yellow",
+            "MaxPriceThreshold": 800,
+            "MinPriceThreshold": 800,
+            "SellPricePercent": 100,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "evg_keycards_Green",
+            "MaxPriceThreshold": 1000,
+            "MinPriceThreshold": 1000,
+            "SellPricePercent": 100,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "evg_keycards_Blue",
+            "MaxPriceThreshold": 1500,
+            "MinPriceThreshold": 1500,
+            "SellPricePercent": 100,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "evg_keycards_Tisy01",
+            "MaxPriceThreshold": 1800,
+            "MinPriceThreshold": 1800,
+            "SellPricePercent": 100,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "evg_keycards_NWAF01",
+            "MaxPriceThreshold": 2000,
+            "MinPriceThreshold": 2000,
+            "SellPricePercent": 100,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "evg_keycards_Violet",
+            "MaxPriceThreshold": 2200,
+            "MinPriceThreshold": 2200,
+            "SellPricePercent": 100,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "evg_keycards_Red",
+            "MaxPriceThreshold": 4000,
+            "MinPriceThreshold": 4000,
+            "SellPricePercent": 100,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "evg_keycards_NWAF02",
+            "MaxPriceThreshold": 5000,
+            "MinPriceThreshold": 5000,
+            "SellPricePercent": 100,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "evg_keycards_Tisy02",
+            "MaxPriceThreshold": 5500,
+            "MinPriceThreshold": 5500,
+            "SellPricePercent": 100,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "evg_keycards_NWAF03",
+            "MaxPriceThreshold": 6500,
+            "MinPriceThreshold": 6500,
+            "SellPricePercent": 100,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "evg_keycards_Tisy03",
+            "MaxPriceThreshold": 9000,
+            "MinPriceThreshold": 9000,
+            "SellPricePercent": 100,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "evg_keycards_Tisy04",
+            "MaxPriceThreshold": 11000,
+            "MinPriceThreshold": 11000,
+            "SellPricePercent": 100,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "evg_keycards_Tisy05",
+            "MaxPriceThreshold": 13000,
+            "MinPriceThreshold": 13000,
+            "SellPricePercent": 100,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        }
+    ]
+}

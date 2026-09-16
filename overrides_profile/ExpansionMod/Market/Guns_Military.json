@@ -1,0 +1,1580 @@
+{
+    "m_Version": 12,
+    "DisplayName": "Guns - Military",
+    "Icon": "Deliver",
+    "Color": "FBFCFEFF",
+    "IsExchange": 0,
+    "InitStockPercent": 0,
+    "Items": [
+        {
+            "ClassName": "fal",
+            "MaxPriceThreshold": 25075,
+            "MinPriceThreshold": 15050,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "akm",
+            "MaxPriceThreshold": 27975,
+            "MinPriceThreshold": 16788,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "ak_woodbttstck",
+                "ak_woodhndgrd",
+                "mag_akm_30rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "ak101",
+            "MaxPriceThreshold": 23000,
+            "MinPriceThreshold": 13750,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "ak_plasticbttstck",
+                "ak_plastichndgrd",
+                "mag_ak101_30rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "ak74",
+            "MaxPriceThreshold": 24750,
+            "MinPriceThreshold": 14850,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "ak74_woodbttstck",
+                "ak74_hndgrd",
+                "mag_ak74_30rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "m4a1",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 13250,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "m4_carryhandleoptic",
+                "mag_stanag_30rnd",
+                "m4_oebttstck",
+                "m4_plastichndgrd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "m16a2",
+            "MaxPriceThreshold": 23000,
+            "MinPriceThreshold": 13750,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "mag_stanag_30rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "famas",
+            "MaxPriceThreshold": 23000,
+            "MinPriceThreshold": 13750,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "mag_famas_25rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "sawedofffamas",
+            "MaxPriceThreshold": 4000,
+            "MinPriceThreshold": 2000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "aug",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 13250,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "mag_aug_30rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "augshort",
+            "MaxPriceThreshold": 23000,
+            "MinPriceThreshold": 13750,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "mag_aug_30rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "ump45",
+            "MaxPriceThreshold": 10410,
+            "MinPriceThreshold": 6248,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "mag_ump_25rnd"
+            ],
+            "Variants": [
+                "ump45_clean",
+                "ump45_black",
+                "ump45_green",
+                "ump45_yellow",
+                "ump45_orange",
+                "ump45_brown",
+                "ump45_white",
+                "ump45_grey",
+                "ump45_blue",
+                "ump45_red",
+                "ump45_pink"
+            ]
+        },
+        {
+            "ClassName": "mp5k",
+            "MaxPriceThreshold": 8393,
+            "MinPriceThreshold": 5033,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "mp5k_stockbttstck",
+                "mp5_plastichndgrd",
+                "mag_mp5_30rnd"
+            ],
+            "Variants": [
+                "mp5k_clean",
+                "mp5k_black",
+                "mp5k_green",
+                "mp5k_yellow",
+                "mp5k_orange",
+                "mp5k_brown",
+                "mp5k_white",
+                "mp5k_grey",
+                "mp5k_blue",
+                "mp5k_red",
+                "mp5k_pink"
+            ]
+        },
+        {
+            "ClassName": "aks74u",
+            "MaxPriceThreshold": 13470,
+            "MinPriceThreshold": 8085,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "aks74u_bttstck",
+                "mag_ak74_30rnd"
+            ],
+            "Variants": [
+                "aks74u_clean",
+                "aks74u_black",
+                "aks74u_green",
+                "aks74u_yellow",
+                "aks74u_orange",
+                "aks74u_brown",
+                "aks74u_white",
+                "aks74u_grey",
+                "aks74u_blue",
+                "aks74u_red",
+                "aks74u_pink"
+            ]
+        },
+        {
+            "ClassName": "pp19",
+            "MaxPriceThreshold": 10410,
+            "MinPriceThreshold": 6248,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "pp19_bttstck",
+                "mag_pp19_64rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "vss",
+            "MaxPriceThreshold": 34335,
+            "MinPriceThreshold": 20598,
+            "SellPricePercent": 60,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "mag_vss_10rnd"
+            ],
+            "Variants": [
+                "vss_clean",
+                "vss_black",
+                "vss_green",
+                "vss_yellow",
+                "vss_orange",
+                "vss_brown",
+                "vss_white",
+                "vss_grey",
+                "vss_blue",
+                "vss_red",
+                "vss_pink"
+            ]
+        },
+        {
+            "ClassName": "asval",
+            "MaxPriceThreshold": 39498,
+            "MinPriceThreshold": 23695,
+            "SellPricePercent": 60,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "mag_val_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "vikhr",
+            "MaxPriceThreshold": 35245,
+            "MinPriceThreshold": 21140,
+            "SellPricePercent": 60,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "mag_vikhr_30rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "svd",
+            "MaxPriceThreshold": 7140,
+            "MinPriceThreshold": 4288,
+            "SellPricePercent": 60,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "mag_svd_10rnd"
+            ],
+            "Variants": [
+                "svd_clean",
+                "svd_black",
+                "svd_green",
+                "svd_yellow",
+                "svd_orange",
+                "svd_brown",
+                "svd_white",
+                "svd_grey",
+                "svd_blue",
+                "svd_red",
+                "svd_pink"
+            ]
+        },
+        {
+            "ClassName": "sv98",
+            "MaxPriceThreshold": 25795,
+            "MinPriceThreshold": 15488,
+            "SellPricePercent": 60,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "mag_sv98_10rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "m14",
+            "MaxPriceThreshold": 27975,
+            "MinPriceThreshold": 16788,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "mag_m14_10rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "svd_wooden",
+            "MaxPriceThreshold": 10000,
+            "MinPriceThreshold": 5000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "deagle",
+            "MaxPriceThreshold": 25000,
+            "MinPriceThreshold": 25000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "mag_deagle_9rnd"
+            ],
+            "Variants": [
+                "deagle_gold"
+            ]
+        },
+        {
+            "ClassName": "saiga",
+            "MaxPriceThreshold": 10410,
+            "MinPriceThreshold": 6248,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "saiga_bttstck",
+                "mag_saiga_8rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "AK101_Black",
+            "MaxPriceThreshold": 23000,
+            "MinPriceThreshold": 13750,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "ak_plasticbttstck",
+                "ak_plastichndgrd",
+                "mag_ak101_30rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "AK101_Green",
+            "MaxPriceThreshold": 23000,
+            "MinPriceThreshold": 13750,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "ak_plasticbttstck",
+                "ak_plastichndgrd",
+                "mag_ak101_30rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "AK74_Black",
+            "MaxPriceThreshold": 24750,
+            "MinPriceThreshold": 14850,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "ak74_woodbttstck",
+                "ak74_hndgrd",
+                "mag_ak74_30rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "AK74_Green",
+            "MaxPriceThreshold": 24750,
+            "MinPriceThreshold": 14850,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "ak74_woodbttstck",
+                "ak74_hndgrd",
+                "mag_ak74_30rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "AKS74U_Black",
+            "MaxPriceThreshold": 13470,
+            "MinPriceThreshold": 8085,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "aks74u_bttstck",
+                "mag_ak74_30rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "AKS74U_Green",
+            "MaxPriceThreshold": 13470,
+            "MinPriceThreshold": 8085,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "aks74u_bttstck",
+                "mag_ak74_30rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "M4A1_Black",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 13250,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "m4_carryhandleoptic",
+                "mag_stanag_30rnd",
+                "m4_oebttstck",
+                "m4_plastichndgrd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "M4A1_Green",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 13250,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "m4_carryhandleoptic",
+                "mag_stanag_30rnd",
+                "m4_oebttstck",
+                "m4_plastichndgrd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "M79",
+            "MaxPriceThreshold": 25075,
+            "MinPriceThreshold": 15050,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SCARH",
+            "MaxPriceThreshold": 25075,
+            "MinPriceThreshold": 15050,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SCARH_Black",
+            "MaxPriceThreshold": 25075,
+            "MinPriceThreshold": 15050,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "Scout",
+            "MaxPriceThreshold": 25075,
+            "MinPriceThreshold": 15050,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "Sobr_9A_91",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "Sobr_M4A1",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "Sobr_M4A1_Black",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "Sobr_M4A1_Green",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "Sobr_M4A1_Snow",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "Sobr_M4A1_Desert",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "Sobr_Heckler_and_Koch_MP5A4_Black",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "Sobr_Heckler_and_Koch_MP5A4_Green",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "Sobr_Heckler_and_Koch_MP5A4_Beige",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "Sobr_Heckler_and_Koch_MP5A4_White",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "Sobr_Heckler_and_Koch_MP5A4_Haki",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "Sobr_PPSh_41",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "Sobr_Remington_870",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "Sobr_Remington_870_Black",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "Sobr_Shotgun_Spas_12",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "Sobr_SS2V5_Black",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_AK74",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Rifle_MDR_556x45_BLK",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Rifle_MDR_556x45_FDE",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Rifle_MDR_762x51_BLK",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Rifle_MDR_762x51_FDE",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Rifle_VPO_215",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Rifle_AK_Alpha_Black",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Rifle_AK_Alpha_White",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Rifle_Kar98k",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Rifle_VPO_205_Black",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_AKM",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_AK101",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_FN2000_Black",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_FN2000_Tan",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_FN2000_White",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_FN2000_Camo_1",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_FN2000_Camo_2",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_FN2000_Camo_3",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_FN2000_Camo_4",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_AKS74U",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_AK102",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_AK103",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_AK104",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_AK105",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Shotguns_Origin_12",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Shotguns_Origin_12_Short",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Shotguns_Pancor_JackHammer",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Shotguns_VRBP_100",
+            "MaxPriceThreshold": 22000,
+            "MinPriceThreshold": 14000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "Sobr_M14_DMR",
+            "MaxPriceThreshold": 45000,
+            "MinPriceThreshold": 30000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "Sobr_M14_EBR_Black",
+            "MaxPriceThreshold": 45000,
+            "MinPriceThreshold": 30000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "Sobr_RPD",
+            "MaxPriceThreshold": 45000,
+            "MinPriceThreshold": 30000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "Sobr_RPK",
+            "MaxPriceThreshold": 45000,
+            "MinPriceThreshold": 30000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "Sobr_SVT_40",
+            "MaxPriceThreshold": 45000,
+            "MinPriceThreshold": 30000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Rifle_HK417_G28",
+            "MaxPriceThreshold": 45000,
+            "MinPriceThreshold": 30000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Rifle_MK18_Mjolnir",
+            "MaxPriceThreshold": 45000,
+            "MinPriceThreshold": 30000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Weapon_Remington_700_Black",
+            "MaxPriceThreshold": 45000,
+            "MinPriceThreshold": 30000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_M2010_Snow_Owl",
+            "MaxPriceThreshold": 45000,
+            "MinPriceThreshold": 30000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_T5000_Orsis_Black",
+            "MaxPriceThreshold": 45000,
+            "MinPriceThreshold": 30000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Rifle_RD_704_Black",
+            "MaxPriceThreshold": 45000,
+            "MinPriceThreshold": 30000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Rifle_MK47_Mutant_Black",
+            "MaxPriceThreshold": 45000,
+            "MinPriceThreshold": 30000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Rifle_SVD_S_Black",
+            "MaxPriceThreshold": 45000,
+            "MinPriceThreshold": 30000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Sniper_Rifle_DVL_10_Diversant_Black",
+            "MaxPriceThreshold": 45000,
+            "MinPriceThreshold": 30000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Sniper_Rifle_DVL_10_Diversant_Green",
+            "MaxPriceThreshold": 45000,
+            "MinPriceThreshold": 30000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Submachine_Gun_PKP",
+            "MaxPriceThreshold": 45000,
+            "MinPriceThreshold": 30000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Automatic_Rifle_Snow_Bars",
+            "MaxPriceThreshold": 45000,
+            "MinPriceThreshold": 30000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Machine_Gun_Agram_2000",
+            "MaxPriceThreshold": 45000,
+            "MinPriceThreshold": 30000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Automatic_Rifle_Killo_141",
+            "MaxPriceThreshold": 45000,
+            "MinPriceThreshold": 30000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "Sobr_Colt_1911",
+            "MaxPriceThreshold": 14000,
+            "MinPriceThreshold": 8000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SobrMods_Desert_Eagle_Japan_Edition",
+            "MaxPriceThreshold": 14000,
+            "MinPriceThreshold": 8000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Glock_18c",
+            "MaxPriceThreshold": 14000,
+            "MinPriceThreshold": 8000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Pistols_TT_33_Black",
+            "MaxPriceThreshold": 14000,
+            "MinPriceThreshold": 8000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Pistols_TT_33_Gold",
+            "MaxPriceThreshold": 14000,
+            "MinPriceThreshold": 8000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Pistol_CZ_Shadow_2_Compact_Blue",
+            "MaxPriceThreshold": 14000,
+            "MinPriceThreshold": 8000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Pistol_CZ_Shadow_2_Compact_Red",
+            "MaxPriceThreshold": 14000,
+            "MinPriceThreshold": 8000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Pistol_Beretta_M9A3_BLK",
+            "MaxPriceThreshold": 14000,
+            "MinPriceThreshold": 8000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Pistol_Beretta_M9A3_FDE",
+            "MaxPriceThreshold": 14000,
+            "MinPriceThreshold": 8000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "SM_Grenade_Launcher_Milkor_M32A1_MSGL_40mm_FDE",
+            "MaxPriceThreshold": 70000,
+            "MinPriceThreshold": 50000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "fal_oebttstck",
+                "mag_fal_20rnd"
+            ],
+            "Variants": []
+        }
+    ]
+}

@@ -1,0 +1,99 @@
+{
+    "m_Version": 12,
+    "DisplayName": "Vehicles - Boats",
+    "Icon": "Car",
+    "Color": "FBFCFEFF",
+    "IsExchange": 0,
+    "InitStockPercent": 10,
+    "Items": [
+        {
+            "ClassName": "expansionutilityboat",
+            "MaxPriceThreshold": 44000,
+            "MinPriceThreshold": 22000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "truckbattery",
+                "glowplug"
+            ],
+            "Variants": [
+                "expansionutilityboat_black",
+                "expansionutilityboat_green"
+            ]
+        },
+        {
+            "ClassName": "expansionlhd",
+            "MaxPriceThreshold": 600000000,
+            "MinPriceThreshold": 300000000,
+            "SellPricePercent": 60,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "truckbattery",
+                "glowplug",
+                "headlighth7",
+                "headlighth7"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "boat_01_orange",
+            "MaxPriceThreshold": 37800,
+            "MinPriceThreshold": 22680,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "sparkplug"
+            ],
+            "Variants": [
+                "boat_01_black",
+                "boat_01_blue",
+                "boat_01_camo"
+            ]
+        },
+        {
+            "ClassName": "Boat_01_Black",
+            "MaxPriceThreshold": 37800,
+            "MinPriceThreshold": 22680,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "sparkplug"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "Boat_01_Blue",
+            "MaxPriceThreshold": 37800,
+            "MinPriceThreshold": 22680,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "sparkplug"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "Boat_01_Camo",
+            "MaxPriceThreshold": 37800,
+            "MinPriceThreshold": 22680,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "sparkplug"
+            ],
+            "Variants": []
+        }
+    ]
+}

@@ -1,0 +1,414 @@
+{
+    "m_Version": 12,
+    "DisplayName": "Gun Attachments - Civilian",
+    "Icon": "Deliver",
+    "Color": "FBFCFEFF",
+    "IsExchange": 0,
+    "InitStockPercent": 30,
+    "Items": [
+        {
+            "ClassName": "mag_ij70_8rnd",
+            "MaxPriceThreshold": 551,
+            "MinPriceThreshold": 300,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "mag_cz75_15rnd",
+            "MaxPriceThreshold": 750,
+            "MinPriceThreshold": 450,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "mag_glock_15rnd",
+            "MaxPriceThreshold": 750,
+            "MinPriceThreshold": 450,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "mag_mkii_10rnd",
+            "MaxPriceThreshold": 551,
+            "MinPriceThreshold": 300,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "mag_1911_7rnd",
+            "MaxPriceThreshold": 551,
+            "MinPriceThreshold": 300,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "mag_fnx45_15rnd",
+            "MaxPriceThreshold": 750,
+            "MinPriceThreshold": 450,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "mag_deagle_9rnd",
+            "MaxPriceThreshold": 551,
+            "MinPriceThreshold": 300,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "mag_cz527_5rnd",
+            "MaxPriceThreshold": 551,
+            "MinPriceThreshold": 300,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "mag_saiga_5rnd",
+            "MaxPriceThreshold": 551,
+            "MinPriceThreshold": 300,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "mag_saiga_8rnd",
+            "MaxPriceThreshold": 551,
+            "MinPriceThreshold": 300,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "mag_saiga_drum20rnd",
+            "MaxPriceThreshold": 750,
+            "MinPriceThreshold": 450,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "mag_ruger1022_15rnd",
+            "MaxPriceThreshold": 750,
+            "MinPriceThreshold": 450,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "mag_ruger1022_30rnd",
+            "MaxPriceThreshold": 1001,
+            "MinPriceThreshold": 600,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "mag_scout_5rnd",
+            "MaxPriceThreshold": 551,
+            "MinPriceThreshold": 300,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "mag_p1_8rnd",
+            "MaxPriceThreshold": 551,
+            "MinPriceThreshold": 300,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "mag_cz550_10rnd",
+            "MaxPriceThreshold": 551,
+            "MinPriceThreshold": 300,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "mag_ssg82_5rnd",
+            "MaxPriceThreshold": 551,
+            "MinPriceThreshold": 300,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "mag_pm73_15rnd",
+            "MaxPriceThreshold": 750,
+            "MinPriceThreshold": 450,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "mag_pm73_25rnd",
+            "MaxPriceThreshold": 1001,
+            "MinPriceThreshold": 600,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "mosin_compensator",
+            "MaxPriceThreshold": 2663,
+            "MinPriceThreshold": 1598,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "pistolsuppressor",
+            "MaxPriceThreshold": 7035,
+            "MinPriceThreshold": 4223,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "saiga_bttstck",
+            "MaxPriceThreshold": 3195,
+            "MinPriceThreshold": 1920,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ghillieatt_tan",
+            "MaxPriceThreshold": 6585,
+            "MinPriceThreshold": 3945,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "ghillieatt_woodland",
+                "ghillieatt_mossy",
+                "ghillieatt_winter"
+            ]
+        },
+        {
+            "ClassName": "mosin_bayonet",
+            "MaxPriceThreshold": 3473,
+            "MinPriceThreshold": 2085,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "sks_bayonet",
+            "MaxPriceThreshold": 8978,
+            "MinPriceThreshold": 5385,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "pistoloptic",
+            "MaxPriceThreshold": 15128,
+            "MinPriceThreshold": 9075,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "reflexoptic",
+            "MaxPriceThreshold": 12675,
+            "MinPriceThreshold": 7605,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "battery9v"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "fnp45_mrdsoptic",
+            "MaxPriceThreshold": 24533,
+            "MinPriceThreshold": 14715,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "battery9v"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "puscopeoptic",
+            "MaxPriceThreshold": 2678,
+            "MinPriceThreshold": 1605,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "huntingoptic",
+            "MaxPriceThreshold": 11783,
+            "MinPriceThreshold": 7073,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "sportingoptic",
+            "MaxPriceThreshold": 2400,
+            "MinPriceThreshold": 1200,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "GhillieAtt_Mossy",
+            "MaxPriceThreshold": 6585,
+            "MinPriceThreshold": 3945,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "GhillieAtt_Winter",
+            "MaxPriceThreshold": 6585,
+            "MinPriceThreshold": 3945,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "GhillieAtt_Woodland",
+            "MaxPriceThreshold": 6585,
+            "MinPriceThreshold": 3945,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "BVP_NailGun_Mag",
+            "MaxPriceThreshold": 551,
+            "MinPriceThreshold": 300,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ImprovisedSuppressor",
+            "MaxPriceThreshold": 551,
+            "MinPriceThreshold": 300,
+            "SellPricePercent": 50,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        }
+    ]
+}

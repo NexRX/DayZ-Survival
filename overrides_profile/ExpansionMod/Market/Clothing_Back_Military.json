@@ -1,0 +1,296 @@
+{
+    "m_Version": 12,
+    "DisplayName": "Clothing Back - Military",
+    "Icon": "Deliver",
+    "Color": "FBFCFEFF",
+    "IsExchange": 0,
+    "InitStockPercent": 15,
+    "Items": [
+        {
+            "ClassName": "smershbag",
+            "MaxPriceThreshold": 21355,
+            "MinPriceThreshold": 12805,
+            "SellPricePercent": 15,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "assaultbag_black",
+            "MaxPriceThreshold": 38740,
+            "MinPriceThreshold": 23230,
+            "SellPricePercent": 13,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "assaultbag_green",
+                "assaultbag_ttsko",
+                "assaultbag_winter"
+            ]
+        },
+        {
+            "ClassName": "assaultbag_winter",
+            "MaxPriceThreshold": 38740,
+            "MinPriceThreshold": 23230,
+            "SellPricePercent": 13,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "coyotebag_brown",
+            "MaxPriceThreshold": 48860,
+            "MinPriceThreshold": 29325,
+            "SellPricePercent": 10,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "coyotebag_green",
+                "coyotebag_winter",
+                "expansioncoyoteblack"
+            ]
+        },
+        {
+            "ClassName": "coyotebag_winter",
+            "MaxPriceThreshold": 48860,
+            "MinPriceThreshold": 29325,
+            "SellPricePercent": 10,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "alicebag_green",
+            "MaxPriceThreshold": 30660,
+            "MinPriceThreshold": 18400,
+            "SellPricePercent": 15,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "alicebag_black",
+                "alicebag_camo"
+            ]
+        },
+        {
+            "ClassName": "duffelbagsmall_camo",
+            "MaxPriceThreshold": 33675,
+            "MinPriceThreshold": 20210,
+            "SellPricePercent": 15,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "duffelbagsmall_green",
+                "duffelbagsmall_medical"
+            ]
+        },
+        {
+            "ClassName": "armypouch_beige",
+            "MaxPriceThreshold": 16145,
+            "MinPriceThreshold": 9675,
+            "SellPricePercent": 15,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "armypouch_black",
+                "armypouch_camo",
+                "armypouch_green"
+            ]
+        },
+        {
+            "ClassName": "attack2bag_black",
+            "MaxPriceThreshold": 8400,
+            "MinPriceThreshold": 4200,
+            "SellPricePercent": 15,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "attack2bag_green",
+                "attack2bag_ttsko",
+                "attack2bag_yeger"
+            ]
+        },
+        {
+            "ClassName": "AliceBag_Black",
+            "MaxPriceThreshold": 30660,
+            "MinPriceThreshold": 18400,
+            "SellPricePercent": 15,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "AliceBag_Camo",
+            "MaxPriceThreshold": 30660,
+            "MinPriceThreshold": 18400,
+            "SellPricePercent": 15,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ArmyPouch_Black",
+            "MaxPriceThreshold": 16145,
+            "MinPriceThreshold": 9675,
+            "SellPricePercent": 15,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ArmyPouch_Camo",
+            "MaxPriceThreshold": 16145,
+            "MinPriceThreshold": 9675,
+            "SellPricePercent": 15,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ArmyPouch_Green",
+            "MaxPriceThreshold": 16145,
+            "MinPriceThreshold": 9675,
+            "SellPricePercent": 15,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "AssaultBag_Green",
+            "MaxPriceThreshold": 38740,
+            "MinPriceThreshold": 23230,
+            "SellPricePercent": 13,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "AssaultBag_Ttsko",
+            "MaxPriceThreshold": 38740,
+            "MinPriceThreshold": 23230,
+            "SellPricePercent": 13,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Attack2Bag_Green",
+            "MaxPriceThreshold": 8400,
+            "MinPriceThreshold": 4200,
+            "SellPricePercent": 15,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Attack2Bag_Ttsko",
+            "MaxPriceThreshold": 8400,
+            "MinPriceThreshold": 4200,
+            "SellPricePercent": 15,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Attack2Bag_Yeger",
+            "MaxPriceThreshold": 8400,
+            "MinPriceThreshold": 4200,
+            "SellPricePercent": 15,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "CoyoteBag_Green",
+            "MaxPriceThreshold": 48860,
+            "MinPriceThreshold": 29325,
+            "SellPricePercent": 10,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "DuffelBagSmall_Green",
+            "MaxPriceThreshold": 33675,
+            "MinPriceThreshold": 20210,
+            "SellPricePercent": 15,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "DuffelBagSmall_Medical",
+            "MaxPriceThreshold": 33675,
+            "MinPriceThreshold": 20210,
+            "SellPricePercent": 15,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_MilitaryBag_Black",
+            "MaxPriceThreshold": 21355,
+            "MinPriceThreshold": 12805,
+            "SellPricePercent": 15,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_MilitaryBag_Tan",
+            "MaxPriceThreshold": 21355,
+            "MinPriceThreshold": 12805,
+            "SellPricePercent": 15,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        }
+    ]
+}

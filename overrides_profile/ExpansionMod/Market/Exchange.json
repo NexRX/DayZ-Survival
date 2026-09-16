@@ -1,21 +1,21 @@
 {
-    "m_Version": 1,
-    "DisplayName": "Exchange",
-    "Icon": "exchange",
-    "Color": "1,1,1,1",
-    "IsExchange": 1,
-    "InitStockPercent": 0,
-    "Items": [
-        {
-            "ClassName": "ExpansionGoldNugget",
-            "MaxPriceThreshold": 1,
-            "MinPriceThreshold": 1,
-            "SellPricePercent": -1,
-            "MaxStockThreshold": 1,
-            "MinStockThreshold": 1,
-            "QuantityPercent": -1,
-            "SpawnAttachments": [],
-            "Variants": []
-        }
-    ]
+  "m_Version": 1,
+  "DisplayName": "Exchange",
+  "Icon": "exchange",
+  "Color": "1,1,1,1",
+  "IsExchange": 1,
+  "InitStockPercent": 0,
+  "Items": [
+    {
+      "ClassName": "expansionbanknotehryvnia",
+      "MaxPriceThreshold": 1,
+      "MinPriceThreshold": 1,
+      "SellPricePercent": -1,
+      "MaxStockThreshold": 1,
+      "MinStockThreshold": 1,
+      "QuantityPercent": -1,
+      "SpawnAttachments": [],
+      "Variants": []
+    }
+  ]
 }

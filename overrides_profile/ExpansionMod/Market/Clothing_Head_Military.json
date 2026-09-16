@@ -1,0 +1,916 @@
+{
+    "m_Version": 12,
+    "DisplayName": "Clothing Head - Military",
+    "Icon": "Deliver",
+    "Color": "FBFCFEFF",
+    "IsExchange": 0,
+    "InitStockPercent": 15,
+    "Items": [
+        {
+            "ClassName": "tankerhelmet",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "zsh3pilothelmet",
+            "MaxPriceThreshold": 28863,
+            "MinPriceThreshold": 17313,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "zsh3pilothelmet_green",
+                "zsh3pilothelmet_black"
+            ]
+        },
+        {
+            "ClassName": "zsh3pilothelmet_green",
+            "MaxPriceThreshold": 28863,
+            "MinPriceThreshold": 17313,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "zsh3pilothelmet_black",
+            "MaxPriceThreshold": 28863,
+            "MinPriceThreshold": 17313,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "mich2001helmet",
+            "MaxPriceThreshold": 45693,
+            "MinPriceThreshold": 27405,
+            "SellPricePercent": 60,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "expansionmich2001desert"
+            ]
+        },
+        {
+            "ClassName": "gorkahelmetvisor",
+            "MaxPriceThreshold": 22875,
+            "MinPriceThreshold": 13725,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "gorkahelmet",
+            "MaxPriceThreshold": 23875,
+            "MinPriceThreshold": 14325,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "gorkahelmetvisor"
+            ],
+            "Variants": [
+                "gorkahelmet_black"
+            ]
+        },
+        {
+            "ClassName": "ssh68helmet",
+            "MaxPriceThreshold": 4125,
+            "MinPriceThreshold": 2475,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ballistichelmet_un",
+            "MaxPriceThreshold": 6195,
+            "MinPriceThreshold": 3710,
+            "SellPricePercent": 60,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "ballistichelmet_black",
+                "ballistichelmet_green",
+                "ballistichelmet_bdu",
+                "ballistichelmet_desert",
+                "ballistichelmet_woodland",
+                "ballistichelmet_navy",
+                "ballistichelmet_winter"
+            ]
+        },
+        {
+            "ClassName": "ballistichelmet_navy",
+            "MaxPriceThreshold": 840,
+            "MinPriceThreshold": 508,
+            "SellPricePercent": 60,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ballistichelmet_winter",
+            "MaxPriceThreshold": 6300,
+            "MinPriceThreshold": 3780,
+            "SellPricePercent": 60,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "pilotkacap",
+            "MaxPriceThreshold": 13725,
+            "MinPriceThreshold": 8235,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "militaryberet_chdkz",
+            "MaxPriceThreshold": 13965,
+            "MinPriceThreshold": 8378,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "militaryberet_red",
+                "militaryberet_un",
+                "militaryberet_cdf",
+                "militaryberet_nz"
+            ]
+        },
+        {
+            "ClassName": "militaryberet_un",
+            "MaxPriceThreshold": 2655,
+            "MinPriceThreshold": 1590,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "militaryberet_nz",
+            "MaxPriceThreshold": 2655,
+            "MinPriceThreshold": 1590,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "booniehat_dpm",
+            "MaxPriceThreshold": 2010,
+            "MinPriceThreshold": 1208,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "booniehat_dubok",
+            "MaxPriceThreshold": 2010,
+            "MinPriceThreshold": 1208,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "booniehat_flecktran",
+            "MaxPriceThreshold": 2010,
+            "MinPriceThreshold": 1208,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "budenovkahat_gray",
+            "MaxPriceThreshold": 2655,
+            "MinPriceThreshold": 1590,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "officerhat",
+            "MaxPriceThreshold": 2588,
+            "MinPriceThreshold": 1553,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "nbchoodgray",
+            "MaxPriceThreshold": 19748,
+            "MinPriceThreshold": 11850,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "nbchoodyellow",
+                "nbchoodwhite"
+            ]
+        },
+        {
+            "ClassName": "okzkcap_beige",
+            "MaxPriceThreshold": 2655,
+            "MinPriceThreshold": 1590,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "okzkcap_green"
+            ]
+        },
+        {
+            "ClassName": "shemag_brown",
+            "MaxPriceThreshold": 1148,
+            "MinPriceThreshold": 690,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "shemag_green",
+                "shemag_red",
+                "shemag_white"
+            ]
+        },
+        {
+            "ClassName": "balaclavamask_bdu",
+            "MaxPriceThreshold": 17618,
+            "MinPriceThreshold": 10568,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "gasmask",
+            "MaxPriceThreshold": 15000,
+            "MinPriceThreshold": 15000,
+            "SellPricePercent": 13.33,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "gp5gasmask",
+            "MaxPriceThreshold": 15000,
+            "MinPriceThreshold": 15000,
+            "SellPricePercent": 13.33,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "gasmask_filter"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "airbornemask",
+            "MaxPriceThreshold": 1148,
+            "MinPriceThreshold": 690,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "gasmask_filter"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "tacticalgoggles",
+            "MaxPriceThreshold": 13725,
+            "MinPriceThreshold": 8235,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "nvgheadstrap",
+            "MaxPriceThreshold": 56560,
+            "MinPriceThreshold": 33933,
+            "SellPricePercent": 60,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "nvgoggles",
+            "MaxPriceThreshold": 31588,
+            "MinPriceThreshold": 18953,
+            "SellPricePercent": 60,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [
+                "battery9v"
+            ],
+            "Variants": []
+        },
+        {
+            "ClassName": "BallisticHelmet_BDU",
+            "MaxPriceThreshold": 6195,
+            "MinPriceThreshold": 3710,
+            "SellPricePercent": 60,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "BallisticHelmet_Black",
+            "MaxPriceThreshold": 6195,
+            "MinPriceThreshold": 3710,
+            "SellPricePercent": 60,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "BallisticHelmet_Desert",
+            "MaxPriceThreshold": 6195,
+            "MinPriceThreshold": 3710,
+            "SellPricePercent": 60,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "BallisticHelmet_Green",
+            "MaxPriceThreshold": 6195,
+            "MinPriceThreshold": 3710,
+            "SellPricePercent": 60,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "BallisticHelmet_Woodland",
+            "MaxPriceThreshold": 6195,
+            "MinPriceThreshold": 3710,
+            "SellPricePercent": 60,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "MilitaryBeret_CDF",
+            "MaxPriceThreshold": 13965,
+            "MinPriceThreshold": 8378,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "MilitaryBeret_Red",
+            "MaxPriceThreshold": 13965,
+            "MinPriceThreshold": 8378,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "OKZKCap_Green",
+            "MaxPriceThreshold": 2655,
+            "MinPriceThreshold": 1590,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Shemag_Green",
+            "MaxPriceThreshold": 1148,
+            "MinPriceThreshold": 690,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Shemag_Red",
+            "MaxPriceThreshold": 1148,
+            "MinPriceThreshold": 690,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Shemag_White",
+            "MaxPriceThreshold": 1148,
+            "MinPriceThreshold": 690,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "MilitaryCap_BDU",
+            "MaxPriceThreshold": 6000,
+            "MinPriceThreshold": 6000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "MilitaryCap_Desert",
+            "MaxPriceThreshold": 6000,
+            "MinPriceThreshold": 6000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "MilitaryCap_Woodland",
+            "MaxPriceThreshold": 6000,
+            "MinPriceThreshold": 6000,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "T56TankerHelmet_Olive",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "T56TankerHelmet_Tan",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Trapper_Hat_Camo_Mossy_Oak",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_AssaultHelmetCover_Black",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_AssaultHelmet_Black",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_Boonie_MC",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_Comtacs_Black",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_WW2Helmet_Classic",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "BVP_BloodiedHelp_GasMask",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "BVP_Bloodied_GasMask",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "BVP_Blurple_GasMask",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "BVP_Camo_GasMask",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "BVP_Dark_Camo_GasMask",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "BVP_GP5Mask_CamoDark",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "BVP_GP5Mask_CamoGreen",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "BVP_GP5Mask_Dark",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "BVP_GP5Mask_Grunge",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "BVP_GP5Mask_Rust",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "BVP_GreenCamo_Airborne_Mask",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "BVP_Green_Airborne_Mask",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "BVP_GreyCamo_Airborne_Mask",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "BVP_Hannahs_GasMask",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "BVP_Infected_Airborne_Mask",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "BVP_Sepia_GasMask",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "BVP_Survive_GasMask",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "BVP_VIII_Airborne_Mask",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "BVP_White_Camo_GasMask",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "NBCHoodWhite",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "NBCHoodYellow",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "PMK_5A_Gas_Mask",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Plague_Mask",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "GorkaHelmet_Black",
+            "MaxPriceThreshold": 29363,
+            "MinPriceThreshold": 17613,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_TacCap_Black",
+            "MaxPriceThreshold": 6000,
+            "MinPriceThreshold": 3600,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_TacCap_Snow",
+            "MaxPriceThreshold": 6000,
+            "MinPriceThreshold": 3600,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_TacCap_Tan",
+            "MaxPriceThreshold": 6000,
+            "MinPriceThreshold": 3600,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        }
+    ]
+}

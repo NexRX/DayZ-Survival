@@ -223,7 +223,7 @@ const MANUAL_EXCLUSIONS = new Set<string>(
 
     // @CJ187-MoreMoney: not currently in mods.txt (its 50-stack-cap "Coin"
     // currency was considered, then dropped in favor of Expansion Core's own
-    // ExpansionGoldNugget - see traders.ts's GOLD_CURRENCY_CLASSNAME, patched
+    // expansionbanknotehryvnia - see traders.ts's GOLD_CURRENCY_CLASSNAME, patched
     // to a real 50,000 stack cap by serverpack/addons/DZSurvivalGoldStack).
     // Kept denylisted as defense-in-depth in case the mod is ever
     // reinstalled.
@@ -457,11 +457,11 @@ const DEPOSIT_CONTAINER_MAX_PRICE = 11_000_000;
 //     canned good in this category - corrected to match that sibling tier.
 const FOOD_WILD_FORAGE_PRICE = { min: 300, max: 450 };
 const FOOD_BAKED_GOODS_PRICE = { min: 320, max: 520 };
-const FOOD_WHOLE_GAME_PRICE = { min: 1000, max: 1500 };
+const FOOD_WHOLE_GAME_PRICE = { min: 3000, max: 4500 };
 const FOOD_CANNED_CRAB_PRICE = { min: 700, max: 1200 };
 const FOOD_OLD_CAN_PRICE = { min: 120, max: 250 };
-const FOOD_EXOTIC_MEAT_PRICE = { min: 320, max: 450 };
-const FOOD_FILLET_PRICE = { min: 360, max: 560 };
+const FOOD_EXOTIC_MEAT_PRICE = { min: 960, max: 1350 };
+const FOOD_FILLET_PRICE = { min: 1080, max: 1680 };
 
 // Every Old_ (moldy/expired) canned good in Consumables.json - exported so
 // traders.ts can mark them CanOnlySell (find-only, never purchasable). Kept

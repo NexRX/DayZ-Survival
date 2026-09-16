@@ -808,23 +808,23 @@ const MERGED_CATEGORIES: MergedCategory[] = [
         // kill you back (bear, wolf).
         sellPricePercent: 75,
         priceOverrides: {
-          // Tier 1 - easy/common (buy 534-700, sell 400-525)
-          rabbitlegmeat: { min: 534, max: 700 },
-          chickenbreastmeat: { min: 534, max: 700 },
-          goatsteakmeat: { min: 534, max: 700 },
-          sheepsteakmeat: { min: 534, max: 700 },
-          // Tier 2 - moderate (buy 700-900, sell 525-675)
-          pigsteakmeat: { min: 700, max: 900 },
-          cowsteakmeat: { min: 700, max: 900 },
-          deersteakmeat: { min: 700, max: 900 },
-          foxsteakmeat: { min: 700, max: 900 },
-          // Tier 3 - hard/dangerous wild game (buy 900-1150, sell 675-863)
-          boarsteakmeat: { min: 900, max: 1150 },
-          mouflonsteakmeat: { min: 900, max: 1150 },
-          reindeersteakmeat: { min: 900, max: 1150 },
-          // Tier 4 - apex predators (buy 1150-1450, sell 863-1088)
-          bearsteakmeat: { min: 1150, max: 1450 },
-          wolfsteakmeat: { min: 1150, max: 1450 },
+          // Tier 1 - easy/common (buy 1602-2100, sell 1200-1575) - tripled
+          rabbitlegmeat: { min: 1602, max: 2100 },
+          chickenbreastmeat: { min: 1602, max: 2100 },
+          goatsteakmeat: { min: 1602, max: 2100 },
+          sheepsteakmeat: { min: 1602, max: 2100 },
+          // Tier 2 - moderate (buy 2100-2700, sell 1575-2025) - tripled
+          pigsteakmeat: { min: 2100, max: 2700 },
+          cowsteakmeat: { min: 2100, max: 2700 },
+          deersteakmeat: { min: 2100, max: 2700 },
+          foxsteakmeat: { min: 2100, max: 2700 },
+          // Tier 3 - hard/dangerous wild game (buy 2700-3450, sell 2025-2588) - tripled
+          boarsteakmeat: { min: 2700, max: 3450 },
+          mouflonsteakmeat: { min: 2700, max: 3450 },
+          reindeersteakmeat: { min: 2700, max: 3450 },
+          // Tier 4 - apex predators (buy 3450-4350, sell 2588-3263) - tripled
+          bearsteakmeat: { min: 3450, max: 4350 },
+          wolfsteakmeat: { min: 3450, max: 4350 },
         },
       },
       {
@@ -843,22 +843,22 @@ const MERGED_CATEGORIES: MergedCategory[] = [
         // the Meat group's steaks have over a raw carcass.
         sellPricePercent: 75,
         priceOverrides: {
-          // Tier 1 - easiest/most common (buy 534-700, sell 400-525)
-          sardines: { min: 534, max: 700 },
-          shrimp: { min: 534, max: 700 },
-          // Tier 2 - common (buy 700-900, sell 525-675)
-          mackerel: { min: 700, max: 900 },
-          carp: { min: 700, max: 900 },
-          // Tier 3 - larger/less common (buy 900-1150, sell 675-863)
-          steelheadtrout: { min: 900, max: 1150 },
-          walleyepollock: { min: 900, max: 1150 },
-          // Tier 4 - processed byproduct, rarest (buy 1150-1450, sell 863-1088)
-          redcaviar: { min: 1150, max: 1450 },
+          // Tier 1 - easiest/most common (buy 1602-2100, sell 1200-1575) - tripled
+          sardines: { min: 1602, max: 2100 },
+          shrimp: { min: 1602, max: 2100 },
+          // Tier 2 - common (buy 2100-2700, sell 1575-2025) - tripled
+          mackerel: { min: 2100, max: 2700 },
+          carp: { min: 2100, max: 2700 },
+          // Tier 3 - larger/less common (buy 2700-3450, sell 2025-2588) - tripled
+          steelheadtrout: { min: 2700, max: 3450 },
+          walleyepollock: { min: 2700, max: 3450 },
+          // Tier 4 - processed byproduct, rarest (buy 3450-4350, sell 2588-3263) - tripled
+          redcaviar: { min: 3450, max: 4350 },
           // Fillets - cleaned cuts, priced above their species' whole-fish
-          // tier (carp/mackerel are Tier 2, steelheadtrout is Tier 3)
-          carpfilletmeat: { min: 1000, max: 1300 },
-          mackerelfilletmeat: { min: 1000, max: 1300 },
-          steelheadtroutfilletmeat: { min: 1250, max: 1600 },
+          // tier (carp/mackerel are Tier 2, steelheadtrout is Tier 3) - tripled
+          carpfilletmeat: { min: 3000, max: 3900 },
+          mackerelfilletmeat: { min: 3000, max: 3900 },
+          steelheadtroutfilletmeat: { min: 3750, max: 4800 },
         },
       },
     ],

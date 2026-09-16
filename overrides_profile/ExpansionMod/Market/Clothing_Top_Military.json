@@ -1,0 +1,1083 @@
+{
+    "m_Version": 12,
+    "DisplayName": "Clothing Top - Military",
+    "Icon": "Deliver",
+    "Color": "FBFCFEFF",
+    "IsExchange": 0,
+    "InitStockPercent": 15,
+    "Items": [
+        {
+            "ClassName": "ttskojacket_camo",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "bdujacket",
+            "MaxPriceThreshold": 4388,
+            "MinPriceThreshold": 2638,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "m65jacket_black",
+            "MaxPriceThreshold": 29613,
+            "MinPriceThreshold": 17763,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "m65jacket_khaki",
+                "m65jacket_tan",
+                "m65jacket_olive"
+            ]
+        },
+        {
+            "ClassName": "m65jacket_olive",
+            "MaxPriceThreshold": 32638,
+            "MinPriceThreshold": 19575,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "gorkaejacket_summer",
+            "MaxPriceThreshold": 4388,
+            "MinPriceThreshold": 2638,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "gorkaejacket_flat",
+                "gorkaejacket_autumn",
+                "gorkaejacket_pautrev",
+                "gorkaejacket_winter"
+            ]
+        },
+        {
+            "ClassName": "usmcjacket_desert",
+            "MaxPriceThreshold": 4388,
+            "MinPriceThreshold": 2638,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "usmcjacket_woodland"
+            ]
+        },
+        {
+            "ClassName": "nbcjacketgray",
+            "MaxPriceThreshold": 32913,
+            "MinPriceThreshold": 19750,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "nbcjacketyellow",
+                "nbcjacketwhite"
+            ]
+        },
+        {
+            "ClassName": "omkjacket_navy",
+            "MaxPriceThreshold": 600,
+            "MinPriceThreshold": 363,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "navyuniformjacket",
+            "MaxPriceThreshold": 600,
+            "MinPriceThreshold": 363,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "pilotjacket_black",
+            "MaxPriceThreshold": 2500,
+            "MinPriceThreshold": 1250,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "pilotjacket_brown",
+                "pilotjacket_yellow"
+            ]
+        },
+        {
+            "ClassName": "wintermilitarycoat_brown",
+            "MaxPriceThreshold": 2500,
+            "MinPriceThreshold": 1250,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "wintermilitarycoat_darkgrey",
+                "wintermilitarycoat_grey"
+            ]
+        },
+        {
+            "ClassName": "telnyashkashirt",
+            "MaxPriceThreshold": 533,
+            "MinPriceThreshold": 315,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "tacticalshirt_grey",
+            "MaxPriceThreshold": 2588,
+            "MinPriceThreshold": 1553,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "tacticalshirt_tan",
+                "tacticalshirt_black",
+                "tacticalshirt_olive"
+            ]
+        },
+        {
+            "ClassName": "tacticalshirt_black",
+            "MaxPriceThreshold": 17318,
+            "MinPriceThreshold": 10388,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "militarysweater_chernarus",
+            "MaxPriceThreshold": 600,
+            "MinPriceThreshold": 300,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "militarysweater_livonia",
+                "militarysweater_nopatch"
+            ]
+        },
+        {
+            "ClassName": "ukassvest_black",
+            "MaxPriceThreshold": 4275,
+            "MinPriceThreshold": 2563,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "ukassvest_khaki",
+                "ukassvest_olive",
+                "ukassvest_camo",
+                "ukassvest_winter"
+            ]
+        },
+        {
+            "ClassName": "ukassvest_camo",
+            "MaxPriceThreshold": 4425,
+            "MinPriceThreshold": 2650,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ukassvest_winter",
+            "MaxPriceThreshold": 4500,
+            "MinPriceThreshold": 2700,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "smershvest",
+            "MaxPriceThreshold": 22875,
+            "MinPriceThreshold": 13725,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "highcapacityvest_black",
+            "MaxPriceThreshold": 29613,
+            "MinPriceThreshold": 17763,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "highcapacityvest_olive"
+            ]
+        },
+        {
+            "ClassName": "highcapacityvest_olive",
+            "MaxPriceThreshold": 32638,
+            "MinPriceThreshold": 19575,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "platecarriervest",
+            "MaxPriceThreshold": 42158,
+            "MinPriceThreshold": 25305,
+            "SellPricePercent": 60,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "platecarriervest_green",
+                "platecarriervest_black",
+                "platecarriervest_camo",
+                "platecarriervest_winter"
+            ]
+        },
+        {
+            "ClassName": "platecarriervest_camo",
+            "MaxPriceThreshold": 41458,
+            "MinPriceThreshold": 24868,
+            "SellPricePercent": 60,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "platecarriervest_winter",
+            "MaxPriceThreshold": 6300,
+            "MinPriceThreshold": 3780,
+            "SellPricePercent": 60,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "chestplate",
+            "MaxPriceThreshold": 2065,
+            "MinPriceThreshold": 1243,
+            "SellPricePercent": 60,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "GorkaEJacket_Autumn",
+            "MaxPriceThreshold": 4388,
+            "MinPriceThreshold": 2638,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "GorkaEJacket_Flat",
+            "MaxPriceThreshold": 4388,
+            "MinPriceThreshold": 2638,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "GorkaEJacket_PautRev",
+            "MaxPriceThreshold": 4388,
+            "MinPriceThreshold": 2638,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "GorkaEJacket_Winter",
+            "MaxPriceThreshold": 4388,
+            "MinPriceThreshold": 2638,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "M65Jacket_Khaki",
+            "MaxPriceThreshold": 29613,
+            "MinPriceThreshold": 17763,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "M65Jacket_Tan",
+            "MaxPriceThreshold": 29613,
+            "MinPriceThreshold": 17763,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "MilitarySweater_Livonia",
+            "MaxPriceThreshold": 600,
+            "MinPriceThreshold": 300,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "MilitarySweater_NoPatch",
+            "MaxPriceThreshold": 600,
+            "MinPriceThreshold": 300,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "PilotJacket_Brown",
+            "MaxPriceThreshold": 2500,
+            "MinPriceThreshold": 1250,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "PilotJacket_Yellow",
+            "MaxPriceThreshold": 2500,
+            "MinPriceThreshold": 1250,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "PlateCarrierVest_Black",
+            "MaxPriceThreshold": 42158,
+            "MinPriceThreshold": 25305,
+            "SellPricePercent": 60,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "PlateCarrierVest_Desert",
+            "MaxPriceThreshold": 42158,
+            "MinPriceThreshold": 25305,
+            "SellPricePercent": 60,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "PlateCarrierVest_Green",
+            "MaxPriceThreshold": 42158,
+            "MinPriceThreshold": 25305,
+            "SellPricePercent": 60,
+            "MaxStockThreshold": 1,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "TacticalShirt_Olive",
+            "MaxPriceThreshold": 2588,
+            "MinPriceThreshold": 1553,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "TacticalShirt_Tan",
+            "MaxPriceThreshold": 2588,
+            "MinPriceThreshold": 1553,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "UKAssVest_Khaki",
+            "MaxPriceThreshold": 4275,
+            "MinPriceThreshold": 2563,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "UKAssVest_Olive",
+            "MaxPriceThreshold": 4275,
+            "MinPriceThreshold": 2563,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "USMCJacket_Woodland",
+            "MaxPriceThreshold": 4388,
+            "MinPriceThreshold": 2638,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "WinterMilitaryCoat_DarkGrey",
+            "MaxPriceThreshold": 2500,
+            "MinPriceThreshold": 1250,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "WinterMilitaryCoat_Grey",
+            "MaxPriceThreshold": 2500,
+            "MinPriceThreshold": 1250,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Military_Sweater",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Military_Sweater_Black",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Military_Sweater_Blue",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Military_Sweater_Green",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Military_Sweater_Red",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Military_Sweater_White",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 20,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_6B25Vest_Black",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_6B25Vest_Green",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_6B25Vest_Snow",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_AssaultVest_Black",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_AssaultVest_Tan",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_G3Shirt_Black_Cut",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_G3Shirt_Black_Long",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_G3Shirt_Black_Rolled",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_G3Shirt_MC_Cut",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_G3Shirt_MC_Long",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_G3Shirt_MC_Rolled",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_G3Shirt_Snow_Cut",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_G3Shirt_Snow_Long",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_G3Shirt_Snow_Rolled",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_G3Shirt_Tan_Cut6",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_G3Shirt_Tan_Long",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_G3Shirt_Tan_Rolled",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_JPCVest_Black",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_JPCVest_ESP_Black",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_JPCVest_Snow",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_JPCVest_Tan",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_MilitaryJacket_Black",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_MilitaryJacket_Blue",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_MilitaryJacket_Olive",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_MilitaryJacket_Tan",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_ModularVest_Black",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_ModularVest_Snow",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_ModularVest_Tan",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_PatrolJacket_Green",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_PatrolJacket_STG_Red",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_PatrolJacket_Snow",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_ScavangerTop_MC",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_TacticalHoodie_Black",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_TacticalHoodie_EMR",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_TacticalHoodie_Grey",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_TacticalHoodie_MC",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_TacticalHoodie_Olive",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_TacticalHoodie_Red",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_TacticalHoodie_Tan",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_WW2Coat_Classic",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_WW2Vest_Classic",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "NBCJacketWhite",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "NBCJacketYellow",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        }
+    ]
+}

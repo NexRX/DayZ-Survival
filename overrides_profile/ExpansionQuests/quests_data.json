@@ -9,7 +9,7 @@
   "QUEST_CONFIG_VERSION": 22,
   "OBJECTIVE_CONFIG_VERSION": 28,
   "NPC_CONFIG_VERSION": 6,
-  "GOLD_CLASSNAME": "ExpansionGoldNugget",
+  "GOLD_CLASSNAME": "expansionbanknotehryvnia",
   "TRAVEL_OBJECTIVES": [
     {
       "id": 1000,
@@ -23,7 +23,7 @@
       "id": 1001,
       "fileName": "DZSurvival_Travel_1001",
       "objectiveText": "Scout the old Water Station north of here.",
-      "position": [5004.95, 320.60, 5588.04],
+      "position": [5004.95, 320.6, 5588.04],
       "maxDistance": 25,
       "markerName": "Water Station"
     },
@@ -91,14 +91,22 @@
       "id": 2006,
       "fileName": "DZSurvival_Target_2006",
       "objectiveText": "Kill 10 rabbits or squirrels.",
-      "classNames": ["Animal_Rabbit_Grey", "Animal_Rabbit_Brown", "Animal_Squirrel"],
+      "classNames": [
+        "Animal_Rabbit_Grey",
+        "Animal_Rabbit_Brown",
+        "Animal_Squirrel"
+      ],
       "amount": 10
     },
     {
       "id": 2007,
       "fileName": "DZSurvival_Target_2007",
       "objectiveText": "Kill 5 rabbits or squirrels.",
-      "classNames": ["Animal_Rabbit_Grey", "Animal_Rabbit_Brown", "Animal_Squirrel"],
+      "classNames": [
+        "Animal_Rabbit_Grey",
+        "Animal_Rabbit_Brown",
+        "Animal_Squirrel"
+      ],
       "amount": 5
     }
   ],
@@ -116,9 +124,7 @@
       "id": 3001,
       "fileName": "DZSurvival_Delivery_3001",
       "objectiveText": "Deliver 10x Wooden Log to Taskmaster Daniels.",
-      "items": [
-        { "amount": 10, "className": "WoodenLog" }
-      ]
+      "items": [{ "amount": 10, "className": "WoodenLog" }]
     },
     {
       "id": 3002,
@@ -133,17 +139,13 @@
       "id": 3003,
       "fileName": "DZSurvival_Delivery_3003",
       "objectiveText": "Deliver 1x Green Keycard to Taskmaster Daniels.",
-      "items": [
-        { "amount": 1, "className": "evg_keycards_Green" }
-      ]
+      "items": [{ "amount": 1, "className": "evg_keycards_Green" }]
     },
     {
       "id": 3004,
       "fileName": "DZSurvival_Delivery_3004",
       "objectiveText": "Deliver 2x Canister Gasoline to Taskmaster Daniels.",
-      "items": [
-        { "amount": 2, "className": "CanisterGasoline" }
-      ]
+      "items": [{ "amount": 2, "className": "CanisterGasoline" }]
     }
   ],
   "COLLECTION_OBJECTIVES": [
@@ -161,33 +163,25 @@
       "id": 4001,
       "fileName": "DZSurvival_Collection_4001",
       "objectiveText": "Catch 2x Mackerel.",
-      "items": [
-        { "amount": 2, "className": "Mackerel" }
-      ]
+      "items": [{ "amount": 2, "className": "Mackerel" }]
     },
     {
       "id": 4002,
       "fileName": "DZSurvival_Collection_4002",
       "objectiveText": "Gather 5x Water Bottle.",
-      "items": [
-        { "amount": 5, "className": "WaterBottle" }
-      ]
+      "items": [{ "amount": 5, "className": "WaterBottle" }]
     },
     {
       "id": 4003,
       "fileName": "DZSurvival_Collection_4003",
       "objectiveText": "Gather 10x Rag.",
-      "items": [
-        { "amount": 10, "className": "Rag" }
-      ]
+      "items": [{ "amount": 10, "className": "Rag" }]
     },
     {
       "id": 4004,
       "fileName": "DZSurvival_Collection_4004",
       "objectiveText": "Gather 5x Metal Plate.",
-      "items": [
-        { "amount": 5, "className": "MetalPlate" }
-      ]
+      "items": [{ "amount": 5, "className": "MetalPlate" }]
     }
   ],
   "CRAFTING_OBJECTIVES": [
@@ -215,12 +209,8 @@
       "preQuestIds": [],
       "repeatable": false,
       "isDailyQuest": false,
-      "objectives": [
-        { "type": "TRAVEL", "id": 1000 }
-      ],
-      "rewards": [
-        { "className": "ExpansionGoldNugget", "amount": 1500 }
-      ]
+      "objectives": [{ "type": "TRAVEL", "id": 1000 }],
+      "rewards": [{ "className": "expansionbanknotehryvnia", "amount": 1500 }]
     },
     {
       "id": 1001,
@@ -237,11 +227,9 @@
       "preQuestIds": [1000],
       "repeatable": false,
       "isDailyQuest": false,
-      "objectives": [
-        { "type": "TARGET", "id": 2000 }
-      ],
+      "objectives": [{ "type": "TARGET", "id": 2000 }],
       "rewards": [
-        { "className": "ExpansionGoldNugget", "amount": 2000 },
+        { "className": "expansionbanknotehryvnia", "amount": 2000 },
         { "className": "TRQ_DecoyGrenade", "amount": 1 }
       ]
     },
@@ -260,12 +248,8 @@
       "preQuestIds": [1001],
       "repeatable": false,
       "isDailyQuest": false,
-      "objectives": [
-        { "type": "TARGET", "id": 2001 }
-      ],
-      "rewards": [
-        { "className": "ExpansionGoldNugget", "amount": 7500 }
-      ]
+      "objectives": [{ "type": "TARGET", "id": 2001 }],
+      "rewards": [{ "className": "expansionbanknotehryvnia", "amount": 7500 }]
     },
     {
       "id": 1003,
@@ -282,11 +266,9 @@
       "preQuestIds": [1002],
       "repeatable": false,
       "isDailyQuest": false,
-      "objectives": [
-        { "type": "TARGET", "id": 2002 }
-      ],
+      "objectives": [{ "type": "TARGET", "id": 2002 }],
       "rewards": [
-        { "className": "ExpansionGoldNugget", "amount": 7000 },
+        { "className": "expansionbanknotehryvnia", "amount": 7000 },
         { "className": "TaloonBag_Green", "amount": 1 }
       ]
     },
@@ -305,12 +287,8 @@
       "preQuestIds": [1003],
       "repeatable": false,
       "isDailyQuest": false,
-      "objectives": [
-        { "type": "DELIVERY", "id": 3000 }
-      ],
-      "rewards": [
-        { "className": "ExpansionGoldNugget", "amount": 6000 }
-      ]
+      "objectives": [{ "type": "DELIVERY", "id": 3000 }],
+      "rewards": [{ "className": "expansionbanknotehryvnia", "amount": 6000 }]
     },
     {
       "id": 1005,
@@ -327,12 +305,8 @@
       "preQuestIds": [1004],
       "repeatable": false,
       "isDailyQuest": false,
-      "objectives": [
-        { "type": "COLLECT", "id": 4000 }
-      ],
-      "rewards": [
-        { "className": "ExpansionGoldNugget", "amount": 6000 }
-      ]
+      "objectives": [{ "type": "COLLECT", "id": 4000 }],
+      "rewards": [{ "className": "expansionbanknotehryvnia", "amount": 6000 }]
     },
     {
       "id": 1006,
@@ -349,11 +323,9 @@
       "preQuestIds": [1005],
       "repeatable": false,
       "isDailyQuest": false,
-      "objectives": [
-        { "type": "TRAVEL", "id": 1001 }
-      ],
+      "objectives": [{ "type": "TRAVEL", "id": 1001 }],
       "rewards": [
-        { "className": "ExpansionGoldNugget", "amount": 7000 },
+        { "className": "expansionbanknotehryvnia", "amount": 7000 },
         { "className": "evg_keycards_Yellow", "amount": 1 }
       ]
     },
@@ -372,12 +344,8 @@
       "preQuestIds": [1006],
       "repeatable": false,
       "isDailyQuest": false,
-      "objectives": [
-        { "type": "TRAVEL", "id": 1002 }
-      ],
-      "rewards": [
-        { "className": "ExpansionGoldNugget", "amount": 10000 }
-      ]
+      "objectives": [{ "type": "TRAVEL", "id": 1002 }],
+      "rewards": [{ "className": "expansionbanknotehryvnia", "amount": 10000 }]
     },
     {
       "id": 1008,
@@ -394,11 +362,9 @@
       "preQuestIds": [1007],
       "repeatable": false,
       "isDailyQuest": false,
-      "objectives": [
-        { "type": "TARGET", "id": 2003 }
-      ],
+      "objectives": [{ "type": "TARGET", "id": 2003 }],
       "rewards": [
-        { "className": "ExpansionGoldNugget", "amount": 20000 },
+        { "className": "expansionbanknotehryvnia", "amount": 20000 },
         { "className": "evg_keycards_Blue", "amount": 1 }
       ]
     },
@@ -422,7 +388,7 @@
         { "type": "COLLECT", "id": 4001 }
       ],
       "rewards": [
-        { "className": "ExpansionGoldNugget", "amount": 5000 },
+        { "className": "expansionbanknotehryvnia", "amount": 5000 },
         { "className": "ImprovisedFishingRod", "amount": 1 }
       ]
     },
@@ -441,12 +407,8 @@
       "preQuestIds": [1009],
       "repeatable": false,
       "isDailyQuest": false,
-      "objectives": [
-        { "type": "DELIVERY", "id": 3002 }
-      ],
-      "rewards": [
-        { "className": "ExpansionGoldNugget", "amount": 7000 }
-      ]
+      "objectives": [{ "type": "DELIVERY", "id": 3002 }],
+      "rewards": [{ "className": "expansionbanknotehryvnia", "amount": 7000 }]
     },
     {
       "id": 1011,
@@ -463,11 +425,9 @@
       "preQuestIds": [1010],
       "repeatable": false,
       "isDailyQuest": false,
-      "objectives": [
-        { "type": "DELIVERY", "id": 3003 }
-      ],
+      "objectives": [{ "type": "DELIVERY", "id": 3003 }],
       "rewards": [
-        { "className": "ExpansionGoldNugget", "amount": 20000 },
+        { "className": "expansionbanknotehryvnia", "amount": 20000 },
         { "className": "evg_keycards_Violet", "amount": 1 }
       ]
     },
@@ -486,12 +446,8 @@
       "preQuestIds": [1011],
       "repeatable": false,
       "isDailyQuest": false,
-      "objectives": [
-        { "type": "TARGET", "id": 2006 }
-      ],
-      "rewards": [
-        { "className": "ExpansionGoldNugget", "amount": 8500 }
-      ]
+      "objectives": [{ "type": "TARGET", "id": 2006 }],
+      "rewards": [{ "className": "expansionbanknotehryvnia", "amount": 8500 }]
     },
     {
       "id": 1013,
@@ -508,11 +464,9 @@
       "preQuestIds": [1012],
       "repeatable": false,
       "isDailyQuest": false,
-      "objectives": [
-        { "type": "TRAVEL", "id": 1003 }
-      ],
+      "objectives": [{ "type": "TRAVEL", "id": 1003 }],
       "rewards": [
-        { "className": "ExpansionGoldNugget", "amount": 50000 },
+        { "className": "expansionbanknotehryvnia", "amount": 50000 },
         { "className": "evg_keycards_Red", "amount": 1 }
       ]
     }
@@ -533,12 +487,8 @@
       "preQuestIds": [],
       "repeatable": true,
       "isDailyQuest": true,
-      "objectives": [
-        { "type": "TARGET", "id": 2004 }
-      ],
-      "rewards": [
-        { "className": "ExpansionGoldNugget", "amount": 15000 }
-      ]
+      "objectives": [{ "type": "TARGET", "id": 2004 }],
+      "rewards": [{ "className": "expansionbanknotehryvnia", "amount": 15000 }]
     },
     {
       "id": 1101,
@@ -555,12 +505,8 @@
       "preQuestIds": [],
       "repeatable": true,
       "isDailyQuest": false,
-      "objectives": [
-        { "type": "TARGET", "id": 2005 }
-      ],
-      "rewards": [
-        { "className": "ExpansionGoldNugget", "amount": 3500 }
-      ]
+      "objectives": [{ "type": "TARGET", "id": 2005 }],
+      "rewards": [{ "className": "expansionbanknotehryvnia", "amount": 3500 }]
     },
     {
       "id": 1102,
@@ -577,12 +523,8 @@
       "preQuestIds": [],
       "repeatable": true,
       "isDailyQuest": true,
-      "objectives": [
-        { "type": "COLLECT", "id": 4002 }
-      ],
-      "rewards": [
-        { "className": "ExpansionGoldNugget", "amount": 2500 }
-      ]
+      "objectives": [{ "type": "COLLECT", "id": 4002 }],
+      "rewards": [{ "className": "expansionbanknotehryvnia", "amount": 2500 }]
     },
     {
       "id": 1103,
@@ -599,12 +541,8 @@
       "preQuestIds": [],
       "repeatable": true,
       "isDailyQuest": false,
-      "objectives": [
-        { "type": "COLLECT", "id": 4003 }
-      ],
-      "rewards": [
-        { "className": "ExpansionGoldNugget", "amount": 1000 }
-      ]
+      "objectives": [{ "type": "COLLECT", "id": 4003 }],
+      "rewards": [{ "className": "expansionbanknotehryvnia", "amount": 1000 }]
     },
     {
       "id": 1104,
@@ -621,12 +559,8 @@
       "preQuestIds": [],
       "repeatable": true,
       "isDailyQuest": true,
-      "objectives": [
-        { "type": "DELIVERY", "id": 3001 }
-      ],
-      "rewards": [
-        { "className": "ExpansionGoldNugget", "amount": 1500 }
-      ]
+      "objectives": [{ "type": "DELIVERY", "id": 3001 }],
+      "rewards": [{ "className": "expansionbanknotehryvnia", "amount": 1500 }]
     },
     {
       "id": 1105,
@@ -643,12 +577,8 @@
       "preQuestIds": [],
       "repeatable": true,
       "isDailyQuest": false,
-      "objectives": [
-        { "type": "TARGET", "id": 2007 }
-      ],
-      "rewards": [
-        { "className": "ExpansionGoldNugget", "amount": 3000 }
-      ]
+      "objectives": [{ "type": "TARGET", "id": 2007 }],
+      "rewards": [{ "className": "expansionbanknotehryvnia", "amount": 3000 }]
     },
     {
       "id": 1106,
@@ -665,12 +595,8 @@
       "preQuestIds": [],
       "repeatable": true,
       "isDailyQuest": true,
-      "objectives": [
-        { "type": "DELIVERY", "id": 3004 }
-      ],
-      "rewards": [
-        { "className": "ExpansionGoldNugget", "amount": 3000 }
-      ]
+      "objectives": [{ "type": "DELIVERY", "id": 3004 }],
+      "rewards": [{ "className": "expansionbanknotehryvnia", "amount": 3000 }]
     },
     {
       "id": 1107,
@@ -687,12 +613,8 @@
       "preQuestIds": [],
       "repeatable": true,
       "isDailyQuest": false,
-      "objectives": [
-        { "type": "COLLECT", "id": 4004 }
-      ],
-      "rewards": [
-        { "className": "ExpansionGoldNugget", "amount": 2750 }
-      ]
+      "objectives": [{ "type": "COLLECT", "id": 4004 }],
+      "rewards": [{ "className": "expansionbanknotehryvnia", "amount": 2750 }]
     }
   ],
   "QUEST_NPCS": [

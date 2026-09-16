@@ -1,0 +1,202 @@
+{
+    "m_Version": 12,
+    "DisplayName": "#STR_EXPANSION_MARKET_CATEGORY_GHILLIES",
+    "Icon": "Deliver",
+    "Color": "FBFCFEFF",
+    "IsExchange": 0,
+    "InitStockPercent": 0,
+    "Items": [
+        {
+            "ClassName": "ghilliehood_tan",
+            "MaxPriceThreshold": 5265,
+            "MinPriceThreshold": 3160,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 1,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "ghilliehood_woodland",
+                "ghilliehood_mossy",
+                "ghilliehood_winter"
+            ]
+        },
+        {
+            "ClassName": "ghilliebushrag_tan",
+            "MaxPriceThreshold": 5265,
+            "MinPriceThreshold": 3160,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 1,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "ghilliebushrag_woodland",
+                "ghilliebushrag_mossy",
+                "ghilliebushrag_winter"
+            ]
+        },
+        {
+            "ClassName": "ghillietop_tan",
+            "MaxPriceThreshold": 5265,
+            "MinPriceThreshold": 3160,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 1,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "ghillietop_woodland",
+                "ghillietop_mossy",
+                "ghillietop_winter"
+            ]
+        },
+        {
+            "ClassName": "ghilliesuit_tan",
+            "MaxPriceThreshold": 5265,
+            "MinPriceThreshold": 3160,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 1,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "ghilliesuit_woodland",
+                "ghilliesuit_mossy",
+                "ghilliesuit_winter"
+            ]
+        },
+        {
+            "ClassName": "GhillieBushrag_Mossy",
+            "MaxPriceThreshold": 5265,
+            "MinPriceThreshold": 3160,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "GhillieBushrag_Winter",
+            "MaxPriceThreshold": 5265,
+            "MinPriceThreshold": 3160,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "GhillieBushrag_Woodland",
+            "MaxPriceThreshold": 5265,
+            "MinPriceThreshold": 3160,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "GhillieHood_Mossy",
+            "MaxPriceThreshold": 5265,
+            "MinPriceThreshold": 3160,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "GhillieHood_Winter",
+            "MaxPriceThreshold": 5265,
+            "MinPriceThreshold": 3160,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "GhillieHood_Woodland",
+            "MaxPriceThreshold": 5265,
+            "MinPriceThreshold": 3160,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "GhillieSuit_Mossy",
+            "MaxPriceThreshold": 5265,
+            "MinPriceThreshold": 3160,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "GhillieSuit_Winter",
+            "MaxPriceThreshold": 5265,
+            "MinPriceThreshold": 3160,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "GhillieSuit_Woodland",
+            "MaxPriceThreshold": 5265,
+            "MinPriceThreshold": 3160,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "GhillieTop_Mossy",
+            "MaxPriceThreshold": 5265,
+            "MinPriceThreshold": 3160,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "GhillieTop_Winter",
+            "MaxPriceThreshold": 5265,
+            "MinPriceThreshold": 3160,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "GhillieTop_Woodland",
+            "MaxPriceThreshold": 5265,
+            "MinPriceThreshold": 3160,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        }
+    ]
+}

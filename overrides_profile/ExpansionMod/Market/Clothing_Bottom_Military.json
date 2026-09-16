@@ -1,0 +1,580 @@
+{
+    "m_Version": 12,
+    "DisplayName": "Clothing Bottom - Military",
+    "Icon": "Deliver",
+    "Color": "FBFCFEFF",
+    "IsExchange": 0,
+    "InitStockPercent": 15,
+    "Items": [
+        {
+            "ClassName": "ttskopants",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "bdupants",
+            "MaxPriceThreshold": 4388,
+            "MinPriceThreshold": 2638,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "usmcpants_desert",
+            "MaxPriceThreshold": 4388,
+            "MinPriceThreshold": 2638,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "usmcpants_woodland"
+            ]
+        },
+        {
+            "ClassName": "gorkapants_summer",
+            "MaxPriceThreshold": 4388,
+            "MinPriceThreshold": 2638,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "gorkapants_autumn",
+                "gorkapants_flat",
+                "gorkapants_pautrev",
+                "gorkapants_winter"
+            ]
+        },
+        {
+            "ClassName": "nbcpantsgray",
+            "MaxPriceThreshold": 32913,
+            "MinPriceThreshold": 19750,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "nbcpantsyellow",
+                "nbcpantswhite"
+            ]
+        },
+        {
+            "ClassName": "omkpants_navy",
+            "MaxPriceThreshold": 600,
+            "MinPriceThreshold": 363,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "navyuniformpants",
+            "MaxPriceThreshold": 600,
+            "MinPriceThreshold": 363,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "combatboots_beige",
+            "MaxPriceThreshold": 2633,
+            "MinPriceThreshold": 1583,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "combatboots_black",
+                "combatboots_brown",
+                "combatboots_green",
+                "combatboots_grey"
+            ]
+        },
+        {
+            "ClassName": "jungleboots_beige",
+            "MaxPriceThreshold": 2655,
+            "MinPriceThreshold": 1590,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "jungleboots_black",
+                "jungleboots_brown",
+                "jungleboots_green",
+                "jungleboots_olive"
+            ]
+        },
+        {
+            "ClassName": "ttskoboots",
+            "MaxPriceThreshold": 2588,
+            "MinPriceThreshold": 1553,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "militaryboots_redpunk",
+            "MaxPriceThreshold": 705,
+            "MinPriceThreshold": 428,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "militaryboots_bluerock",
+                "militaryboots_beige",
+                "militaryboots_black",
+                "militaryboots_brown"
+            ]
+        },
+        {
+            "ClassName": "militaryboots_bluerock",
+            "MaxPriceThreshold": 705,
+            "MinPriceThreshold": 420,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "militaryboots_beige",
+            "MaxPriceThreshold": 2633,
+            "MinPriceThreshold": 1583,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "militaryboots_black",
+            "MaxPriceThreshold": 2633,
+            "MinPriceThreshold": 1583,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "militaryboots_brown",
+            "MaxPriceThreshold": 2633,
+            "MinPriceThreshold": 1583,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "nbcbootsgray",
+            "MaxPriceThreshold": 19748,
+            "MinPriceThreshold": 11850,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "nbcbootsyellow",
+                "nbcbootswhite"
+            ]
+        },
+        {
+            "ClassName": "coldoperationboots_camo",
+            "MaxPriceThreshold": 900,
+            "MinPriceThreshold": 450,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": [
+                "coldoperationboots_green",
+                "coldoperationboots_grey"
+            ]
+        },
+        {
+            "ClassName": "ColdOperationBoots_Green",
+            "MaxPriceThreshold": 900,
+            "MinPriceThreshold": 450,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ColdOperationBoots_Grey",
+            "MaxPriceThreshold": 900,
+            "MinPriceThreshold": 450,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "CombatBoots_Black",
+            "MaxPriceThreshold": 2633,
+            "MinPriceThreshold": 1583,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "CombatBoots_Brown",
+            "MaxPriceThreshold": 2633,
+            "MinPriceThreshold": 1583,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "CombatBoots_Green",
+            "MaxPriceThreshold": 2633,
+            "MinPriceThreshold": 1583,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "CombatBoots_Grey",
+            "MaxPriceThreshold": 2633,
+            "MinPriceThreshold": 1583,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "GorkaPants_Autumn",
+            "MaxPriceThreshold": 4388,
+            "MinPriceThreshold": 2638,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "GorkaPants_Flat",
+            "MaxPriceThreshold": 4388,
+            "MinPriceThreshold": 2638,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "GorkaPants_PautRev",
+            "MaxPriceThreshold": 4388,
+            "MinPriceThreshold": 2638,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "GorkaPants_Winter",
+            "MaxPriceThreshold": 4388,
+            "MinPriceThreshold": 2638,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "JungleBoots_Black",
+            "MaxPriceThreshold": 2655,
+            "MinPriceThreshold": 1590,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "JungleBoots_Brown",
+            "MaxPriceThreshold": 2655,
+            "MinPriceThreshold": 1590,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "JungleBoots_Green",
+            "MaxPriceThreshold": 2655,
+            "MinPriceThreshold": 1590,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "JungleBoots_Olive",
+            "MaxPriceThreshold": 2655,
+            "MinPriceThreshold": 1590,
+            "SellPricePercent": -1,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "USMCPants_Woodland",
+            "MaxPriceThreshold": 4388,
+            "MinPriceThreshold": 2638,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 3,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_G3Pants_Black",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_G3Pants_MC",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_G3Pants_Snow",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_G3Pants_Tan",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_PatrolPants_Green",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_PatrolPants_STG_Red",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_PatrolPants_Snow",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_WW2Boots_Classic",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "ALV_WW2Pants_Classic",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Galife_Pants_Navy",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Galife_Pants_Olive",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "Kirza_Boots",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "NBCBootsWhite",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "NBCBootsYellow",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "NBCGlovesYellow",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "NBCPantsWhite",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        },
+        {
+            "ClassName": "NBCPantsYellow",
+            "MaxPriceThreshold": 4313,
+            "MinPriceThreshold": 2588,
+            "SellPricePercent": 40,
+            "MaxStockThreshold": 8,
+            "MinStockThreshold": 0,
+            "QuantityPercent": -1,
+            "SpawnAttachments": [],
+            "Variants": []
+        }
+    ]
+}
