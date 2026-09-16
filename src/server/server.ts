@@ -21,6 +21,7 @@ import { tuneAnimalSpawns, tuneFoodScarcity, tuneMoneyScarcity } from "../config
 import { loadMods, modParam, serverModParam } from "../server/mods.ts";
 import { ensureConfig, genConfig, type Settings } from "../config/settings.ts";
 import { ensureOverrides } from "../config/overrides.ts";
+import { ensureQuests } from "../config/quests.ts";
 
 // Deploy the locally-built server-only pack into the server's mod folder.
 // The signed PBOs live in the repo (serveronlypack/@serveronlypack/) and are
@@ -333,6 +334,8 @@ export async function doStart(s: Settings): Promise<void> {
   await ensureCustomTrader();
 
   await ensureOverrides();
+
+  await ensureQuests();
 
   await deployServerOnlyPack();
 
