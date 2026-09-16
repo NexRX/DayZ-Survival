@@ -12,7 +12,8 @@ export const SERVER_DIR = `${ROOT}/server`;
 export const STEAMCMD_DIR = `${ROOT}/steamcmd`; // project-local Steam HOME
 export const PROFILE_DIR = `${ROOT}/profiles`;
 export const AI_TEMPLATE_DIR = `${ROOT}/ai`;
-export const EDITOR_STORED_DIR = `${ROOT}/data/editor`;
+export const EDITOR_OVERRIDE_DIR =
+  `${ROOT}/overrides_server/mpmissions/dayzOffline.chernarusplus/EditorFiles`;
 export const SERVERONLYPACK_DIR = `${ROOT}/serveronlypack/@serveronlypack`;
 
 export const LOGIN_MARKER = `${STEAMCMD_DIR}/.dayz_login_ok`;
@@ -235,6 +236,7 @@ export const SERVERPACK: ServerPackConfig = {
 export const DAYZ_EDITOR_SAVE_DIR = `${
   Deno.env.get("HOME")
 }/.local/share/Steam/steamapps/compatdata/221100/pfx/drive_c/users/steamuser/Documents/DayZ/Editor`;
+export const DAYZ_EDITOR_TRADER_FILENAME = "survival-server-1.dze";
 export const EDITOR_FILES_DIR = `${MISSION_DIR}/EditorFiles`;
 
 // Vanilla static-building-group loot economy files, shipped as part of the

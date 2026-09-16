@@ -1,12 +1,6 @@
 // serverDZ.cfg generation and launching the server under steam-run.
 
-import {
-  EDITOR_FILES_DIR,
-  EDITOR_STORED_DIR,
-  PROFILE_DIR,
-  SERVER_DIR,
-  SERVERONLYPACK_DIR,
-} from "../constants/paths.ts";
+import { PROFILE_DIR, SERVER_DIR, SERVERONLYPACK_DIR } from "../constants/paths.ts";
 import { log, warn } from "../ui.ts";
 import { requireTools } from "../proc.ts";
 import { ensureServer, serverBinary } from "../steam.ts";
@@ -27,42 +21,6 @@ import { tuneAnimalSpawns, tuneFoodScarcity, tuneMoneyScarcity } from "../config
 import { loadMods, modParam, serverModParam } from "../server/mods.ts";
 import { ensureConfig, genConfig, type Settings } from "../config/settings.ts";
 import { ensureOverrides } from "../config/overrides.ts";
-
-// Deploy the committed editor save (.dze) into the mission's EditorFiles/
-// folder where @DayZ-Editor-Loader reads it. The file lives in the repo
-// (data/editor/) for version control; this copies it to the live directory
-// on every server start so it's always up to date.
-async function deployEditorSave(): Promise<void> {
-  try {
-    await Deno.mkdir(EDITOR_FILES_DIR, { recursive: true });
-  } catch (e) {
-    if (!(e instanceof Deno.errors.AlreadyExists)) throw e;
-  }
-
-  // Copy every .dze from the stored dir into EditorFiles/.
-  // Editor-Loader loads ALL .dze files it finds, so any file we commit
-  // gets deployed. The user controls what ends up there by committing it.
-  let deployed = 0;
-  try {
-    for await (const entry of Deno.readDir(EDITOR_STORED_DIR)) {
-      if (!entry.isFile || !entry.name.toLowerCase().endsWith(".dze")) continue;
-      const src = `${EDITOR_STORED_DIR}/${entry.name}`;
-      const dest = `${EDITOR_FILES_DIR}/${entry.name}`;
-      await Deno.copyFile(src, dest);
-      deployed++;
-    }
-  } catch (e) {
-    if (e instanceof Deno.errors.NotFound) {
-      // data/editor/ hasn't been created yet — nothing to deploy
-      return;
-    }
-    throw e;
-  }
-
-  if (deployed > 0) {
-    log(`Deployed ${deployed} editor save(s) to EditorFiles/`);
-  }
-}
 
 // Deploy the locally-built server-only pack into the server's mod folder.
 // The signed PBOs live in the repo (serveronlypack/@serveronlypack/) and are
@@ -376,7 +334,6 @@ export async function doStart(s: Settings): Promise<void> {
 
   await ensureOverrides();
 
-  await deployEditorSave();
   await deployServerOnlyPack();
 
   await pruneOldLogs();
