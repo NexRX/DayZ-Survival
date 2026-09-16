@@ -1,5 +1,4 @@
 {
-  "Config_Version": 1,
   "Missions": [
     {
       "Name": "NWAF_Weapons_Cache",
@@ -54,13 +53,6 @@
       "Allow_Crate_Reward": 1,
       "Allow_Vehicle_Reward": 1,
       "Static_Objects": []
-    }
-  ],
-  "Settings": [
-    {
-      "Reward_Loot_Weapons_Maximum": 1,
-      "Reward_Loot_Armour_Maximum": 1,
-      "Reward_Loot_Misc_Maximum": 2
     }
   ],
   "LoadoutGroup": {

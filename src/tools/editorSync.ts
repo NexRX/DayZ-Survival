@@ -1,11 +1,4 @@
-// Copies the most recently saved DayZ-Editor .dze file from the client's
-// Proton prefix (DAYZ_EDITOR_SAVE_DIR) into the repo's data/editor/ folder,
-// where it gets committed to git. On server startup (see server.ts), that
-// file is copied into the mission's EditorFiles/ folder where
-// @DayZ-Editor-Loader reads it from.
-//
-// This two-step flow keeps the DZE checked into version control while still
-// deploying it to the live server directory on each start.
+// Manages the coping of the dze files saved in DayZ-Editor to the servers overrides
 
 import {
   DAYZ_EDITOR_SAVE_DIR,
@@ -13,19 +6,7 @@ import {
   EDITOR_FILES_DIR,
   EDITOR_OVERRIDE_DIR,
 } from "../constants/paths.ts";
-import { DayzError, hint, log, ok, warn } from "../ui.ts";
-
-async function newestDze(dir: string): Promise<{ name: string; path: string; mtime: Date } | null> {
-  let best: { name: string; path: string; mtime: Date } | null = null;
-  for await (const entry of Deno.readDir(dir)) {
-    if (!entry.isFile || !entry.name.toLowerCase().endsWith(".dze")) continue;
-    const path = `${dir}/${entry.name}`;
-    const info = await Deno.stat(path);
-    const mtime = info.mtime ?? new Date(0);
-    if (!best || mtime > best.mtime) best = { name: entry.name, path, mtime };
-  }
-  return best;
-}
+import { hint, ok, warn } from "../ui.ts";
 
 export async function doSyncEditor(): Promise<void> {
   try {

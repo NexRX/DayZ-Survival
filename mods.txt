@@ -68,7 +68,6 @@
 3628006769  @AI-Bandits
 2394804821  @Zombie-Sound
 3499461862  @Knock-Knock-Zombies
-3510772253  @BMM-Chemical-Zombie # NOTE: BMM-Chemical-Zombie (3510772253) stays a separate standalone mod - its config.bin uses a rapified value type armake2 (this project's PBO tool) doesn't support decompiling ("Unrecognized variable entry subtype: 6"), so it can't go through the same unpack/derapify/rebuild pipeline as the other repacked mods here.
 3557687387  @Custom-Zombies
 3767913539  @Moving-AI-Convoy
 2912241382  @Admirals-Parachute-Mod
