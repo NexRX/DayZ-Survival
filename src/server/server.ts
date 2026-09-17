@@ -146,54 +146,6 @@ function forceKill(): void {
   }
 }
 
-// Wall-clock restarts every 12h at 03:00 and 15:00 (local server time), on
-// top of - not instead of - the crash-recovery watchdog below: this just
-// SIGTERMs the current child the same way requestStop() does, but without
-// ever setting `stopRequested`, so the watchdog's own while(true) loop
-// treats the resulting clean exit exactly like any other and relaunches
-// immediately - no special-casing needed there beyond the log message.
-const SCHEDULED_RESTART_HOURS = [3, 15];
-
-function msUntilNextScheduledRestart(now = new Date()): number {
-  const next = Math.min(
-    ...SCHEDULED_RESTART_HOURS.map((h) => {
-      const d = new Date(now);
-      d.setHours(h, 0, 0, 0);
-      if (d.getTime() <= now.getTime()) d.setDate(d.getDate() + 1);
-      return d.getTime();
-    }),
-  );
-  return next - now.getTime();
-}
-
-function scheduleNextAutoRestart(): void {
-  const delay = msUntilNextScheduledRestart();
-  log(`Next scheduled restart: ${new Date(Date.now() + delay).toLocaleString()}`);
-  setTimeout(() => {
-    if (currentChild) {
-      log("Scheduled restart (03:00/15:00) - stopping the server gracefully...");
-      scheduledRestartInProgress = true;
-      try {
-        currentChild.kill("SIGTERM");
-      } catch {
-        // already exited - the watchdog loop below will notice via child.status
-      }
-      setTimeout(() => {
-        if (scheduledRestartInProgress && currentChild) {
-          warn(
-            `Server didn't exit within ${GRACEFUL_STOP_TIMEOUT_MS / 1000}s of the scheduled ` +
-              "restart's SIGTERM - force-killing.",
-          );
-          forceKill();
-        }
-      }, GRACEFUL_STOP_TIMEOUT_MS);
-    }
-    // Reschedule regardless of whether a child was running at the moment
-    // this fired (e.g. mid-crash-backoff) - next occurrence is still 12h out.
-    scheduleNextAutoRestart();
-  }, delay);
-}
-
 function requestStop(): void {
   const now = Date.now();
   if (stopRequested) {
@@ -241,7 +193,6 @@ async function runServerWithWatchdog(args: string[]): Promise<never> {
   log(`Starting Server: ${args.reduce((a, b) => `${a}\n${b}`)}`);
   Deno.addSignalListener("SIGINT", requestStop);
   Deno.addSignalListener("SIGTERM", requestStop);
-  scheduleNextAutoRestart();
 
   let consecutiveFastCrashes = 0;
   while (true) {

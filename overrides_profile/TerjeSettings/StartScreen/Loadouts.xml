@@ -35,17 +35,7 @@
 		<Items>
 			<Item classname="BaseballBat" position="Melee" quickbar="0" />
 			<Item classname="TRQ_DecoyGrenade" quickbar="1" />
-			<Item classname="ChernarusMap" quickbar="2"/>
-			<Item classname="Rag" count="4" quickbar="4"/>
-			<Item classname="TerjeDosimetrDpg05" />
-			<Item classname="Battery9V" />
-			<Selector type="RANDOM">
-				<Item classname="Plum" />
-				<Item classname="Apple" />
-				<Item classname="Pear" />
-				<Item classname="Tomato" />
-				<Item classname="Potato" />
-			</Selector>
+			j
 		</Items>
 	</Loadout>
 	<Loadout id="admin">

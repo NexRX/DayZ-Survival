@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<messages>
+    <message>
+        <delay>0</delay>
+        <repeat>0</repeat>
+        <deadline>720</deadline> <!-- 12 hours -->
+        <onConnect>0</onConnect>
+        <shutdown>1</shutdown>
+        <text>#name will restart in #tmin minutes.</text>
+    </message>
+</messages>
