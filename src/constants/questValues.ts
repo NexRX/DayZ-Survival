@@ -3,10 +3,16 @@ import { CUSTOM_POSITION } from "../config/traders.ts";
 // ExpansionQuestObjectiveType enum values (ExpansionQuestObjectiveType.c) -
 // only the ones actually used below.
 export const OBJECTIVE_TYPE = {
+  NONE: 1,
   TARGET: 2,
   TRAVEL: 3,
   COLLECT: 4,
   DELIVERY: 5,
+  TREASUREHUNT: 6,
+  AIPATROL: 7,
+  AICAMP: 8,
+  AIVIP: 9,
+  ACTION: 10,
   CRAFTING: 11,
 } as const;
 
@@ -285,6 +291,10 @@ export const CRAFTING_OBJECTIVES: CraftingObjectiveDef[] = [
   },
 ];
 
+export type BoolNum = 0 | 1;
+export const FALSE = 0 as const;
+export const TRUE = 1 as const;
+
 // --- Quest definitions -----------------------------------------------------
 
 export interface QuestReward {
@@ -307,8 +317,8 @@ export interface QuestDef {
   questGiverIds: number[];
   questTurnInIds: number[];
   preQuestIds: number[];
-  repeatable: boolean;
-  isDailyQuest: boolean;
+  repeatable: BoolNum;
+  isDailyQuest: BoolNum;
   objectives: QuestObjectiveRef[];
   rewards: QuestReward[];
 }

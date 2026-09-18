@@ -14,6 +14,7 @@ export interface Settings {
   LOWERCASE_MODS: string;
   STEAM_API_KEY: string;
   EXTRA_PARAMS: string;
+  IS_ALPHA: string;
 }
 
 const DEFAULTS: Settings = {
@@ -27,6 +28,7 @@ const DEFAULTS: Settings = {
   LOWERCASE_MODS: "1",
   STEAM_API_KEY: "",
   EXTRA_PARAMS: "-dologs -adminlog -netlog -freezecheck",
+  IS_ALPHA: "false",
 };
 
 /** Parse a `.env` file: KEY=value, with optional quotes and `#` comments. */

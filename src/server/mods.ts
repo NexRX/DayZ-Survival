@@ -1,6 +1,13 @@
 // mods.txt parsing + Steam Web API lookup.
 
-import { DAYZ_CLIENT_APPID, MODS_FILE, SERVERONLYPACK_FOLDER } from "../constants/paths.ts";
+import { loadSettings } from "../config/settings.ts";
+import { SERVER_PACK_ID, SERVER_PACK_ID_ALPHA } from "../constants/generic.ts";
+import {
+  DAYZ_CLIENT_APPID,
+  MODS_FILE,
+  SERVERONLYPACK_NAME,
+  SERVERPACK_NAME,
+} from "../constants/paths.ts";
 import { die, log } from "../ui.ts";
 
 export interface Mod {
@@ -12,7 +19,7 @@ export interface Mod {
 
 const SERVER_ONLY_PACK = {
   id: "0",
-  name: SERVERONLYPACK_FOLDER,
+  name: SERVERONLYPACK_NAME,
   serverOnly: true,
 } as const;
 
@@ -23,6 +30,7 @@ export async function loadMods(): Promise<Mod[]> {
   } catch {
     die(`mods.txt not found at ${MODS_FILE}`);
   }
+
   const mods: Mod[] = [];
   for (const raw of text.split("\n")) {
     const line = raw.trim();
@@ -32,6 +40,11 @@ export async function loadMods(): Promise<Mod[]> {
     mods.push({ id, name, serverOnly: flag === "server" });
   }
   if (mods.length === 0) die("mods.txt has no mods");
+  if ((await loadSettings()).IS_ALPHA) {
+    const iServerPack = mods.findIndex(({ id }) => id === SERVER_PACK_ID);
+    mods[iServerPack].id = SERVER_PACK_ID_ALPHA;
+  }
+
   return mods;
 }
 

@@ -3,10 +3,6 @@ class CfgPatches {
     units[] = {};
     weapons[] = {};
     requiredVersion = 0.1;
-    // Pure vanilla mechanics (PlayerBase.GetStatHeatComfort(), TentBase's own
-    // IsItemTent()/GetState(), GetGame().GetObjectsAtPosition() - all
-    // confirmed via DZ's own scripts.pbo) - no Expansion/other mod
-    // dependency needed.
     requiredAddons[] = {"DZ_Data", "DZ_Scripts"};
   };
 };

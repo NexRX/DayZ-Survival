@@ -4,7 +4,7 @@ import {
   PROFILE_DIR,
   SERVER_DIR,
   SERVERONLYPACK_DIR,
-  SERVERONLYPACK_FOLDER,
+  SERVERONLYPACK_NAME,
 } from "../constants/paths.ts";
 import { log, warn } from "../ui.ts";
 import { requireTools } from "../proc.ts";
@@ -29,15 +29,8 @@ import { ensureOverrides } from "../config/overrides.ts";
 import { ensureQuests } from "../config/quests.ts";
 import { copy } from "jsr:@std/fs@^1.0.24/copy";
 
-// Deploy the locally-built server-only pack into the server's mod folder.
-// The signed PBOs live in the repo (serveronlypack/@serveronlypack/) and are
-// copied to @DZSurvivalServerOnlyPack in the server dir. This removes the
-// need to download the pack from the Steam Workshop.
-//
-// Orphaned files in the destination (present on disk but not in the repo)
-// are deleted so the server dir stays in sync with the committed pack.
 async function deployServerOnlyPack(): Promise<void> {
-  const dest = `${SERVER_DIR}/${SERVERONLYPACK_FOLDER}`;
+  const dest = `${SERVER_DIR}/${SERVERONLYPACK_NAME}`;
 
   try {
     try {

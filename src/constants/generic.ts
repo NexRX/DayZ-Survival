@@ -1,0 +1,2 @@
+export const SERVER_PACK_ID = "3800261242";
+export const SERVER_PACK_ID_ALPHA = "3803902183";
