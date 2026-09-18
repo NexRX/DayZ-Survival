@@ -14,7 +14,8 @@ export const PROFILE_DIR = `${ROOT}/profiles`;
 export const AI_TEMPLATE_DIR = `${ROOT}/ai`;
 export const EDITOR_OVERRIDE_DIR =
   `${ROOT}/overrides_server/mpmissions/dayzOffline.chernarusplus/EditorFiles`;
-export const SERVERONLYPACK_DIR = `${ROOT}/serveronlypack/@serveronlypack`;
+export const SERVERONLYPACK_FOLDER = "@serveronlypack";
+export const SERVERONLYPACK_DIR = `${ROOT}/serveronlypack/${SERVERONLYPACK_FOLDER}`;
 
 export const LOGIN_MARKER = `${STEAMCMD_DIR}/.dayz_login_ok`;
 export const DD_LOGIN_MARKER = `${STEAMCMD_DIR}/.dd_login_ok`;

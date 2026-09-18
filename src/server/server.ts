@@ -1,6 +1,11 @@
 // serverDZ.cfg generation and launching the server under steam-run.
 
-import { PROFILE_DIR, SERVER_DIR, SERVERONLYPACK_DIR } from "../constants/paths.ts";
+import {
+  PROFILE_DIR,
+  SERVER_DIR,
+  SERVERONLYPACK_DIR,
+  SERVERONLYPACK_FOLDER,
+} from "../constants/paths.ts";
 import { log, warn } from "../ui.ts";
 import { requireTools } from "../proc.ts";
 import { ensureServer, serverBinary } from "../steam.ts";
@@ -22,6 +27,7 @@ import { loadMods, modParam, serverModParam } from "../server/mods.ts";
 import { ensureConfig, genConfig, type Settings } from "../config/settings.ts";
 import { ensureOverrides } from "../config/overrides.ts";
 import { ensureQuests } from "../config/quests.ts";
+import { copy } from "jsr:@std/fs@^1.0.24/copy";
 
 // Deploy the locally-built server-only pack into the server's mod folder.
 // The signed PBOs live in the repo (serveronlypack/@serveronlypack/) and are
@@ -31,74 +37,22 @@ import { ensureQuests } from "../config/quests.ts";
 // Orphaned files in the destination (present on disk but not in the repo)
 // are deleted so the server dir stays in sync with the committed pack.
 async function deployServerOnlyPack(): Promise<void> {
-  const dest = `${SERVER_DIR}/@DZSurvivalServerOnlyPack`;
+  const dest = `${SERVER_DIR}/${SERVERONLYPACK_FOLDER}`;
 
-  // Copy addon PBOs + signatures, collecting source names for orphan cleanup
   try {
-    await Deno.mkdir(`${dest}/addons`, { recursive: true });
-    const srcAddons = new Set<string>();
-    for await (const entry of Deno.readDir(`${SERVERONLYPACK_DIR}/addons`)) {
-      if (!entry.isFile || !entry.name.toLowerCase().match(/\.(pbo|bisign|bikey)$/)) continue;
-      const name = entry.name;
-      srcAddons.add(name);
-      await Deno.copyFile(
-        `${SERVERONLYPACK_DIR}/addons/${name}`,
-        `${dest}/addons/${name}`,
-      );
-    }
-    // Remove orphaned addon files
-    let removed = 0;
-    for await (const entry of Deno.readDir(`${dest}/addons`)) {
-      if (entry.isFile && entry.name.toLowerCase().match(/\.(pbo|bisign|bikey)$/)) {
-        if (!srcAddons.has(entry.name)) {
-          await Deno.remove(`${dest}/addons/${entry.name}`);
-          removed++;
-        }
-      }
-    }
-    if (removed > 0) {
-      log(`Removed ${removed} orphaned addon file(s) from @DZSurvivalServerOnlyPack/addons`);
-    }
+    try {
+      await Deno.remove(dest, { recursive: true });
+    } catch (_ignored) { /* no-op */ }
+    copy(SERVERONLYPACK_DIR, dest);
+    log(`Deployed Server-only pack from repo → ${dest}`);
   } catch (e) {
     if (e instanceof Deno.errors.NotFound) {
-      warn(`Server-only pack source not found at ${SERVERONLYPACK_DIR}/addons — skipping deploy`);
+      warn(`Server-only pack source not found at ${SERVERONLYPACK_DIR}: ${e}`);
+      Deno.exit(1);
       return;
     }
     throw e;
   }
-
-  // Copy keys if present, and clean up orphaned ones
-  try {
-    await Deno.mkdir(`${dest}/keys`, { recursive: true });
-    const srcKeys = new Set<string>();
-    for await (const entry of Deno.readDir(`${SERVERONLYPACK_DIR}/keys`)) {
-      if (!entry.isFile || !entry.name.toLowerCase().endsWith(".bikey")) continue;
-      const name = entry.name;
-      srcKeys.add(name);
-      await Deno.copyFile(
-        `${SERVERONLYPACK_DIR}/keys/${name}`,
-        `${dest}/keys/${name}`,
-      );
-    }
-    // Remove orphaned keys
-    let removed = 0;
-    for await (const entry of Deno.readDir(`${dest}/keys`)) {
-      if (entry.isFile && entry.name.toLowerCase().endsWith(".bikey")) {
-        if (!srcKeys.has(entry.name)) {
-          await Deno.remove(`${dest}/keys/${entry.name}`);
-          removed++;
-        }
-      }
-    }
-    if (removed > 0) {
-      log(`Removed ${removed} orphaned key(s) from @DZSurvivalServerOnlyPack/keys`);
-    }
-  } catch (e) {
-    if (!(e instanceof Deno.errors.NotFound)) throw e;
-    // keys/ may not exist — not fatal
-  }
-
-  log(`Deployed @DZSurvivalServerOnlyPack from repo → ${dest}`);
 }
 
 // Crash-recovery watchdog for the actual server launch (the last step of

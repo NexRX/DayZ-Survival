@@ -1,6 +1,6 @@
 // mods.txt parsing + Steam Web API lookup.
 
-import { DAYZ_CLIENT_APPID, MODS_FILE } from "../constants/paths.ts";
+import { DAYZ_CLIENT_APPID, MODS_FILE, SERVERONLYPACK_FOLDER } from "../constants/paths.ts";
 import { die, log } from "../ui.ts";
 
 export interface Mod {
@@ -9,6 +9,12 @@ export interface Mod {
   /** Server-only mod (per its own docs) — loaded via `-servermod=`, not `-mod=`. */
   serverOnly: boolean;
 }
+
+const SERVER_ONLY_PACK = {
+  id: "0",
+  name: SERVERONLYPACK_FOLDER,
+  serverOnly: true,
+} as const;
 
 export async function loadMods(): Promise<Mod[]> {
   let text: string;
@@ -36,6 +42,7 @@ export function modParam(mods: Mod[]): string {
 
 /** The `-servermod=` load order string for server-only mods (not needed by clients). */
 export function serverModParam(mods: Mod[]): string {
+  mods.push(SERVER_ONLY_PACK);
   return mods.filter((m) => m.serverOnly).map((m) => m.name).join(";");
 }
 

@@ -22,7 +22,7 @@ import {
   workshopBytes,
 } from "../steam.ts";
 import { fetchContentIds, loadMods, type Mod, modParam } from "./mods.ts";
-import type { Settings } from "../config/config.ts";
+import { Settings } from "../config/settings.ts";
 
 function bytesH(n: number): string {
   const units = ["B", "KB", "MB", "GB", "TB"];
