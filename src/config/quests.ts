@@ -211,7 +211,7 @@ function questJson(def: QuestDef): string {
       IsGroupQuest: FALSE,
       ObjectSetFileName: "",
       QuestItems: [],
-      Rewards: def.rewards.map((r) => ({
+      Rewards: def.rewards.flat().map((r) => ({
         ClassName: r.className,
         Amount: r.amount,
         Attachments: [],

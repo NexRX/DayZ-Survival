@@ -213,6 +213,13 @@ export const EXPANSION_QUESTS_OBJECTIVES_AIVIP_DIR = `${EXPANSION_QUESTS_OBJECTI
 // EnableQuests=true already (see quests.ts's ensureQuestsEnabled()).
 export const EXPANSION_QUEST_SETTINGS = `${PROFILE_DIR}/ExpansionMod/Settings/QuestSettings.json`;
 
+// Extended Tourist Map (@Extended-Tourist-Map, id 3788295678) self-generates
+// this on first mission load (its own Settings.json). See
+// extendedTouristMap.ts which force-enables UseGPSReceiver/SlotGPSReceiver
+// so the live position marker only shows if the player has a GPSReceiver
+// actually slotted and powered, not just carried.
+export const EXTENDED_TOURIST_MAP_SETTINGS = `${PROFILE_DIR}/ExtendedTouristMap/Settings.json`;
+
 // This project's own custom DayZ addons, bundled into a single Workshop mod
 // ("the server pack") - built/signed with armake2 rather than Windows DayZ
 // Tools (see src/modBuild.ts). Each immediate subdirectory of the pack's

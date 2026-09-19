@@ -26,6 +26,45 @@ export const NPC_CONFIG_VERSION = 6;
 
 export const CURRENCY_CLASSNAME = "expansionbanknotehryvnia";
 
+// Global multiplier applied to all currency rewards in ROMASHKA quests.
+// Tweak once to scale every cash reward up or down together.
+export const CURRENCY_MULTIPLIER = 50;
+
+type LocationsMap = Record<string, [number, number, number]>;
+
+// ROMASHKA campaign world locations — real coordinates scouted in-game.
+// PLACEHOLDER markers mean "fill these in before your first playtest".
+export const ROMASHKA_LOCATIONS: LocationsMap = {
+  // Romashka Farm — use the same CUSTOM_POSITION as the trader compound
+  romashka: [7986, 221, 11308],
+  // Romashka perimeter treeline where Reaper scouts are spotted
+  farm_perimeter: [0, 0, 0] as [number, number, number], // PLACEHOLDER: near Romashka treeline
+  // Kamenka–Romashka coastal road — Reaper patrol route midpoint
+  coast_road: [4900.0, 10.0, 5600.0] as [number, number, number], // PLACEHOLDER: road between Kamenka and Romashka
+  // Solnichniy outskirts — Reaper checkpoint / AI Camp location
+  solnichniy_checkpoint: [5200.0, 10.0, 5400.0] as [number, number, number], // PLACEHOLDER: Solnichniy outskirts
+  // NWAF outskirts where the Cordon defector is found
+  nwaf_outskirts: [4700.0, 10.0, 10100.0] as [number, number, number], // PLACEHOLDER: NWAF approach road
+  // Cherno high-ground vantage point for scouting
+  cherno_rooftop: [4650.0, 15.0, 6100.0] as [number, number, number], // PLACEHOLDER: Cherno elevated position
+  // Cherno/Electro police station block — Reaper stronghold (Act III climax)
+  cherno_block: [4640.0, 5.0, 6080.0] as [number, number, number], // PLACEHOLDER: Cherno police station
+  // Kamenka/Solnichniy dock area — Sery's black-market territory
+  sery_docks: [4850.0, 5.0, 5750.0] as [number, number, number], // PLACEHOLDER: dock area near coast
+  // Kamenka coastline — buried stash (Treasure Hunt)
+  kamenka_coast_stash: [4820.0, 5.0, 5720.0] as [number, number, number], // PLACEHOLDER: coastline near Kamenka
+  // Stary Sobor radiation zone edge — outer perimeter
+  stary_sobor_edge: [6150.0, 0.0, 7700.0] as [number, number, number], // PLACEHOLDER: Sobor zone edge
+  // Skalisty Island — buried core sample stash
+  skalisty_stash: [3500.0, 5.0, 8500.0] as [number, number, number], // PLACEHOLDER: Skalisty Island coast
+  // NWAF outer perimeter — Cordon scientist extraction point
+  nwaf_perimeter: [4600.0, 10.0, 10050.0] as [number, number, number], // PLACEHOLDER: NWAF wire perimeter
+  // NWAF outer patrol loop — Cordon convoy route
+  nwaf_patrol: [4650.0, 10.0, 10150.0] as [number, number, number], // PLACEHOLDER: NWAF outer loop
+  // Tisy main gate — Cordon's last defensive line (campaign climax)
+  tisy_gate: [7500.0, 10.0, 7200.0] as [number, number, number], // PLACEHOLDER: Tisy main checkpoint
+} as const;
+
 // The mission giver's real, physical skin. Confirmed spawnable classname
 // (from the mod's own ExpansionQuestNPC.c): "ExpansionQuestNPCMirek" -
 // distinct from this project's two existing trader NPCs
@@ -48,6 +87,13 @@ export const GUARD_1_OFFSET: [number, number, number] = [18.58, 2.146, -3.9];
 export const GUARD_1_ORIENTATION: [number, number, number] = [99.8114, 0, 0];
 export const GUARD_2_OFFSET: [number, number, number] = [18.27, 2.557, -12.3];
 export const GUARD_2_ORIENTATION: [number, number, number] = [75.2741, 0, 0];
+
+// Sery "the Magpie" — black-market fence at the Kamenka/Solnichniy docks.
+// He runs the keycard economy quests and is the only other quest giver
+// besides Daniels in the ROMASHKA campaign. Not on the farm's neutral ground.
+export const SERY_OFFSET: [number, number, number] = [-15.0, 5.0, 20.0]; // PLACEHOLDER: dock area near coast
+export const SERY_ORIENTATION: [number, number, number] = [180, 0, 0];
+export const SERY_CLASSNAME = "ExpansionQuestNPCMirek"; // same skin as Daniels, different face mod
 
 // --- Objective definitions ------------------------------------------------
 
@@ -334,12 +380,9 @@ export interface QuestNpcDef {
   loadoutFile: string;
 }
 
-// Filename for the mission giver deliberately kept as
-// "DZSurvival_NPC_Quartermaster.json" even after the rename to "Taskmaster
-// Daniels" - it's just an internal artifact name, and changing it would
-// leave the old file behind on an already-deployed server (writeIfChanged
-// only ever adds/updates files by name, never deletes stale ones), risking
-// two on-disk NPC files both claiming ID 1.
+// NPC IDs: 1 = Daniels, 2-3 = guards, 4 = Sery
+// Sery's filename kept as "DZSurvival_NPC_Fence.json" — internal artifact
+// name; changing it would leave stale files on deployed servers.
 export const QUEST_NPCS: QuestNpcDef[] = [
   {
     id: MISSION_GIVER_ID,
@@ -370,5 +413,15 @@ export const QUEST_NPCS: QuestNpcDef[] = [
     name: "Compound Guard",
     defaultText: "Eyes open. Wouldn't want trouble finding the Taskmaster.",
     loadoutFile: "GuardLoadout",
+  },
+  {
+    id: 4,
+    fileName: "DZSurvival_NPC_Fence.json",
+    className: SERY_CLASSNAME,
+    offset: SERY_OFFSET,
+    orientation: SERY_ORIENTATION,
+    name: "Sery",
+    defaultText: "I don't do introductions. You got what I want, or you know where to get it.",
+    loadoutFile: "TraderBlueLoadout",
   },
 ];
