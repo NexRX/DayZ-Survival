@@ -94,7 +94,7 @@ interface ExtendedTouristMapSettings {
 export async function tuneExtendedTouristMap(): Promise<void> {
   if (!(await exists(EXTENDED_TOURIST_MAP_SETTINGS))) {
     log(
-      `${EXTENDED_TOURIST_MAP_SETTINGS} not generated yet — Extended Tourist Map will ` +
+      `${EXTENDED_TOURIST_MAP_SETTINGS} not generated yet - Extended Tourist Map will ` +
         "create it (with its own defaults) on first server start",
     );
     return;

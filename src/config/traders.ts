@@ -240,12 +240,12 @@ async function removeDefaultZones(): Promise<void> {
 // The overrides copy (ensureOverrides()) runs last in doStart(), overwriting
 // anything this would generate, so this function is a no-op stub.
 async function ensureCustomTraderGear(): Promise<void> {
-  // stub — static overrides in overrides_profile/ExpansionMod/Loadouts/
+  // stub - static overrides in overrides_profile/ExpansionMod/Loadouts/
 }
 
 // Trader identity files are now static overrides in overrides_profile/ExpansionMod/Traders/.
 async function ensureCustomTraderIdentities(): Promise<void> {
-  // stub — static overrides in overrides_profile/ExpansionMod/Traders/
+  // stub - static overrides in overrides_profile/ExpansionMod/Traders/
 }
 
 // DayZ-Expansion-Market ships 17 default trader identities (Weapons,
@@ -420,7 +420,7 @@ interface CustomZoneFile {
 // overrides_server/mpmissions/expansion/traderzones/CustomTrader.json
 // overrides_server/mpmissions/expansion/traders/CustomTrader.map
 async function ensureCustomZone(): Promise<void> {
-  // stub — static overrides in overrides_server/mpmissions/expansion/
+  // stub - static overrides in overrides_server/mpmissions/expansion/
 }
 
 // DayZ-Expansion-Core's own SafeZoneSettings.json schema (self-generated
@@ -620,14 +620,14 @@ interface ExchangeCategory {
 // independently-configured lists, not derived from each other.
 // Exchange.json is now a static override in overrides_profile/ExpansionMod/Market/.
 async function ensureGoldCoinCurrency(): Promise<void> {
-  // stub — static override in overrides_profile/ExpansionMod/Market/Exchange.json
+  // stub - static override in overrides_profile/ExpansionMod/Market/Exchange.json
 }
 
 // SellPricePercent is now set via static overrides that copy after TS code runs.
 // Note: this function still modifies MarketSettings.json in the mission dir,
 // but the override copy (ensureOverrides()) overwrites it last.
 async function ensureHardcoreSellPricePercent(): Promise<void> {
-  // stub — static overrides in overrides_server/mpmissions/
+  // stub - static overrides in overrides_server/mpmissions/
 }
 
 export async function ensureCustomTrader(): Promise<void> {

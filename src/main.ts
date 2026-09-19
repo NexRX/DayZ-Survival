@@ -10,6 +10,7 @@ import { doWipe } from "./tools/wipe.ts";
 import { loadMods, resolveMods, searchMods } from "./server/mods.ts";
 import { doSyncEditor } from "./tools/editorSync.ts";
 import { auditMarket } from "./tools/marketAudit.ts";
+import { clearQuestCache } from "./tools/questClear.ts";
 
 function statusLine(label: string, good: boolean, extra = ""): void {
   const mark = good ? c.green("✓") : c.dim("·");
@@ -22,7 +23,7 @@ async function showStatus(s: Settings): Promise<void> {
   try {
     nmods = (await loadMods()).length;
   } catch {
-    // mods.txt missing — reported elsewhere
+    // mods.txt missing - reported elsewhere
   }
   let mods = false;
   try {
@@ -31,7 +32,7 @@ async function showStatus(s: Settings): Promise<void> {
     // ignore
   }
 
-  console.log(`\n${c.cyan("DayZ Survival — status")}`);
+  console.log(`\n${c.cyan("DayZ Survival - status")}`);
   statusLine(
     "Configured",
     !!s.STEAM_USER && s.STEAM_USER !== "anonymous",
@@ -145,7 +146,10 @@ const HELP = `Usage: deno task dayz [command]
   audit-market  Cross-reference the mission's full item economy against
                 what's actually sellable, and sanity-check prices/stock
                 caps on everything that is - writes a full report to
-                profiles/market-audit-report.txt`;
+                profiles/market-audit-report.txt
+  clear-quests  Delete the Expansion Quests cached data so the mod regenerates
+                fresh quest definitions on next start (useful after quest
+                ID changes like switching quest lines)`;
 
 async function main(): Promise<void> {
   const s = await loadSettings();
@@ -193,6 +197,9 @@ async function main(): Promise<void> {
       break;
     case "audit-market":
       await auditMarket();
+      break;
+    case "clear-quests":
+      await clearQuestCache();
       break;
     case "-h":
     case "--help":

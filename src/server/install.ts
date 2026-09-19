@@ -171,7 +171,7 @@ export async function downloadOne(
   const out = `${SERVER_DIR}/${WORKSHOP_SUBPATH}/${mod.id}`;
 
   if (!force && (await hasAddonPbo(mod.id))) {
-    ok(`${mod.name} already present (${bytesH(await workshopBytes(mod.id))}) — up to date`);
+    ok(`${mod.name} already present (${bytesH(await workshopBytes(mod.id))}) - up to date`);
     return;
   }
 
@@ -203,7 +203,7 @@ export async function downloadOne(
   let reauthed = false;
   for (let tries = 1;; tries++) {
     log(
-      `Downloading ${mod.name} (${mod.id}) via DepotDownloader — ` +
+      `Downloading ${mod.name} (${mod.id}) via DepotDownloader - ` +
         `attempt ${tries}/${maxTries} (${bytesH(await workshopBytes(mod.id))} cached)…`,
     );
     const depot = [
@@ -233,7 +233,7 @@ export async function downloadOne(
       .test(output);
     if (staleLogin && !reauthed) {
       reauthed = true;
-      warn("DepotDownloader's cached login looks stale/invalid — re-authenticating…");
+      warn("DepotDownloader's cached login looks stale/invalid - re-authenticating…");
       await forceDepotRelogin(s);
       tries--; // don't count this against maxTries
       continue;
@@ -242,7 +242,7 @@ export async function downloadOne(
     if (tries >= maxTries) {
       die(
         `Download of ${mod.name} (${mod.id}) failed after ${maxTries} attempts. ` +
-          `Re-run 'deno task mods' to resume — DepotDownloader continues where it left off.`,
+          `Re-run 'deno task mods' to resume - DepotDownloader continues where it left off.`,
       );
     }
     const rateLimited = /RateLimitExceeded/i.test(output);
@@ -341,7 +341,7 @@ export async function doMods(s: Settings, extraRefreshIds?: Set<string>): Promis
     log(`${stale.size} mod(s) updated on Steam since last check - will re-validate.`);
   }
 
-  // Single login before all downloads — DepotDownloader's cached token is
+  // Single login before all downloads - DepotDownloader's cached token is
   // reused across subsequent runs on this machine, so we don't need to log
   // in per-mod.
   await ensureDepotLogin(s);
@@ -360,7 +360,7 @@ export async function doMods(s: Settings, extraRefreshIds?: Set<string>): Promis
   }
   if (failures.length > 0) {
     die(
-      `Download failed for: ${failures.join(", ")} — re-run 'deno task mods' to resume.`,
+      `Download failed for: ${failures.join(", ")} - re-run 'deno task mods' to resume.`,
     );
   }
 
@@ -398,7 +398,7 @@ export async function ensureMods(s: Settings): Promise<void> {
   if (stale.size === 0) return;
 
   log(
-    `${stale.size} mod(s) have been updated on Steam since we last checked — re-validating…`,
+    `${stale.size} mod(s) have been updated on Steam since we last checked - re-validating…`,
   );
   await doMods(s, new Set(stale.keys()));
 }

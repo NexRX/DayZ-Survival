@@ -1,6 +1,6 @@
 // TGK-WeaponPack (@TGK-WeaponPack, aka "SOBR"/"SM_" weapon pack) classname
 // arrays. These constants are used by src/marketGapFill.ts for pricing
-// overrides — the type/event blocks are now handled by
+// overrides - the type/event blocks are now handled by
 // src/economyBlocks.ts reading from overrides_server/mpmissions/db/
 // economy_blocks.json.
 

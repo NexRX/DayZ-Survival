@@ -108,7 +108,7 @@ export async function runDepotCapture(
 /**
  * Whether a workshop item's downloaded content includes at least one .pbo
  * addon file. This is the real signal that a download is complete and
- * usable — unlike a raw byte-size threshold, it isn't fooled by mods whose
+ * usable - unlike a raw byte-size threshold, it isn't fooled by mods whose
  * total content is legitimately small (settings-only addons, etc.).
  */
 export async function hasAddonPbo(id: string): Promise<boolean> {
@@ -256,7 +256,7 @@ export async function doInstall(s: Settings): Promise<void> {
     "+quit",
   ]);
   if (!(await serverInstalled())) {
-    die("DayZServer binary missing after install — check output above.");
+    die("DayZServer binary missing after install - check output above.");
   }
   ok("Server installed.");
 }

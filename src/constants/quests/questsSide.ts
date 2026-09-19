@@ -1,0 +1,126 @@
+import { Quest, QUEST_CONFIG_DIR } from "../types/quest.ts";
+import {
+  OACTION_INSPECT_VEHICLE,
+  OCOLLECT_PLANKS_NAILS,
+  ODELIVERY_MEDICAL_PACKAGE,
+  OTARGET_SIDE_HOSTILES,
+  OTRAVEL_SIDE,
+  ref,
+} from "./objectives.ts";
+import { configToRecord, currency } from "./common.ts";
+import { NPC_TASKMASTER_DANIELS } from "./npc.ts";
+
+export const SIDE_QUESTS: Quest[] = [
+  {
+    ID: 1000,
+    Title: "Medical Supply Run",
+    ObjectiveText: "Daniels needs medical supplies - bandages, antibiotics, saline.",
+    Descriptions: [
+      `"People get hurt. I keep them alive. But I can't do it without the stuff." Daniels doesn't sugarcoat it - the med supply is running low and he needs you to scavenge.`,
+      `He doesn't ask where you got it. Just that you got it. The farm survives because people contribute, and medicine is the most expensive contribution of all.`,
+      `Daniels stacks the supplies neatly. "Thanks. Next time it'll be something different. It always is."`,
+    ],
+    QuestGiverIDs: [NPC_TASKMASTER_DANIELS.ID],
+    QuestTurnInIDs: [NPC_TASKMASTER_DANIELS.ID],
+    PreQuestIDs: [],
+    Repeatable: 1,
+    IsDailyQuest: 0,
+    Objectives: [ref(OCOLLECT_PLANKS_NAILS)],
+    Rewards: [currency(2)],
+    QuestItems: [],
+  },
+  {
+    ID: 1001,
+    Title: "Courier Run",
+    ObjectiveText: "Sery needs something delivered to Romashka - or vice versa.",
+    Descriptions: [
+      `"I don't go near that farm. Not my style." Sery hands you a package wrapped in oilcloth. "Get this to Daniels. He'll know what to do." Or the other way around - Daniels sends you out with the same instruction.`,
+      `The coast road between Romashka and Sery's docks used to be safe. Now it's anyone's guess. But the pay is fair, and the work doesn't require more than showing up.`,
+      `Sery counts his money before handing it over. "Fair trade. I don't do charity." Neither does Daniels. That's why this works.`,
+    ],
+    QuestGiverIDs: [NPC_TASKMASTER_DANIELS.ID],
+    QuestTurnInIDs: [4],
+    PreQuestIDs: [],
+    Repeatable: 1,
+    IsDailyQuest: 0,
+    Objectives: [ref(ODELIVERY_MEDICAL_PACKAGE)],
+    Rewards: [currency(3)],
+    QuestItems: [],
+  },
+  {
+    ID: 1002,
+    Title: "Bounty",
+    ObjectiveText:
+      "Daniels wants whichever faction patrol is currently most active near the farm eliminated.",
+    Descriptions: [
+      `"They're testing the fence again." Daniels doesn't look up from what he's doing. "Take care of them before they decide to test it harder." Reaper or Cordon - it doesn't matter which flag they fly.`,
+      `It's not personal. It's survival. And right now, survival means keeping the perimeter clear of anyone who isn't Harvest.`,
+      `Daniels nods when you're done. "Good. We can sleep tonight." Simple as that.`,
+    ],
+    QuestGiverIDs: [NPC_TASKMASTER_DANIELS.ID],
+    QuestTurnInIDs: [NPC_TASKMASTER_DANIELS.ID],
+    PreQuestIDs: [],
+    Repeatable: 1,
+    IsDailyQuest: 0,
+    Objectives: [ref(OTARGET_SIDE_HOSTILES)],
+    Rewards: [currency(2)],
+    QuestItems: [],
+  },
+  {
+    ID: 1003,
+    Title: "Recon Ping",
+    ObjectiveText: "Daniels wants eyes on a potential warzones status.",
+    Descriptions: [
+      `"I need to know what's happening out there." Daniels points at the map on his wall - the one he's been marking up with a pencil that's more stub now.`,
+      `"Go take a look. Don't engage. Just tell me what you see and I'll figure out the rest." The warzone shifts week to week - Cherno, Electro, whichever town the Reapers are bleeding that cycle.`,
+      "You climb, you look, you report back. Daniels listens, makes a note, and sends you on your way. The farm survives on information as much as anything else.",
+    ],
+    QuestGiverIDs: [NPC_TASKMASTER_DANIELS.ID],
+    QuestTurnInIDs: [NPC_TASKMASTER_DANIELS.ID],
+    PreQuestIDs: [],
+    Repeatable: 1,
+    IsDailyQuest: 1,
+    Objectives: [ref(OTRAVEL_SIDE)],
+    Rewards: [currency(1)],
+    QuestItems: [],
+  },
+  {
+    ID: 1004,
+    Title: "Patrol Clear",
+    ObjectiveText: "Clear the coast road patrol",
+    Descriptions: [
+      `"They always come back." Daniels' tone says he's not surprised. "Break them again and I'll pay you for the trouble." The coast road is a loop - hit it once and it's quiet for a day. Hit it every day and it stays yours.`,
+      `The patrol doesn't care about your reputation. They just move their route and keep shaking down anyone who uses the road. Until you decide otherwise.`,
+      `Daniels doesn't thank you. He just nods and slides the payment across the table. In his world, that's as close to gratitude as you're going to get.`,
+    ],
+    QuestGiverIDs: [NPC_TASKMASTER_DANIELS.ID],
+    QuestTurnInIDs: [NPC_TASKMASTER_DANIELS.ID],
+    PreQuestIDs: [],
+    Repeatable: 1,
+    IsDailyQuest: 0,
+    Objectives: [ref(OTARGET_SIDE_HOSTILES)],
+    Rewards: [currency(3)],
+    QuestItems: [],
+  },
+  {
+    ID: 1005,
+    Title: "Farm Work",
+    ObjectiveText:
+      "Daniels needs farm maintenance done - fence repair, generator upkeep, the sort of work nobody writes songs about.",
+    Descriptions: [
+      `"The fence needs patching." Daniels hands you tools - not because he thinks you'll need them, but because that's how this farm works: you take what's given and you do the work.`,
+      `It's not glamorous. It's not heroic. But the fence holds because people like you show up and do the thing that needs doing. That's the whole philosophy right there.`,
+      `Daniels inspects the work. "Looks good. Thanks." He doesn't exaggerate. In his world, "good" means it'll hold until tomorrow.`,
+    ],
+    QuestGiverIDs: [NPC_TASKMASTER_DANIELS.ID],
+    QuestTurnInIDs: [NPC_TASKMASTER_DANIELS.ID],
+    PreQuestIDs: [],
+    Repeatable: 1,
+    IsDailyQuest: 0,
+    Objectives: [ref(OACTION_INSPECT_VEHICLE)],
+    Rewards: [currency(1)],
+    QuestItems: [],
+  },
+];
+
+export const SIDE_QUESTS_CONFIGS = configToRecord(SIDE_QUESTS, `${QUEST_CONFIG_DIR}/Quest_Side_`);

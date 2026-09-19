@@ -131,7 +131,7 @@ async function logCrash(code: number, ranMs: number): Promise<void> {
 
 async function runServerWithWatchdog(args: string[]): Promise<never> {
   // Change to the server directory before spawning steam-run. This matters
-  // because steam-run uses `--chdir "$(pwd)"` internally — if we don't cd
+  // because steam-run uses `--chdir "$(pwd)"` internally - if we don't cd
   // first, bwrap runs with the parent shell's CWD (the repo root), and the
   // Enfusion engine resolves "$CurrentDir" there, failing to find dayz.gproj
   // which lives in server/. The Deno spawn `cwd` option only affects the
@@ -145,7 +145,7 @@ async function runServerWithWatchdog(args: string[]): Promise<never> {
   let consecutiveFastCrashes = 0;
   while (true) {
     const startedAt = Date.now();
-    // Run directly (no setsid) — setsid can interfere with LD_LIBRARY_PATH
+    // Run directly (no setsid) - setsid can interfere with LD_LIBRARY_PATH
     // resolution in Nix environments. signal handling is via requestStop().
     currentChild = new Deno.Command("steam-run", {
       args,

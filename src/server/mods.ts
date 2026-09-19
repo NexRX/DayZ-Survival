@@ -13,7 +13,7 @@ import { die, log } from "../ui.ts";
 export interface Mod {
   id: string;
   name: string;
-  /** Server-only mod (per its own docs) — loaded via `-servermod=`, not `-mod=`. */
+  /** Server-only mod (per its own docs) - loaded via `-servermod=`, not `-mod=`. */
   serverOnly: boolean;
 }
 

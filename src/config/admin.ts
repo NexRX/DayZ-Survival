@@ -25,7 +25,7 @@ interface AISettingsFile {
 export async function grantAIMenuAdmin(steamId64: string): Promise<void> {
   if (!(await exists(AI_SETTINGS))) {
     log(
-      `AISettings.json not generated yet at ${AI_SETTINGS} — start the server once first`,
+      `AISettings.json not generated yet at ${AI_SETTINGS} - start the server once first`,
     );
     return;
   }
@@ -39,7 +39,7 @@ export async function grantAIMenuAdmin(steamId64: string): Promise<void> {
   }
   settings.Admins.push(steamId64);
   await Deno.writeTextFile(AI_SETTINGS, JSON.stringify(settings, null, 4));
-  ok(`Added ${steamId64} to Admins in ${AI_SETTINGS} — press T in-game to open the AI menu`);
+  ok(`Added ${steamId64} to Admins in ${AI_SETTINGS} - press T in-game to open the AI menu`);
 }
 
 interface ConnectedPlayer {
@@ -111,11 +111,11 @@ export async function grantCotAdmin(id: string): Promise<void> {
   }
   file.Roles.push("admin");
   await Deno.writeTextFile(path, JSON.stringify(file, null, 4));
-  ok(`Granted COT admin to ${id} — press Y in-game to open the admin toolbar`);
+  ok(`Granted COT admin to ${id} - press Y in-game to open the admin toolbar`);
 }
 
 /**
- * Interactive helper: `deno task admin` — grant yourself (or another
+ * Interactive helper: `deno task admin` - grant yourself (or another
  * player) admin access to test AI quickly, via both AI-menu and COT.
  */
 export async function doAdmin(): Promise<void> {
@@ -151,7 +151,7 @@ export async function doAdmin(): Promise<void> {
     await grantCotAdmin(player.cotId);
   } else {
     warn(
-      `No COT identity id seen yet for ${player.name} — join once more with ` +
+      `No COT identity id seen yet for ${player.name} - join once more with ` +
         "@Community-Online-Tools active, then re-run to grant COT admin too.",
     );
   }
