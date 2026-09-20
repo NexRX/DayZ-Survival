@@ -98,7 +98,7 @@ export interface ObjectiveBase {
   ObjectiveType: ObjectiveType;
   ObjectiveText: string;
   TimeLimit?: number; // seconds
-  Active?: BoolNum;
+  Active: BoolNum;
 }
 
 export interface TravelObjective extends ObjectiveBase {
@@ -106,9 +106,9 @@ export interface TravelObjective extends ObjectiveBase {
   Position: Vec3;
   MaxDistance: number;
   MarkerName: string;
-  ShowDistance?: boolean;
-  TriggerOnEnter?: boolean;
-  TriggerOnExit?: boolean;
+  ShowDistance?: BoolNum;
+  TriggerOnEnter: BoolNum;
+  TriggerOnExit: BoolNum;
 }
 
 export interface TargetObjective extends ObjectiveBase {
@@ -118,10 +118,10 @@ export interface TargetObjective extends ObjectiveBase {
   MinDistance: number;
   Amount: number;
   ClassNames: string[];
-  CountSelfKill: boolean;
+  CountSelfKill: BoolNum;
   AllowedWeapons: string[];
   ExcludedClassNames: string[];
-  CountAIPlayers: boolean;
+  CountAIPlayers: BoolNum;
   AllowedTargetFactions: string[];
   AllowedDamageZones: string[];
 }
@@ -129,8 +129,8 @@ export interface TargetObjective extends ObjectiveBase {
 export interface DeliveryObjective extends ObjectiveBase {
   ObjectiveType: ObjectiveType.DELIVERY;
   Collections: CollectionEntry[];
-  ShowDistance: boolean;
-  AddItemsToNearbyMarketZone: boolean;
+  ShowDistance: BoolNum;
+  AddItemsToNearbyMarketZone: BoolNum;
   MaxDistance: number;
   MarkerName: string;
 }
@@ -138,9 +138,9 @@ export interface DeliveryObjective extends ObjectiveBase {
 export interface CollectionObjective extends ObjectiveBase {
   ObjectiveType: ObjectiveType.COLLECT;
   Collections: CollectionEntry[];
-  ShowDistance: boolean;
-  AddItemsToNearbyMarketZone: boolean;
-  NeedAnyCollection: boolean;
+  ShowDistance: BoolNum;
+  AddItemsToNearbyMarketZone: BoolNum;
+  NeedAnyCollection: BoolNum;
 }
 
 export interface CraftingObjective extends ObjectiveBase {
@@ -174,10 +174,10 @@ export interface AIPatrolObjective extends ObjectiveBase {
   MinDistance: number;
   Amount: number;
   ClassNames: string[];
-  CountSelfKill: boolean;
+  CountSelfKill: BoolNum;
   AllowedWeapons: string[];
   ExcludedClassNames: string[];
-  CountAIPlayers: boolean;
+  CountAIPlayers: BoolNum;
   AllowedTargetFactions: string[];
   AllowedDamageZones: string[];
 }
@@ -189,10 +189,10 @@ export interface AICampObjective extends ObjectiveBase {
   MinDistance: number;
   Amount: number;
   ClassNames: string[];
-  CountSelfKill: boolean;
+  CountSelfKill: BoolNum;
   AllowedWeapons: string[];
   ExcludedClassNames: string[];
-  CountAIPlayers: boolean;
+  CountAIPlayers: BoolNum;
   AllowedTargetFactions: string[];
   AllowedDamageZones: string[];
 }

@@ -2,6 +2,7 @@
   "tasks": {
     "dayz": "deno run -A src/main.ts",
     "up": "deno run -A src/main.ts up",
+    "up-simple": "deno run -A src/main.ts up-simple",
     "mods": "deno run -A src/main.ts mods",
     "install": "deno run -A src/main.ts install",
     "login": "deno run -A src/main.ts login",

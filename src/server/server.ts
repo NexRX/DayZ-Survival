@@ -7,7 +7,7 @@ import {
   SERVERONLYPACK_NAME,
 } from "../constants/paths.ts";
 import { log, warn } from "../ui.ts";
-import { requireTools } from "../proc.ts";
+import { requireTools, runInherit } from "../proc.ts";
 import { ensureServer, serverBinary } from "../steam.ts";
 import { ensureMods } from "./install.ts";
 import { backupWorldState, pruneOldLogs } from "./maintenance.ts";
@@ -191,6 +191,32 @@ async function runServerWithWatchdog(args: string[]): Promise<never> {
     log(`Restarting in ${RESTART_BACKOFF_MS / 1000}s...`);
     await new Promise<void>((resolve) => setTimeout(resolve, RESTART_BACKOFF_MS));
   }
+}
+
+export async function doSimpleStart(s: Settings): Promise<void> {
+  const allMods = await loadMods();
+  const mods = modParam(allMods);
+  const serverMods = serverModParam(allMods);
+  const extra = s.EXTRA_PARAMS.trim() ? s.EXTRA_PARAMS.trim().split(/\s+/) : [];
+  const args = [
+    await serverBinary(),
+    "-config=serverDZ.cfg",
+    `-port=${s.PORT}`,
+    `-mod=${mods}`,
+    ...(serverMods ? [`-servermod=${serverMods}`] : []),
+    `-BEpath=${PROFILE_DIR}/battleye`,
+    `-profiles=${PROFILE_DIR}`,
+    `-cpuCount=${navigator.hardwareConcurrency}`,
+    ...extra,
+  ];
+
+  // steam-run resolves the server's files relative to its current directory.
+  Deno.chdir(SERVER_DIR);
+  const code = await runInherit("steam-run", args, {
+    cwd: SERVER_DIR,
+    env: { LD_LIBRARY_PATH: "" },
+  });
+  if (code !== 0) Deno.exit(code);
 }
 
 export async function doStart(s: Settings): Promise<void> {

@@ -1,5 +1,5 @@
 import { PROFILE_DIR } from "../paths.ts";
-import { Vec3 } from "./common.ts";
+import { BoolNum, Vec3 } from "./common.ts";
 
 /** Config path constant — the mod reads from this path. */
 export const NPC_CONFIG_DIR = `${PROFILE_DIR}/ExpansionMod/Quests/NPCs`;
@@ -211,6 +211,5 @@ export interface Npc {
   NPCQuestStartEmoteID?: NPCEmoteID;
   NPCQuestCompleteEmoteID?: NPCEmoteID;
   NPCType?: NPCType;
-  Active?: boolean;
-  Killable?: boolean;
+  Active: BoolNum;
 }

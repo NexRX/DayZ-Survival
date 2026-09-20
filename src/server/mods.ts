@@ -2,12 +2,7 @@
 
 import { loadSettings } from "../config/settings.ts";
 import { SERVER_PACK_ID, SERVER_PACK_ID_ALPHA } from "../constants/generic.ts";
-import {
-  DAYZ_CLIENT_APPID,
-  MODS_FILE,
-  SERVERONLYPACK_NAME,
-  SERVERPACK_NAME,
-} from "../constants/paths.ts";
+import { DAYZ_CLIENT_APPID, MODS_FILE, SERVERONLYPACK_NAME } from "../constants/paths.ts";
 import { die, log } from "../ui.ts";
 
 export interface Mod {
@@ -59,18 +54,21 @@ export function serverModParam(mods: Mod[]): string {
   return mods.filter((m) => m.serverOnly).map((m) => m.name).join(";");
 }
 
+export interface WorkshopDetails {
+  contentId: string | null;
+  sizeBytes: number | null;
+}
+
 /**
- * Bulk-fetch each mod's currently-published content id (`hcontent_file`) via
- * the public `GetPublishedFileDetails` Web API - no Steam login required, and
- * a single request regardless of mod count, so this is safe to call on every
- * `up`/`mods` run without touching Steam's login rate limit. Used to detect
- * when a mod has been updated upstream since we last validated it, so only
- * the mods that actually changed need a real (rate-limited) DepotDownloader
- * re-check. Returns an empty map on any failure (offline, API down) - this
- * is a best-effort freshness check, never a hard requirement.
+ * Fetch the current Workshop manifest id and published size for every mod in
+ * one public API request. This does not require a Steam login, so it is safe
+ * to use for downloader selection and freshness checks without increasing
+ * Steam's login count. An empty map means the API was unavailable.
  */
-export async function fetchContentIds(mods: Mod[]): Promise<Map<string, string>> {
-  const result = new Map<string, string>();
+export async function fetchWorkshopDetails(
+  mods: Mod[],
+): Promise<Map<string, WorkshopDetails>> {
+  const result = new Map<string, WorkshopDetails>();
   try {
     const api = "https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/";
     const body = new URLSearchParams();
@@ -82,16 +80,31 @@ export async function fetchContentIds(mods: Mod[]): Promise<Map<string, string>>
 
     const data = (await res.json()) as {
       response?: {
-        publishedfiledetails?: Array<
-          { publishedfileid: string; hcontent_file?: string }
-        >;
+        publishedfiledetails?: Array<{
+          publishedfileid: string;
+          hcontent_file?: string;
+          file_size?: string | number;
+        }>;
       };
     };
     for (const d of data.response?.publishedfiledetails ?? []) {
-      if (d.hcontent_file) result.set(d.publishedfileid, d.hcontent_file);
+      const size = d.file_size === undefined ? null : Number(d.file_size);
+      result.set(d.publishedfileid, {
+        contentId: d.hcontent_file ?? null,
+        sizeBytes: size !== null && Number.isFinite(size) ? size : null,
+      });
     }
   } catch {
-    // offline/unreachable - callers treat a missing entry as "unknown, don't force"
+    // offline/unreachable - callers use the existing local cache when possible
+  }
+  return result;
+}
+
+/** Backwards-compatible content-id view used by callers that only need freshness. */
+export async function fetchContentIds(mods: Mod[]): Promise<Map<string, string>> {
+  const result = new Map<string, string>();
+  for (const [id, details] of (await fetchWorkshopDetails(mods))) {
+    if (details.contentId) result.set(id, details.contentId);
   }
   return result;
 }

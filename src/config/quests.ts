@@ -64,7 +64,7 @@ async function ensureQuestConfigs(): Promise<void> {
     if (separator > 0) {
       await Deno.mkdir(path.slice(0, separator), { recursive: true });
     }
-    await Deno.writeTextFile(path, JSON.stringify(config));
+    await Deno.writeTextFile(path, JSON.stringify(config, null, 2));
   }
 }
 

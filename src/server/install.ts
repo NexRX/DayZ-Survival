@@ -22,7 +22,13 @@ import {
   runSteamWorkshopBatch,
   workshopBytes,
 } from "../steam.ts";
-import { fetchContentIds, loadMods, type Mod, modParam } from "./mods.ts";
+import {
+  fetchWorkshopDetails,
+  loadMods,
+  type Mod,
+  modParam,
+  type WorkshopDetails,
+} from "./mods.ts";
 import { Settings } from "../config/settings.ts";
 
 function bytesH(n: number): string {
@@ -164,6 +170,7 @@ const RETRY_BACKOFF_MS = [15_000, 30_000, 60_000];
 const RATE_LIMIT_INITIAL_BACKOFF_MS = 5 * 60_000;
 const RATE_LIMIT_MAX_BACKOFF_MS = 60 * 60_000;
 const MIN_DEPOT_LAUNCH_GAP_MS = 3_000;
+const LARGE_MOD_BYTES = 500 * 1024 * 1024;
 let lastDepotLaunchAt = 0;
 
 async function paceDepotLaunch(): Promise<void> {
@@ -286,15 +293,16 @@ export async function downloadOne(
 
 /**
  * Which already-downloaded mods have a newer content id published on Steam
- * than what we last validated (see `localManifestId`) - a single, login-free
- * Web API call. Keyed by mod id; values carry the old/new content ids so
- * callers can log what changed.
+ * than what we last validated. The details were fetched once for the whole
+ * run, so this check does not create another API request or Steam login.
  */
-async function staleModIds(mods: Mod[]): Promise<Map<string, { ours: string; theirs: string }>> {
-  const remote = await fetchContentIds(mods);
+async function staleModIds(
+  mods: Mod[],
+  remote: Map<string, WorkshopDetails>,
+): Promise<Map<string, { ours: string; theirs: string }>> {
   const stale = new Map<string, { ours: string; theirs: string }>();
   for (const mod of mods) {
-    const theirs = remote.get(mod.id);
+    const theirs = remote.get(mod.id)?.contentId;
     if (!theirs) continue; // API didn't return this one - don't guess
     const ours = await localManifestId(mod.id);
     if (ours && ours !== theirs) stale.set(mod.id, { ours, theirs });
@@ -327,91 +335,156 @@ async function logModUpdates(
   );
 }
 
-/**
- * Download all missing/stale items in one SteamCMD session. DepotDownloader
- * remains the fallback because it resumes large downloads more reliably.
- */
-async function downloadWorkshopBatch(
+function needsDepotDownloader(details: WorkshopDetails | undefined): boolean {
+  // If Steam cannot tell us the size, prefer DepotDownloader: it is resumable
+  // and avoids accidentally pushing a very large item through SteamCMD.
+  return details?.sizeBytes === null || details === undefined ||
+    details.sizeBytes > LARGE_MOD_BYTES;
+}
+
+async function clearWorkshopCache(id: string): Promise<void> {
+  await Deno.remove(`${SERVER_DIR}/${WORKSHOP_SUBPATH}/${id}`, { recursive: true }).catch(() => {});
+}
+
+async function hasPboAt(path: string): Promise<boolean> {
+  if (!(await exists(path))) return false;
+  const { code, stdout } = await runCapture("find", [
+    path,
+    "-iname",
+    "*.pbo",
+    "-print",
+    "-quit",
+  ]);
+  return code === 0 && stdout.trim().length > 0;
+}
+
+async function hasInstalledMod(mod: Mod): Promise<boolean> {
+  return await hasPboAt(`${SERVER_DIR}/${mod.name}`);
+}
+
+async function hasDownloadedMod(mod: Mod): Promise<boolean> {
+  return await hasAddonPbo(mod.id);
+}
+
+/** Download small mods together, then install each one before moving on. */
+async function downloadSmallMods(
   s: Settings,
   mods: Mod[],
   refresh: Set<string>,
-): Promise<Mod[]> {
+  lowercase: boolean,
+): Promise<void> {
   const pending: Mod[] = [];
   for (const mod of mods) {
     const force = refresh.has(mod.id);
-    if (!force && (await hasAddonPbo(mod.id))) {
-      ok(`${mod.name} already present (${bytesH(await workshopBytes(mod.id))}) - up to date`);
+    if (force) await clearWorkshopCache(mod.id);
+    if (force || !(await hasDownloadedMod(mod) || await hasInstalledMod(mod))) {
+      pending.push(mod);
+    }
+  }
+  const pendingIds = new Set(pending.map((mod) => mod.id));
+
+  if (pending.length > 0) {
+    await ensureLogin(s);
+    log(`Downloading ${pending.length} small workshop mod(s) in one SteamCMD session...`);
+    const code = await runSteamWorkshopBatch(s, pending.map((mod) => mod.id));
+    if (code !== 0) {
+      warn(`SteamCMD exited with code ${code} while downloading small mods.`);
+    }
+  }
+
+  const failed: string[] = [];
+  for (const mod of mods) {
+    const downloaded = await hasDownloadedMod(mod);
+    const installed = await hasInstalledMod(mod);
+    if (!downloaded && !installed) {
+      failed.push(mod.name);
       continue;
     }
-    if (force) {
-      await Deno.remove(
-        `${SERVER_DIR}/${WORKSHOP_SUBPATH}/${mod.id}`,
-        { recursive: true },
-      ).catch(() => {});
+    const destination = `${SERVER_DIR}/${mod.name}`;
+    if (!pendingIds.has(mod.id) && installed) continue;
+    if (!downloaded) {
+      failed.push(mod.name);
+      continue;
     }
-    pending.push(mod);
+    await installOneMod(mod, lowercase);
+    ok(`${mod.name} installed in ${destination}`);
   }
+  if (failed.length > 0) {
+    die(`SteamCMD did not produce usable content for: ${failed.join(", ")}.`);
+  }
+}
 
-  if (pending.length === 0) return [];
+/** Download large mods one at a time and install each immediately. */
+async function downloadLargeMods(
+  s: Settings,
+  mods: Mod[],
+  refresh: Set<string>,
+  lowercase: boolean,
+): Promise<void> {
+  if (mods.length === 0) return;
+  let depotReady = false;
+  for (const mod of mods) {
+    const force = refresh.has(mod.id);
+    if (force) await clearWorkshopCache(mod.id);
 
-  log(`Downloading ${pending.length} workshop item(s) in one SteamCMD session...`);
-  const code = await runSteamWorkshopBatch(s, pending.map((mod) => mod.id));
-  const failed: Mod[] = [];
-  for (const mod of pending) {
-    if (await hasAddonPbo(mod.id)) {
-      ok(`${mod.name} downloaded (${bytesH(await workshopBytes(mod.id))})`);
+    const installed = !force && await hasInstalledMod(mod);
+    const downloaded = !force && await hasDownloadedMod(mod);
+    if (installed) {
+      ok(`${mod.name} already installed in ${SERVER_DIR}/${mod.name}`);
+      continue;
+    }
+
+    if (!downloaded) {
+      if (!depotReady) {
+        await ensureDepotLogin(s);
+        depotReady = true;
+      }
+      await downloadOne(s, mod);
     } else {
-      failed.push(mod);
+      ok(`${mod.name} already downloaded (${bytesH(await workshopBytes(mod.id))})`);
     }
-  }
 
-  if (code !== 0 || failed.length > 0) {
-    warn(
-      `SteamCMD workshop batch${code !== 0 ? ` exited with code ${code}` : ""}; ` +
-        `${failed.length} item(s) will use DepotDownloader's resumable fallback.`,
-    );
+    await installOneMod(mod, lowercase);
+    ok(`${mod.name} installed in ${SERVER_DIR}/${mod.name}`);
   }
-  return failed;
 }
 
 /**
- * `extraRefreshIds`, when given, additionally forces a re-validation of
- * those specific workshop ids. `staleModIds` runs regardless, so normal use
- * needs nothing passed manually.
+ * Downloaders are selected once from Steam's published item sizes:
+ * SteamCMD handles every item at or below 500 MiB in one login/session,
+ * while DepotDownloader handles larger items sequentially and resumes reliably.
  */
 export async function doMods(s: Settings, extraRefreshIds?: Set<string>): Promise<void> {
   await requireTools();
-  await ensureLogin(s);
   const mods = await loadMods();
-
-  const stale = await staleModIds(mods);
+  const details = await fetchWorkshopDetails(mods);
+  const stale = await staleModIds(mods, details);
   await logModUpdates(mods, stale);
   const refresh = new Set([...(extraRefreshIds ?? []), ...stale.keys()]);
   if (stale.size > 0) {
-    log(`${stale.size} mod(s) updated on Steam since last check - will re-validate.`);
+    log(`${stale.size} mod(s) updated on Steam - refreshing with the selected downloader.`);
   }
 
-  // SteamCMD handles the whole batch in one authenticated session. Only items
-  // it could not complete fall through to sequential DepotDownloader retries.
-  const fallback = await downloadWorkshopBatch(s, mods, refresh);
-  for (const mod of fallback) {
-    await downloadOne(s, mod, refresh.has(mod.id));
-  }
-
-  log("Installing mods + keys into the server");
-  await Deno.mkdir(`${SERVER_DIR}/keys`, { recursive: true });
   const lowercase = s.LOWERCASE_MODS !== "0";
+  const small: Mod[] = [];
+  const large: Mod[] = [];
   for (const mod of mods) {
-    console.log(`   ${mod.name}`);
-    await installOneMod(mod, lowercase);
+    (needsDepotDownloader(details.get(mod.id)) ? large : small).push(mod);
   }
+
+  await Deno.mkdir(`${SERVER_DIR}/keys`, { recursive: true });
+  log(
+    `Downloader plan: ${small.length} small via SteamCMD, ${large.length} large via DepotDownloader.`,
+  );
+  await downloadSmallMods(s, small, refresh, lowercase);
+  await downloadLargeMods(s, large, refresh, lowercase);
   ok(`Mods installed. Load order: ${modParam(mods)}`);
 }
 
 export async function modsInstalled(): Promise<boolean> {
   const mods = await loadMods();
   for (const mod of mods) {
-    if (!(await exists(`${SERVER_DIR}/${mod.name}`))) return false;
+    if (!(await hasInstalledMod(mod))) return false;
   }
   return true;
 }
@@ -428,11 +501,12 @@ export async function ensureMods(s: Settings): Promise<void> {
   }
 
   const mods = await loadMods();
-  const stale = await staleModIds(mods);
+  const details = await fetchWorkshopDetails(mods);
+  const stale = await staleModIds(mods, details);
   if (stale.size === 0) return;
 
   log(
-    `${stale.size} mod(s) have been updated on Steam since we last checked - re-validating…`,
+    `${stale.size} mod(s) have been updated on Steam since we last checked - refreshing…`,
   );
   await doMods(s, new Set(stale.keys()));
 }

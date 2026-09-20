@@ -5,7 +5,7 @@ import { configure, loadSettings, type Settings } from "./config/settings.ts";
 import { doInstall, doLogin, loggedIn, serverInstalled } from "./steam.ts";
 import { doMods, modsInstalled } from "./server/install.ts";
 import { doAdmin } from "./config/admin.ts";
-import { doStart } from "./server/server.ts";
+import { doSimpleStart, doStart } from "./server/server.ts";
 import { doWipe } from "./tools/wipe.ts";
 import { loadMods, resolveMods, searchMods } from "./server/mods.ts";
 import { doSyncEditor } from "./tools/editorSync.ts";
@@ -128,6 +128,7 @@ const HELP = `Usage: deno task dayz [command]
 
   (no command)  Interactive menu
   up            Do everything needed, then start the server
+  up-simple     Start the existing server without setup or downloads
   config        (Re)configure settings (.env)
   login         Log in to Steam (caches the session)
   install       Install/update the DayZ server
@@ -166,6 +167,9 @@ async function main(): Promise<void> {
     case "up":
     case "start":
       await doStart(s);
+      break;
+    case "up-simple":
+      await doSimpleStart(s);
       break;
     case "config":
       await configure(s);

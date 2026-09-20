@@ -1,12 +1,4 @@
-// NPC IDs: 1 = Daniels (mission giver), 2-3 = guards, 4 = Sery (fence), 5+ = world NPCs
-// Sery's filename kept as "DZSurvival_NPC_Fence.json" - internal artifact
-// name; changing it would leave stale files on deployed servers.
-//
-// ALL_NPCS aggregates every NPC the quest system places, regardless of
-// whether they give quests or are just ambient world characters. The
-// ensureQuests() function iterates ALL_NPCS to write NPC files.
-
-import { FALSE, Vec3 } from "../types/common.ts";
+import { FALSE, TRUE } from "../types/common.ts";
 import {
   ActionObjective,
   AICampObjective,
@@ -22,16 +14,6 @@ import {
   TravelObjective,
   TreasureHuntObjective,
 } from "../types/objective.ts";
-import type {
-  QuestAICampObjective,
-  QuestAIObjectiveSpawn,
-  QuestAIPatrolObjective,
-  QuestAIVipObjective,
-  QuestObjective,
-  QuestTargetObjective,
-  QuestTreasureHuntObjective,
-  QuestTreasureLoot,
-} from "./objectiveAuthoring.ts";
 import {
   EXPANSION_QUESTS_OBJECTIVES_ACTION_DIR,
   EXPANSION_QUESTS_OBJECTIVES_AICAMP_DIR,
@@ -44,8 +26,18 @@ import {
   EXPANSION_QUESTS_OBJECTIVES_TRAVEL_DIR,
   EXPANSION_QUESTS_OBJECTIVES_TREASUREHUNT_DIR,
 } from "../paths.ts";
-import { OBJECTIVE_CONFIG_VERSION, PLACEHOLDER_POSITION } from "./common.ts";
+import { OBJECTIVE_CONFIG_VERSION } from "./common.ts";
 import { LOCATION } from "./locations.ts";
+import {
+  QuestAICampObjective,
+  QuestAIObjectiveSpawn,
+  QuestAIPatrolObjective,
+  QuestAIVipObjective,
+  QuestObjective,
+  QuestTargetObjective,
+  QuestTreasureHuntObjective,
+  QuestTreasureLoot,
+} from "../types/quest.ts";
 
 export function ref<T extends ObjectiveBase>(objective: T): ObjectiveRef {
   return {
@@ -55,42 +47,59 @@ export function ref<T extends ObjectiveBase>(objective: T): ObjectiveRef {
   };
 }
 
+export const OBJECTIVE_DEFAULTS = {
+  Active: TRUE,
+  TimeLimit: -1, // Important, causes accept>cancelled bug
+};
+
 // ─── Travel Objectives ───────────────────────────────────────────────────────
 
 export const TRAVEL_ROMASHKA_FARM: TravelObjective = {
-  ID: 10000,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 1,
   ObjectiveText: "Travel to Romashka Farm.",
   ObjectiveType: ObjectiveType.TRAVEL,
-  Position: [7986, 221, 11308] as Vec3,
-  MaxDistance: 5,
+  Position: LOCATION.romashka,
+  MaxDistance: 50,
   MarkerName: "Romashka Farm",
+  TriggerOnEnter: 1,
+  TriggerOnExit: 0,
 };
 
 export const TRAVEL_ROMASHKA_PERIMETER: TravelObjective = {
-  ID: 10001,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 2,
   ObjectiveText: "Scout the perimeter - watch for movement near the treeline.",
   ObjectiveType: ObjectiveType.TRAVEL,
   Position: LOCATION.farm_perimeter,
   MaxDistance: 5,
   MarkerName: "Romashka Farm Perimeter",
+  TriggerOnEnter: 1,
+  TriggerOnExit: 0,
 };
 
 export const TRAVEL_COASTAL_ROAD: TravelObjective = {
-  ID: 10002,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 3,
   ObjectiveText: "Follow the coastal road - don't stop, don't look back.",
   ObjectiveType: ObjectiveType.TRAVEL,
   Position: LOCATION.coast_road,
   MaxDistance: 10,
   MarkerName: "Coastal Road",
+  TriggerOnEnter: 1,
+  TriggerOnExit: 0,
 };
 
 export const TRAVEL_INTEL_BUILDING: TravelObjective = {
-  ID: 10003,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 4,
   ObjectiveText: "Checkout the building were the entire supposedly is located.",
   ObjectiveType: ObjectiveType.TRAVEL,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.intel_building,
   MaxDistance: 10,
   MarkerName: "Intel Building",
+  TriggerOnEnter: 1,
+  TriggerOnExit: 0,
 };
 
 const ALL_OTRAVEL: TravelObjective[] = [
@@ -102,7 +111,8 @@ const ALL_OTRAVEL: TravelObjective[] = [
 // ─── Target Objectives ───────────────────────────────────────────────────────
 
 export const TARGET_RAIDER_SCOUTS_PERIMETER: QuestTargetObjective = {
-  ID: 10010,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 5,
   ObjectiveText: "Eliminate Raiders scouts near the farm perimeter.",
   ObjectiveType: ObjectiveType.TARGET,
   Position: LOCATION.farm_perimeter,
@@ -116,44 +126,46 @@ export const TARGET_RAIDER_SCOUTS_PERIMETER: QuestTargetObjective = {
     "BanditAI_Denis",
     "BanditAI_Adam",
   ],
-  CountSelfKill: false,
+  CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
-  CountAIPlayers: true,
+  CountAIPlayers: TRUE,
   AllowedTargetFactions: ["Bandits"],
   AllowedDamageZones: [],
 };
 
 export const TARGET_CHECKPOINT_SNIPER: TargetObjective = {
-  ID: 10011,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 6,
   ObjectiveText: "Clear the checkpoint - no survivors.",
   ObjectiveType: ObjectiveType.TARGET,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.solnichniy_checkpoint,
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 10,
   ClassNames: ["ZombieMadman"],
-  CountSelfKill: false,
+  CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
-  CountAIPlayers: false,
+  CountAIPlayers: FALSE,
   AllowedTargetFactions: [],
   AllowedDamageZones: [],
 };
 
 export const TARGET_ROOFTOP_SNIPER: TargetObjective = {
-  ID: 10012,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 7,
   ObjectiveText: "Take out the sniper on the rooftop.",
   ObjectiveType: ObjectiveType.TARGET,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.cherno_rooftop,
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 3,
   ClassNames: ["ZombieFast"],
-  CountSelfKill: false,
+  CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
-  CountAIPlayers: false,
+  CountAIPlayers: FALSE,
   AllowedTargetFactions: [],
   AllowedDamageZones: [],
 };
@@ -167,40 +179,43 @@ const ALL_OTARGET: TargetObjective[] = [
 // ─── Delivery Objectives ─────────────────────────────────────────────────────
 
 export const DELIVERY_NOTE_TO_SCOUT_JAMES: DeliveryObjective = {
-  ID: 10021,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 8,
   ObjectiveText: "Deliver the note to scout James.",
   ObjectiveType: ObjectiveType.DELIVERY,
   Collections: [
     { ClassName: "QPK_Note_1", Amount: 1, QuantityPercent: 1, MinQuantityPercent: 0 },
   ],
-  ShowDistance: true,
-  AddItemsToNearbyMarketZone: false,
+  ShowDistance: TRUE,
+  AddItemsToNearbyMarketZone: FALSE,
   MaxDistance: 150,
   MarkerName: "Scout James",
 };
 
 export const DELIVERY_MEDICAL_TO_ROMASHKA: DeliveryObjective = {
-  ID: 10022,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 9,
   ObjectiveText: "Deliver the supplies Daniels asked for.",
   ObjectiveType: ObjectiveType.DELIVERY,
   Collections: [
     { ClassName: "Bandage", Amount: 3, QuantityPercent: 1, MinQuantityPercent: 0 },
   ],
-  ShowDistance: true,
-  AddItemsToNearbyMarketZone: false,
+  ShowDistance: TRUE,
+  AddItemsToNearbyMarketZone: FALSE,
   MaxDistance: 150,
   MarkerName: "Supply Drop",
 };
 
 export const DELIVERY_AMMO_CACHE: DeliveryObjective = {
-  ID: 10023,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 10,
   ObjectiveText: "Drop off the weapons cache at the rendezvous point.",
   ObjectiveType: ObjectiveType.DELIVERY,
   Collections: [
     { ClassName: "AmmoAssault", Amount: 1, QuantityPercent: 1, MinQuantityPercent: 0 },
   ],
-  ShowDistance: true,
-  AddItemsToNearbyMarketZone: false,
+  ShowDistance: TRUE,
+  AddItemsToNearbyMarketZone: FALSE,
   MaxDistance: 150,
   MarkerName: "Weapons Cache Drop",
 };
@@ -213,41 +228,44 @@ const ALL_ODELIVERY: DeliveryObjective[] = [
 // ─── Collection Objectives ───────────────────────────────────────────────────
 
 export const COLLECT_CLOTH_DISINFECTANT: CollectionObjective = {
-  ID: 10030,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 11,
   ObjectiveText: "Gather cloth and disinfectant before infection finishes what the bite started.",
   ObjectiveType: ObjectiveType.COLLECT,
   Collections: [
     { ClassName: "Cloth", Amount: 5, QuantityPercent: 1, MinQuantityPercent: 0 },
     { ClassName: "Disinfectant", Amount: 1, QuantityPercent: 1, MinQuantityPercent: 0 },
   ],
-  ShowDistance: true,
-  AddItemsToNearbyMarketZone: false,
-  NeedAnyCollection: false,
+  ShowDistance: TRUE,
+  AddItemsToNearbyMarketZone: FALSE,
+  NeedAnyCollection: FALSE,
 };
 
 export const COLLECT_BUILDING_MATERIALS: CollectionObjective = {
-  ID: 10031,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 12,
   ObjectiveText: "Collect supplies for the farm's stockpile.",
   ObjectiveType: ObjectiveType.COLLECT,
   Collections: [
     { ClassName: "Plank", Amount: 10, QuantityPercent: 1, MinQuantityPercent: 0 },
     { ClassName: "Nails", Amount: 3, QuantityPercent: 1, MinQuantityPercent: 0 },
   ],
-  ShowDistance: true,
-  AddItemsToNearbyMarketZone: false,
-  NeedAnyCollection: false,
+  ShowDistance: TRUE,
+  AddItemsToNearbyMarketZone: FALSE,
+  NeedAnyCollection: FALSE,
 };
 
 export const COLLECT_MEDICINAL_HERBS: CollectionObjective = {
-  ID: 10032,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 13,
   ObjectiveText: "Gather herbs for the medic's stash.",
   ObjectiveType: ObjectiveType.COLLECT,
   Collections: [
     { ClassName: "Herb", Amount: 5, QuantityPercent: 1, MinQuantityPercent: 0 },
   ],
-  ShowDistance: true,
-  AddItemsToNearbyMarketZone: false,
-  NeedAnyCollection: false,
+  ShowDistance: TRUE,
+  AddItemsToNearbyMarketZone: FALSE,
+  NeedAnyCollection: FALSE,
 };
 
 const ALL_OCOLLECT: CollectionObjective[] = [
@@ -259,7 +277,8 @@ const ALL_OCOLLECT: CollectionObjective[] = [
 // ─── Action Objectives ───────────────────────────────────────────────────────
 
 export const ACTION_INSPECT_VEHICLE: ActionObjective = {
-  ID: 10040,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 14,
   ObjectiveText: "Inspect an abandoned vehicle for useful parts.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: ["ActionOpenDoor"],
@@ -267,7 +286,8 @@ export const ACTION_INSPECT_VEHICLE: ActionObjective = {
 };
 
 export const ACTION_SEARCH_BUILDING: ActionObjective = {
-  ID: 10041,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 15,
   ObjectiveText: "Search the building for intel.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: ["ActionOpenDoor"],
@@ -275,7 +295,8 @@ export const ACTION_SEARCH_BUILDING: ActionObjective = {
 };
 
 export const ACTION_FARMING: ActionObjective = {
-  ID: 10070,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 16,
   ObjectiveText: "Tend to the garden — plant, water, and care for crops.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: [
@@ -290,7 +311,8 @@ export const ACTION_FARMING: ActionObjective = {
 };
 
 export const ACTION_START_VEHICLE: ActionObjective = {
-  ID: 10071,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 17,
   ObjectiveText: "Start a vehicle to get moving.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: ["ActionStartEngine"],
@@ -298,7 +320,8 @@ export const ACTION_START_VEHICLE: ActionObjective = {
 };
 
 export const ACTION_MINE_TREE: ActionObjective = {
-  ID: 10072,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 18,
   ObjectiveText: "Harvest wood by mining a tree.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: ["ActionMineTree"],
@@ -306,7 +329,8 @@ export const ACTION_MINE_TREE: ActionObjective = {
 };
 
 export const ACTION_MINE_ROCK: ActionObjective = {
-  ID: 10073,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 19,
   ObjectiveText: "Mine rock for stone and resources.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: ["ActionMineRock"],
@@ -314,21 +338,24 @@ export const ACTION_MINE_ROCK: ActionObjective = {
 };
 
 export const ACTION_SKINNING: ActionObjective = {
-  ID: 10074,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 20,
   ObjectiveText: "Skin the carcass for meat and materials.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: ["ActionSkinning"],
 };
 
 export const ACTION_EAT_DRINK: ActionObjective = {
-  ID: 10075,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 21,
   ObjectiveText: "Eat or drink to restore stamina.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: ["ActionEat", "ActionDrink"],
 };
 
 export const ACTION_FIRST_AID: ActionObjective = {
-  ID: 10076,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 22,
   ObjectiveText: "Provide first aid to a wounded ally.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: [
@@ -340,7 +367,8 @@ export const ACTION_FIRST_AID: ActionObjective = {
 };
 
 export const ACTION_INJECT_MEDS: ActionObjective = {
-  ID: 10077,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 23,
   ObjectiveText: "Administer medication to stabilize someone.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: [
@@ -351,7 +379,8 @@ export const ACTION_INJECT_MEDS: ActionObjective = {
 };
 
 export const ACTION_CPR_DEFIBRILLATE: ActionObjective = {
-  ID: 10078,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 24,
   ObjectiveText: "Perform emergency resuscitation on a fallen ally.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: [
@@ -361,7 +390,8 @@ export const ACTION_CPR_DEFIBRILLATE: ActionObjective = {
 };
 
 export const ACTION_GIVE_BLOOD_TEST: ActionObjective = {
-  ID: 10079,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 25,
   ObjectiveText: "Run a blood test on a subject.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: [
@@ -371,7 +401,8 @@ export const ACTION_GIVE_BLOOD_TEST: ActionObjective = {
 };
 
 export const ACTION_FEED_TABLETS: ActionObjective = {
-  ID: 10080,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 26,
   ObjectiveText: "Feed medication tablets to a person.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: [
@@ -383,7 +414,8 @@ export const ACTION_FEED_TABLETS: ActionObjective = {
 };
 
 export const ACTION_GIVE_SALINE: ActionObjective = {
-  ID: 10081,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 27,
   ObjectiveText: "Administer saline to dehydrated allies.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: [
@@ -392,7 +424,8 @@ export const ACTION_GIVE_SALINE: ActionObjective = {
 };
 
 export const ACTION_TURN_ON_OFF_LIGHT: ActionObjective = {
-  ID: 10083,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 28,
   ObjectiveText: "Toggle lights on a device or structure.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: [
@@ -402,7 +435,8 @@ export const ACTION_TURN_ON_OFF_LIGHT: ActionObjective = {
 };
 
 export const ACTION_WEAPONS: ActionObjective = {
-  ID: 10084,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 29,
   ObjectiveText: "Handle weapons — switch fire mode, load, or clear.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: [
@@ -416,7 +450,8 @@ export const ACTION_WEAPONS: ActionObjective = {
 };
 
 export const ACTION_MAP: ActionObjective = {
-  ID: 10085,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 30,
   ObjectiveText: "Consult the map for navigation.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: [
@@ -426,7 +461,8 @@ export const ACTION_MAP: ActionObjective = {
 };
 
 export const ACTION_OPEN_CONTAINER: ActionObjective = {
-  ID: 10086,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 31,
   ObjectiveText: "Open a container, fence, or barrel to scavenge.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: [
@@ -437,7 +473,8 @@ export const ACTION_OPEN_CONTAINER: ActionObjective = {
 };
 
 export const ACTION_TAKE_ITEM: ActionObjective = {
-  ID: 10087,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 32,
   ObjectiveText: "Take an item from its location.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: [
@@ -446,7 +483,8 @@ export const ACTION_TAKE_ITEM: ActionObjective = {
 };
 
 export const ACTION_PACK_TENT: ActionObjective = {
-  ID: 10088,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 33,
   ObjectiveText: "Pack up a tent for transport.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: [
@@ -455,7 +493,8 @@ export const ACTION_PACK_TENT: ActionObjective = {
 };
 
 export const ACTION_FIREARM_ATTACH_MAG: ActionObjective = {
-  ID: 10089,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 34,
   ObjectiveText: "Attach a magazine to a firearm.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: [
@@ -465,7 +504,8 @@ export const ACTION_FIREARM_ATTACH_MAG: ActionObjective = {
 };
 
 export const ACTION_FIREARM_DETACH_MAG: ActionObjective = {
-  ID: 10090,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 35,
   ObjectiveText: "Detach a magazine from a firearm.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: [
@@ -475,7 +515,8 @@ export const ACTION_FIREARM_DETACH_MAG: ActionObjective = {
 };
 
 export const ACTION_FIREARM_LOAD_BULLET: ActionObjective = {
-  ID: 10091,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 36,
   ObjectiveText: "Load bullets into a firearm chamber.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: [
@@ -488,7 +529,8 @@ export const ACTION_FIREARM_LOAD_BULLET: ActionObjective = {
 };
 
 export const ACTION_FIREARM_MECHANIC: ActionObjective = {
-  ID: 10092,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 37,
   ObjectiveText: "Perform firearm manipulation or repair.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: [
@@ -497,7 +539,8 @@ export const ACTION_FIREARM_MECHANIC: ActionObjective = {
 };
 
 export const ACTION_FIREARM_UNJAM: ActionObjective = {
-  ID: 10093,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 38,
   ObjectiveText: "Unjam a malfunctioning firearm.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: [
@@ -536,7 +579,8 @@ const ALL_OACTION: ActionObjective[] = [
 // ─── Crafting Objectives ─────────────────────────────────────────────────────
 
 export const CRAFT_SCRAP_WEAPON: CraftingObjective = {
-  ID: 10050,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 39,
   ObjectiveText: "Craft a basic weapon from scrap.",
   ObjectiveType: ObjectiveType.CRAFTING,
   ItemNames: ["MakeshiftMeleeWeapon"],
@@ -544,7 +588,8 @@ export const CRAFT_SCRAP_WEAPON: CraftingObjective = {
 };
 
 export const CRAFT_BEAR_TRAP: CraftingObjective = {
-  ID: 10051,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 40,
   ObjectiveText: "Build a trap to catch raiders.",
   ObjectiveType: ObjectiveType.CRAFTING,
   ItemNames: ["BearTrap"],
@@ -559,7 +604,8 @@ const ALL_OCRAFT: CraftingObjective[] = [
 // ─── AI Camp Objectives ──────────────────────────────────────────────────────
 
 export const AICAMP_TISY_TRANSMITTER: QuestAICampObjective = {
-  ID: 10102,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 41,
   ObjectiveText:
     "Reach the Tisy gate and destroy the transmitter before the final broadcast completes.",
   ObjectiveType: ObjectiveType.AICAMP,
@@ -568,16 +614,17 @@ export const AICAMP_TISY_TRANSMITTER: QuestAICampObjective = {
   MinDistance: -1,
   Amount: 15,
   ClassNames: ["ZombieMadman"],
-  CountSelfKill: false,
+  CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
-  CountAIPlayers: false,
+  CountAIPlayers: FALSE,
   AllowedTargetFactions: ["Bandits"],
   AllowedDamageZones: [],
 };
 
 export const AICAMP_SHEPHERD_COMMAND: QuestAICampObjective = {
-  ID: 10105,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 42,
   ObjectiveText: "Destroy the Shepherd command post and stop the manual purge.",
   ObjectiveType: ObjectiveType.AICAMP,
   Position: LOCATION.shepherd_command_post,
@@ -585,16 +632,17 @@ export const AICAMP_SHEPHERD_COMMAND: QuestAICampObjective = {
   MinDistance: -1,
   Amount: 12,
   ClassNames: ["BanditAI_Keiko", "BanditAI_Linda", "BanditAI_Rolf", "BanditAI_Denis"],
-  CountSelfKill: false,
+  CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
-  CountAIPlayers: true,
+  CountAIPlayers: TRUE,
   AllowedTargetFactions: ["Bandits"],
   AllowedDamageZones: [],
 };
 
 export const AICAMP_STARY_RAD_ZONE: QuestAICampObjective = {
-  ID: 10100,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 43,
   ObjectiveText: "Enter the Stary Sobor red zone and silence the AI guarding the keycard rooms.",
   ObjectiveType: ObjectiveType.AICAMP,
   Position: LOCATION.stary_sobor_edge,
@@ -602,61 +650,64 @@ export const AICAMP_STARY_RAD_ZONE: QuestAICampObjective = {
   MinDistance: -1,
   Amount: 12,
   ClassNames: ["ZombieMadman"],
-  CountSelfKill: false,
+  CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
-  CountAIPlayers: false,
+  CountAIPlayers: FALSE,
   AllowedTargetFactions: ["Bandits"],
   AllowedDamageZones: [],
 };
 
 export const AICAMP_REAPER_CHECKPOINT: AICampObjective = {
-  ID: 10061,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 44,
   ObjectiveText: "Clear the checkpoint - no survivors.",
   ObjectiveType: ObjectiveType.AICAMP,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.solnichniy_checkpoint,
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 10,
   ClassNames: ["ZombieMadman"],
-  CountSelfKill: false,
+  CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
-  CountAIPlayers: false,
+  CountAIPlayers: FALSE,
   AllowedTargetFactions: [],
   AllowedDamageZones: [],
 };
 
 export const AICAMP_REAPER_STRONGHOLD: AICampObjective = {
-  ID: 10012,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 45,
   ObjectiveText: "End the Reaper stronghold inside the warzone town.",
   ObjectiveType: ObjectiveType.AICAMP,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.cherno_block,
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 8,
   ClassNames: ["ZombieMadman"],
-  CountSelfKill: false,
+  CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
-  CountAIPlayers: false,
+  CountAIPlayers: FALSE,
   AllowedTargetFactions: [],
   AllowedDamageZones: [],
 };
 
 export const AICAMP_TISY_GATE: AICampObjective = {
-  ID: 10062,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 46,
   ObjectiveText: "Clear the gate at Tisy - ten hostiles, best gear, fortified.",
   ObjectiveType: ObjectiveType.AICAMP,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.tisy_gate,
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 10,
   ClassNames: ["ZombieMadman"],
-  CountSelfKill: false,
+  CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
-  CountAIPlayers: false,
+  CountAIPlayers: FALSE,
   AllowedTargetFactions: [],
   AllowedDamageZones: [],
 };
@@ -673,10 +724,11 @@ const ALL_OAICAMP: AICampObjective[] = [
 // ─── AI VIP Objectives ───────────────────────────────────────────────────────
 
 export const AIVIP_CORDON_DEFECTOR: AIVipObjective = {
-  ID: 10012,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 47,
   ObjectiveText: "Bring in the Cordon defector alive.",
   ObjectiveType: ObjectiveType.AIVIP,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.nwaf_outskirts,
   MaxDistance: 150,
   MarkerName: "Cordon Defector",
   CanLootAI: FALSE,
@@ -685,7 +737,8 @@ export const AIVIP_CORDON_DEFECTOR: AIVipObjective = {
 };
 
 export const AIVIP_EXTRACT_SCIENTIST: QuestAIVipObjective = {
-  ID: 10013,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 48,
   ObjectiveText: "Bring the Cordon scientist out of NWAF alive.",
   ObjectiveType: ObjectiveType.AIVIP,
   Position: LOCATION.nwaf_perimeter,
@@ -704,7 +757,8 @@ const ALL_OAIVIP: AIVipObjective[] = [
 // ─── AI Patrol Objectives ────────────────────────────────────────────────────
 
 export const AIPATROL_RAIDER_PERIMETER: QuestAIPatrolObjective = {
-  ID: 10060,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 49,
   ObjectiveText: "Break the Raider patrol watching the Green Mountain approach to Romashka.",
   ObjectiveType: ObjectiveType.AIPATROL,
   Position: LOCATION.farm_perimeter,
@@ -712,16 +766,17 @@ export const AIPATROL_RAIDER_PERIMETER: QuestAIPatrolObjective = {
   MinDistance: -1,
   Amount: 3,
   ClassNames: ["ZombieMadman"],
-  CountSelfKill: false,
+  CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
-  CountAIPlayers: false,
+  CountAIPlayers: FALSE,
   AllowedTargetFactions: ["Bandits"],
   AllowedDamageZones: [],
 };
 
 export const AIPATROL_SHEPHERD_EXECUTIONER: QuestAIPatrolObjective = {
-  ID: 10104,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 50,
   ObjectiveText: "Silence the Shepherd executioner before he calls reinforcements.",
   ObjectiveType: ObjectiveType.AIPATROL,
   Position: LOCATION.shepherd_command_post,
@@ -729,44 +784,46 @@ export const AIPATROL_SHEPHERD_EXECUTIONER: QuestAIPatrolObjective = {
   MinDistance: -1,
   Amount: 1,
   ClassNames: ["BanditAI_Keiko", "BanditAI_Linda", "BanditAI_Rolf", "BanditAI_Denis"],
-  CountSelfKill: false,
+  CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
-  CountAIPlayers: true,
+  CountAIPlayers: TRUE,
   AllowedTargetFactions: ["Bandits"],
   AllowedDamageZones: [],
 };
 
 export const AIPATROL_CHECKPOINT_CLEAR: AIPatrolObjective = {
-  ID: 10061,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 51,
   ObjectiveText: "Break the Reaper supply patrol into the warzone.",
   ObjectiveType: ObjectiveType.AIPATROL,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.solnichniy_checkpoint,
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 5,
   ClassNames: ["ZombieMadman"],
-  CountSelfKill: false,
+  CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
-  CountAIPlayers: false,
+  CountAIPlayers: FALSE,
   AllowedTargetFactions: [],
   AllowedDamageZones: [],
 };
 
 export const AIPATROL_CORDON_LOOP: AIPatrolObjective = {
-  ID: 10062,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 52,
   ObjectiveText: "Break the Cordon patrol loop around NWAF.",
   ObjectiveType: ObjectiveType.AIPATROL,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.nwaf_patrol,
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 6,
   ClassNames: ["ZombieMadman"],
-  CountSelfKill: false,
+  CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
-  CountAIPlayers: false,
+  CountAIPlayers: FALSE,
   AllowedTargetFactions: [],
   AllowedDamageZones: [],
 };
@@ -793,7 +850,8 @@ function guaranteedTreasureLoot(Name: string): QuestTreasureLoot {
 }
 
 export const TREASUREHUNT_STARY_EVIDENCE: QuestTreasureHuntObjective = {
-  ID: 10101,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 53,
   ObjectiveText: "Recover the research case buried beneath the Stary Sobor red zone.",
   ObjectiveType: ObjectiveType.TREASUREHUNT,
   Position: LOCATION.stary_sobor_edge,
@@ -804,16 +862,18 @@ export const TREASUREHUNT_STARY_EVIDENCE: QuestTreasureHuntObjective = {
 };
 
 export const TREASUREHUNT_BURIED_SUPPLIES: TreasureHuntObjective = {
-  ID: 10041,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 54,
   ObjectiveText: "Find what someone buried near the Kamenka coastline.",
   ObjectiveType: ObjectiveType.TREASUREHUNT,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.kamenka_coast_stash,
   MaxDistance: 10,
   MarkerName: "Buried Supplies",
 };
 
 export const TREASUREHUNT_SKALISTY_CACHE: QuestTreasureHuntObjective = {
-  ID: 10042,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 55,
   ObjectiveText: "Find what the dead Cordon sentry was protecting on Skalisty Island.",
   ObjectiveType: ObjectiveType.TREASUREHUNT,
   Position: LOCATION.skalisty_stash,
@@ -834,74 +894,91 @@ const ALL_OTREASUREHUNT: TreasureHuntObjective[] = [
 // ── Travel ──
 
 export const TRAVEL_ESCAPE_ZONE: TravelObjective = {
-  ID: 20031,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 56,
   ObjectiveText: "Get out of the killzone before the compound locks down.",
   ObjectiveType: ObjectiveType.TRAVEL,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.escape_zone,
   MaxDistance: 10,
   MarkerName: "Extraction Point",
+  TriggerOnEnter: 1,
+  TriggerOnExit: 0,
 };
 
 export const TRAVEL_RALLY_POINT: TravelObjective = {
-  ID: 20032,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 57,
   ObjectiveText: "Move to the rally point — stay low, stay moving.",
   ObjectiveType: ObjectiveType.TRAVEL,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.rally_point,
   MaxDistance: 10,
   MarkerName: "Rally Point",
+  TriggerOnEnter: 1,
+  TriggerOnExit: 0,
 };
 
 export const TRAVEL_LOOKOUT: TravelObjective = {
-  ID: 20033,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 58,
   ObjectiveText: "Reach the high ground and get eyes on the area.",
   ObjectiveType: ObjectiveType.TRAVEL,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.lookout,
   MaxDistance: 10,
   MarkerName: "Overlook",
+  TriggerOnEnter: 1,
+  TriggerOnExit: 0,
 };
 
 export const TRAVEL_BURST_SPEED: TravelObjective = {
-  ID: 20034,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 59,
   ObjectiveText: "Burst speed — cover ground fast before they realize you're gone.",
   ObjectiveType: ObjectiveType.TRAVEL,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.burst_speed,
   MaxDistance: 10,
   MarkerName: "Burst Speed",
+  TriggerOnEnter: 1,
+  TriggerOnExit: 0,
 };
 
 export const TRAVEL_SAFEROUTE: TravelObjective = {
-  ID: 20035,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 60,
   ObjectiveText: "Take the saferoute through the treeline to avoid open ground.",
   ObjectiveType: ObjectiveType.TRAVEL,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.safe_route,
   MaxDistance: 10,
   MarkerName: "Safe Route",
+  TriggerOnEnter: 1,
+  TriggerOnExit: 0,
 };
 
 // ── Target ──
 
 export const TARGET_CLEAR_BUILDING: TargetObjective = {
-  ID: 20021,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 61,
   ObjectiveText: "Clear the building — check every room, trust no shadows.",
   ObjectiveType: ObjectiveType.TARGET,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.clear_building,
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 8,
   ClassNames: ["ZombieFast"],
-  CountSelfKill: false,
+  CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
-  CountAIPlayers: false,
+  CountAIPlayers: FALSE,
   AllowedTargetFactions: [],
   AllowedDamageZones: [],
 };
 
 export const TARGET_HOSPITAL_SWEEP: TargetObjective = {
-  ID: 20022,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 62,
   ObjectiveText: "Sweep the hospital — these things never stopped wandering the halls.",
   ObjectiveType: ObjectiveType.TARGET,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.hospital,
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 15,
@@ -911,78 +988,82 @@ export const TARGET_HOSPITAL_SWEEP: TargetObjective = {
     "ZmbF_NurseFat_Base",
     "ZmbM_ParamedicNormal_Base",
   ],
-  CountSelfKill: false,
+  CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
-  CountAIPlayers: false,
+  CountAIPlayers: FALSE,
   AllowedTargetFactions: [],
   AllowedDamageZones: [],
 };
 
 export const TARGET_HVIP_MARKSMAN: TargetObjective = {
-  ID: 20023,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 63,
   ObjectiveText: "Put down the marksman — he's calling in the horde.",
   ObjectiveType: ObjectiveType.TARGET,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.hvip_marksman,
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 1,
   ClassNames: ["ZombieFast"],
-  CountSelfKill: false,
+  CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
-  CountAIPlayers: false,
+  CountAIPlayers: FALSE,
   AllowedTargetFactions: [],
   AllowedDamageZones: [],
 };
 
 export const TARGET_WAREHOUSE_CLEAR: TargetObjective = {
-  ID: 20024,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 64,
   ObjectiveText: "Clear the warehouse. Lock the doors behind you.",
   ObjectiveType: ObjectiveType.TARGET,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.warehouse,
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 12,
   ClassNames: ["ZmbM_HeavyIndustryWorker_Base", "ZmbM_ConstrWorkerNormal_Base"],
-  CountSelfKill: false,
+  CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
-  CountAIPlayers: false,
+  CountAIPlayers: FALSE,
   AllowedTargetFactions: [],
   AllowedDamageZones: [],
 };
 
 export const TARGET_ROOFTOP_CLEAR: TargetObjective = {
-  ID: 20025,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 65,
   ObjectiveText: "Clear the rooftops — they'll rain down on you if you leave them.",
   ObjectiveType: ObjectiveType.TARGET,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.rooftop_clear,
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 6,
   ClassNames: ["ZmbM_Runner_Base", "ZmbF_Runner_Base"],
-  CountSelfKill: false,
+  CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
-  CountAIPlayers: false,
+  CountAIPlayers: FALSE,
   AllowedTargetFactions: [],
   AllowedDamageZones: [],
 };
 
 export const TARGET_NIGHTHUNT: TargetObjective = {
-  ID: 20026,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 66,
   ObjectiveText: "Hunt them down in the dark — they move slower when the lights go out.",
   ObjectiveType: ObjectiveType.TARGET,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.nighthunt,
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 10,
   ClassNames: ["ZombieSlow"],
-  CountSelfKill: false,
+  CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
-  CountAIPlayers: false,
+  CountAIPlayers: FALSE,
   AllowedTargetFactions: [],
   AllowedDamageZones: [],
 };
@@ -990,32 +1071,35 @@ export const TARGET_NIGHTHUNT: TargetObjective = {
 // ── Collection ──
 
 export const COLLECT_FUEL_CAN: CollectionObjective = {
-  ID: 20001,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 67,
   ObjectiveText: "Grab fuel cans — everything needs gas now.",
   ObjectiveType: ObjectiveType.COLLECT,
   Collections: [
     { ClassName: "Jerrycan", Amount: 3, QuantityPercent: 1, MinQuantityPercent: 0 },
   ],
-  ShowDistance: true,
-  AddItemsToNearbyMarketZone: false,
-  NeedAnyCollection: false,
+  ShowDistance: TRUE,
+  AddItemsToNearbyMarketZone: FALSE,
+  NeedAnyCollection: FALSE,
 };
 
 export const COLLECT_AMMO_RIG: CollectionObjective = {
-  ID: 20002,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 68,
   ObjectiveText: "Rig your ammo — sort by caliber and stack what you can use.",
   ObjectiveType: ObjectiveType.COLLECT,
   Collections: [
     { ClassName: "AmmoBox_762x39_SPG2", Amount: 2, QuantityPercent: 1, MinQuantityPercent: 0 },
     { ClassName: "AmmoBox_762x39_BS", Amount: 2, QuantityPercent: 1, MinQuantityPercent: 0 },
   ],
-  ShowDistance: true,
-  AddItemsToNearbyMarketZone: false,
-  NeedAnyCollection: false,
+  ShowDistance: TRUE,
+  AddItemsToNearbyMarketZone: FALSE,
+  NeedAnyCollection: FALSE,
 };
 
 export const COLLECT_WEAPON_PARTS: CollectionObjective = {
-  ID: 20003,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 69,
   ObjectiveText: "Salvage what you can from the armory — every part counts.",
   ObjectiveType: ObjectiveType.COLLECT,
   Collections: [
@@ -1028,13 +1112,14 @@ export const COLLECT_WEAPON_PARTS: CollectionObjective = {
       MinQuantityPercent: 0,
     },
   ],
-  ShowDistance: true,
-  AddItemsToNearbyMarketZone: false,
-  NeedAnyCollection: false,
+  ShowDistance: TRUE,
+  AddItemsToNearbyMarketZone: FALSE,
+  NeedAnyCollection: FALSE,
 };
 
 export const COLLECT_FOOD_SURPLUS: CollectionObjective = {
-  ID: 20004,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 70,
   ObjectiveText: "Scavenge what's left in the pantry before it spoils.",
   ObjectiveType: ObjectiveType.COLLECT,
   Collections: [
@@ -1042,13 +1127,14 @@ export const COLLECT_FOOD_SURPLUS: CollectionObjective = {
     { ClassName: "CannedPork", Amount: 3, QuantityPercent: 1, MinQuantityPercent: 0 },
     { ClassName: "CannedDogFood", Amount: 2, QuantityPercent: 1, MinQuantityPercent: 0 },
   ],
-  ShowDistance: true,
-  AddItemsToNearbyMarketZone: false,
-  NeedAnyCollection: false,
+  ShowDistance: TRUE,
+  AddItemsToNearbyMarketZone: FALSE,
+  NeedAnyCollection: FALSE,
 };
 
 export const COLLECT_RADIO_PARTS: CollectionObjective = {
-  ID: 20005,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 71,
   ObjectiveText: "Pull electronics off the dead — radios, batteries, wire.",
   ObjectiveType: ObjectiveType.COLLECT,
   Collections: [
@@ -1056,13 +1142,14 @@ export const COLLECT_RADIO_PARTS: CollectionObjective = {
     { ClassName: "ItemBattery9V", Amount: 3, QuantityPercent: 1, MinQuantityPercent: 0 },
     { ClassName: "Wire", Amount: 5, QuantityPercent: 1, MinQuantityPercent: 0 },
   ],
-  ShowDistance: true,
-  AddItemsToNearbyMarketZone: false,
-  NeedAnyCollection: false,
+  ShowDistance: TRUE,
+  AddItemsToNearbyMarketZone: FALSE,
+  NeedAnyCollection: FALSE,
 };
 
 export const COLLECT_BODY_GEAR: CollectionObjective = {
-  ID: 20006,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 72,
   ObjectiveText: "Suit up — grab body armor, helmets, and boots from the cache.",
   ObjectiveType: ObjectiveType.COLLECT,
   Collections: [
@@ -1070,89 +1157,95 @@ export const COLLECT_BODY_GEAR: CollectionObjective = {
     { ClassName: "helmetskull", Amount: 1, QuantityPercent: 1, MinQuantityPercent: 0 },
     { ClassName: "BootsGrounded", Amount: 1, QuantityPercent: 1, MinQuantityPercent: 0 },
   ],
-  ShowDistance: true,
-  AddItemsToNearbyMarketZone: false,
-  NeedAnyCollection: false,
+  ShowDistance: TRUE,
+  AddItemsToNearbyMarketZone: FALSE,
+  NeedAnyCollection: FALSE,
 };
 
 export const COLLECT_WATER_PURE: CollectionObjective = {
-  ID: 20007,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 73,
   ObjectiveText: "Stock up on clean water — the old stuff is gone.",
   ObjectiveType: ObjectiveType.COLLECT,
   Collections: [
     { ClassName: "WaterBottle", Amount: 5, QuantityPercent: 1, MinQuantityPercent: 0 },
   ],
-  ShowDistance: true,
-  AddItemsToNearbyMarketZone: false,
-  NeedAnyCollection: false,
+  ShowDistance: TRUE,
+  AddItemsToNearbyMarketZone: FALSE,
+  NeedAnyCollection: FALSE,
 };
 
 // ── Delivery ──
 
 export const DELIVERY_INTEL_PACKAGE: DeliveryObjective = {
-  ID: 20011,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 74,
   ObjectiveText: "Deliver the intel package before it burns a target on your back.",
   ObjectiveType: ObjectiveType.DELIVERY,
   Collections: [
     { ClassName: "Paper", Amount: 1, QuantityPercent: 1, MinQuantityPercent: 0 },
   ],
-  ShowDistance: true,
-  AddItemsToNearbyMarketZone: false,
+  ShowDistance: TRUE,
+  AddItemsToNearbyMarketZone: FALSE,
   MaxDistance: 150,
   MarkerName: "Drop Zone Alpha",
 };
 
 export const DELIVERY_BATTERY_DROP: DeliveryObjective = {
-  ID: 20012,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 75,
   ObjectiveText: "Drop off the battery pack — their generator's dead.",
   ObjectiveType: ObjectiveType.DELIVERY,
   Collections: [
     { ClassName: "ItemBattery9V", Amount: 5, QuantityPercent: 1, MinQuantityPercent: 0 },
   ],
-  ShowDistance: true,
-  AddItemsToNearbyMarketZone: false,
+  ShowDistance: TRUE,
+  AddItemsToNearbyMarketZone: FALSE,
   MaxDistance: 150,
   MarkerName: "Battery Drop",
 };
 
 export const DELIVERY_GUNSMITH_KIT: DeliveryObjective = {
-  ID: 20013,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 76,
   ObjectiveText: "The gunsmith wants his tools back. Bring the whole kit.",
   ObjectiveType: ObjectiveType.DELIVERY,
   Collections: [
     { ClassName: "GunPartWeaponParts", Amount: 2, QuantityPercent: 1, MinQuantityPercent: 0 },
     { ClassName: "OilFilter", Amount: 1, QuantityPercent: 1, MinQuantityPercent: 0 },
   ],
-  ShowDistance: true,
-  AddItemsToNearbyMarketZone: false,
+  ShowDistance: TRUE,
+  AddItemsToNearbyMarketZone: FALSE,
   MaxDistance: 150,
   MarkerName: "Gunsmith's Table",
 };
 
 export const DELIVERY_COLD_WEATHER_GEAR: DeliveryObjective = {
-  ID: 20014,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 77,
   ObjectiveText: "Send the cold gear pack before the temperature drops again.",
   ObjectiveType: ObjectiveType.DELIVERY,
   Collections: [
     { ClassName: "WinterCoat_Black", Amount: 2, QuantityPercent: 1, MinQuantityPercent: 0 },
     { ClassName: "WinterGloves", Amount: 2, QuantityPercent: 1, MinQuantityPercent: 0 },
   ],
-  ShowDistance: true,
-  AddItemsToNearbyMarketZone: false,
+  ShowDistance: TRUE,
+  AddItemsToNearbyMarketZone: FALSE,
   MaxDistance: 150,
   MarkerName: "Cold Pack Drop",
 };
 
 export const DELIVERY_RATIONS_CACHE: DeliveryObjective = {
-  ID: 20015,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 78,
   ObjectiveText: "Stash the rations where the patrol can find them on rotation.",
   ObjectiveType: ObjectiveType.DELIVERY,
   Collections: [
     { ClassName: "CannedSardines", Amount: 5, QuantityPercent: 1, MinQuantityPercent: 0 },
     { ClassName: "CannedDogFood", Amount: 5, QuantityPercent: 1, MinQuantityPercent: 0 },
   ],
-  ShowDistance: true,
-  AddItemsToNearbyMarketZone: false,
+  ShowDistance: TRUE,
+  AddItemsToNearbyMarketZone: FALSE,
   MaxDistance: 150,
   MarkerName: "Rations Cache",
 };
@@ -1160,7 +1253,8 @@ export const DELIVERY_RATIONS_CACHE: DeliveryObjective = {
 // ── Crafting ──
 
 export const CRAFT_TRIPWIRE_ALARM: CraftingObjective = {
-  ID: 20050,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 79,
   ObjectiveText: "Wire a tripwire alarm — let them tell you when they come.",
   ObjectiveType: ObjectiveType.CRAFTING,
   ItemNames: ["Tripod"],
@@ -1168,7 +1262,8 @@ export const CRAFT_TRIPWIRE_ALARM: CraftingObjective = {
 };
 
 export const CRAFT_IMPROvised_SHIELDS: CraftingObjective = {
-  ID: 20051,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 80,
   ObjectiveText: "Improvised shields from scrap — better than nothing.",
   ObjectiveType: ObjectiveType.CRAFTING,
   ItemNames: ["MakeshiftShield"],
@@ -1176,7 +1271,8 @@ export const CRAFT_IMPROvised_SHIELDS: CraftingObjective = {
 };
 
 export const CRAFT_MORPHINE_SYR: CraftingObjective = {
-  ID: 20052,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 81,
   ObjectiveText: "Distill morphine from poppy — ration it carefully.",
   ObjectiveType: ObjectiveType.CRAFTING,
   ItemNames: ["Morphine"],
@@ -1184,7 +1280,8 @@ export const CRAFT_MORPHINE_SYR: CraftingObjective = {
 };
 
 export const CRAFT_FLARE_BATON: CraftingObjective = {
-  ID: 20053,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 82,
   ObjectiveText: "Build flare batons for signaling — they glow through the smoke.",
   ObjectiveType: ObjectiveType.CRAFTING,
   ItemNames: ["FlareBaton"],
@@ -1192,7 +1289,8 @@ export const CRAFT_FLARE_BATON: CraftingObjective = {
 };
 
 export const CRAFT_ROPE_BOOTS: CraftingObjective = {
-  ID: 20054,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 83,
   ObjectiveText: "Rope and boots — climb anything if you dare.",
   ObjectiveType: ObjectiveType.CRAFTING,
   ItemNames: ["ClimbingRope"],
@@ -1200,7 +1298,8 @@ export const CRAFT_ROPE_BOOTS: CraftingObjective = {
 };
 
 export const CRAFT_PIPE_BOMB: CraftingObjective = {
-  ID: 20055,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 84,
   ObjectiveText: "Pipe bombs from scrap — ugly, loud, effective.",
   ObjectiveType: ObjectiveType.CRAFTING,
   ItemNames: ["PipeBomb"],
@@ -1208,7 +1307,8 @@ export const CRAFT_PIPE_BOMB: CraftingObjective = {
 };
 
 export const CRAFT_HUNTING_TRAP: CraftingObjective = {
-  ID: 20056,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 85,
   ObjectiveText: "Set hunting traps — bait them and watch what walks in.",
   ObjectiveType: ObjectiveType.CRAFTING,
   ItemNames: ["BearTrap"],
@@ -1216,7 +1316,8 @@ export const CRAFT_HUNTING_TRAP: CraftingObjective = {
 };
 
 export const CRAFT_DUST_MASK: CraftingObjective = {
-  ID: 20057,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 86,
   ObjectiveText: "Sew dust masks — the air won't kill you, but choking on it will.",
   ObjectiveType: ObjectiveType.CRAFTING,
   ItemNames: ["DustMask"],
@@ -1226,7 +1327,8 @@ export const CRAFT_DUST_MASK: CraftingObjective = {
 // ── Action ──
 
 export const ACTION_OPEN_VEHICLE_DOOR: ActionObjective = {
-  ID: 10094,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 87,
   ObjectiveText: "Pry open a vehicle door — hope the lock didn't freeze.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: ["ActionOpenDoor"],
@@ -1234,7 +1336,8 @@ export const ACTION_OPEN_VEHICLE_DOOR: ActionObjective = {
 };
 
 export const ACTION_OPEN_VEHICLE_HOOD: ActionObjective = {
-  ID: 10095,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 88,
   ObjectiveText: "Pop the hood and check under the metal.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: ["ActionOpen"],
@@ -1242,7 +1345,8 @@ export const ACTION_OPEN_VEHICLE_HOOD: ActionObjective = {
 };
 
 export const ACTION_OPEN_BACK_DOOR: ActionObjective = {
-  ID: 10096,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 89,
   ObjectiveText: "Open the rear doors and search the back.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: ["ActionOpenDoor"],
@@ -1250,7 +1354,8 @@ export const ACTION_OPEN_BACK_DOOR: ActionObjective = {
 };
 
 export const ACTION_SEARCH_BACKPACK: ActionObjective = {
-  ID: 10097,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 90,
   ObjectiveText: "Rummage through the backpack — grab anything useful.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: ["ActionOpen"],
@@ -1258,7 +1363,8 @@ export const ACTION_SEARCH_BACKPACK: ActionObjective = {
 };
 
 export const ACTION_OPEN_GARAGE: ActionObjective = {
-  ID: 10098,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 91,
   ObjectiveText: "Roll up the garage door — what's parked inside is yours now.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: ["ActionOpen"],
@@ -1268,7 +1374,8 @@ export const ACTION_OPEN_GARAGE: ActionObjective = {
 // ── Crafting (continued - more) ──
 
 export const CRAFT_AMMO_PACK: CraftingObjective = {
-  ID: 20058,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 92,
   ObjectiveText: "Handload ammo — every round you make is one less you have to scavenge.",
   ObjectiveType: ObjectiveType.CRAFTING,
   ItemNames: ["Bullet_762x39"],
@@ -1278,86 +1385,91 @@ export const CRAFT_AMMO_PACK: CraftingObjective = {
 // ── AICamp ──
 
 export const AICAMP_ROADBLOCK: AICampObjective = {
-  ID: 20060,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 93,
   ObjectiveText: "Smash the roadblock. Ten hostiles, no backup, easy target.",
   ObjectiveType: ObjectiveType.AICAMP,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.roadblock,
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 10,
   ClassNames: ["ZombieFast"],
-  CountSelfKill: false,
+  CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
-  CountAIPlayers: false,
+  CountAIPlayers: FALSE,
   AllowedTargetFactions: [],
   AllowedDamageZones: [],
 };
 
 export const AICAMP_OUTPOST_RAID: AICampObjective = {
-  ID: 20061,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 94,
   ObjectiveText: "Raid the outpost before they reinforce. Hit fast, leave fast.",
   ObjectiveType: ObjectiveType.AICAMP,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.outpost,
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 12,
   ClassNames: ["ZombieMadman"],
-  CountSelfKill: false,
+  CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
-  CountAIPlayers: false,
+  CountAIPlayers: FALSE,
   AllowedTargetFactions: [],
   AllowedDamageZones: [],
 };
 
 export const AICAMP_Bunker_SWEEP: AICampObjective = {
-  ID: 20062,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 95,
   ObjectiveText: "Sweep the bunker — sealed, dark, and full of company.",
   ObjectiveType: ObjectiveType.AICAMP,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.bunker,
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 15,
   ClassNames: ["ZombieSlow", "ZombieMadman"],
-  CountSelfKill: false,
+  CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
-  CountAIPlayers: false,
+  CountAIPlayers: FALSE,
   AllowedTargetFactions: [],
   AllowedDamageZones: [],
 };
 
 export const AICAMP_FACTORY_CLEAR: AICampObjective = {
-  ID: 20063,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 96,
   ObjectiveText: "Clear the factory floor. These things were workers once.",
   ObjectiveType: ObjectiveType.AICAMP,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.factory,
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 20,
   ClassNames: ["ZombieMadman"],
-  CountSelfKill: false,
+  CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
-  CountAIPlayers: false,
+  CountAIPlayers: FALSE,
   AllowedTargetFactions: [],
   AllowedDamageZones: [],
 };
 
 export const AICAMP_TANK_GRAVEYARD: AICampObjective = {
-  ID: 20064,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 97,
   ObjectiveText: "The tank graveyard — the dead don't stay buried in metal.",
   ObjectiveType: ObjectiveType.AICAMP,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.tank_graveyard,
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 10,
   ClassNames: ["ZombieFast"],
-  CountSelfKill: false,
+  CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
-  CountAIPlayers: false,
+  CountAIPlayers: FALSE,
   AllowedTargetFactions: [],
   AllowedDamageZones: [],
 };
@@ -1365,10 +1477,11 @@ export const AICAMP_TANK_GRAVEYARD: AICampObjective = {
 // ── AIVIP ──
 
 export const AIVIP_INFORMANT: AIVipObjective = {
-  ID: 20014,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 98,
   ObjectiveText: "Extract the informant — he knows where the supply drop landed.",
   ObjectiveType: ObjectiveType.AIVIP,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.informant,
   MaxDistance: 150,
   MarkerName: "Informant",
   CanLootAI: FALSE,
@@ -1377,10 +1490,11 @@ export const AIVIP_INFORMANT: AIVipObjective = {
 };
 
 export const AIVIP_WOUNDED_DOC: AIVipObjective = {
-  ID: 20015,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 99,
   ObjectiveText: "Get the wounded doc to safety — he's the only one who knows triage.",
   ObjectiveType: ObjectiveType.AIVIP,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.wounded_doctor,
   MaxDistance: 150,
   MarkerName: "Wounded Doctor",
   CanLootAI: FALSE,
@@ -1389,10 +1503,11 @@ export const AIVIP_WOUNDED_DOC: AIVipObjective = {
 };
 
 export const AIVIP_SCIENTIST_EXFIL: AIVipObjective = {
-  ID: 20016,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 100,
   ObjectiveText: "Pull the scientist out. Whatever she was studying, it's not staying.",
   ObjectiveType: ObjectiveType.AIVIP,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.scientist_exfil,
   MaxDistance: 150,
   MarkerName: "Evac Scientist",
   CanLootAI: FALSE,
@@ -1401,10 +1516,11 @@ export const AIVIP_SCIENTIST_EXFIL: AIVipObjective = {
 };
 
 export const AIVIP_SHEPHERD_CAPTIVE: QuestAIVipObjective = {
-  ID: 10103,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 101,
   ObjectiveText: "Extract the Shepherd captive alive.",
   ObjectiveType: ObjectiveType.AIVIP,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.shepherd_captive,
   MaxDistance: 150,
   MarkerName: "Shepherd Captive",
   CanLootAI: FALSE,
@@ -1415,41 +1531,44 @@ export const AIVIP_SHEPHERD_CAPTIVE: QuestAIVipObjective = {
 // ── AIPatrol ──
 
 export const AIPATROL_ROAMING_GROUP: AIPatrolObjective = {
-  ID: 20060,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 102,
   ObjectiveText: "Break up the roaming group — they're moving toward civilization.",
   ObjectiveType: ObjectiveType.AIPATROL,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.roaming_group,
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 4,
   ClassNames: ["ZombieMadman"],
-  CountSelfKill: false,
+  CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
-  CountAIPlayers: false,
+  CountAIPlayers: FALSE,
   AllowedTargetFactions: [],
   AllowedDamageZones: [],
 };
 
 export const AIPATROL_HUNTER_PATROL: AIPatrolObjective = {
-  ID: 20061,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 103,
   ObjectiveText: "Take out the hunter patrol — they track everything.",
   ObjectiveType: ObjectiveType.AIPATROL,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.hunter_patrol,
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 3,
   ClassNames: ["ZombieFast"],
-  CountSelfKill: false,
+  CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
-  CountAIPlayers: false,
+  CountAIPlayers: FALSE,
   AllowedTargetFactions: [],
   AllowedDamageZones: [],
 };
 
 export const AIPATROL_CONVOY_ESCORT: AIPatrolObjective = {
-  ID: 20062,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 104,
   ObjectiveText: "Interrupt the convoy escort — the supply truck is the real target.",
   ObjectiveType: ObjectiveType.AIPATROL,
   Position: LOCATION.nwaf_patrol,
@@ -1457,27 +1576,28 @@ export const AIPATROL_CONVOY_ESCORT: AIPatrolObjective = {
   MinDistance: -1,
   Amount: 8,
   ClassNames: ["ZombieMadman"],
-  CountSelfKill: false,
+  CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
-  CountAIPlayers: false,
+  CountAIPlayers: FALSE,
   AllowedTargetFactions: ["Bandits"],
   AllowedDamageZones: [],
 };
 
 export const AIPATROL_NIGHT_STALKERS: AIPatrolObjective = {
-  ID: 20063,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 105,
   ObjectiveText: "Three night stalkers — move between shadows, strike between heartbeats.",
   ObjectiveType: ObjectiveType.AIPATROL,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.night_stalkers,
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 3,
   ClassNames: ["ZombieSlow"],
-  CountSelfKill: false,
+  CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
-  CountAIPlayers: false,
+  CountAIPlayers: FALSE,
   AllowedTargetFactions: [],
   AllowedDamageZones: [],
 };
@@ -1485,37 +1605,41 @@ export const AIPATROL_NIGHT_STALKERS: AIPatrolObjective = {
 // ── Treasure Hunt ──
 
 export const TREASUREHUNT_DROWNED_CRATE: TreasureHuntObjective = {
-  ID: 20040,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 106,
   ObjectiveText: "Someone drowned a crate in the river — dig it up before the current takes it.",
   ObjectiveType: ObjectiveType.TREASUREHUNT,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.drowned_crate,
   MaxDistance: 10,
   MarkerName: "Drowned Crate",
 };
 
 export const TREASUREHUNT_ABANDONED_POSTBOX: TreasureHuntObjective = {
-  ID: 20041,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 107,
   ObjectiveText: "The old postbox has a false bottom — someone hid something in a hurry.",
   ObjectiveType: ObjectiveType.TREASUREHUNT,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.abandoned_postbox,
   MaxDistance: 10,
   MarkerName: "Old Postbox",
 };
 
 export const TREASUREHUNT_BUSH_UNDER_THE_OAK: TreasureHuntObjective = {
-  ID: 20042,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 108,
   ObjectiveText: "Dig beneath the dead oak — the soil smells different here.",
   ObjectiveType: ObjectiveType.TREASUREHUNT,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.oak_cache,
   MaxDistance: 10,
   MarkerName: "Under the Oak",
 };
 
 export const TREASUREHUNT_ROOFTOP_VENT: QuestTreasureHuntObjective = {
-  ID: 20043,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 109,
   ObjectiveText: "There's a cache behind the ventilation shaft — climb and look.",
   ObjectiveType: ObjectiveType.TREASUREHUNT,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.rooftop_vent,
   MaxDistance: 10,
   MarkerName: "Rooftop Vent",
   Loot: [guaranteedTreasureLoot("Paper"), guaranteedTreasureLoot("GunPartWeaponParts")],
@@ -1523,10 +1647,11 @@ export const TREASUREHUNT_ROOFTOP_VENT: QuestTreasureHuntObjective = {
 };
 
 export const TREASUREHUNT_UNDER_BRIDGE: QuestTreasureHuntObjective = {
-  ID: 20044,
+  ...OBJECTIVE_DEFAULTS,
+  ID: 110,
   ObjectiveText: "Under the bridge, in the muck — what was tossed away.",
   ObjectiveType: ObjectiveType.TREASUREHUNT,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.under_bridge,
   MaxDistance: 10,
   MarkerName: "Under Bridge",
   Loot: [guaranteedTreasureLoot("Paper"), guaranteedTreasureLoot("ItemRadio")],
@@ -1662,6 +1787,7 @@ function createQuestAISpawn(
 function toExpansionObjectiveConfig(objective: QuestObjective): Record<string, unknown> {
   const base = {
     ConfigVersion: OBJECTIVE_CONFIG_VERSION,
+    ...OBJECTIVE_DEFAULTS,
     ID: objective.ID,
     ObjectiveType: objective.ObjectiveType,
     ObjectiveText: objective.ObjectiveText,
@@ -1733,24 +1859,26 @@ function toExpansionObjectiveConfig(objective: QuestObjective): Record<string, u
   }
 }
 
-const OBJECTIVE_DIRS: Record<ObjectiveType, string> = {
-  [ObjectiveType.NONE]: EXPANSION_QUESTS_OBJECTIVES_ACTION_DIR,
-  [ObjectiveType.TARGET]: EXPANSION_QUESTS_OBJECTIVES_TARGET_DIR,
-  [ObjectiveType.TRAVEL]: EXPANSION_QUESTS_OBJECTIVES_TRAVEL_DIR,
-  [ObjectiveType.COLLECT]: EXPANSION_QUESTS_OBJECTIVES_COLLECTION_DIR,
-  [ObjectiveType.DELIVERY]: EXPANSION_QUESTS_OBJECTIVES_DELIVERY_DIR,
-  [ObjectiveType.TREASUREHUNT]: EXPANSION_QUESTS_OBJECTIVES_TREASUREHUNT_DIR,
-  [ObjectiveType.AIPATROL]: EXPANSION_QUESTS_OBJECTIVES_AIPATROL_DIR,
-  [ObjectiveType.AICAMP]: EXPANSION_QUESTS_OBJECTIVES_AICAMP_DIR,
-  [ObjectiveType.AIVIP]: EXPANSION_QUESTS_OBJECTIVES_AIVIP_DIR,
-  [ObjectiveType.ACTION]: EXPANSION_QUESTS_OBJECTIVES_ACTION_DIR,
-  [ObjectiveType.CRAFTING]: EXPANSION_QUESTS_OBJECTIVES_CRAFTING_DIR,
+const OBJECTIVE_FIXES: Record<ObjectiveType, [string, string]> = {
+  [ObjectiveType.NONE]: [EXPANSION_QUESTS_OBJECTIVES_ACTION_DIR, ""],
+  [ObjectiveType.TARGET]: [EXPANSION_QUESTS_OBJECTIVES_TARGET_DIR, "_TA"],
+  [ObjectiveType.TRAVEL]: [EXPANSION_QUESTS_OBJECTIVES_TRAVEL_DIR, "_T"],
+  [ObjectiveType.COLLECT]: [EXPANSION_QUESTS_OBJECTIVES_COLLECTION_DIR, "_C"],
+  [ObjectiveType.DELIVERY]: [EXPANSION_QUESTS_OBJECTIVES_DELIVERY_DIR, "_D"],
+  [ObjectiveType.TREASUREHUNT]: [EXPANSION_QUESTS_OBJECTIVES_TREASUREHUNT_DIR, "_TH"],
+  [ObjectiveType.AIPATROL]: [EXPANSION_QUESTS_OBJECTIVES_AIPATROL_DIR, "_AIP"],
+  [ObjectiveType.AICAMP]: [EXPANSION_QUESTS_OBJECTIVES_AICAMP_DIR, "_AIC"],
+  [ObjectiveType.AIVIP]: [EXPANSION_QUESTS_OBJECTIVES_AIVIP_DIR, "_AIESCORT"],
+  [ObjectiveType.ACTION]: [EXPANSION_QUESTS_OBJECTIVES_ACTION_DIR, "_A"],
+  [ObjectiveType.CRAFTING]: [EXPANSION_QUESTS_OBJECTIVES_CRAFTING_DIR, "_CR"],
 };
 
 export const ALL_OBJECTIVE_CONFIGS = ALL_OBJECTIVES.reduce(
   (configs, objective) => {
-    const directory = OBJECTIVE_DIRS[objective.ObjectiveType];
-    configs[`${directory}/Objective_${objective.ID}.json`] = toExpansionObjectiveConfig(objective);
+    const [directory, prefix] = OBJECTIVE_FIXES[objective.ObjectiveType];
+    configs[`${directory}/Objective${prefix}_${objective.ID}.json`] = toExpansionObjectiveConfig(
+      objective,
+    );
     return configs;
   },
   {} as Record<string, Record<string, unknown>>,

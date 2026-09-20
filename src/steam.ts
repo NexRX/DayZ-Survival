@@ -80,8 +80,10 @@ async function runSteamcmdQuiet(args: string[]): Promise<number> {
 /**
  * Download several Workshop items in one authenticated SteamCMD session.
  * SteamCMD accepts multiple `+workshop_download_item` commands, unlike the
- * DepotDownloader CLI's single `-pubfile` operation. The caller verifies each
- * item afterward and can fall back to DepotDownloader for failed items.
+ * DepotDownloader CLI's single `-pubfile` operation. The optional `validate`
+ * argument is deliberately omitted: callers remove an item first when a true
+ * refresh is needed, while SteamCMD can otherwise reuse its local Workshop
+ * cache. The caller verifies each item afterward and reports any failures.
  */
 export async function runSteamWorkshopBatch(
   s: Settings,
@@ -93,7 +95,6 @@ export async function runSteamWorkshopBatch(
     "+workshop_download_item",
     DAYZ_CLIENT_APPID,
     id,
-    "validate",
   ]);
   return runSteamcmdQuiet([
     "+force_install_dir",
@@ -168,20 +169,39 @@ export async function findWorkshopItem(id: string): Promise<string | null> {
 }
 
 /**
- * The manifest id DepotDownloader last validated this workshop item against
- * (from its `.DepotDownloader/<depot>_<manifest>.manifest` cache file), or
- * null if never downloaded. Compared against Steam's currently-published
- * `hcontent_file` (see `mods.ts`'s `fetchContentIds`) to detect drift without
- * needing a Steam3 login.
+ * The manifest id Steam last validated this workshop item against (from
+ * DepotDownloader's `.DepotDownloader/<depot>_<manifest>.manifest` or
+ * SteamCMD's `appworkshop_<appid>.acf` cache), or null if never downloaded.
+ * Compared against Steam's currently-published `hcontent_file` (see `mods.ts`'
+ * `fetchContentIds`) to detect drift without needing a Steam3 login.
  */
 export async function localManifestId(id: string): Promise<string | null> {
   const item = await findWorkshopItem(id);
-  if (!item) return null;
-  const dir = `${item}/.DepotDownloader`;
-  if (!(await exists(dir))) return null;
-  for await (const entry of Deno.readDir(dir)) {
-    const m = /^\d+_(\d+)\.manifest$/.exec(entry.name);
-    if (m) return m[1];
+  if (item) {
+    const dir = `${item}/.DepotDownloader`;
+    if (await exists(dir)) {
+      for await (const entry of Deno.readDir(dir)) {
+        const m = /^\d+_(\d+)\.manifest$/.exec(entry.name);
+        if (m) return m[1];
+      }
+    }
+  }
+
+  // SteamCMD records the manifest it installed in appworkshop_<appid>.acf,
+  // rather than creating DepotDownloader's per-item .manifest file. Read that
+  // cache too so switching downloaders does not make freshness checks blind.
+  const appWorkshopFiles = [
+    `${SERVER_DIR}/steamapps/workshop/appworkshop_${DAYZ_CLIENT_APPID}.acf`,
+    `${STEAMCMD_DIR}/steamapps/workshop/appworkshop_${DAYZ_CLIENT_APPID}.acf`,
+    `${STEAMCMD_DIR}/.local/share/Steam/steamapps/workshop/appworkshop_${DAYZ_CLIENT_APPID}.acf`,
+    `${STEAMCMD_DIR}/Steam/steamapps/workshop/appworkshop_${DAYZ_CLIENT_APPID}.acf`,
+  ];
+  for (const file of appWorkshopFiles) {
+    const text = await Deno.readTextFile(file).catch(() => null);
+    if (text === null) continue;
+    const itemBlock = new RegExp(`"${id}"\\s*\\{[\\s\\S]*?\\n\\s*\\}`).exec(text)?.[0];
+    const manifest = itemBlock ? /"manifest"\s+"(\d+)"/.exec(itemBlock) : null;
+    if (manifest) return manifest[1];
   }
   return null;
 }

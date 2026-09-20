@@ -1,7 +1,14 @@
+import { TRUE } from "../types/common.ts";
 import { Npc, NPC_CONFIG_DIR, NPCType } from "../types/npc.ts";
 import { configToRecord, NPC_CONFIG_VERSION } from "./common.ts";
 
+const NPC_DEFAULTS = {
+  Active: TRUE,
+  ConfigVersion: NPC_CONFIG_VERSION,
+};
+
 export const NPC_TASKMASTER_DANIELS: Npc = {
+  ...NPC_DEFAULTS,
   ID: 1,
   ClassName: "ExpansionQuestNPCDenis",
   Position: [7984.24, 221.09, 11302.8],
@@ -13,6 +20,7 @@ export const NPC_TASKMASTER_DANIELS: Npc = {
 };
 
 export const NPC_GUARD_BORIS: Npc = {
+  ...NPC_DEFAULTS,
   ID: 2,
   ClassName: "ExpansionQuestNPCBoris",
   Position: [8009.97, 223.647, 11300.2],
@@ -24,6 +32,7 @@ export const NPC_GUARD_BORIS: Npc = {
 };
 
 export const NPC_GUARD_KAITO: Npc = {
+  ...NPC_DEFAULTS,
   ID: 3,
   ClassName: "ExpansionQuestNPCKaito",
   Position: [8010.5, 223.244, 11308.7],
@@ -35,6 +44,7 @@ export const NPC_GUARD_KAITO: Npc = {
 };
 
 export const NPC_BLACKMARKET_HASSAN: Npc = {
+  ...NPC_DEFAULTS,
   ID: 4,
   ClassName: "ExpansionQuestNPCHassan", // TODO CHANGE
   Position: [13119.5, 1.9622, 8178.82],
@@ -46,6 +56,7 @@ export const NPC_BLACKMARKET_HASSAN: Npc = {
 };
 
 export const NPC_SCOUT_NIKI: Npc = {
+  ...NPC_DEFAULTS,
   ID: 5,
   ClassName: "ExpansionQuestNPCNiki",
   Position: [391.664, 145.604, 4721.08],
@@ -58,13 +69,10 @@ export const NPC_SCOUT_NIKI: Npc = {
 
 const ALL_NPCS: Npc[] = [
   NPC_TASKMASTER_DANIELS,
-  NPC_GUARD_BORIS,
-  NPC_GUARD_KAITO,
-  NPC_BLACKMARKET_HASSAN,
-  NPC_SCOUT_NIKI,
+  // NPC_GUARD_BORIS,
+  // NPC_GUARD_KAITO,
+  // NPC_BLACKMARKET_HASSAN,
+  // NPC_SCOUT_NIKI,
 ];
 
-export const ALL_NPC_CONFIGS = configToRecord(
-  ALL_NPCS.map((npc) => ({ ConfigVersion: NPC_CONFIG_VERSION, Active: true, ...npc })),
-  `${NPC_CONFIG_DIR}/NPC_`,
-);
+export const ALL_NPC_CONFIGS = configToRecord(ALL_NPCS, `${NPC_CONFIG_DIR}/QuestNPC_`);

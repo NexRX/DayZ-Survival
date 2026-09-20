@@ -1,9 +1,11 @@
+import { BoolNum } from "./common.ts";
+
 /**
  * Full QuestSettings JSON shape.
  * The mod reads this from ExpansionMod/Quests/QuestSettings.json.
  */
 export interface QuestSettingsConfig {
-  EnableQuests: boolean;
+  EnableQuests: BoolNum;
 }
 
 /** Export mapping. */
