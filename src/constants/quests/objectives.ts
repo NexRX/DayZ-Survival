@@ -66,6 +66,7 @@ export const TRAVEL_ROMASHKA_FARM: TravelObjective = {
   TriggerOnExit: 0,
 };
 
+/** @deprecated untill playtested */
 export const TRAVEL_ROMASHKA_PERIMETER: TravelObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 2,
@@ -78,6 +79,7 @@ export const TRAVEL_ROMASHKA_PERIMETER: TravelObjective = {
   TriggerOnExit: 0,
 };
 
+/** @deprecated untill playtested */
 export const TRAVEL_COASTAL_ROAD: TravelObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 3,
@@ -90,6 +92,7 @@ export const TRAVEL_COASTAL_ROAD: TravelObjective = {
   TriggerOnExit: 0,
 };
 
+/** @deprecated untill playtested */
 export const TRAVEL_INTEL_BUILDING: TravelObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 4,
@@ -110,6 +113,7 @@ const ALL_OTRAVEL: TravelObjective[] = [
 
 // ─── Target Objectives ───────────────────────────────────────────────────────
 
+/** @deprecated untill playtested */
 export const TARGET_RAIDER_SCOUTS_PERIMETER: QuestTargetObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 5,
@@ -134,6 +138,7 @@ export const TARGET_RAIDER_SCOUTS_PERIMETER: QuestTargetObjective = {
   AllowedDamageZones: [],
 };
 
+/** @deprecated untill playtested */
 export const TARGET_CHECKPOINT_SNIPER: TargetObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 6,
@@ -152,6 +157,7 @@ export const TARGET_CHECKPOINT_SNIPER: TargetObjective = {
   AllowedDamageZones: [],
 };
 
+/** @deprecated untill playtested */
 export const TARGET_ROOFTOP_SNIPER: TargetObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 7,
@@ -178,6 +184,7 @@ const ALL_OTARGET: TargetObjective[] = [
 
 // ─── Delivery Objectives ─────────────────────────────────────────────────────
 
+/** @deprecated untill playtested */
 export const DELIVERY_NOTE_TO_SCOUT_JAMES: DeliveryObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 8,
@@ -192,13 +199,14 @@ export const DELIVERY_NOTE_TO_SCOUT_JAMES: DeliveryObjective = {
   MarkerName: "Scout James",
 };
 
+/** @deprecated untill playtested */
 export const DELIVERY_MEDICAL_TO_ROMASHKA: DeliveryObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 9,
   ObjectiveText: "Deliver the supplies Daniels asked for.",
   ObjectiveType: ObjectiveType.DELIVERY,
   Collections: [
-    { ClassName: "Bandage", Amount: 3, QuantityPercent: 1, MinQuantityPercent: 0 },
+    { ClassName: "BandageDressing", Amount: 3, QuantityPercent: 1, MinQuantityPercent: 0 },
   ],
   ShowDistance: TRUE,
   AddItemsToNearbyMarketZone: FALSE,
@@ -206,6 +214,7 @@ export const DELIVERY_MEDICAL_TO_ROMASHKA: DeliveryObjective = {
   MarkerName: "Supply Drop",
 };
 
+/** @deprecated untill playtested */
 export const DELIVERY_AMMO_CACHE: DeliveryObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 10,
@@ -227,6 +236,7 @@ const ALL_ODELIVERY: DeliveryObjective[] = [
 
 // ─── Collection Objectives ───────────────────────────────────────────────────
 
+/** @deprecated untill playtested */
 export const COLLECT_CLOTH_DISINFECTANT: CollectionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 11,
@@ -247,21 +257,22 @@ export const COLLECT_BUILDING_MATERIALS: CollectionObjective = {
   ObjectiveText: "Collect supplies for the farm's stockpile.",
   ObjectiveType: ObjectiveType.COLLECT,
   Collections: [
-    { ClassName: "WoodenPlank", Amount: 10, QuantityPercent: 1, MinQuantityPercent: 0 },
-    { ClassName: "Nail", Amount: 3, QuantityPercent: 1, MinQuantityPercent: 0 },
+    { ClassName: "WoodenPlank", Amount: 10, QuantityPercent: -1, MinQuantityPercent: 0 },
+    { ClassName: "Nail", Amount: 3, QuantityPercent: -1, MinQuantityPercent: 0 },
   ],
   ShowDistance: TRUE,
   AddItemsToNearbyMarketZone: FALSE,
   NeedAnyCollection: FALSE,
 };
 
-export const COLLECT_MEDICINAL_HERBS: CollectionObjective = {
+/** @deprecated untill playtested */
+export const COLLECT_MEDICINAL_EPINEPHRINE: CollectionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 13,
-  ObjectiveText: "Gather herbs for the medic's stash.",
+  ObjectiveText: "Gather Epinephrine for the medic's stash.",
   ObjectiveType: ObjectiveType.COLLECT,
   Collections: [
-    { ClassName: "Herb", Amount: 5, QuantityPercent: 1, MinQuantityPercent: 0 },
+    { ClassName: "Epinephrine", Amount: 5, QuantityPercent: 1, MinQuantityPercent: 0 },
   ],
   ShowDistance: TRUE,
   AddItemsToNearbyMarketZone: FALSE,
@@ -271,11 +282,12 @@ export const COLLECT_MEDICINAL_HERBS: CollectionObjective = {
 const ALL_OCOLLECT: CollectionObjective[] = [
   COLLECT_CLOTH_DISINFECTANT,
   COLLECT_BUILDING_MATERIALS,
-  COLLECT_MEDICINAL_HERBS,
+  COLLECT_MEDICINAL_EPINEPHRINE,
 ] as const;
 
 // ─── Action Objectives ───────────────────────────────────────────────────────
 
+/** @deprecated untill playtested */
 export const ACTION_INSPECT_VEHICLE: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 14,
@@ -285,6 +297,7 @@ export const ACTION_INSPECT_VEHICLE: ActionObjective = {
   AllowedClassNames: ["CarDoor"],
 };
 
+/** @deprecated untill playtested */
 export const ACTION_SEARCH_BUILDING: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 15,
@@ -294,10 +307,11 @@ export const ACTION_SEARCH_BUILDING: ActionObjective = {
   AllowedClassNames: ["Fence"],
 };
 
+/** @deprecated untill playtested */
 export const ACTION_FARMING: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 16,
-  ObjectiveText: "Tend to the garden — plant, water, and care for crops.",
+  ObjectiveText: "Tend to any garden via planting, watering, harvesting or fertilize any crops)",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: [
     "ActionPlantSeed",
@@ -307,9 +321,9 @@ export const ACTION_FARMING: ActionObjective = {
     "ActionDisinfectPlant",
     "ActionFertilizeSlot",
   ],
-  AllowedClassNames: ["GardenSlot", "GardenBed", "GroundSoilFarmed"],
 };
 
+/** @deprecated untill playtested */
 export const ACTION_START_VEHICLE: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 17,
@@ -319,6 +333,7 @@ export const ACTION_START_VEHICLE: ActionObjective = {
   AllowedClassNames: ["Car", "Truck", "CarWagon", "Van", "UAZ"],
 };
 
+/** @deprecated untill playtested */
 export const ACTION_MINE_TREE: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 18,
@@ -328,6 +343,7 @@ export const ACTION_MINE_TREE: ActionObjective = {
   AllowedClassNames: ["Tree"],
 };
 
+/** @deprecated untill playtested */
 export const ACTION_MINE_ROCK: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 19,
@@ -337,6 +353,7 @@ export const ACTION_MINE_ROCK: ActionObjective = {
   AllowedClassNames: ["Rock", "Stone"],
 };
 
+/** @deprecated untill playtested */
 export const ACTION_SKINNING: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 20,
@@ -345,6 +362,7 @@ export const ACTION_SKINNING: ActionObjective = {
   ActionNames: ["ActionSkinning"],
 };
 
+/** @deprecated untill playtested */
 export const ACTION_EAT_DRINK: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 21,
@@ -353,6 +371,7 @@ export const ACTION_EAT_DRINK: ActionObjective = {
   ActionNames: ["ActionEat", "ActionDrink"],
 };
 
+/** @deprecated untill playtested */
 export const ACTION_FIRST_AID: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 22,
@@ -366,6 +385,7 @@ export const ACTION_FIRST_AID: ActionObjective = {
   ],
 };
 
+/** @deprecated untill playtested */
 export const ACTION_INJECT_MEDS: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 23,
@@ -378,6 +398,7 @@ export const ACTION_INJECT_MEDS: ActionObjective = {
   ],
 };
 
+/** @deprecated untill playtested */
 export const ACTION_CPR_DEFIBRILLATE: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 24,
@@ -389,6 +410,7 @@ export const ACTION_CPR_DEFIBRILLATE: ActionObjective = {
   ],
 };
 
+/** @deprecated untill playtested */
 export const ACTION_GIVE_BLOOD_TEST: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 25,
@@ -400,6 +422,7 @@ export const ACTION_GIVE_BLOOD_TEST: ActionObjective = {
   ],
 };
 
+/** @deprecated untill playtested */
 export const ACTION_FEED_TABLETS: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 26,
@@ -413,6 +436,7 @@ export const ACTION_FEED_TABLETS: ActionObjective = {
   ],
 };
 
+/** @deprecated untill playtested */
 export const ACTION_GIVE_SALINE: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 27,
@@ -423,6 +447,7 @@ export const ACTION_GIVE_SALINE: ActionObjective = {
   ],
 };
 
+/** @deprecated untill playtested */
 export const ACTION_TURN_ON_OFF_LIGHT: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 28,
@@ -434,6 +459,7 @@ export const ACTION_TURN_ON_OFF_LIGHT: ActionObjective = {
   ],
 };
 
+/** @deprecated untill playtested */
 export const ACTION_WEAPONS: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 29,
@@ -449,6 +475,7 @@ export const ACTION_WEAPONS: ActionObjective = {
   ],
 };
 
+/** @deprecated untill playtested */
 export const ACTION_MAP: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 30,
@@ -460,6 +487,7 @@ export const ACTION_MAP: ActionObjective = {
   ],
 };
 
+/** @deprecated untill playtested */
 export const ACTION_OPEN_CONTAINER: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 31,
@@ -472,6 +500,7 @@ export const ACTION_OPEN_CONTAINER: ActionObjective = {
   ],
 };
 
+/** @deprecated untill playtested */
 export const ACTION_TAKE_ITEM: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 32,
@@ -482,6 +511,7 @@ export const ACTION_TAKE_ITEM: ActionObjective = {
   ],
 };
 
+/** @deprecated untill playtested */
 export const ACTION_PACK_TENT: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 33,
@@ -492,6 +522,7 @@ export const ACTION_PACK_TENT: ActionObjective = {
   ],
 };
 
+/** @deprecated untill playtested */
 export const ACTION_FIREARM_ATTACH_MAG: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 34,
@@ -503,6 +534,7 @@ export const ACTION_FIREARM_ATTACH_MAG: ActionObjective = {
   ],
 };
 
+/** @deprecated untill playtested */
 export const ACTION_FIREARM_DETACH_MAG: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 35,
@@ -514,6 +546,7 @@ export const ACTION_FIREARM_DETACH_MAG: ActionObjective = {
   ],
 };
 
+/** @deprecated untill playtested */
 export const ACTION_FIREARM_LOAD_BULLET: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 36,
@@ -528,6 +561,7 @@ export const ACTION_FIREARM_LOAD_BULLET: ActionObjective = {
   ],
 };
 
+/** @deprecated untill playtested */
 export const ACTION_FIREARM_MECHANIC: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 37,
@@ -538,6 +572,7 @@ export const ACTION_FIREARM_MECHANIC: ActionObjective = {
   ],
 };
 
+/** @deprecated untill playtested */
 export const ACTION_FIREARM_UNJAM: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 38,
@@ -578,6 +613,7 @@ const ALL_OACTION: ActionObjective[] = [
 
 // ─── Crafting Objectives ─────────────────────────────────────────────────────
 
+/** @deprecated untill playtested */
 export const CRAFT_SCRAP_WEAPON: CraftingObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 39,
@@ -587,6 +623,7 @@ export const CRAFT_SCRAP_WEAPON: CraftingObjective = {
   ExecutionAmount: 1,
 };
 
+/** @deprecated untill playtested */
 export const CRAFT_BEAR_TRAP: CraftingObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 40,
@@ -603,6 +640,7 @@ const ALL_OCRAFT: CraftingObjective[] = [
 
 // ─── AI Camp Objectives ──────────────────────────────────────────────────────
 
+/** @deprecated untill playtested */
 export const AICAMP_TISY_TRANSMITTER: QuestAICampObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 41,
@@ -622,6 +660,7 @@ export const AICAMP_TISY_TRANSMITTER: QuestAICampObjective = {
   AllowedDamageZones: [],
 };
 
+/** @deprecated untill playtested */
 export const AICAMP_SHEPHERD_COMMAND: QuestAICampObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 42,
@@ -640,6 +679,7 @@ export const AICAMP_SHEPHERD_COMMAND: QuestAICampObjective = {
   AllowedDamageZones: [],
 };
 
+/** @deprecated untill playtested */
 export const AICAMP_STARY_RAD_ZONE: QuestAICampObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 43,
@@ -658,6 +698,7 @@ export const AICAMP_STARY_RAD_ZONE: QuestAICampObjective = {
   AllowedDamageZones: [],
 };
 
+/** @deprecated untill playtested */
 export const AICAMP_REAPER_CHECKPOINT: AICampObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 44,
@@ -676,6 +717,7 @@ export const AICAMP_REAPER_CHECKPOINT: AICampObjective = {
   AllowedDamageZones: [],
 };
 
+/** @deprecated untill playtested */
 export const AICAMP_REAPER_STRONGHOLD: AICampObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 45,
@@ -694,6 +736,7 @@ export const AICAMP_REAPER_STRONGHOLD: AICampObjective = {
   AllowedDamageZones: [],
 };
 
+/** @deprecated untill playtested */
 export const AICAMP_TISY_GATE: AICampObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 46,
@@ -723,6 +766,7 @@ const ALL_OAICAMP: AICampObjective[] = [
 
 // ─── AI VIP Objectives ───────────────────────────────────────────────────────
 
+/** @deprecated untill playtested */
 export const AIVIP_CORDON_DEFECTOR: AIVipObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 47,
@@ -736,6 +780,7 @@ export const AIVIP_CORDON_DEFECTOR: AIVipObjective = {
   NPCLoadoutFile: "GorkaLoadout",
 };
 
+/** @deprecated untill playtested */
 export const AIVIP_EXTRACT_SCIENTIST: QuestAIVipObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 48,
@@ -756,6 +801,7 @@ const ALL_OAIVIP: AIVipObjective[] = [
 
 // ─── AI Patrol Objectives ────────────────────────────────────────────────────
 
+/** @deprecated untill playtested */
 export const AIPATROL_RAIDER_PERIMETER: QuestAIPatrolObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 49,
@@ -778,6 +824,7 @@ export const AIPATROL_RAIDER_PERIMETER: QuestAIPatrolObjective = {
   AllowedDamageZones: [],
 };
 
+/** @deprecated untill playtested */
 export const AIPATROL_SHEPHERD_EXECUTIONER: QuestAIPatrolObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 50,
@@ -796,6 +843,7 @@ export const AIPATROL_SHEPHERD_EXECUTIONER: QuestAIPatrolObjective = {
   AllowedDamageZones: [],
 };
 
+/** @deprecated untill playtested */
 export const AIPATROL_CHECKPOINT_CLEAR: AIPatrolObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 51,
@@ -814,6 +862,7 @@ export const AIPATROL_CHECKPOINT_CLEAR: AIPatrolObjective = {
   AllowedDamageZones: [],
 };
 
+/** @deprecated untill playtested */
 export const AIPATROL_CORDON_LOOP: AIPatrolObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 52,
@@ -853,6 +902,7 @@ function guaranteedTreasureLoot(Name: string): QuestTreasureLoot {
   };
 }
 
+/** @deprecated untill playtested */
 export const TREASUREHUNT_STARY_EVIDENCE: QuestTreasureHuntObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 53,
@@ -865,6 +915,7 @@ export const TREASUREHUNT_STARY_EVIDENCE: QuestTreasureHuntObjective = {
   LootItemsAmount: 2,
 };
 
+/** @deprecated untill playtested */
 export const TREASUREHUNT_BURIED_SUPPLIES: TreasureHuntObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 54,
@@ -875,6 +926,7 @@ export const TREASUREHUNT_BURIED_SUPPLIES: TreasureHuntObjective = {
   MarkerName: "Buried Supplies",
 };
 
+/** @deprecated untill playtested */
 export const TREASUREHUNT_SKALISTY_CACHE: QuestTreasureHuntObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 55,
@@ -897,6 +949,7 @@ const ALL_OTREASUREHUNT: TreasureHuntObjective[] = [
 
 // ── Travel ──
 
+/** @deprecated untill playtested */
 export const TRAVEL_ESCAPE_ZONE: TravelObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 56,
@@ -909,6 +962,7 @@ export const TRAVEL_ESCAPE_ZONE: TravelObjective = {
   TriggerOnExit: 0,
 };
 
+/** @deprecated untill playtested */
 export const TRAVEL_RALLY_POINT: TravelObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 57,
@@ -921,6 +975,7 @@ export const TRAVEL_RALLY_POINT: TravelObjective = {
   TriggerOnExit: 0,
 };
 
+/** @deprecated untill playtested */
 export const TRAVEL_LOOKOUT: TravelObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 58,
@@ -933,6 +988,7 @@ export const TRAVEL_LOOKOUT: TravelObjective = {
   TriggerOnExit: 0,
 };
 
+/** @deprecated untill playtested */
 export const TRAVEL_BURST_SPEED: TravelObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 59,
@@ -945,6 +1001,7 @@ export const TRAVEL_BURST_SPEED: TravelObjective = {
   TriggerOnExit: 0,
 };
 
+/** @deprecated untill playtested */
 export const TRAVEL_SAFEROUTE: TravelObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 60,
@@ -959,6 +1016,7 @@ export const TRAVEL_SAFEROUTE: TravelObjective = {
 
 // ── Target ──
 
+/** @deprecated untill playtested */
 export const TARGET_CLEAR_BUILDING: TargetObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 61,
@@ -977,6 +1035,7 @@ export const TARGET_CLEAR_BUILDING: TargetObjective = {
   AllowedDamageZones: [],
 };
 
+/** @deprecated untill playtested */
 export const TARGET_HOSPITAL_SWEEP: TargetObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 62,
@@ -1000,6 +1059,7 @@ export const TARGET_HOSPITAL_SWEEP: TargetObjective = {
   AllowedDamageZones: [],
 };
 
+/** @deprecated untill playtested */
 export const TARGET_HVIP_MARKSMAN: TargetObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 63,
@@ -1018,6 +1078,7 @@ export const TARGET_HVIP_MARKSMAN: TargetObjective = {
   AllowedDamageZones: [],
 };
 
+/** @deprecated untill playtested */
 export const TARGET_WAREHOUSE_CLEAR: TargetObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 64,
@@ -1036,6 +1097,7 @@ export const TARGET_WAREHOUSE_CLEAR: TargetObjective = {
   AllowedDamageZones: [],
 };
 
+/** @deprecated untill playtested */
 export const TARGET_ROOFTOP_CLEAR: TargetObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 65,
@@ -1054,6 +1116,7 @@ export const TARGET_ROOFTOP_CLEAR: TargetObjective = {
   AllowedDamageZones: [],
 };
 
+/** @deprecated untill playtested */
 export const TARGET_NIGHTHUNT: TargetObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 66,
@@ -1074,6 +1137,7 @@ export const TARGET_NIGHTHUNT: TargetObjective = {
 
 // ── Collection ──
 
+/** @deprecated untill playtested */
 export const COLLECT_FUEL_CAN: CollectionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 67,
@@ -1087,6 +1151,7 @@ export const COLLECT_FUEL_CAN: CollectionObjective = {
   NeedAnyCollection: FALSE,
 };
 
+/** @deprecated untill playtested */
 export const COLLECT_AMMO_RIG: CollectionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 68,
@@ -1101,6 +1166,7 @@ export const COLLECT_AMMO_RIG: CollectionObjective = {
   NeedAnyCollection: FALSE,
 };
 
+/** @deprecated untill playtested */
 export const COLLECT_WEAPON_PARTS: CollectionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 69,
@@ -1121,6 +1187,7 @@ export const COLLECT_WEAPON_PARTS: CollectionObjective = {
   NeedAnyCollection: FALSE,
 };
 
+/** @deprecated untill playtested */
 export const COLLECT_FOOD_SURPLUS: CollectionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 70,
@@ -1136,6 +1203,7 @@ export const COLLECT_FOOD_SURPLUS: CollectionObjective = {
   NeedAnyCollection: FALSE,
 };
 
+/** @deprecated untill playtested */
 export const COLLECT_RADIO_PARTS: CollectionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 71,
@@ -1151,6 +1219,7 @@ export const COLLECT_RADIO_PARTS: CollectionObjective = {
   NeedAnyCollection: FALSE,
 };
 
+/** @deprecated untill playtested */
 export const COLLECT_BODY_GEAR: CollectionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 72,
@@ -1166,6 +1235,7 @@ export const COLLECT_BODY_GEAR: CollectionObjective = {
   NeedAnyCollection: FALSE,
 };
 
+/** @deprecated untill playtested */
 export const COLLECT_WATER_PURE: CollectionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 73,
@@ -1181,6 +1251,7 @@ export const COLLECT_WATER_PURE: CollectionObjective = {
 
 // ── Delivery ──
 
+/** @deprecated untill playtested */
 export const DELIVERY_INTEL_PACKAGE: DeliveryObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 74,
@@ -1195,6 +1266,7 @@ export const DELIVERY_INTEL_PACKAGE: DeliveryObjective = {
   MarkerName: "Drop Zone Alpha",
 };
 
+/** @deprecated untill playtested */
 export const DELIVERY_BATTERY_DROP: DeliveryObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 75,
@@ -1209,6 +1281,7 @@ export const DELIVERY_BATTERY_DROP: DeliveryObjective = {
   MarkerName: "Battery Drop",
 };
 
+/** @deprecated untill playtested */
 export const DELIVERY_GUNSMITH_KIT: DeliveryObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 76,
@@ -1224,6 +1297,7 @@ export const DELIVERY_GUNSMITH_KIT: DeliveryObjective = {
   MarkerName: "Gunsmith's Table",
 };
 
+/** @deprecated untill playtested */
 export const DELIVERY_COLD_WEATHER_GEAR: DeliveryObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 77,
@@ -1239,6 +1313,7 @@ export const DELIVERY_COLD_WEATHER_GEAR: DeliveryObjective = {
   MarkerName: "Cold Pack Drop",
 };
 
+/** @deprecated untill playtested */
 export const DELIVERY_RATIONS_CACHE: DeliveryObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 78,
@@ -1256,6 +1331,7 @@ export const DELIVERY_RATIONS_CACHE: DeliveryObjective = {
 
 // ── Crafting ──
 
+/** @deprecated untill playtested */
 export const CRAFT_TRIPWIRE_ALARM: CraftingObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 79,
@@ -1274,6 +1350,7 @@ export const CRAFT_IMPROvised_SHIELDS: CraftingObjective = {
   ExecutionAmount: 2,
 };
 
+/** @deprecated untill playtested */
 export const CRAFT_MORPHINE_SYR: CraftingObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 81,
@@ -1283,6 +1360,7 @@ export const CRAFT_MORPHINE_SYR: CraftingObjective = {
   ExecutionAmount: 5,
 };
 
+/** @deprecated untill playtested */
 export const CRAFT_FLARE_BATON: CraftingObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 82,
@@ -1292,6 +1370,7 @@ export const CRAFT_FLARE_BATON: CraftingObjective = {
   ExecutionAmount: 4,
 };
 
+/** @deprecated untill playtested */
 export const CRAFT_ROPE_BOOTS: CraftingObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 83,
@@ -1301,6 +1380,7 @@ export const CRAFT_ROPE_BOOTS: CraftingObjective = {
   ExecutionAmount: 2,
 };
 
+/** @deprecated untill playtested */
 export const CRAFT_PIPE_BOMB: CraftingObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 84,
@@ -1310,6 +1390,7 @@ export const CRAFT_PIPE_BOMB: CraftingObjective = {
   ExecutionAmount: 3,
 };
 
+/** @deprecated untill playtested */
 export const CRAFT_HUNTING_TRAP: CraftingObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 85,
@@ -1319,6 +1400,7 @@ export const CRAFT_HUNTING_TRAP: CraftingObjective = {
   ExecutionAmount: 5,
 };
 
+/** @deprecated untill playtested */
 export const CRAFT_DUST_MASK: CraftingObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 86,
@@ -1330,6 +1412,7 @@ export const CRAFT_DUST_MASK: CraftingObjective = {
 
 // ── Action ──
 
+/** @deprecated untill playtested */
 export const ACTION_OPEN_VEHICLE_DOOR: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 87,
@@ -1339,6 +1422,7 @@ export const ACTION_OPEN_VEHICLE_DOOR: ActionObjective = {
   AllowedClassNames: ["CarDoor"],
 };
 
+/** @deprecated untill playtested */
 export const ACTION_OPEN_VEHICLE_HOOD: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 88,
@@ -1348,6 +1432,7 @@ export const ACTION_OPEN_VEHICLE_HOOD: ActionObjective = {
   AllowedClassNames: ["CarHood", "CarDoor"],
 };
 
+/** @deprecated untill playtested */
 export const ACTION_OPEN_BACK_DOOR: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 89,
@@ -1357,6 +1442,7 @@ export const ACTION_OPEN_BACK_DOOR: ActionObjective = {
   AllowedClassNames: ["VanBackDoor", "CarDoor"],
 };
 
+/** @deprecated untill playtested */
 export const ACTION_SEARCH_BACKPACK: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 90,
@@ -1366,6 +1452,7 @@ export const ACTION_SEARCH_BACKPACK: ActionObjective = {
   AllowedClassNames: ["Backpack"],
 };
 
+/** @deprecated untill playtested */
 export const ACTION_OPEN_GARAGE: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 91,
@@ -1377,6 +1464,7 @@ export const ACTION_OPEN_GARAGE: ActionObjective = {
 
 // ── Crafting (continued - more) ──
 
+/** @deprecated untill playtested */
 export const CRAFT_AMMO_PACK: CraftingObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 92,
@@ -1388,6 +1476,7 @@ export const CRAFT_AMMO_PACK: CraftingObjective = {
 
 // ── AICamp ──
 
+/** @deprecated untill playtested */
 export const AICAMP_ROADBLOCK: AICampObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 93,
@@ -1406,6 +1495,7 @@ export const AICAMP_ROADBLOCK: AICampObjective = {
   AllowedDamageZones: [],
 };
 
+/** @deprecated untill playtested */
 export const AICAMP_OUTPOST_RAID: AICampObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 94,
@@ -1442,6 +1532,7 @@ export const AICAMP_Bunker_SWEEP: AICampObjective = {
   AllowedDamageZones: [],
 };
 
+/** @deprecated untill playtested */
 export const AICAMP_FACTORY_CLEAR: AICampObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 96,
@@ -1460,6 +1551,7 @@ export const AICAMP_FACTORY_CLEAR: AICampObjective = {
   AllowedDamageZones: [],
 };
 
+/** @deprecated untill playtested */
 export const AICAMP_TANK_GRAVEYARD: AICampObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 97,
@@ -1480,6 +1572,7 @@ export const AICAMP_TANK_GRAVEYARD: AICampObjective = {
 
 // ── AIVIP ──
 
+/** @deprecated untill playtested */
 export const AIVIP_INFORMANT: AIVipObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 98,
@@ -1493,6 +1586,7 @@ export const AIVIP_INFORMANT: AIVipObjective = {
   NPCLoadoutFile: "Quest_Survivor_noWeapon",
 };
 
+/** @deprecated untill playtested */
 export const AIVIP_WOUNDED_DOC: AIVipObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 99,
@@ -1506,6 +1600,7 @@ export const AIVIP_WOUNDED_DOC: AIVipObjective = {
   NPCLoadoutFile: "SanitarLoadout",
 };
 
+/** @deprecated untill playtested */
 export const AIVIP_SCIENTIST_EXFIL: AIVipObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 100,
@@ -1519,6 +1614,7 @@ export const AIVIP_SCIENTIST_EXFIL: AIVipObjective = {
   NPCLoadoutFile: "NBCLoadout",
 };
 
+/** @deprecated untill playtested */
 export const AIVIP_SHEPHERD_CAPTIVE: QuestAIVipObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 101,
@@ -1534,6 +1630,7 @@ export const AIVIP_SHEPHERD_CAPTIVE: QuestAIVipObjective = {
 
 // ── AIPatrol ──
 
+/** @deprecated untill playtested */
 export const AIPATROL_ROAMING_GROUP: AIPatrolObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 102,
@@ -1552,6 +1649,7 @@ export const AIPATROL_ROAMING_GROUP: AIPatrolObjective = {
   AllowedDamageZones: [],
 };
 
+/** @deprecated untill playtested */
 export const AIPATROL_HUNTER_PATROL: AIPatrolObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 103,
@@ -1570,6 +1668,7 @@ export const AIPATROL_HUNTER_PATROL: AIPatrolObjective = {
   AllowedDamageZones: [],
 };
 
+/** @deprecated untill playtested */
 export const AIPATROL_CONVOY_ESCORT: AIPatrolObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 104,
@@ -1588,6 +1687,7 @@ export const AIPATROL_CONVOY_ESCORT: AIPatrolObjective = {
   AllowedDamageZones: [],
 };
 
+/** @deprecated untill playtested */
 export const AIPATROL_NIGHT_STALKERS: AIPatrolObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 105,
@@ -1608,6 +1708,7 @@ export const AIPATROL_NIGHT_STALKERS: AIPatrolObjective = {
 
 // ── Treasure Hunt ──
 
+/** @deprecated untill playtested */
 export const TREASUREHUNT_DROWNED_CRATE: TreasureHuntObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 106,
@@ -1618,6 +1719,7 @@ export const TREASUREHUNT_DROWNED_CRATE: TreasureHuntObjective = {
   MarkerName: "Drowned Crate",
 };
 
+/** @deprecated untill playtested */
 export const TREASUREHUNT_ABANDONED_POSTBOX: TreasureHuntObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 107,
@@ -1628,6 +1730,7 @@ export const TREASUREHUNT_ABANDONED_POSTBOX: TreasureHuntObjective = {
   MarkerName: "Old Postbox",
 };
 
+/** @deprecated untill playtested */
 export const TREASUREHUNT_BUSH_UNDER_THE_OAK: TreasureHuntObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 108,
@@ -1638,6 +1741,7 @@ export const TREASUREHUNT_BUSH_UNDER_THE_OAK: TreasureHuntObjective = {
   MarkerName: "Under the Oak",
 };
 
+/** @deprecated untill playtested */
 export const TREASUREHUNT_ROOFTOP_VENT: QuestTreasureHuntObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 109,
@@ -1650,6 +1754,7 @@ export const TREASUREHUNT_ROOFTOP_VENT: QuestTreasureHuntObjective = {
   LootItemsAmount: 2,
 };
 
+/** @deprecated untill playtested */
 export const TREASUREHUNT_UNDER_BRIDGE: QuestTreasureHuntObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 110,

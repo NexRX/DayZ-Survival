@@ -1206,6 +1206,7 @@ const UTILITY_SMALL_PELT_PRICE = { min: 800, max: 950 };
 const UTILITY_STANDARD_PELT_PRICE = { min: 900, max: 1050 };
 const UTILITY_PREDATOR_PELT_PRICE = { min: 1000, max: 1200 };
 const UTILITY_SCRAP_MATERIAL_PRICE = { min: 30, max: 80 };
+const UTILITY_GARDEN_LIME_PRICE = { min: 500, max: 800 };
 const UTILITY_BASIC_MATERIAL_PRICE = { min: 80, max: 180 };
 const UTILITY_CRAFTED_TOOL_PRICE = { min: 150, max: 350 };
 const UTILITY_CRAFTED_WEAPON_PRICE = { min: 400, max: 700 };
@@ -1215,6 +1216,7 @@ const UTILITY_PRICE_FIXES: Record<string, { min: number; max: number }> = {
   stable_dayz_kit: { min: 2500, max: 4000 },
   stoneknife: { min: 150, max: 300 },
   humanskull: { min: 400, max: 700 },
+  gardenlime: UTILITY_GARDEN_LIME_PRICE,
   scientificbriefcase: UTILITY_RARE_LORE_ITEM_PRICE,
   scientificbriefcasekeys: UTILITY_RARE_LORE_ITEM_PRICE,
   // Flat exact-value fixes for items that had inherited an unrelated
@@ -1253,7 +1255,6 @@ const UTILITY_PRICE_FIXES: Record<string, { min: number; max: number }> = {
       "bark_birch",
       "bark_oak",
       "paperlabel",
-      "gardenlime",
     ].map((c) => [c, UTILITY_SCRAP_MATERIAL_PRICE] as const),
   ),
   // pileofwoodenplanks is excluded entirely (see MANUAL_EXCLUSIONS).

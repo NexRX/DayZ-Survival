@@ -61,10 +61,10 @@ const MAIN_QUEST_ACT1_FARM_SURVIVAL: Quest = {
   ],
   PreQuestIDs: [MAIN_QUEST_ACT1_REACH_ROMASHKA.ID],
   Objectives: [
-    ref(objectives.COLLECT_BUILDING_MATERIALS),
     ref(objectives.ACTION_FARMING),
+    ref(objectives.COLLECT_BUILDING_MATERIALS),
   ],
-  Rewards: [reward("Canteen"), reward("Bandage", 3), currency(5)],
+  Rewards: [reward("Canteen"), reward("BandageDressing", 3), currency(5)],
   FollowUpQuest: 3,
 };
 
@@ -323,7 +323,7 @@ const MAIN_QUEST_ACT5_HOSTAGES: Quest = {
     ref(objectives.AIVIP_SHEPHERD_CAPTIVE),
     ref(objectives.COLLECT_BODY_GEAR),
   ],
-  Rewards: [reward("Bandage", 5), reward("Canteen"), currency(70)],
+  Rewards: [reward("BandageDressing", 5), reward("Canteen"), currency(70)],
   FollowUpQuest: 17,
 };
 

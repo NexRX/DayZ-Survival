@@ -9,6 +9,7 @@ export const FALSE = 0 as const;
 export interface CollectionEntry {
   Amount: number;
   ClassName: string;
+  /** -1 for any Quantity percentage, 1-100 otherwise */
   QuantityPercent: number;
   MinQuantityPercent: number;
 }
