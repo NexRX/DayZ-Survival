@@ -49,11 +49,45 @@ export enum NPCEmoteID {
   DEBUG = 1000,
 }
 
+/** ExpansionQuestNPCType from the installed Expansion Quests build. */
 export enum NPCType {
-  GiveAndTurnIn = 0,
-  Giver = 1,
-  TurnIn = 2,
+  NORMAL = 0,
+  OBJECT = 1,
+  AI = 2,
 }
+
+export type AINpcClassNames =
+  | "eAI_SurvivorM_Denis"
+  | "eAI_SurvivorM_Cyril"
+  | "eAI_SurvivorM_Denis"
+  | "eAI_SurvivorM_Elias"
+  | "eAI_SurvivorM_Francis"
+  | "eAI_SurvivorM_Guo"
+  | "eAI_SurvivorM_Hassan"
+  | "eAI_SurvivorM_Indar"
+  | "eAI_SurvivorM_Jose"
+  | "eAI_SurvivorM_Kaito"
+  | "eAI_SurvivorM_Lewis"
+  | "eAI_SurvivorM_Manua"
+  | "eAI_SurvivorM_Mirek"
+  | "eAI_SurvivorM_Niki"
+  | "eAI_SurvivorM_Oliver"
+  | "eAI_SurvivorM_Peter"
+  | "eAI_SurvivorM_Quinn"
+  | "eAI_SurvivorM_Rolf"
+  | "eAI_SurvivorM_Seth"
+  | "eAI_SurvivorM_Taiki"
+  | "eAI_SurvivorF_Baty"
+  | "eAI_SurvivorF_Eva"
+  | "eAI_SurvivorF_Frida"
+  | "eAI_SurvivorF_Gabi"
+  | "eAI_SurvivorF_Helga"
+  | "eAI_SurvivorF_Irena"
+  | "eAI_SurvivorF_Judy"
+  | "eAI_SurvivorF_Keiko"
+  | "eAI_SurvivorF_Linda"
+  | "eAI_SurvivorF_Maria"
+  | "eAI_SurvivorF_Naomi";
 
 export type QuestNpcClassNames =
   | "ExpansionQuestNPCBoris"
@@ -74,6 +108,8 @@ export type QuestNpcClassNames =
   | "ExpansionQuestNPCRolf"
   | "ExpansionQuestNPCSeth"
   | "ExpansionQuestNPCTaiga";
+
+export type NPCClassName = QuestNpcClassNames | AINpcClassNames;
 
 export type LoadoutName =
   | "AirfieldLoadout"

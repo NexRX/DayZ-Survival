@@ -1,7 +1,3 @@
-// DayZ-Expansion-Quests: hand-authored JSON persistence via this project's
-// "ensure" pattern. Schema/paths/enum values sourced from the mod's codebase.
-// Objective types used: TRAVEL, TARGET, DELIVERY, COLLECT, CRAFTING.
-
 import { exists } from "jsr:@std/fs@1.0.24";
 import {
   EXPANSION_QUESTS_NPCS_DIR,
@@ -62,8 +58,12 @@ async function cleanupDefaultQuestExamples(): Promise<void> {
   if (total > 0) ok(`Removed ${total} DayZ-Expansion-Quests example quest/NPC/objective file(s)`);
 }
 
-async function ensureQuestConfigs() {
+async function ensureQuestConfigs(): Promise<void> {
   for (const [path, config] of Object.entries(ALL_QUEST_CONFIGS)) {
+    const separator = path.lastIndexOf("/");
+    if (separator > 0) {
+      await Deno.mkdir(path.slice(0, separator), { recursive: true });
+    }
     await Deno.writeTextFile(path, JSON.stringify(config));
   }
 }

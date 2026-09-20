@@ -19,6 +19,7 @@ import {
   hasAddonPbo,
   localManifestId,
   runDepotCapture,
+  runSteamWorkshopBatch,
   workshopBytes,
 } from "../steam.ts";
 import { fetchContentIds, loadMods, type Mod, modParam } from "./mods.ts";
@@ -155,6 +156,22 @@ export async function installOneMod(
   }
 }
 
+const MAX_DOWNLOAD_ATTEMPTS = 4;
+const RETRY_BACKOFF_MS = [15_000, 30_000, 60_000];
+// Steam's login throttle can last 30-60 minutes. Keep retrying indefinitely,
+// increasing the cooldown up to one hour rather than creating another login
+// attempt while the account is still blocked.
+const RATE_LIMIT_INITIAL_BACKOFF_MS = 5 * 60_000;
+const RATE_LIMIT_MAX_BACKOFF_MS = 60 * 60_000;
+const MIN_DEPOT_LAUNCH_GAP_MS = 3_000;
+let lastDepotLaunchAt = 0;
+
+async function paceDepotLaunch(): Promise<void> {
+  const wait = lastDepotLaunchAt + MIN_DEPOT_LAUNCH_GAP_MS - Date.now();
+  if (wait > 0) await new Promise<void>((resolve) => setTimeout(resolve, wait));
+  lastDepotLaunchAt = Date.now();
+}
+
 /**
  * Download (or re-validate) a single workshop item into the SteamCMD-style
  * content layout. `-validate` keeps a mod from silently going stale relative
@@ -166,7 +183,6 @@ export async function downloadOne(
   s: Settings,
   mod: Mod,
   force = false,
-  loginId?: number,
 ): Promise<void> {
   const out = `${SERVER_DIR}/${WORKSHOP_SUBPATH}/${mod.id}`;
 
@@ -190,47 +206,62 @@ export async function downloadOne(
   await ensureDepotLogin(s);
   await Deno.mkdir(out, { recursive: true });
 
-  // DepotDownloader's `-remember-password` token doesn't reliably persist
-  // across separate process runs on Linux (see the comment on getPassword()
-  // in steam.ts), so when running unattended (no TTY) with STEAM_PASSWORD
-  // set, pass the real password explicitly every time rather than relying
-  // on that token - this avoids DepotDownloader's own native password
-  // prompt (which would otherwise hang/crash with no terminal to answer it).
-  const headlessPassword = !Deno.stdin.isTerminal() ? Deno.env.get("STEAM_PASSWORD") : undefined;
-
-  const maxTries = 4;
-  const backoffMs = [15_000, 30_000, 60_000];
+  // Do not pass the password to every DepotDownloader process. That forces a
+  // fresh Steam credential login for every mod and quickly trips Steam's
+  // login throttle. ensureDepotLogin() seeds the remembered token once;
+  // failures that prove the token is stale are handled below.
   let reauthed = false;
+  let rateLimitRetries = 0;
   for (let tries = 1;; tries++) {
     log(
       `Downloading ${mod.name} (${mod.id}) via DepotDownloader - ` +
-        `attempt ${tries}/${maxTries} (${bytesH(await workshopBytes(mod.id))} cached)…`,
+        `attempt ${tries}${rateLimitRetries ? ` (rate-limit retry ${rateLimitRetries})` : ""} (${
+          bytesH(await workshopBytes(mod.id))
+        } cached)…`,
     );
-    const depot = [
+    await paceDepotLaunch();
+    const { code, output } = await runDepotCapture([
       "-app",
       DAYZ_CLIENT_APPID,
       "-pubfile",
       mod.id,
       "-username",
       s.STEAM_USER,
-      ...(headlessPassword ? ["-password", headlessPassword] : []),
       "-remember-password",
-      ...(loginId ? ["-loginid", String(loginId)] : []),
       "-validate",
       "-dir",
       out,
-    ];
-    const { code, output } = await runDepotCapture(depot);
+    ]);
     if (code === 0 && (await hasAddonPbo(mod.id))) {
+      rateLimitRetries = 0;
       ok(`${mod.name} downloaded (${bytesH(await workshopBytes(mod.id))})`);
       return;
+    }
+
+    // Check rate limiting before any other login-related failure. DepotDownloader
+    // often reports RateLimitExceeded through its generic exception path; treating
+    // that as a stale token would immediately create another login attempt.
+    const rateLimited = /RateLimitExceeded|rate.?limit|too many login attempts/i.test(output);
+    if (rateLimited) {
+      rateLimitRetries++;
+      const wait = Math.min(
+        RATE_LIMIT_INITIAL_BACKOFF_MS * 2 ** (rateLimitRetries - 1),
+        RATE_LIMIT_MAX_BACKOFF_MS,
+      );
+      warn(
+        `Attempt ${tries} hit Steam's login rate limit; ` +
+          `retrying indefinitely in ${wait / 60_000} minutes (backoff ${rateLimitRetries})…`,
+      );
+      await new Promise<void>((resolve) => setTimeout(resolve, wait));
+      continue;
     }
 
     // A stale/invalid remembered-login token makes DepotDownloader crash
     // outright instead of failing gracefully, so re-authorize once and retry
     // immediately instead of burning through attempts on the normal backoff.
-    const staleLogin = /LogOn requires a username and password|Unhandled exception/i
-      .test(output);
+    const staleLogin =
+      /LogOn requires a username and password|AccessDenied|InvalidSignature|Expired|Revoked/i
+        .test(output);
     if (staleLogin && !reauthed) {
       reauthed = true;
       warn("DepotDownloader's cached login looks stale/invalid - re-authenticating…");
@@ -239,17 +270,15 @@ export async function downloadOne(
       continue;
     }
 
-    if (tries >= maxTries) {
+    if (tries >= MAX_DOWNLOAD_ATTEMPTS) {
       die(
-        `Download of ${mod.name} (${mod.id}) failed after ${maxTries} attempts. ` +
+        `Download of ${mod.name} (${mod.id}) failed after ${MAX_DOWNLOAD_ATTEMPTS} attempts. ` +
           `Re-run 'deno task mods' to resume - DepotDownloader continues where it left off.`,
       );
     }
-    const rateLimited = /RateLimitExceeded/i.test(output);
-    const wait = rateLimited ? 90_000 : backoffMs[Math.min(tries - 1, backoffMs.length - 1)];
+    const wait = RETRY_BACKOFF_MS[Math.min(tries - 1, RETRY_BACKOFF_MS.length - 1)];
     warn(
-      `Attempt ${tries} failed${rateLimited ? " (Steam login rate limit)" : ""}; ` +
-        `retrying in ${wait / 1000}s (DepotDownloader resumes)…`,
+      `Attempt ${tries} failed; retrying in ${wait / 1000}s (DepotDownloader resumes)…`,
     );
     await new Promise<void>((resolve) => setTimeout(resolve, wait));
   }
@@ -271,32 +300,6 @@ async function staleModIds(mods: Mod[]): Promise<Map<string, { ours: string; the
     if (ours && ours !== theirs) stale.set(mod.id, { ours, theirs });
   }
   return stale;
-}
-
-// Run up to `window` tasks in parallel, collecting results in input order.
-// Resolves with the full result array even if some tasks reject.
-async function runParallel<T>(
-  tasks: Array<() => Promise<T>>,
-  window = 3,
-): Promise<PromiseSettledResult<T>[]> {
-  const results: PromiseSettledResult<T>[] = new Array(tasks.length);
-  let next = 0;
-
-  async function worker(): Promise<void> {
-    while (true) {
-      const i = next++;
-      if (i >= tasks.length) break;
-      try {
-        results[i] = { status: "fulfilled", value: await tasks[i]() };
-      } catch (e) {
-        results[i] = { status: "rejected", reason: e };
-      }
-    }
-  }
-
-  const workers = Array.from({ length: Math.min(window, tasks.length) }, () => worker());
-  await Promise.all(workers);
-  return results;
 }
 
 // A persistent, append-only record of every auto-update `doMods` silently
@@ -325,6 +328,53 @@ async function logModUpdates(
 }
 
 /**
+ * Download all missing/stale items in one SteamCMD session. DepotDownloader
+ * remains the fallback because it resumes large downloads more reliably.
+ */
+async function downloadWorkshopBatch(
+  s: Settings,
+  mods: Mod[],
+  refresh: Set<string>,
+): Promise<Mod[]> {
+  const pending: Mod[] = [];
+  for (const mod of mods) {
+    const force = refresh.has(mod.id);
+    if (!force && (await hasAddonPbo(mod.id))) {
+      ok(`${mod.name} already present (${bytesH(await workshopBytes(mod.id))}) - up to date`);
+      continue;
+    }
+    if (force) {
+      await Deno.remove(
+        `${SERVER_DIR}/${WORKSHOP_SUBPATH}/${mod.id}`,
+        { recursive: true },
+      ).catch(() => {});
+    }
+    pending.push(mod);
+  }
+
+  if (pending.length === 0) return [];
+
+  log(`Downloading ${pending.length} workshop item(s) in one SteamCMD session...`);
+  const code = await runSteamWorkshopBatch(s, pending.map((mod) => mod.id));
+  const failed: Mod[] = [];
+  for (const mod of pending) {
+    if (await hasAddonPbo(mod.id)) {
+      ok(`${mod.name} downloaded (${bytesH(await workshopBytes(mod.id))})`);
+    } else {
+      failed.push(mod);
+    }
+  }
+
+  if (code !== 0 || failed.length > 0) {
+    warn(
+      `SteamCMD workshop batch${code !== 0 ? ` exited with code ${code}` : ""}; ` +
+        `${failed.length} item(s) will use DepotDownloader's resumable fallback.`,
+    );
+  }
+  return failed;
+}
+
+/**
  * `extraRefreshIds`, when given, additionally forces a re-validation of
  * those specific workshop ids. `staleModIds` runs regardless, so normal use
  * needs nothing passed manually.
@@ -341,27 +391,11 @@ export async function doMods(s: Settings, extraRefreshIds?: Set<string>): Promis
     log(`${stale.size} mod(s) updated on Steam since last check - will re-validate.`);
   }
 
-  // Single login before all downloads - DepotDownloader's cached token is
-  // reused across subsequent runs on this machine, so we don't need to log
-  // in per-mod.
-  await ensureDepotLogin(s);
-
-  log(`Downloading ${mods.length} workshop mod(s)...`);
-  const tasks = mods.map((mod, i) => () =>
-    downloadOne(s, mod, refresh.has(mod.id), i < 3 ? i + 1 : undefined)
-  );
-  const results = await runParallel(tasks);
-
-  const failures: string[] = [];
-  for (let i = 0; i < results.length; i++) {
-    if (results[i].status === "rejected") {
-      failures.push(mods[i].name);
-    }
-  }
-  if (failures.length > 0) {
-    die(
-      `Download failed for: ${failures.join(", ")} - re-run 'deno task mods' to resume.`,
-    );
+  // SteamCMD handles the whole batch in one authenticated session. Only items
+  // it could not complete fall through to sequential DepotDownloader retries.
+  const fallback = await downloadWorkshopBatch(s, mods, refresh);
+  for (const mod of fallback) {
+    await downloadOne(s, mod, refresh.has(mod.id));
   }
 
   log("Installing mods + keys into the server");

@@ -6,7 +6,7 @@
 // whether they give quests or are just ambient world characters. The
 // ensureQuests() function iterates ALL_NPCS to write NPC files.
 
-import { Vec3 } from "../types/common.ts";
+import { FALSE, Vec3 } from "../types/common.ts";
 import {
   ActionObjective,
   AICampObjective,
@@ -15,7 +15,6 @@ import {
   CollectionObjective,
   CraftingObjective,
   DeliveryObjective,
-  OBJECTIVE_ACTION_DIR,
   ObjectiveBase,
   ObjectiveRef,
   ObjectiveType,
@@ -23,19 +22,42 @@ import {
   TravelObjective,
   TreasureHuntObjective,
 } from "../types/objective.ts";
-import { configToRecord, PLACEHOLDER_POSITION } from "./common.ts";
+import type {
+  QuestAICampObjective,
+  QuestAIObjectiveSpawn,
+  QuestAIPatrolObjective,
+  QuestAIVipObjective,
+  QuestObjective,
+  QuestTargetObjective,
+  QuestTreasureHuntObjective,
+  QuestTreasureLoot,
+} from "./objectiveAuthoring.ts";
+import {
+  EXPANSION_QUESTS_OBJECTIVES_ACTION_DIR,
+  EXPANSION_QUESTS_OBJECTIVES_AICAMP_DIR,
+  EXPANSION_QUESTS_OBJECTIVES_AIPATROL_DIR,
+  EXPANSION_QUESTS_OBJECTIVES_AIVIP_DIR,
+  EXPANSION_QUESTS_OBJECTIVES_COLLECTION_DIR,
+  EXPANSION_QUESTS_OBJECTIVES_CRAFTING_DIR,
+  EXPANSION_QUESTS_OBJECTIVES_DELIVERY_DIR,
+  EXPANSION_QUESTS_OBJECTIVES_TARGET_DIR,
+  EXPANSION_QUESTS_OBJECTIVES_TRAVEL_DIR,
+  EXPANSION_QUESTS_OBJECTIVES_TREASUREHUNT_DIR,
+} from "../paths.ts";
+import { OBJECTIVE_CONFIG_VERSION, PLACEHOLDER_POSITION } from "./common.ts";
+import { LOCATION } from "./locations.ts";
 
 export function ref<T extends ObjectiveBase>(objective: T): ObjectiveRef {
   return {
     ObjectiveType: objective.ObjectiveType,
     ID: objective.ID,
-    ConfigVersion: objective.ConfigVersion,
+    ConfigVersion: objective.ConfigVersion ?? OBJECTIVE_CONFIG_VERSION,
   };
 }
 
 // ─── Travel Objectives ───────────────────────────────────────────────────────
 
-export const OTRAVEL_ROMASHKA_FARM: TravelObjective = {
+export const TRAVEL_ROMASHKA_FARM: TravelObjective = {
   ID: 10000,
   ObjectiveText: "Travel to Romashka Farm.",
   ObjectiveType: ObjectiveType.TRAVEL,
@@ -44,25 +66,25 @@ export const OTRAVEL_ROMASHKA_FARM: TravelObjective = {
   MarkerName: "Romashka Farm",
 };
 
-export const OTRAVEL_ROMASHKA_PERIMETER: TravelObjective = {
+export const TRAVEL_ROMASHKA_PERIMETER: TravelObjective = {
   ID: 10001,
   ObjectiveText: "Scout the perimeter - watch for movement near the treeline.",
   ObjectiveType: ObjectiveType.TRAVEL,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.farm_perimeter,
   MaxDistance: 5,
   MarkerName: "Romashka Farm Perimeter",
 };
 
-export const OTRAVEL_COASTAL_ROAD: TravelObjective = {
+export const TRAVEL_COASTAL_ROAD: TravelObjective = {
   ID: 10002,
   ObjectiveText: "Follow the coastal road - don't stop, don't look back.",
   ObjectiveType: ObjectiveType.TRAVEL,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.coast_road,
   MaxDistance: 10,
   MarkerName: "Coastal Road",
 };
 
-export const OTRAVEL_INTEL_BUILDING: TravelObjective = {
+export const TRAVEL_INTEL_BUILDING: TravelObjective = {
   ID: 10003,
   ObjectiveText: "Checkout the building were the entire supposedly is located.",
   ObjectiveType: ObjectiveType.TRAVEL,
@@ -72,31 +94,37 @@ export const OTRAVEL_INTEL_BUILDING: TravelObjective = {
 };
 
 const ALL_OTRAVEL: TravelObjective[] = [
-  OTRAVEL_ROMASHKA_FARM,
-  OTRAVEL_ROMASHKA_PERIMETER,
-  OTRAVEL_COASTAL_ROAD,
+  TRAVEL_ROMASHKA_FARM,
+  TRAVEL_ROMASHKA_PERIMETER,
+  TRAVEL_COASTAL_ROAD,
 ] as const;
 
 // ─── Target Objectives ───────────────────────────────────────────────────────
 
-export const OTARGET_REAPER_SCOUTS_PERIMETER: TargetObjective = {
+export const TARGET_RAIDER_SCOUTS_PERIMETER: QuestTargetObjective = {
   ID: 10010,
-  ObjectiveText: "Eliminate Reaper scouts near the farm perimeter.",
+  ObjectiveText: "Eliminate Raiders scouts near the farm perimeter.",
   ObjectiveType: ObjectiveType.TARGET,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.farm_perimeter,
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 5,
-  ClassNames: ["ZombieMadman", "ZombieSlow"],
+  ClassNames: [
+    "BanditAI_Keiko",
+    "BanditAI_Linda",
+    "BanditAI_Rolf",
+    "BanditAI_Denis",
+    "BanditAI_Adam",
+  ],
   CountSelfKill: false,
   AllowedWeapons: [],
   ExcludedClassNames: [],
-  CountAIPlayers: false,
-  AllowedTargetFactions: [],
+  CountAIPlayers: true,
+  AllowedTargetFactions: ["Bandits"],
   AllowedDamageZones: [],
 };
 
-export const OTARGET_CHECKPOINT_SNIPER: TargetObjective = {
+export const TARGET_CHECKPOINT_SNIPER: TargetObjective = {
   ID: 10011,
   ObjectiveText: "Clear the checkpoint - no survivors.",
   ObjectiveType: ObjectiveType.TARGET,
@@ -113,7 +141,7 @@ export const OTARGET_CHECKPOINT_SNIPER: TargetObjective = {
   AllowedDamageZones: [],
 };
 
-export const OTARGET_ROOFTOP_SNIPER: TargetObjective = {
+export const TARGET_ROOFTOP_SNIPER: TargetObjective = {
   ID: 10012,
   ObjectiveText: "Take out the sniper on the rooftop.",
   ObjectiveType: ObjectiveType.TARGET,
@@ -131,14 +159,14 @@ export const OTARGET_ROOFTOP_SNIPER: TargetObjective = {
 };
 
 const ALL_OTARGET: TargetObjective[] = [
-  OTARGET_REAPER_SCOUTS_PERIMETER,
-  OTARGET_CHECKPOINT_SNIPER,
-  OTARGET_ROOFTOP_SNIPER,
+  TARGET_RAIDER_SCOUTS_PERIMETER,
+  TARGET_CHECKPOINT_SNIPER,
+  TARGET_ROOFTOP_SNIPER,
 ] as const;
 
 // ─── Delivery Objectives ─────────────────────────────────────────────────────
 
-export const ODELIVERY_NOTE_TO_SCOUT_JAMES: DeliveryObjective = {
+export const DELIVERY_NOTE_TO_SCOUT_JAMES: DeliveryObjective = {
   ID: 10021,
   ObjectiveText: "Deliver the note to scout James.",
   ObjectiveType: ObjectiveType.DELIVERY,
@@ -151,7 +179,7 @@ export const ODELIVERY_NOTE_TO_SCOUT_JAMES: DeliveryObjective = {
   MarkerName: "Scout James",
 };
 
-export const ODELIVERY_MEDICAL_TO_ROMASHKA: DeliveryObjective = {
+export const DELIVERY_MEDICAL_TO_ROMASHKA: DeliveryObjective = {
   ID: 10022,
   ObjectiveText: "Deliver the supplies Daniels asked for.",
   ObjectiveType: ObjectiveType.DELIVERY,
@@ -164,7 +192,7 @@ export const ODELIVERY_MEDICAL_TO_ROMASHKA: DeliveryObjective = {
   MarkerName: "Supply Drop",
 };
 
-export const ODELIVERY_AMMO_CACHE: DeliveryObjective = {
+export const DELIVERY_AMMO_CACHE: DeliveryObjective = {
   ID: 10023,
   ObjectiveText: "Drop off the weapons cache at the rendezvous point.",
   ObjectiveType: ObjectiveType.DELIVERY,
@@ -178,13 +206,13 @@ export const ODELIVERY_AMMO_CACHE: DeliveryObjective = {
 };
 
 const ALL_ODELIVERY: DeliveryObjective[] = [
-  ODELIVERY_MEDICAL_TO_ROMASHKA,
-  ODELIVERY_AMMO_CACHE,
+  DELIVERY_MEDICAL_TO_ROMASHKA,
+  DELIVERY_AMMO_CACHE,
 ] as const;
 
 // ─── Collection Objectives ───────────────────────────────────────────────────
 
-export const OCOLLECT_CLOTH_DISINFECTANT: CollectionObjective = {
+export const COLLECT_CLOTH_DISINFECTANT: CollectionObjective = {
   ID: 10030,
   ObjectiveText: "Gather cloth and disinfectant before infection finishes what the bite started.",
   ObjectiveType: ObjectiveType.COLLECT,
@@ -197,7 +225,7 @@ export const OCOLLECT_CLOTH_DISINFECTANT: CollectionObjective = {
   NeedAnyCollection: false,
 };
 
-export const OCOLLECT_BUILDING_MATERIALS: CollectionObjective = {
+export const COLLECT_BUILDING_MATERIALS: CollectionObjective = {
   ID: 10031,
   ObjectiveText: "Collect supplies for the farm's stockpile.",
   ObjectiveType: ObjectiveType.COLLECT,
@@ -210,7 +238,7 @@ export const OCOLLECT_BUILDING_MATERIALS: CollectionObjective = {
   NeedAnyCollection: false,
 };
 
-export const OCOLLECT_MEDICINAL_HERBS: CollectionObjective = {
+export const COLLECT_MEDICINAL_HERBS: CollectionObjective = {
   ID: 10032,
   ObjectiveText: "Gather herbs for the medic's stash.",
   ObjectiveType: ObjectiveType.COLLECT,
@@ -223,14 +251,14 @@ export const OCOLLECT_MEDICINAL_HERBS: CollectionObjective = {
 };
 
 const ALL_OCOLLECT: CollectionObjective[] = [
-  OCOLLECT_CLOTH_DISINFECTANT,
-  OCOLLECT_BUILDING_MATERIALS,
-  OCOLLECT_MEDICINAL_HERBS,
+  COLLECT_CLOTH_DISINFECTANT,
+  COLLECT_BUILDING_MATERIALS,
+  COLLECT_MEDICINAL_HERBS,
 ] as const;
 
 // ─── Action Objectives ───────────────────────────────────────────────────────
 
-export const OACTION_INSPECT_VEHICLE: ActionObjective = {
+export const ACTION_INSPECT_VEHICLE: ActionObjective = {
   ID: 10040,
   ObjectiveText: "Inspect an abandoned vehicle for useful parts.",
   ObjectiveType: ObjectiveType.ACTION,
@@ -238,7 +266,7 @@ export const OACTION_INSPECT_VEHICLE: ActionObjective = {
   AllowedClassNames: ["CarDoor"],
 };
 
-export const OACTION_SEARCH_BUILDING: ActionObjective = {
+export const ACTION_SEARCH_BUILDING: ActionObjective = {
   ID: 10041,
   ObjectiveText: "Search the building for intel.",
   ObjectiveType: ObjectiveType.ACTION,
@@ -246,7 +274,7 @@ export const OACTION_SEARCH_BUILDING: ActionObjective = {
   AllowedClassNames: ["Fence"],
 };
 
-export const OACTION_FARMING: ActionObjective = {
+export const ACTION_FARMING: ActionObjective = {
   ID: 10070,
   ObjectiveText: "Tend to the garden — plant, water, and care for crops.",
   ObjectiveType: ObjectiveType.ACTION,
@@ -261,7 +289,7 @@ export const OACTION_FARMING: ActionObjective = {
   AllowedClassNames: ["GardenSlot", "GardenBed", "GroundSoilFarmed"],
 };
 
-export const OACTION_START_VEHICLE: ActionObjective = {
+export const ACTION_START_VEHICLE: ActionObjective = {
   ID: 10071,
   ObjectiveText: "Start a vehicle to get moving.",
   ObjectiveType: ObjectiveType.ACTION,
@@ -269,7 +297,7 @@ export const OACTION_START_VEHICLE: ActionObjective = {
   AllowedClassNames: ["Car", "Truck", "CarWagon", "Van", "UAZ"],
 };
 
-export const OACTION_MINE_TREE: ActionObjective = {
+export const ACTION_MINE_TREE: ActionObjective = {
   ID: 10072,
   ObjectiveText: "Harvest wood by mining a tree.",
   ObjectiveType: ObjectiveType.ACTION,
@@ -277,7 +305,7 @@ export const OACTION_MINE_TREE: ActionObjective = {
   AllowedClassNames: ["Tree"],
 };
 
-export const OACTION_MINE_ROCK: ActionObjective = {
+export const ACTION_MINE_ROCK: ActionObjective = {
   ID: 10073,
   ObjectiveText: "Mine rock for stone and resources.",
   ObjectiveType: ObjectiveType.ACTION,
@@ -285,21 +313,21 @@ export const OACTION_MINE_ROCK: ActionObjective = {
   AllowedClassNames: ["Rock", "Stone"],
 };
 
-export const OACTION_SKINNING: ActionObjective = {
+export const ACTION_SKINNING: ActionObjective = {
   ID: 10074,
   ObjectiveText: "Skin the carcass for meat and materials.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: ["ActionSkinning"],
 };
 
-export const OACTION_EAT_DRINK: ActionObjective = {
+export const ACTION_EAT_DRINK: ActionObjective = {
   ID: 10075,
   ObjectiveText: "Eat or drink to restore stamina.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: ["ActionEat", "ActionDrink"],
 };
 
-export const OACTION_FIRST_AID: ActionObjective = {
+export const ACTION_FIRST_AID: ActionObjective = {
   ID: 10076,
   ObjectiveText: "Provide first aid to a wounded ally.",
   ObjectiveType: ObjectiveType.ACTION,
@@ -311,7 +339,7 @@ export const OACTION_FIRST_AID: ActionObjective = {
   ],
 };
 
-export const OACTION_INJECT_MEDS: ActionObjective = {
+export const ACTION_INJECT_MEDS: ActionObjective = {
   ID: 10077,
   ObjectiveText: "Administer medication to stabilize someone.",
   ObjectiveType: ObjectiveType.ACTION,
@@ -322,7 +350,7 @@ export const OACTION_INJECT_MEDS: ActionObjective = {
   ],
 };
 
-export const OACTION_CPR_DEFIBRILLATE: ActionObjective = {
+export const ACTION_CPR_DEFIBRILLATE: ActionObjective = {
   ID: 10078,
   ObjectiveText: "Perform emergency resuscitation on a fallen ally.",
   ObjectiveType: ObjectiveType.ACTION,
@@ -332,7 +360,7 @@ export const OACTION_CPR_DEFIBRILLATE: ActionObjective = {
   ],
 };
 
-export const OACTION_GIVE_BLOOD_TEST: ActionObjective = {
+export const ACTION_GIVE_BLOOD_TEST: ActionObjective = {
   ID: 10079,
   ObjectiveText: "Run a blood test on a subject.",
   ObjectiveType: ObjectiveType.ACTION,
@@ -342,7 +370,7 @@ export const OACTION_GIVE_BLOOD_TEST: ActionObjective = {
   ],
 };
 
-export const OACTION_FEED_TABLETS: ActionObjective = {
+export const ACTION_FEED_TABLETS: ActionObjective = {
   ID: 10080,
   ObjectiveText: "Feed medication tablets to a person.",
   ObjectiveType: ObjectiveType.ACTION,
@@ -354,7 +382,7 @@ export const OACTION_FEED_TABLETS: ActionObjective = {
   ],
 };
 
-export const OACTION_GIVE_SALINE: ActionObjective = {
+export const ACTION_GIVE_SALINE: ActionObjective = {
   ID: 10081,
   ObjectiveText: "Administer saline to dehydrated allies.",
   ObjectiveType: ObjectiveType.ACTION,
@@ -363,7 +391,7 @@ export const OACTION_GIVE_SALINE: ActionObjective = {
   ],
 };
 
-export const OACTION_TURN_ON_OFF_LIGHT: ActionObjective = {
+export const ACTION_TURN_ON_OFF_LIGHT: ActionObjective = {
   ID: 10083,
   ObjectiveText: "Toggle lights on a device or structure.",
   ObjectiveType: ObjectiveType.ACTION,
@@ -373,7 +401,7 @@ export const OACTION_TURN_ON_OFF_LIGHT: ActionObjective = {
   ],
 };
 
-export const OACTION_WEAPONS: ActionObjective = {
+export const ACTION_WEAPONS: ActionObjective = {
   ID: 10084,
   ObjectiveText: "Handle weapons — switch fire mode, load, or clear.",
   ObjectiveType: ObjectiveType.ACTION,
@@ -387,7 +415,7 @@ export const OACTION_WEAPONS: ActionObjective = {
   ],
 };
 
-export const OACTION_MAP: ActionObjective = {
+export const ACTION_MAP: ActionObjective = {
   ID: 10085,
   ObjectiveText: "Consult the map for navigation.",
   ObjectiveType: ObjectiveType.ACTION,
@@ -397,7 +425,7 @@ export const OACTION_MAP: ActionObjective = {
   ],
 };
 
-export const OACTION_OPEN_CONTAINER: ActionObjective = {
+export const ACTION_OPEN_CONTAINER: ActionObjective = {
   ID: 10086,
   ObjectiveText: "Open a container, fence, or barrel to scavenge.",
   ObjectiveType: ObjectiveType.ACTION,
@@ -408,7 +436,7 @@ export const OACTION_OPEN_CONTAINER: ActionObjective = {
   ],
 };
 
-export const OACTION_TAKE_ITEM: ActionObjective = {
+export const ACTION_TAKE_ITEM: ActionObjective = {
   ID: 10087,
   ObjectiveText: "Take an item from its location.",
   ObjectiveType: ObjectiveType.ACTION,
@@ -417,7 +445,7 @@ export const OACTION_TAKE_ITEM: ActionObjective = {
   ],
 };
 
-export const OACTION_PACK_TENT: ActionObjective = {
+export const ACTION_PACK_TENT: ActionObjective = {
   ID: 10088,
   ObjectiveText: "Pack up a tent for transport.",
   ObjectiveType: ObjectiveType.ACTION,
@@ -426,7 +454,7 @@ export const OACTION_PACK_TENT: ActionObjective = {
   ],
 };
 
-export const OACTION_FIREARM_ATTACH_MAG: ActionObjective = {
+export const ACTION_FIREARM_ATTACH_MAG: ActionObjective = {
   ID: 10089,
   ObjectiveText: "Attach a magazine to a firearm.",
   ObjectiveType: ObjectiveType.ACTION,
@@ -436,7 +464,7 @@ export const OACTION_FIREARM_ATTACH_MAG: ActionObjective = {
   ],
 };
 
-export const OACTION_FIREARM_DETACH_MAG: ActionObjective = {
+export const ACTION_FIREARM_DETACH_MAG: ActionObjective = {
   ID: 10090,
   ObjectiveText: "Detach a magazine from a firearm.",
   ObjectiveType: ObjectiveType.ACTION,
@@ -446,7 +474,7 @@ export const OACTION_FIREARM_DETACH_MAG: ActionObjective = {
   ],
 };
 
-export const OACTION_FIREARM_LOAD_BULLET: ActionObjective = {
+export const ACTION_FIREARM_LOAD_BULLET: ActionObjective = {
   ID: 10091,
   ObjectiveText: "Load bullets into a firearm chamber.",
   ObjectiveType: ObjectiveType.ACTION,
@@ -459,7 +487,7 @@ export const OACTION_FIREARM_LOAD_BULLET: ActionObjective = {
   ],
 };
 
-export const OACTION_FIREARM_MECHANIC: ActionObjective = {
+export const ACTION_FIREARM_MECHANIC: ActionObjective = {
   ID: 10092,
   ObjectiveText: "Perform firearm manipulation or repair.",
   ObjectiveType: ObjectiveType.ACTION,
@@ -468,7 +496,7 @@ export const OACTION_FIREARM_MECHANIC: ActionObjective = {
   ],
 };
 
-export const OACTION_FIREARM_UNJAM: ActionObjective = {
+export const ACTION_FIREARM_UNJAM: ActionObjective = {
   ID: 10093,
   ObjectiveText: "Unjam a malfunctioning firearm.",
   ObjectiveType: ObjectiveType.ACTION,
@@ -478,36 +506,36 @@ export const OACTION_FIREARM_UNJAM: ActionObjective = {
 };
 
 const ALL_OACTION: ActionObjective[] = [
-  OACTION_INSPECT_VEHICLE,
-  OACTION_SEARCH_BUILDING,
-  OACTION_FARMING,
-  OACTION_START_VEHICLE,
-  OACTION_MINE_TREE,
-  OACTION_MINE_ROCK,
-  OACTION_SKINNING,
-  OACTION_EAT_DRINK,
-  OACTION_FIRST_AID,
-  OACTION_INJECT_MEDS,
-  OACTION_CPR_DEFIBRILLATE,
-  OACTION_GIVE_BLOOD_TEST,
-  OACTION_FEED_TABLETS,
-  OACTION_GIVE_SALINE,
-  OACTION_TURN_ON_OFF_LIGHT,
-  OACTION_WEAPONS,
-  OACTION_MAP,
-  OACTION_OPEN_CONTAINER,
-  OACTION_TAKE_ITEM,
-  OACTION_PACK_TENT,
-  OACTION_FIREARM_ATTACH_MAG,
-  OACTION_FIREARM_DETACH_MAG,
-  OACTION_FIREARM_LOAD_BULLET,
-  OACTION_FIREARM_MECHANIC,
-  OACTION_FIREARM_UNJAM,
+  ACTION_INSPECT_VEHICLE,
+  ACTION_SEARCH_BUILDING,
+  ACTION_FARMING,
+  ACTION_START_VEHICLE,
+  ACTION_MINE_TREE,
+  ACTION_MINE_ROCK,
+  ACTION_SKINNING,
+  ACTION_EAT_DRINK,
+  ACTION_FIRST_AID,
+  ACTION_INJECT_MEDS,
+  ACTION_CPR_DEFIBRILLATE,
+  ACTION_GIVE_BLOOD_TEST,
+  ACTION_FEED_TABLETS,
+  ACTION_GIVE_SALINE,
+  ACTION_TURN_ON_OFF_LIGHT,
+  ACTION_WEAPONS,
+  ACTION_MAP,
+  ACTION_OPEN_CONTAINER,
+  ACTION_TAKE_ITEM,
+  ACTION_PACK_TENT,
+  ACTION_FIREARM_ATTACH_MAG,
+  ACTION_FIREARM_DETACH_MAG,
+  ACTION_FIREARM_LOAD_BULLET,
+  ACTION_FIREARM_MECHANIC,
+  ACTION_FIREARM_UNJAM,
 ] as const;
 
 // ─── Crafting Objectives ─────────────────────────────────────────────────────
 
-export const OCRAFT_SCRAP_WEAPON: CraftingObjective = {
+export const CRAFT_SCRAP_WEAPON: CraftingObjective = {
   ID: 10050,
   ObjectiveText: "Craft a basic weapon from scrap.",
   ObjectiveType: ObjectiveType.CRAFTING,
@@ -515,7 +543,7 @@ export const OCRAFT_SCRAP_WEAPON: CraftingObjective = {
   ExecutionAmount: 1,
 };
 
-export const OCRAFT_BEAR_TRAP: CraftingObjective = {
+export const CRAFT_BEAR_TRAP: CraftingObjective = {
   ID: 10051,
   ObjectiveText: "Build a trap to catch raiders.",
   ObjectiveType: ObjectiveType.CRAFTING,
@@ -524,13 +552,65 @@ export const OCRAFT_BEAR_TRAP: CraftingObjective = {
 };
 
 const ALL_OCRAFT: CraftingObjective[] = [
-  OCRAFT_SCRAP_WEAPON,
-  OCRAFT_BEAR_TRAP,
+  CRAFT_SCRAP_WEAPON,
+  CRAFT_BEAR_TRAP,
 ] as const;
 
 // ─── AI Camp Objectives ──────────────────────────────────────────────────────
 
-export const OAICAMP_REAPER_CHECKPOINT: AICampObjective = {
+export const AICAMP_TISY_TRANSMITTER: QuestAICampObjective = {
+  ID: 10102,
+  ObjectiveText:
+    "Reach the Tisy gate and destroy the transmitter before the final broadcast completes.",
+  ObjectiveType: ObjectiveType.AICAMP,
+  Position: LOCATION.tisy_gate,
+  MaxDistance: 150,
+  MinDistance: -1,
+  Amount: 15,
+  ClassNames: ["ZombieMadman"],
+  CountSelfKill: false,
+  AllowedWeapons: [],
+  ExcludedClassNames: [],
+  CountAIPlayers: false,
+  AllowedTargetFactions: ["Bandits"],
+  AllowedDamageZones: [],
+};
+
+export const AICAMP_SHEPHERD_COMMAND: QuestAICampObjective = {
+  ID: 10105,
+  ObjectiveText: "Destroy the Shepherd command post and stop the manual purge.",
+  ObjectiveType: ObjectiveType.AICAMP,
+  Position: LOCATION.shepherd_command_post,
+  MaxDistance: 150,
+  MinDistance: -1,
+  Amount: 12,
+  ClassNames: ["BanditAI_Keiko", "BanditAI_Linda", "BanditAI_Rolf", "BanditAI_Denis"],
+  CountSelfKill: false,
+  AllowedWeapons: [],
+  ExcludedClassNames: [],
+  CountAIPlayers: true,
+  AllowedTargetFactions: ["Bandits"],
+  AllowedDamageZones: [],
+};
+
+export const AICAMP_STARY_RAD_ZONE: QuestAICampObjective = {
+  ID: 10100,
+  ObjectiveText: "Enter the Stary Sobor red zone and silence the AI guarding the keycard rooms.",
+  ObjectiveType: ObjectiveType.AICAMP,
+  Position: LOCATION.stary_sobor_edge,
+  MaxDistance: 150,
+  MinDistance: -1,
+  Amount: 12,
+  ClassNames: ["ZombieMadman"],
+  CountSelfKill: false,
+  AllowedWeapons: [],
+  ExcludedClassNames: [],
+  CountAIPlayers: false,
+  AllowedTargetFactions: ["Bandits"],
+  AllowedDamageZones: [],
+};
+
+export const AICAMP_REAPER_CHECKPOINT: AICampObjective = {
   ID: 10061,
   ObjectiveText: "Clear the checkpoint - no survivors.",
   ObjectiveType: ObjectiveType.AICAMP,
@@ -547,7 +627,7 @@ export const OAICAMP_REAPER_CHECKPOINT: AICampObjective = {
   AllowedDamageZones: [],
 };
 
-export const OAICAMP_REAPER_STRONGHOLD: AICampObjective = {
+export const AICAMP_REAPER_STRONGHOLD: AICampObjective = {
   ID: 10012,
   ObjectiveText: "End the Reaper stronghold inside the warzone town.",
   ObjectiveType: ObjectiveType.AICAMP,
@@ -564,7 +644,7 @@ export const OAICAMP_REAPER_STRONGHOLD: AICampObjective = {
   AllowedDamageZones: [],
 };
 
-export const OAICAMP_TISY_GATE: AICampObjective = {
+export const AICAMP_TISY_GATE: AICampObjective = {
   ID: 10062,
   ObjectiveText: "Clear the gate at Tisy - ten hostiles, best gear, fortified.",
   ObjectiveType: ObjectiveType.AICAMP,
@@ -582,43 +662,52 @@ export const OAICAMP_TISY_GATE: AICampObjective = {
 };
 
 const ALL_OAICAMP: AICampObjective[] = [
-  OAICAMP_REAPER_CHECKPOINT,
-  OAICAMP_REAPER_STRONGHOLD,
-  OAICAMP_TISY_GATE,
+  AICAMP_TISY_TRANSMITTER,
+  AICAMP_SHEPHERD_COMMAND,
+  AICAMP_STARY_RAD_ZONE,
+  AICAMP_REAPER_CHECKPOINT,
+  AICAMP_REAPER_STRONGHOLD,
+  AICAMP_TISY_GATE,
 ] as const;
 
 // ─── AI VIP Objectives ───────────────────────────────────────────────────────
 
-export const OAIVIP_CORDON_DEFECTOR: AIVipObjective = {
+export const AIVIP_CORDON_DEFECTOR: AIVipObjective = {
   ID: 10012,
   ObjectiveText: "Bring in the Cordon defector alive.",
   ObjectiveType: ObjectiveType.AIVIP,
   Position: PLACEHOLDER_POSITION,
   MaxDistance: 150,
   MarkerName: "Cordon Defector",
+  CanLootAI: FALSE,
+  NPCClassName: "eAI_SurvivorM_Rolf",
+  NPCLoadoutFile: "GorkaLoadout",
 };
 
-export const OAIVIP_EXTRACT_SCIENTIST: AIVipObjective = {
+export const AIVIP_EXTRACT_SCIENTIST: QuestAIVipObjective = {
   ID: 10013,
   ObjectiveText: "Bring the Cordon scientist out of NWAF alive.",
   ObjectiveType: ObjectiveType.AIVIP,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.nwaf_perimeter,
   MaxDistance: 150,
   MarkerName: "NWAF Scientist",
+  CanLootAI: FALSE,
+  NPCClassName: "eAI_SurvivorM_Oliver",
+  NPCLoadoutFile: "NBCLoadout_1",
 };
 
 const ALL_OAIVIP: AIVipObjective[] = [
-  OAIVIP_CORDON_DEFECTOR,
-  OAIVIP_EXTRACT_SCIENTIST,
+  AIVIP_CORDON_DEFECTOR,
+  AIVIP_EXTRACT_SCIENTIST,
 ] as const;
 
 // ─── AI Patrol Objectives ────────────────────────────────────────────────────
 
-export const OAIPATROL_REAPER_PERIMETER: AIPatrolObjective = {
+export const AIPATROL_RAIDER_PERIMETER: QuestAIPatrolObjective = {
   ID: 10060,
-  ObjectiveText: "Break the Reaper patrol working the Kamenka–Romashka road.",
+  ObjectiveText: "Break the Raider patrol watching the Green Mountain approach to Romashka.",
   ObjectiveType: ObjectiveType.AIPATROL,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.farm_perimeter,
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 3,
@@ -627,11 +716,28 @@ export const OAIPATROL_REAPER_PERIMETER: AIPatrolObjective = {
   AllowedWeapons: [],
   ExcludedClassNames: [],
   CountAIPlayers: false,
-  AllowedTargetFactions: [],
+  AllowedTargetFactions: ["Bandits"],
   AllowedDamageZones: [],
 };
 
-export const OAIPATROL_CHECKPOINT_CLEAR: AIPatrolObjective = {
+export const AIPATROL_SHEPHERD_EXECUTIONER: QuestAIPatrolObjective = {
+  ID: 10104,
+  ObjectiveText: "Silence the Shepherd executioner before he calls reinforcements.",
+  ObjectiveType: ObjectiveType.AIPATROL,
+  Position: LOCATION.shepherd_command_post,
+  MaxDistance: 150,
+  MinDistance: -1,
+  Amount: 1,
+  ClassNames: ["BanditAI_Keiko", "BanditAI_Linda", "BanditAI_Rolf", "BanditAI_Denis"],
+  CountSelfKill: false,
+  AllowedWeapons: [],
+  ExcludedClassNames: [],
+  CountAIPlayers: true,
+  AllowedTargetFactions: ["Bandits"],
+  AllowedDamageZones: [],
+};
+
+export const AIPATROL_CHECKPOINT_CLEAR: AIPatrolObjective = {
   ID: 10061,
   ObjectiveText: "Break the Reaper supply patrol into the warzone.",
   ObjectiveType: ObjectiveType.AIPATROL,
@@ -648,7 +754,7 @@ export const OAIPATROL_CHECKPOINT_CLEAR: AIPatrolObjective = {
   AllowedDamageZones: [],
 };
 
-export const OAIPATROL_CORDON_LOOP: AIPatrolObjective = {
+export const AIPATROL_CORDON_LOOP: AIPatrolObjective = {
   ID: 10062,
   ObjectiveText: "Break the Cordon patrol loop around NWAF.",
   ObjectiveType: ObjectiveType.AIPATROL,
@@ -666,14 +772,38 @@ export const OAIPATROL_CORDON_LOOP: AIPatrolObjective = {
 };
 
 const ALL_OAIPATROL: AIPatrolObjective[] = [
-  OAIPATROL_REAPER_PERIMETER,
-  OAIPATROL_CHECKPOINT_CLEAR,
-  OAIPATROL_CORDON_LOOP,
+  AIPATROL_RAIDER_PERIMETER,
+  AIPATROL_SHEPHERD_EXECUTIONER,
+  AIPATROL_CHECKPOINT_CLEAR,
+  AIPATROL_CORDON_LOOP,
 ] as const;
 
 // ─── Treasure Hunt Objectives ────────────────────────────────────────────────
 
-export const OTREASUREHUNT_BURIED_SUPPLIES: TreasureHuntObjective = {
+function guaranteedTreasureLoot(Name: string): QuestTreasureLoot {
+  return {
+    Name,
+    Attachments: [],
+    Chance: 1,
+    QuantityPercent: -1,
+    Max: 1,
+    Min: 1,
+    Variants: [],
+  };
+}
+
+export const TREASUREHUNT_STARY_EVIDENCE: QuestTreasureHuntObjective = {
+  ID: 10101,
+  ObjectiveText: "Recover the research case buried beneath the Stary Sobor red zone.",
+  ObjectiveType: ObjectiveType.TREASUREHUNT,
+  Position: LOCATION.stary_sobor_edge,
+  MaxDistance: 10,
+  MarkerName: "Stary Research Case",
+  Loot: [guaranteedTreasureLoot("Paper"), guaranteedTreasureLoot("ItemRadio")],
+  LootItemsAmount: 2,
+};
+
+export const TREASUREHUNT_BURIED_SUPPLIES: TreasureHuntObjective = {
   ID: 10041,
   ObjectiveText: "Find what someone buried near the Kamenka coastline.",
   ObjectiveType: ObjectiveType.TREASUREHUNT,
@@ -682,25 +812,28 @@ export const OTREASUREHUNT_BURIED_SUPPLIES: TreasureHuntObjective = {
   MarkerName: "Buried Supplies",
 };
 
-export const OTREASUREHUNT_SKALISTY_CACHE: TreasureHuntObjective = {
+export const TREASUREHUNT_SKALISTY_CACHE: QuestTreasureHuntObjective = {
   ID: 10042,
   ObjectiveText: "Find what the dead Cordon sentry was protecting on Skalisty Island.",
   ObjectiveType: ObjectiveType.TREASUREHUNT,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.skalisty_stash,
   MaxDistance: 10,
   MarkerName: "Skalisty Cache",
+  Loot: [guaranteedTreasureLoot("Paper"), guaranteedTreasureLoot("NBCGlovesGray")],
+  LootItemsAmount: 2,
 };
 
 const ALL_OTREASUREHUNT: TreasureHuntObjective[] = [
-  OTREASUREHUNT_BURIED_SUPPLIES,
-  OTREASUREHUNT_SKALISTY_CACHE,
+  TREASUREHUNT_STARY_EVIDENCE,
+  TREASUREHUNT_BURIED_SUPPLIES,
+  TREASUREHUNT_SKALISTY_CACHE,
 ] as const;
 
 // ─── Side Objectives ─────────────────────────────────────────────────────────
 
 // ── Travel ──
 
-export const OTRAVEL_ESCAPE_ZONE: TravelObjective = {
+export const TRAVEL_ESCAPE_ZONE: TravelObjective = {
   ID: 20031,
   ObjectiveText: "Get out of the killzone before the compound locks down.",
   ObjectiveType: ObjectiveType.TRAVEL,
@@ -709,7 +842,7 @@ export const OTRAVEL_ESCAPE_ZONE: TravelObjective = {
   MarkerName: "Extraction Point",
 };
 
-export const OTRAVEL_RALLY_POINT: TravelObjective = {
+export const TRAVEL_RALLY_POINT: TravelObjective = {
   ID: 20032,
   ObjectiveText: "Move to the rally point — stay low, stay moving.",
   ObjectiveType: ObjectiveType.TRAVEL,
@@ -718,7 +851,7 @@ export const OTRAVEL_RALLY_POINT: TravelObjective = {
   MarkerName: "Rally Point",
 };
 
-export const OTRAVEL_LOOKOUT: TravelObjective = {
+export const TRAVEL_LOOKOUT: TravelObjective = {
   ID: 20033,
   ObjectiveText: "Reach the high ground and get eyes on the area.",
   ObjectiveType: ObjectiveType.TRAVEL,
@@ -727,7 +860,7 @@ export const OTRAVEL_LOOKOUT: TravelObjective = {
   MarkerName: "Overlook",
 };
 
-export const OTRAVEL_BURST_SPEED: TravelObjective = {
+export const TRAVEL_BURST_SPEED: TravelObjective = {
   ID: 20034,
   ObjectiveText: "Burst speed — cover ground fast before they realize you're gone.",
   ObjectiveType: ObjectiveType.TRAVEL,
@@ -736,7 +869,7 @@ export const OTRAVEL_BURST_SPEED: TravelObjective = {
   MarkerName: "Burst Speed",
 };
 
-export const OTRAVEL_SAFEROUTE: TravelObjective = {
+export const TRAVEL_SAFEROUTE: TravelObjective = {
   ID: 20035,
   ObjectiveText: "Take the saferoute through the treeline to avoid open ground.",
   ObjectiveType: ObjectiveType.TRAVEL,
@@ -747,7 +880,7 @@ export const OTRAVEL_SAFEROUTE: TravelObjective = {
 
 // ── Target ──
 
-export const OTARGET_CLEAR_BUILDING: TargetObjective = {
+export const TARGET_CLEAR_BUILDING: TargetObjective = {
   ID: 20021,
   ObjectiveText: "Clear the building — check every room, trust no shadows.",
   ObjectiveType: ObjectiveType.TARGET,
@@ -764,7 +897,7 @@ export const OTARGET_CLEAR_BUILDING: TargetObjective = {
   AllowedDamageZones: [],
 };
 
-export const OTARGET_HOSPITAL_SWEEP: TargetObjective = {
+export const TARGET_HOSPITAL_SWEEP: TargetObjective = {
   ID: 20022,
   ObjectiveText: "Sweep the hospital — these things never stopped wandering the halls.",
   ObjectiveType: ObjectiveType.TARGET,
@@ -772,7 +905,12 @@ export const OTARGET_HOSPITAL_SWEEP: TargetObjective = {
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 15,
-  ClassNames: ["ZombieMadman", "ZombieSlow"],
+  ClassNames: [
+    "ZmbM_DoctorFat_Base",
+    "ZmbF_DoctorSkinny_Base",
+    "ZmbF_NurseFat_Base",
+    "ZmbM_ParamedicNormal_Base",
+  ],
   CountSelfKill: false,
   AllowedWeapons: [],
   ExcludedClassNames: [],
@@ -781,7 +919,7 @@ export const OTARGET_HOSPITAL_SWEEP: TargetObjective = {
   AllowedDamageZones: [],
 };
 
-export const OTARGET_HVIP_MARKSMAN: TargetObjective = {
+export const TARGET_HVIP_MARKSMAN: TargetObjective = {
   ID: 20023,
   ObjectiveText: "Put down the marksman — he's calling in the horde.",
   ObjectiveType: ObjectiveType.TARGET,
@@ -798,7 +936,7 @@ export const OTARGET_HVIP_MARKSMAN: TargetObjective = {
   AllowedDamageZones: [],
 };
 
-export const OTARGET_WAREHOUSE_CLEAR: TargetObjective = {
+export const TARGET_WAREHOUSE_CLEAR: TargetObjective = {
   ID: 20024,
   ObjectiveText: "Clear the warehouse. Lock the doors behind you.",
   ObjectiveType: ObjectiveType.TARGET,
@@ -806,7 +944,7 @@ export const OTARGET_WAREHOUSE_CLEAR: TargetObjective = {
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 12,
-  ClassNames: ["ZombieMadman"],
+  ClassNames: ["ZmbM_HeavyIndustryWorker_Base", "ZmbM_ConstrWorkerNormal_Base"],
   CountSelfKill: false,
   AllowedWeapons: [],
   ExcludedClassNames: [],
@@ -815,7 +953,7 @@ export const OTARGET_WAREHOUSE_CLEAR: TargetObjective = {
   AllowedDamageZones: [],
 };
 
-export const OTARGET_ROOFTOP_CLEAR: TargetObjective = {
+export const TARGET_ROOFTOP_CLEAR: TargetObjective = {
   ID: 20025,
   ObjectiveText: "Clear the rooftops — they'll rain down on you if you leave them.",
   ObjectiveType: ObjectiveType.TARGET,
@@ -823,7 +961,7 @@ export const OTARGET_ROOFTOP_CLEAR: TargetObjective = {
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 6,
-  ClassNames: ["ZombieFast"],
+  ClassNames: ["ZmbM_Runner_Base", "ZmbF_Runner_Base"],
   CountSelfKill: false,
   AllowedWeapons: [],
   ExcludedClassNames: [],
@@ -832,7 +970,7 @@ export const OTARGET_ROOFTOP_CLEAR: TargetObjective = {
   AllowedDamageZones: [],
 };
 
-export const OTARGET_NIGHTHUNT: TargetObjective = {
+export const TARGET_NIGHTHUNT: TargetObjective = {
   ID: 20026,
   ObjectiveText: "Hunt them down in the dark — they move slower when the lights go out.",
   ObjectiveType: ObjectiveType.TARGET,
@@ -851,7 +989,7 @@ export const OTARGET_NIGHTHUNT: TargetObjective = {
 
 // ── Collection ──
 
-export const OCOLLECT_FUEL_CAN: CollectionObjective = {
+export const COLLECT_FUEL_CAN: CollectionObjective = {
   ID: 20001,
   ObjectiveText: "Grab fuel cans — everything needs gas now.",
   ObjectiveType: ObjectiveType.COLLECT,
@@ -863,7 +1001,7 @@ export const OCOLLECT_FUEL_CAN: CollectionObjective = {
   NeedAnyCollection: false,
 };
 
-export const OCOLLECT_AMMO_RIG: CollectionObjective = {
+export const COLLECT_AMMO_RIG: CollectionObjective = {
   ID: 20002,
   ObjectiveText: "Rig your ammo — sort by caliber and stack what you can use.",
   ObjectiveType: ObjectiveType.COLLECT,
@@ -876,7 +1014,7 @@ export const OCOLLECT_AMMO_RIG: CollectionObjective = {
   NeedAnyCollection: false,
 };
 
-export const OCOLLECT_WEAPON_PARTS: CollectionObjective = {
+export const COLLECT_WEAPON_PARTS: CollectionObjective = {
   ID: 20003,
   ObjectiveText: "Salvage what you can from the armory — every part counts.",
   ObjectiveType: ObjectiveType.COLLECT,
@@ -895,7 +1033,7 @@ export const OCOLLECT_WEAPON_PARTS: CollectionObjective = {
   NeedAnyCollection: false,
 };
 
-export const OCOLLECT_FOOD_SURPLUS: CollectionObjective = {
+export const COLLECT_FOOD_SURPLUS: CollectionObjective = {
   ID: 20004,
   ObjectiveText: "Scavenge what's left in the pantry before it spoils.",
   ObjectiveType: ObjectiveType.COLLECT,
@@ -909,7 +1047,7 @@ export const OCOLLECT_FOOD_SURPLUS: CollectionObjective = {
   NeedAnyCollection: false,
 };
 
-export const OCOLLECT_RADIO_PARTS: CollectionObjective = {
+export const COLLECT_RADIO_PARTS: CollectionObjective = {
   ID: 20005,
   ObjectiveText: "Pull electronics off the dead — radios, batteries, wire.",
   ObjectiveType: ObjectiveType.COLLECT,
@@ -923,7 +1061,7 @@ export const OCOLLECT_RADIO_PARTS: CollectionObjective = {
   NeedAnyCollection: false,
 };
 
-export const OCOLLECT_BODY_GEAR: CollectionObjective = {
+export const COLLECT_BODY_GEAR: CollectionObjective = {
   ID: 20006,
   ObjectiveText: "Suit up — grab body armor, helmets, and boots from the cache.",
   ObjectiveType: ObjectiveType.COLLECT,
@@ -937,7 +1075,7 @@ export const OCOLLECT_BODY_GEAR: CollectionObjective = {
   NeedAnyCollection: false,
 };
 
-export const OCOLLECT_WATER_PURE: CollectionObjective = {
+export const COLLECT_WATER_PURE: CollectionObjective = {
   ID: 20007,
   ObjectiveText: "Stock up on clean water — the old stuff is gone.",
   ObjectiveType: ObjectiveType.COLLECT,
@@ -951,7 +1089,7 @@ export const OCOLLECT_WATER_PURE: CollectionObjective = {
 
 // ── Delivery ──
 
-export const ODELIVERY_INTEL_PACKAGE: DeliveryObjective = {
+export const DELIVERY_INTEL_PACKAGE: DeliveryObjective = {
   ID: 20011,
   ObjectiveText: "Deliver the intel package before it burns a target on your back.",
   ObjectiveType: ObjectiveType.DELIVERY,
@@ -964,7 +1102,7 @@ export const ODELIVERY_INTEL_PACKAGE: DeliveryObjective = {
   MarkerName: "Drop Zone Alpha",
 };
 
-export const ODELIVERY_BATTERY_DROP: DeliveryObjective = {
+export const DELIVERY_BATTERY_DROP: DeliveryObjective = {
   ID: 20012,
   ObjectiveText: "Drop off the battery pack — their generator's dead.",
   ObjectiveType: ObjectiveType.DELIVERY,
@@ -977,7 +1115,7 @@ export const ODELIVERY_BATTERY_DROP: DeliveryObjective = {
   MarkerName: "Battery Drop",
 };
 
-export const ODELIVERY_GUNSMITH_KIT: DeliveryObjective = {
+export const DELIVERY_GUNSMITH_KIT: DeliveryObjective = {
   ID: 20013,
   ObjectiveText: "The gunsmith wants his tools back. Bring the whole kit.",
   ObjectiveType: ObjectiveType.DELIVERY,
@@ -991,7 +1129,7 @@ export const ODELIVERY_GUNSMITH_KIT: DeliveryObjective = {
   MarkerName: "Gunsmith's Table",
 };
 
-export const ODELIVERY_COLD_WEATHER_GEAR: DeliveryObjective = {
+export const DELIVERY_COLD_WEATHER_GEAR: DeliveryObjective = {
   ID: 20014,
   ObjectiveText: "Send the cold gear pack before the temperature drops again.",
   ObjectiveType: ObjectiveType.DELIVERY,
@@ -1005,7 +1143,7 @@ export const ODELIVERY_COLD_WEATHER_GEAR: DeliveryObjective = {
   MarkerName: "Cold Pack Drop",
 };
 
-export const ODELIVERY_RATIONS_CACHE: DeliveryObjective = {
+export const DELIVERY_RATIONS_CACHE: DeliveryObjective = {
   ID: 20015,
   ObjectiveText: "Stash the rations where the patrol can find them on rotation.",
   ObjectiveType: ObjectiveType.DELIVERY,
@@ -1021,7 +1159,7 @@ export const ODELIVERY_RATIONS_CACHE: DeliveryObjective = {
 
 // ── Crafting ──
 
-export const OCRAFT_TRIPWIRE_ALARM: CraftingObjective = {
+export const CRAFT_TRIPWIRE_ALARM: CraftingObjective = {
   ID: 20050,
   ObjectiveText: "Wire a tripwire alarm — let them tell you when they come.",
   ObjectiveType: ObjectiveType.CRAFTING,
@@ -1029,7 +1167,7 @@ export const OCRAFT_TRIPWIRE_ALARM: CraftingObjective = {
   ExecutionAmount: 3,
 };
 
-export const OCRAFT_IMPROvised_SHIELDS: CraftingObjective = {
+export const CRAFT_IMPROvised_SHIELDS: CraftingObjective = {
   ID: 20051,
   ObjectiveText: "Improvised shields from scrap — better than nothing.",
   ObjectiveType: ObjectiveType.CRAFTING,
@@ -1037,7 +1175,7 @@ export const OCRAFT_IMPROvised_SHIELDS: CraftingObjective = {
   ExecutionAmount: 2,
 };
 
-export const OCRAFT_MORPHINE_SYR: CraftingObjective = {
+export const CRAFT_MORPHINE_SYR: CraftingObjective = {
   ID: 20052,
   ObjectiveText: "Distill morphine from poppy — ration it carefully.",
   ObjectiveType: ObjectiveType.CRAFTING,
@@ -1045,7 +1183,7 @@ export const OCRAFT_MORPHINE_SYR: CraftingObjective = {
   ExecutionAmount: 5,
 };
 
-export const OCRAFT_FLARE_BATON: CraftingObjective = {
+export const CRAFT_FLARE_BATON: CraftingObjective = {
   ID: 20053,
   ObjectiveText: "Build flare batons for signaling — they glow through the smoke.",
   ObjectiveType: ObjectiveType.CRAFTING,
@@ -1053,7 +1191,7 @@ export const OCRAFT_FLARE_BATON: CraftingObjective = {
   ExecutionAmount: 4,
 };
 
-export const OCRAFT_ROPE_BOOTS: CraftingObjective = {
+export const CRAFT_ROPE_BOOTS: CraftingObjective = {
   ID: 20054,
   ObjectiveText: "Rope and boots — climb anything if you dare.",
   ObjectiveType: ObjectiveType.CRAFTING,
@@ -1061,7 +1199,7 @@ export const OCRAFT_ROPE_BOOTS: CraftingObjective = {
   ExecutionAmount: 2,
 };
 
-export const OCRAFT_PIPE_BOMB: CraftingObjective = {
+export const CRAFT_PIPE_BOMB: CraftingObjective = {
   ID: 20055,
   ObjectiveText: "Pipe bombs from scrap — ugly, loud, effective.",
   ObjectiveType: ObjectiveType.CRAFTING,
@@ -1069,7 +1207,7 @@ export const OCRAFT_PIPE_BOMB: CraftingObjective = {
   ExecutionAmount: 3,
 };
 
-export const OCRAFT_HUNTING_TRAP: CraftingObjective = {
+export const CRAFT_HUNTING_TRAP: CraftingObjective = {
   ID: 20056,
   ObjectiveText: "Set hunting traps — bait them and watch what walks in.",
   ObjectiveType: ObjectiveType.CRAFTING,
@@ -1077,7 +1215,7 @@ export const OCRAFT_HUNTING_TRAP: CraftingObjective = {
   ExecutionAmount: 5,
 };
 
-export const OCRAFT_DUST_MASK: CraftingObjective = {
+export const CRAFT_DUST_MASK: CraftingObjective = {
   ID: 20057,
   ObjectiveText: "Sew dust masks — the air won't kill you, but choking on it will.",
   ObjectiveType: ObjectiveType.CRAFTING,
@@ -1087,7 +1225,7 @@ export const OCRAFT_DUST_MASK: CraftingObjective = {
 
 // ── Action ──
 
-export const OACTION_OPEN_VEHICLE_DOOR: ActionObjective = {
+export const ACTION_OPEN_VEHICLE_DOOR: ActionObjective = {
   ID: 10094,
   ObjectiveText: "Pry open a vehicle door — hope the lock didn't freeze.",
   ObjectiveType: ObjectiveType.ACTION,
@@ -1095,7 +1233,7 @@ export const OACTION_OPEN_VEHICLE_DOOR: ActionObjective = {
   AllowedClassNames: ["CarDoor"],
 };
 
-export const OACTION_OPEN_VEHICLE_HOOD: ActionObjective = {
+export const ACTION_OPEN_VEHICLE_HOOD: ActionObjective = {
   ID: 10095,
   ObjectiveText: "Pop the hood and check under the metal.",
   ObjectiveType: ObjectiveType.ACTION,
@@ -1103,7 +1241,7 @@ export const OACTION_OPEN_VEHICLE_HOOD: ActionObjective = {
   AllowedClassNames: ["CarHood", "CarDoor"],
 };
 
-export const OACTION_OPEN_BACK_DOOR: ActionObjective = {
+export const ACTION_OPEN_BACK_DOOR: ActionObjective = {
   ID: 10096,
   ObjectiveText: "Open the rear doors and search the back.",
   ObjectiveType: ObjectiveType.ACTION,
@@ -1111,7 +1249,7 @@ export const OACTION_OPEN_BACK_DOOR: ActionObjective = {
   AllowedClassNames: ["VanBackDoor", "CarDoor"],
 };
 
-export const OACTION_SEARCH_BACKPACK: ActionObjective = {
+export const ACTION_SEARCH_BACKPACK: ActionObjective = {
   ID: 10097,
   ObjectiveText: "Rummage through the backpack — grab anything useful.",
   ObjectiveType: ObjectiveType.ACTION,
@@ -1119,7 +1257,7 @@ export const OACTION_SEARCH_BACKPACK: ActionObjective = {
   AllowedClassNames: ["Backpack"],
 };
 
-export const OACTION_OPEN_GARAGE: ActionObjective = {
+export const ACTION_OPEN_GARAGE: ActionObjective = {
   ID: 10098,
   ObjectiveText: "Roll up the garage door — what's parked inside is yours now.",
   ObjectiveType: ObjectiveType.ACTION,
@@ -1129,7 +1267,7 @@ export const OACTION_OPEN_GARAGE: ActionObjective = {
 
 // ── Crafting (continued - more) ──
 
-export const OCRAFT_AMMO_PACK: CraftingObjective = {
+export const CRAFT_AMMO_PACK: CraftingObjective = {
   ID: 20058,
   ObjectiveText: "Handload ammo — every round you make is one less you have to scavenge.",
   ObjectiveType: ObjectiveType.CRAFTING,
@@ -1139,7 +1277,7 @@ export const OCRAFT_AMMO_PACK: CraftingObjective = {
 
 // ── AICamp ──
 
-export const OAICAMP_ROADBLOCK: AICampObjective = {
+export const AICAMP_ROADBLOCK: AICampObjective = {
   ID: 20060,
   ObjectiveText: "Smash the roadblock. Ten hostiles, no backup, easy target.",
   ObjectiveType: ObjectiveType.AICAMP,
@@ -1156,7 +1294,7 @@ export const OAICAMP_ROADBLOCK: AICampObjective = {
   AllowedDamageZones: [],
 };
 
-export const OAICAMP_OUTPOST_RAID: AICampObjective = {
+export const AICAMP_OUTPOST_RAID: AICampObjective = {
   ID: 20061,
   ObjectiveText: "Raid the outpost before they reinforce. Hit fast, leave fast.",
   ObjectiveType: ObjectiveType.AICAMP,
@@ -1173,7 +1311,7 @@ export const OAICAMP_OUTPOST_RAID: AICampObjective = {
   AllowedDamageZones: [],
 };
 
-export const OAICAMP_Bunker_SWEEP: AICampObjective = {
+export const AICAMP_Bunker_SWEEP: AICampObjective = {
   ID: 20062,
   ObjectiveText: "Sweep the bunker — sealed, dark, and full of company.",
   ObjectiveType: ObjectiveType.AICAMP,
@@ -1190,7 +1328,7 @@ export const OAICAMP_Bunker_SWEEP: AICampObjective = {
   AllowedDamageZones: [],
 };
 
-export const OAICAMP_FACTORY_CLEAR: AICampObjective = {
+export const AICAMP_FACTORY_CLEAR: AICampObjective = {
   ID: 20063,
   ObjectiveText: "Clear the factory floor. These things were workers once.",
   ObjectiveType: ObjectiveType.AICAMP,
@@ -1207,7 +1345,7 @@ export const OAICAMP_FACTORY_CLEAR: AICampObjective = {
   AllowedDamageZones: [],
 };
 
-export const OAICAMP_TANK_GRAVEYARD: AICampObjective = {
+export const AICAMP_TANK_GRAVEYARD: AICampObjective = {
   ID: 20064,
   ObjectiveText: "The tank graveyard — the dead don't stay buried in metal.",
   ObjectiveType: ObjectiveType.AICAMP,
@@ -1226,45 +1364,57 @@ export const OAICAMP_TANK_GRAVEYARD: AICampObjective = {
 
 // ── AIVIP ──
 
-export const OAIVIP_INFORMANT: AIVipObjective = {
+export const AIVIP_INFORMANT: AIVipObjective = {
   ID: 20014,
   ObjectiveText: "Extract the informant — he knows where the supply drop landed.",
   ObjectiveType: ObjectiveType.AIVIP,
   Position: PLACEHOLDER_POSITION,
   MaxDistance: 150,
   MarkerName: "Informant",
+  CanLootAI: FALSE,
+  NPCClassName: "eAI_SurvivorM_Peter",
+  NPCLoadoutFile: "Quest_Survivor_noWeapon",
 };
 
-export const OAIVIP_WOUNDED_DOC: AIVipObjective = {
+export const AIVIP_WOUNDED_DOC: AIVipObjective = {
   ID: 20015,
   ObjectiveText: "Get the wounded doc to safety — he's the only one who knows triage.",
   ObjectiveType: ObjectiveType.AIVIP,
   Position: PLACEHOLDER_POSITION,
   MaxDistance: 150,
   MarkerName: "Wounded Doctor",
+  CanLootAI: FALSE,
+  NPCClassName: "eAI_SurvivorM_Cyril",
+  NPCLoadoutFile: "SanitarLoadout",
 };
 
-export const OAIVIP_SCIENTIST_EXFIL: AIVipObjective = {
+export const AIVIP_SCIENTIST_EXFIL: AIVipObjective = {
   ID: 20016,
   ObjectiveText: "Pull the scientist out. Whatever she was studying, it's not staying.",
   ObjectiveType: ObjectiveType.AIVIP,
   Position: PLACEHOLDER_POSITION,
   MaxDistance: 150,
   MarkerName: "Evac Scientist",
+  CanLootAI: FALSE,
+  NPCClassName: "eAI_SurvivorF_Naomi",
+  NPCLoadoutFile: "NBCLoadout",
 };
 
-export const OAIVIP_CHILDREN_RESCUE: AIVipObjective = {
-  ID: 20017,
-  ObjectiveText: "Find the kids. Move quiet — they're terrified.",
+export const AIVIP_SHEPHERD_CAPTIVE: QuestAIVipObjective = {
+  ID: 10103,
+  ObjectiveText: "Extract the Shepherd captive alive.",
   ObjectiveType: ObjectiveType.AIVIP,
   Position: PLACEHOLDER_POSITION,
   MaxDistance: 150,
-  MarkerName: "Hidden Children",
+  MarkerName: "Shepherd Captive",
+  CanLootAI: FALSE,
+  NPCClassName: "eAI_SurvivorM_Denis",
+  NPCLoadoutFile: "TanLoadout",
 };
 
 // ── AIPatrol ──
 
-export const OAIPATROL_ROAMING_GROUP: AIPatrolObjective = {
+export const AIPATROL_ROAMING_GROUP: AIPatrolObjective = {
   ID: 20060,
   ObjectiveText: "Break up the roaming group — they're moving toward civilization.",
   ObjectiveType: ObjectiveType.AIPATROL,
@@ -1281,7 +1431,7 @@ export const OAIPATROL_ROAMING_GROUP: AIPatrolObjective = {
   AllowedDamageZones: [],
 };
 
-export const OAIPATROL_HUNTER_PATROL: AIPatrolObjective = {
+export const AIPATROL_HUNTER_PATROL: AIPatrolObjective = {
   ID: 20061,
   ObjectiveText: "Take out the hunter patrol — they track everything.",
   ObjectiveType: ObjectiveType.AIPATROL,
@@ -1298,11 +1448,11 @@ export const OAIPATROL_HUNTER_PATROL: AIPatrolObjective = {
   AllowedDamageZones: [],
 };
 
-export const OAIPATROL_CONVOY_ESCORT: AIPatrolObjective = {
+export const AIPATROL_CONVOY_ESCORT: AIPatrolObjective = {
   ID: 20062,
   ObjectiveText: "Interrupt the convoy escort — the supply truck is the real target.",
   ObjectiveType: ObjectiveType.AIPATROL,
-  Position: PLACEHOLDER_POSITION,
+  Position: LOCATION.nwaf_patrol,
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 8,
@@ -1311,11 +1461,11 @@ export const OAIPATROL_CONVOY_ESCORT: AIPatrolObjective = {
   AllowedWeapons: [],
   ExcludedClassNames: [],
   CountAIPlayers: false,
-  AllowedTargetFactions: [],
+  AllowedTargetFactions: ["Bandits"],
   AllowedDamageZones: [],
 };
 
-export const OAIPATROL_NIGHT_STALKERS: AIPatrolObjective = {
+export const AIPATROL_NIGHT_STALKERS: AIPatrolObjective = {
   ID: 20063,
   ObjectiveText: "Three night stalkers — move between shadows, strike between heartbeats.",
   ObjectiveType: ObjectiveType.AIPATROL,
@@ -1334,7 +1484,7 @@ export const OAIPATROL_NIGHT_STALKERS: AIPatrolObjective = {
 
 // ── Treasure Hunt ──
 
-export const OTREASUREHUNT_DROWNED_CRATE: TreasureHuntObjective = {
+export const TREASUREHUNT_DROWNED_CRATE: TreasureHuntObjective = {
   ID: 20040,
   ObjectiveText: "Someone drowned a crate in the river — dig it up before the current takes it.",
   ObjectiveType: ObjectiveType.TREASUREHUNT,
@@ -1343,7 +1493,7 @@ export const OTREASUREHUNT_DROWNED_CRATE: TreasureHuntObjective = {
   MarkerName: "Drowned Crate",
 };
 
-export const OTREASUREHUNT_ABANDONED_POSTBOX: TreasureHuntObjective = {
+export const TREASUREHUNT_ABANDONED_POSTBOX: TreasureHuntObjective = {
   ID: 20041,
   ObjectiveText: "The old postbox has a false bottom — someone hid something in a hurry.",
   ObjectiveType: ObjectiveType.TREASUREHUNT,
@@ -1352,7 +1502,7 @@ export const OTREASUREHUNT_ABANDONED_POSTBOX: TreasureHuntObjective = {
   MarkerName: "Old Postbox",
 };
 
-export const OTREASUREHUNT_BUSH_UNDER_THE_OAK: TreasureHuntObjective = {
+export const TREASUREHUNT_BUSH_UNDER_THE_OAK: TreasureHuntObjective = {
   ID: 20042,
   ObjectiveText: "Dig beneath the dead oak — the soil smells different here.",
   ObjectiveType: ObjectiveType.TREASUREHUNT,
@@ -1361,93 +1511,97 @@ export const OTREASUREHUNT_BUSH_UNDER_THE_OAK: TreasureHuntObjective = {
   MarkerName: "Under the Oak",
 };
 
-export const OTREASUREHUNT_ROOFTOP_VENT: TreasureHuntObjective = {
+export const TREASUREHUNT_ROOFTOP_VENT: QuestTreasureHuntObjective = {
   ID: 20043,
   ObjectiveText: "There's a cache behind the ventilation shaft — climb and look.",
   ObjectiveType: ObjectiveType.TREASUREHUNT,
   Position: PLACEHOLDER_POSITION,
   MaxDistance: 10,
   MarkerName: "Rooftop Vent",
+  Loot: [guaranteedTreasureLoot("Paper"), guaranteedTreasureLoot("GunPartWeaponParts")],
+  LootItemsAmount: 2,
 };
 
-export const OTREASUREHUNT_UNDER_BRIDGE: TreasureHuntObjective = {
+export const TREASUREHUNT_UNDER_BRIDGE: QuestTreasureHuntObjective = {
   ID: 20044,
   ObjectiveText: "Under the bridge, in the muck — what was tossed away.",
   ObjectiveType: ObjectiveType.TREASUREHUNT,
   Position: PLACEHOLDER_POSITION,
   MaxDistance: 10,
   MarkerName: "Under Bridge",
+  Loot: [guaranteedTreasureLoot("Paper"), guaranteedTreasureLoot("ItemRadio")],
+  LootItemsAmount: 2,
 };
 
 const ALL_SIDE = [
   // Travel
-  OTRAVEL_ESCAPE_ZONE,
-  OTRAVEL_RALLY_POINT,
-  OTRAVEL_LOOKOUT,
-  OTRAVEL_BURST_SPEED,
-  OTRAVEL_SAFEROUTE,
+  TRAVEL_ESCAPE_ZONE,
+  TRAVEL_RALLY_POINT,
+  TRAVEL_LOOKOUT,
+  TRAVEL_BURST_SPEED,
+  TRAVEL_SAFEROUTE,
   // Target
-  OTARGET_CLEAR_BUILDING,
-  OTARGET_HOSPITAL_SWEEP,
-  OTARGET_HVIP_MARKSMAN,
-  OTARGET_WAREHOUSE_CLEAR,
-  OTARGET_ROOFTOP_CLEAR,
-  OTARGET_NIGHTHUNT,
+  TARGET_CLEAR_BUILDING,
+  TARGET_HOSPITAL_SWEEP,
+  TARGET_HVIP_MARKSMAN,
+  TARGET_WAREHOUSE_CLEAR,
+  TARGET_ROOFTOP_CLEAR,
+  TARGET_NIGHTHUNT,
   // Collection
-  OCOLLECT_FUEL_CAN,
-  OCOLLECT_AMMO_RIG,
-  OCOLLECT_WEAPON_PARTS,
-  OCOLLECT_FOOD_SURPLUS,
-  OCOLLECT_RADIO_PARTS,
-  OCOLLECT_BODY_GEAR,
-  OCOLLECT_WATER_PURE,
+  COLLECT_FUEL_CAN,
+  COLLECT_AMMO_RIG,
+  COLLECT_WEAPON_PARTS,
+  COLLECT_FOOD_SURPLUS,
+  COLLECT_RADIO_PARTS,
+  COLLECT_BODY_GEAR,
+  COLLECT_WATER_PURE,
   // Delivery
-  ODELIVERY_INTEL_PACKAGE,
-  ODELIVERY_BATTERY_DROP,
-  ODELIVERY_GUNSMITH_KIT,
-  ODELIVERY_COLD_WEATHER_GEAR,
-  ODELIVERY_RATIONS_CACHE,
+  DELIVERY_INTEL_PACKAGE,
+  DELIVERY_BATTERY_DROP,
+  DELIVERY_GUNSMITH_KIT,
+  DELIVERY_COLD_WEATHER_GEAR,
+  DELIVERY_RATIONS_CACHE,
   // Crafting
-  OCRAFT_TRIPWIRE_ALARM,
-  OCRAFT_IMPROvised_SHIELDS,
-  OCRAFT_MORPHINE_SYR,
-  OCRAFT_FLARE_BATON,
-  OCRAFT_ROPE_BOOTS,
-  OCRAFT_PIPE_BOMB,
-  OCRAFT_HUNTING_TRAP,
-  OCRAFT_DUST_MASK,
-  OCRAFT_AMMO_PACK,
+  CRAFT_TRIPWIRE_ALARM,
+  CRAFT_IMPROvised_SHIELDS,
+  CRAFT_MORPHINE_SYR,
+  CRAFT_FLARE_BATON,
+  CRAFT_ROPE_BOOTS,
+  CRAFT_PIPE_BOMB,
+  CRAFT_HUNTING_TRAP,
+  CRAFT_DUST_MASK,
+  CRAFT_AMMO_PACK,
   // Action
-  OACTION_OPEN_VEHICLE_DOOR,
-  OACTION_OPEN_VEHICLE_HOOD,
-  OACTION_OPEN_BACK_DOOR,
-  OACTION_SEARCH_BACKPACK,
-  OACTION_OPEN_GARAGE,
+  ACTION_OPEN_VEHICLE_DOOR,
+  ACTION_OPEN_VEHICLE_HOOD,
+  ACTION_OPEN_BACK_DOOR,
+  ACTION_SEARCH_BACKPACK,
+  ACTION_OPEN_GARAGE,
   // AICamp
-  OAICAMP_ROADBLOCK,
-  OAICAMP_OUTPOST_RAID,
-  OAICAMP_Bunker_SWEEP,
-  OAICAMP_FACTORY_CLEAR,
-  OAICAMP_TANK_GRAVEYARD,
+  AICAMP_ROADBLOCK,
+  AICAMP_OUTPOST_RAID,
+  AICAMP_Bunker_SWEEP,
+  AICAMP_FACTORY_CLEAR,
+  AICAMP_TANK_GRAVEYARD,
   // AIVIP
-  OAIVIP_INFORMANT,
-  OAIVIP_WOUNDED_DOC,
-  OAIVIP_SCIENTIST_EXFIL,
-  OAIVIP_CHILDREN_RESCUE,
+  AIVIP_INFORMANT,
+  AIVIP_WOUNDED_DOC,
+  AIVIP_SCIENTIST_EXFIL,
+  AIVIP_SHEPHERD_CAPTIVE,
   // AIPatrol
-  OAIPATROL_ROAMING_GROUP,
-  OAIPATROL_HUNTER_PATROL,
-  OAIPATROL_CONVOY_ESCORT,
-  OAIPATROL_NIGHT_STALKERS,
+  AIPATROL_ROAMING_GROUP,
+  AIPATROL_HUNTER_PATROL,
+  AIPATROL_CONVOY_ESCORT,
+  AIPATROL_NIGHT_STALKERS,
   // Treasure Hunt
-  OTREASUREHUNT_DROWNED_CRATE,
-  OTREASUREHUNT_ABANDONED_POSTBOX,
-  OTREASUREHUNT_BUSH_UNDER_THE_OAK,
-  OTREASUREHUNT_ROOFTOP_VENT,
-  OTREASUREHUNT_UNDER_BRIDGE,
+  TREASUREHUNT_DROWNED_CRATE,
+  TREASUREHUNT_ABANDONED_POSTBOX,
+  TREASUREHUNT_BUSH_UNDER_THE_OAK,
+  TREASUREHUNT_ROOFTOP_VENT,
+  TREASUREHUNT_UNDER_BRIDGE,
 ] as const;
 
-const ALL_OBJECTIVES: ObjectiveBase[] = [
+const ALL_OBJECTIVES: QuestObjective[] = [
   ...ALL_OACTION,
   ...ALL_OAICAMP,
   ...ALL_OAIPATROL,
@@ -1461,7 +1615,143 @@ const ALL_OBJECTIVES: ObjectiveBase[] = [
   ...ALL_SIDE,
 ];
 
-export const ALL_OBJECTIVE_CONFIGS = configToRecord(
-  ALL_OBJECTIVES,
-  `${OBJECTIVE_ACTION_DIR}/Objective_`,
+const DEFAULT_QUEST_AI_CLASSES = [
+  "eAI_SurvivorF_Keiko",
+  "eAI_SurvivorF_Linda",
+  "eAI_SurvivorM_Rolf",
+  "eAI_SurvivorM_Denis",
+  "eAI_SurvivorM_Boris",
+];
+
+function questAIClasses(classNames: string[]): string[] {
+  const validClassNames = classNames.filter((className) => className.startsWith("eAI_"));
+  return validClassNames.length > 0 ? validClassNames : DEFAULT_QUEST_AI_CLASSES;
+}
+
+function createQuestAISpawn(
+  objective: QuestAIPatrolObjective | QuestAICampObjective,
+  numberOfAI: number,
+): QuestAIObjectiveSpawn {
+  return {
+    NumberOfAI: numberOfAI,
+    NPCName: "Quest Target",
+    Waypoints: [objective.Position],
+    Behaviour: "HALT",
+    Formation: "RANDOM",
+    Loadout: "BanditLoadout",
+    Faction: "West",
+    Speed: "JOG",
+    ThreatSpeed: "SPRINT",
+    MinAccuracy: 0,
+    MaxAccuracy: 0,
+    CanBeLooted: 1,
+    UnlimitedReload: 1,
+    ThreatDistanceLimit: 150,
+    DamageMultiplier: 1,
+    DamageReceivedMultiplier: 1,
+    ClassNames: questAIClasses(objective.ClassNames),
+    SniperProneDistanceThreshold: 300,
+    RespawnTime: 1,
+    DespawnTime: 1,
+    MinDistanceRadius: 50,
+    MaxDistanceRadius: 150,
+    DespawnRadius: 880,
+  };
+}
+
+function toExpansionObjectiveConfig(objective: QuestObjective): Record<string, unknown> {
+  const base = {
+    ConfigVersion: OBJECTIVE_CONFIG_VERSION,
+    ID: objective.ID,
+    ObjectiveType: objective.ObjectiveType,
+    ObjectiveText: objective.ObjectiveText,
+    Active: 1 as const,
+  };
+
+  switch (objective.ObjectiveType) {
+    case ObjectiveType.AIPATROL: {
+      const patrol = objective as QuestAIPatrolObjective;
+      return {
+        ...base,
+        AISpawn: patrol.AISpawn ?? createQuestAISpawn(patrol, patrol.Amount),
+        MaxDistance: patrol.MaxDistance,
+        MinDistance: patrol.MinDistance,
+        AllowedWeapons: patrol.AllowedWeapons,
+        AllowedDamageZones: patrol.AllowedDamageZones,
+      };
+    }
+    case ObjectiveType.AICAMP: {
+      const camp = objective as QuestAICampObjective;
+      return {
+        ...base,
+        InfectedDeletionRadius: camp.InfectedDeletionRadius ?? 0,
+        AISpawns: camp.AISpawns ??
+          Array.from(
+            { length: Math.max(1, camp.Amount) },
+            () => createQuestAISpawn(camp, 1),
+          ),
+        MaxDistance: camp.MaxDistance,
+        MinDistance: camp.MinDistance,
+        AllowedWeapons: camp.AllowedWeapons,
+        AllowedDamageZones: camp.AllowedDamageZones,
+      };
+    }
+    case ObjectiveType.AIVIP: {
+      const vip = objective as QuestAIVipObjective;
+      return {
+        ...base,
+        Position: vip.Position,
+        MaxDistance: vip.MaxDistance,
+        MarkerName: vip.MarkerName,
+        ShowDistance: vip.ShowDistance ?? 1,
+        CanLootAI: vip.CanLootAI ?? 0,
+        NPCLoadoutFile: vip.NPCLoadoutFile ?? "Quest_Survivor_noWeapon",
+        NPCClassName: vip.NPCClassName ?? "",
+        NPCName: vip.NPCName ?? "Quest VIP",
+      };
+    }
+    case ObjectiveType.TREASUREHUNT: {
+      const treasure = objective as QuestTreasureHuntObjective;
+      return {
+        ...base,
+        ShowDistance: treasure.ShowDistance ?? 1,
+        ContainerName: treasure.ContainerName ?? "ExpansionQuestSeaChest",
+        DigInStash: treasure.DigInStash ?? 1,
+        MarkerName: treasure.MarkerName,
+        MarkerVisibility: treasure.MarkerVisibility ?? 6,
+        Positions: treasure.Positions ?? [treasure.Position],
+        Loot: treasure.Loot ?? [],
+        LootItemsAmount: treasure.LootItemsAmount ?? 0,
+        MaxDistance: treasure.MaxDistance,
+      };
+    }
+    default:
+      return {
+        ...base,
+        ...objective,
+      };
+  }
+}
+
+const OBJECTIVE_DIRS: Record<ObjectiveType, string> = {
+  [ObjectiveType.NONE]: EXPANSION_QUESTS_OBJECTIVES_ACTION_DIR,
+  [ObjectiveType.TARGET]: EXPANSION_QUESTS_OBJECTIVES_TARGET_DIR,
+  [ObjectiveType.TRAVEL]: EXPANSION_QUESTS_OBJECTIVES_TRAVEL_DIR,
+  [ObjectiveType.COLLECT]: EXPANSION_QUESTS_OBJECTIVES_COLLECTION_DIR,
+  [ObjectiveType.DELIVERY]: EXPANSION_QUESTS_OBJECTIVES_DELIVERY_DIR,
+  [ObjectiveType.TREASUREHUNT]: EXPANSION_QUESTS_OBJECTIVES_TREASUREHUNT_DIR,
+  [ObjectiveType.AIPATROL]: EXPANSION_QUESTS_OBJECTIVES_AIPATROL_DIR,
+  [ObjectiveType.AICAMP]: EXPANSION_QUESTS_OBJECTIVES_AICAMP_DIR,
+  [ObjectiveType.AIVIP]: EXPANSION_QUESTS_OBJECTIVES_AIVIP_DIR,
+  [ObjectiveType.ACTION]: EXPANSION_QUESTS_OBJECTIVES_ACTION_DIR,
+  [ObjectiveType.CRAFTING]: EXPANSION_QUESTS_OBJECTIVES_CRAFTING_DIR,
+};
+
+export const ALL_OBJECTIVE_CONFIGS = ALL_OBJECTIVES.reduce(
+  (configs, objective) => {
+    const directory = OBJECTIVE_DIRS[objective.ObjectiveType];
+    configs[`${directory}/Objective_${objective.ID}.json`] = toExpansionObjectiveConfig(objective);
+    return configs;
+  },
+  {} as Record<string, Record<string, unknown>>,
 );

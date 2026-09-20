@@ -1,502 +1,405 @@
 import { Quest, QUEST_CONFIG_DIR } from "../types/quest.ts";
+import * as objectives from "./objectives.ts";
+import { ref } from "./objectives.ts";
 import {
-  OACTION_INSPECT_VEHICLE,
-  OACTION_SEARCH_BUILDING,
-  OAICAMP_REAPER_CHECKPOINT,
-  OAICAMP_REAPER_STRONGHOLD,
-  OAICAMP_TISY_GATE,
-  OAIPATROL_CHECKPOINT_CLEAR,
-  OAIPATROL_CORDON_LOOP,
-  OAIPATROL_REAPER_PERIMETER,
-  OAIVIP_CORDON_DEFECTOR,
-  OAIVIP_EXTRACT_SCIENTIST,
-  OCOLLECT_BUILDING_MATERIALS,
-  OCOLLECT_CLOTH_DISINFECTANT,
-  OCOLLECT_MEDICINAL_HERBS,
-  OCRAFT_BEAR_TRAP,
-  OCRAFT_SCRAP_WEAPON,
-  ODELIVERY_AMMO_CACHE,
-  ODELIVERY_NOTE_TO_SCOUT_JAMES,
-  OTARGET_CHECKPOINT_SNIPER,
-  OTARGET_REAPER_SCOUTS_PERIMETER,
-  OTARGET_ROOFTOP_SNIPER,
-  OTRAVEL_COASTAL_ROAD,
-  OTRAVEL_INTEL_BUILDING,
-  OTRAVEL_ROMASHKA_FARM,
-  OTRAVEL_ROMASHKA_PERIMETER,
-  OTREASUREHUNT_BURIED_SUPPLIES,
-  OTREASUREHUNT_SKALISTY_CACHE,
-  ref,
-} from "./objectives.ts";
-import { FALSE } from "../types/common.ts";
-import { configToRecord, currency, reward, rgb } from "./common.ts";
-import { NPC_SCOUT_JAMES, NPC_TASKMASTER_DANIELS } from "./npc.ts";
+  configToRecord,
+  currency,
+  fixQuests,
+  QUEST_CONFIG_VERSION,
+  reward,
+  rgb,
+} from "./common.ts";
+import { NPC_TASKMASTER_DANIELS } from "./npc.ts";
+import { FALSE, TRUE } from "../types/common.ts";
 
 const MAIN_QUEST_DEFAULTS = {
+  ConfigVersion: QUEST_CONFIG_VERSION,
   QuestColor: rgb(255, 180, 0),
   QuestGiverIDs: [NPC_TASKMASTER_DANIELS.ID],
   QuestTurnInIDs: [NPC_TASKMASTER_DANIELS.ID],
+  SequentialObjectives: TRUE,
+  CancelQuestOnPlayerDeath: FALSE,
+  IsAchievement: FALSE,
+  IsGroupQuest: FALSE,
+  Active: TRUE,
 };
 
-const MAIN_QUEST_REACH_ROMASHKA: Quest = {
+// Campaign premise: Daniels is using expendable survivors to trace the origin of
+// the Raiders occupying the red zones, and the signal drawing them there.
+// Location coordinates live in locations.ts and are intentionally easy to replace.
+const MAIN_QUEST_ACT1_REACH_ROMASHKA: Quest = {
   ...MAIN_QUEST_DEFAULTS,
   ID: 1,
   Title: "Act I: Get Up",
   ObjectiveText: "Reach Romashka Farm Safe Area",
   Descriptions: [
-    "You wake up face-down in the sand, salt in your mouth, with nothing but a map with some notes and no idea whose it was. The last entry is a direction: follow the tree line, avoid the coast road, and head for the farm north of Romashka.",
-    "The map inside is shaky. coordinates, names, a route someone was desperate to keep from being lost. The last destination is circled. Whatever's out there, the writer hoped someone would find it.",
-    "The fence looks like it was built by people who had nothing but wanted something to protect. Welcome to the only place out here where people put their guns away.",
+    "I woke up face-down in the sand, salt in my mouth, with very few things but most notably, a map. Among the scribbles is a location marked 'Trader Farm, Safe'. Is this my salvation?",
+    "The fence looks like it was built by people who could just about protect themselves in this wasteland. A guard waves me through. Another man looks me over and asks, 'Looking for a job?'",
+    "Daniels says the farm survives because it sees trouble before trouble arrives. If I want food, shelter, and answers, I need to prove I can reach the fence alive.",
   ],
-  Objectives: [ref(OTRAVEL_ROMASHKA_FARM)],
-  Rewards: [reward("Bandage"), currency(3.5)],
+  // Empty QuestGiverIDs and PreQuestIDs = auto assigned quest
+  QuestGiverIDs: [],
+  PreQuestIDs: [],
+  Objectives: [ref(objectives.TRAVEL_ROMASHKA_FARM)],
+  Rewards: [reward("Tomato"), currency(3.5)],
+  Active: TRUE,
+  // FollowUpQuest: 2,
 };
 
-const MAIN_QUEST_WHAT_HE_LEFT_BEHIND: Quest = {
+const MAIN_QUEST_ACT1_FARM_SURVIVAL: Quest = {
   ...MAIN_QUEST_DEFAULTS,
   ID: 2,
-  Title: "Act I: What He Left Behind",
-  ObjectiveText: "Show the notes you found to Taskmaster Daniels.",
+  Title: "Act I: A Place That Still Grows",
+  ObjectiveText: "Help Romashka prepare for another night.",
   Descriptions: [
-    "Daniels takes the notebook from your pocket without asking. His expression changes, just for a second, like he recognizes the handwriting. 'This belonged to someone who knew this land before all of this.' He closes it slowly. 'I need you to bring this to a friend of the camp, do this, and you'll have a place here.'",
-    "He doesn't explain why it matters yet. But there's something in the way he handles it that tells you this isn't meaningless. This is your change to earn a place at Romashka.",
-    "The man takes the note. He looks at you differently after that, not hostile, but measuring. You've passed the first test. Barely.",
+    "Daniels will not waste ammunition on a stranger. He gives me the kind of work that keeps a settlement alive: food, water, and soil under the fingernails.",
+    "The farm has enough land to grow, but not enough hands to defend it. Every plank and every seed bought by scavenging is one more day the fence holds.",
+    "The garden is tended and the stockpile is heavier. Daniels finally tells me the attacks are not random. Someone—or something—is testing the farm.",
   ],
-  QuestGiverIDs: [NPC_TASKMASTER_DANIELS.ID],
-  QuestTurnInIDs: [NPC_SCOUT_JAMES.ID],
-  PreQuestIDs: [MAIN_QUEST_REACH_ROMASHKA.ID],
-  Objectives: [ref(ODELIVERY_NOTE_TO_SCOUT_JAMES)],
-  Rewards: [currency(5)],
-  QuestItems: ODELIVERY_NOTE_TO_SCOUT_JAMES.Collections,
+  PreQuestIDs: [MAIN_QUEST_ACT1_REACH_ROMASHKA.ID],
+  Objectives: [
+    ref(objectives.COLLECT_BUILDING_MATERIALS),
+    ref(objectives.ACTION_FARMING),
+  ],
+  Rewards: [reward("Canteen"), reward("Bandage", 3), currency(5)],
+  FollowUpQuest: 3,
 };
 
-const MAIN_QUESTS: Quest[] = [
-  MAIN_QUEST_REACH_ROMASHKA,
-  MAIN_QUEST_WHAT_HE_LEFT_BEHIND,
-  // Act I - Settling In
-  {
-    ID: 3,
-    Title: "Act I: Hands That Work",
-    ObjectiveText: "Gather cloth and disinfectant before infection finishes what the bite started.",
-    Descriptions: [
-      `"You want to eat here, you don't get to just stand around." Daniels isn't being cruel, he's being practical - the farm survives because everyone contributes, and he's the one stitching people up when the horde gets through.`,
-      `He wants cloth and disinfectant, before infection finishes what the bite started on somebody. It's the kind of work that doesn't make a good story but keeps people alive.`,
-      `Daniels nods when you drop the supplies. "You're learning. Not everyone does."`,
-    ],
-    QuestGiverIDs: [NPC_TASKMASTER_DANIELS.ID],
-    QuestTurnInIDs: [NPC_TASKMASTER_DANIELS.ID],
-    PreQuestIDs: [2],
-    Repeatable: FALSE,
-    IsDailyQuest: FALSE,
-    Objectives: [ref(OCOLLECT_CLOTH_DISINFECTANT)],
-    Rewards: [{ ClassName: "Bandage", Amount: 1 }, currency(6)],
-    QuestItems: [],
-  },
-  {
-    ID: 4,
-    Title: "Act I: Something Growing",
-    ObjectiveText: "Plant three rows of seeds inside the fence - bullets don't grow food.",
-    Descriptions: [
-      `"Bullets don't grow food." Daniels hands you seeds - real ones, hoarded, precious - and walks you to a tilled row inside the fence. It's the most hopeful thing that's happened to you since you woke up on that beach.`,
-      `He treats it like the most important job on the farm, because it is. Three rows. Don't mess it up.`,
-      `You kneel in the dirt, press each seed into the earth like it matters - because it does. Daniels watches for a moment, then turns away like he's not going to be caught being proud.`,
-    ],
-    QuestGiverIDs: [NPC_TASKMASTER_DANIELS.ID],
-    QuestTurnInIDs: [NPC_TASKMASTER_DANIELS.ID],
-    PreQuestIDs: [3],
-    Repeatable: FALSE,
-    IsDailyQuest: FALSE,
-    Objectives: [ref(OACTION_INSPECT_VEHICLE)],
-    Rewards: [{ ClassName: "Potato", Amount: 5 }, currency(7)],
-    QuestItems: [],
-  },
-  // Act II - Roots
-  {
-    ID: 5,
-    Title: "Act II: Watchers at the Fence",
-    ObjectiveText: "Eliminate the Reaper scouts watching the farm.",
-    Descriptions: [
-      `Daniels has been counting the same three silhouettes on the tree line for two nights running, whenever he can spare a minute from the infirmary to look. Not zombies - they don't stand still that long.`,
-      `"Reapers scouting range before they decide if we're worth the trouble." He wants them gone before they report back with numbers.`,
-      "The last one goes down quiet. No alarm, no panic. Just silence, and Daniels finally breathing easy for the first time in days.",
-    ],
-    QuestGiverIDs: [NPC_TASKMASTER_DANIELS.ID],
-    QuestTurnInIDs: [NPC_TASKMASTER_DANIELS.ID],
-    PreQuestIDs: [4],
-    Repeatable: FALSE,
-    IsDailyQuest: FALSE,
-    Objectives: [ref(OTARGET_REAPER_SCOUTS_PERIMETER)],
-    Rewards: [{ ClassName: "AmmoPouch", Amount: 1 }, currency(3)],
-    QuestItems: [],
-  },
-  {
-    ID: 6,
-    Title: "Act II: The Coast Road",
-    ObjectiveText: "Break the Reaper patrol working the Kamenka–Romashka road.",
-    Descriptions: [
-      "Scouts report back to someone. Daniels has traced their route between shifts patching bite wounds: a Reaper patrol working the road between Kamenka and the farm, shaking down anyone who uses it.",
-      `"That road's how we bring people in. It stays ours." You take the job without asking questions. You're past that now.`,
-      `The patrol doesn't see you coming. Three down before they know what hit them. The road is yours now.`,
-    ],
-    QuestGiverIDs: [NPC_TASKMASTER_DANIELS.ID],
-    QuestTurnInIDs: [NPC_TASKMASTER_DANIELS.ID],
-    PreQuestIDs: [5],
-    Repeatable: FALSE,
-    IsDailyQuest: FALSE,
-    Objectives: [ref(OAIPATROL_REAPER_PERIMETER)],
-    Rewards: [{ ClassName: "AmmoBox556x45", Amount: 2 }, currency(4)],
-    QuestItems: [],
-  },
-  {
-    ID: 7,
-    Title: "Act II: Cut the Head Off",
-    ObjectiveText: "Clear the Reaper checkpoint outside Solnichniy.",
-    Descriptions: [
-      `The patrol answers to a checkpoint dug into the ruins outside Solnichniy. Daniels is blunt about it: "Clear that, they stop bothering us for a while. Won't stop forever. Nothing does anymore."`,
-      `This isn't a skirmish - it's a message. Six hostiles, fortified positions, the kind of fight that leaves you shaking afterward.`,
-      `When it's over, the checkpoint is yours. Daniels won't admit it, but he's sleeping better already.`,
-    ],
-    QuestGiverIDs: [NPC_TASKMASTER_DANIELS.ID],
-    QuestTurnInIDs: [NPC_TASKMASTER_DANIELS.ID],
-    PreQuestIDs: [6],
-    Repeatable: FALSE,
-    IsDailyQuest: FALSE,
-    Objectives: [ref(OAICAMP_REAPER_CHECKPOINT)],
-    Rewards: [{ ClassName: "RifleOptic_Holospectrum", Amount: 1 }, currency(5)],
-    QuestItems: [],
-  },
-  {
-    ID: 8,
-    Title: "Act II: The One Who Ran",
-    ObjectiveText:
-      "Bring in the Cordon defector alive - if he's lying, that's a problem for another day.",
-    Descriptions: [
-      `A man in a torn Cordon uniform got caught in the wire outside Solnichniy, begging not to be sent back. Daniels doesn't trust him, but he doesn't turn away strays either - never has.`,
-      `"Bring him in alive. If he's lying about what he knows, that's a problem for another day." You nod. You've been lied to enough to know when someone's desperate.`,
-      `The defector talks about a smell that isn't rot. Daniels has dealt with radiation sickness exactly once before, and he still has nightmares about it. This changes things.`,
-    ],
-    QuestGiverIDs: [NPC_TASKMASTER_DANIELS.ID],
-    QuestTurnInIDs: [NPC_TASKMASTER_DANIELS.ID],
-    PreQuestIDs: [7],
-    Repeatable: FALSE,
-    IsDailyQuest: FALSE,
-    Objectives: [ref(OAIVIP_CORDON_DEFECTOR)],
-    Rewards: [{ ClassName: "evg_keycards_Green", Amount: 1 }, currency(6)],
-    QuestItems: [],
-  },
-  {
-    ID: 9,
-    Title: "Act II: Breathe Easy",
-    ObjectiveText:
-      "Build a proper filter assembly - you go filtered or you don't come back the same.",
-    Descriptions: [
-      `The defector keeps talking about a smell that isn't rot. Daniels has seen enough field medicine to know what that means.`,
-      `"You go anywhere near what he's talking about, you go filtered or you don't come back the same." He wants proof you can actually build the gear before he lets you near it.`,
-      `The filter clicks together. It won't save you from everything, but it'll buy you time. That's all you can ask for out here.`,
-    ],
-    QuestGiverIDs: [NPC_TASKMASTER_DANIELS.ID],
-    QuestTurnInIDs: [NPC_TASKMASTER_DANIELS.ID],
-    PreQuestIDs: [8],
-    Repeatable: FALSE,
-    IsDailyQuest: FALSE,
-    Objectives: [ref(OCRAFT_SCRAP_WEAPON)],
-    Rewards: [{ ClassName: "GasMask", Amount: 1 }, currency(4)],
-    QuestItems: [],
-  },
-  {
-    ID: 10,
-    Title: "Act II: Beneath the Tide",
-    ObjectiveText: "Find what someone buried near the Kamenka coastline.",
-    Descriptions: [
-      `The notes had more than names - a set of coordinates tucked into the margins, in handwriting Daniels doesn't recognize. "Someone was hiding something, or someone was hiding something from whoever wrote this. Only one way to find out which."`,
-      `You follow the coordinates to a stretch of beach where the tide's already chewed away at whatever was buried there. The sand gives up its secrets slowly.`,
-      `You dig. Your hands are dirty. The sea doesn't care. But you find it - and whatever was buried here, someone went to a lot of trouble to keep it hidden.`,
-    ],
-    QuestGiverIDs: [NPC_TASKMASTER_DANIELS.ID],
-    QuestTurnInIDs: [NPC_TASKMASTER_DANIELS.ID],
-    PreQuestIDs: [9],
-    Repeatable: FALSE,
-    IsDailyQuest: FALSE,
-    Objectives: [ref(OTREASUREHUNT_BURIED_SUPPLIES)],
-    Rewards: [{ ClassName: "evg_keycards_Green", Amount: 1 }, currency(4)],
-    QuestItems: [],
-  },
-  {
-    ID: 11,
-    Title: "Act II: First Blood for the Farm",
-    ObjectiveText: "Find that Reaper runner before he finds out you already have what was buried.",
-    Descriptions: [
-      `What you found on that beach, someone else wants it back. A Reaper runner's been spotted asking around Kamenka about buried supplies.`,
-      `Daniels doesn't like loose ends. "Find him before he finds out you already have." The stakes just went up - this isn't about the farm anymore, it's about who controls what's out there.`,
-      `One runner. He doesn't know what you're hunting him for. You do.`,
-    ],
-    QuestGiverIDs: [NPC_TASKMASTER_DANIELS.ID],
-    QuestTurnInIDs: [NPC_TASKMASTER_DANIELS.ID],
-    PreQuestIDs: [10],
-    Repeatable: FALSE,
-    IsDailyQuest: FALSE,
-    Objectives: [ref(OTARGET_CHECKPOINT_SNIPER)],
-    Rewards: [{ ClassName: "Mag_556x45_M4A1", Amount: 1 }, currency(5)],
-    QuestItems: [],
-  },
-  // Act III - Blood in the Streets
-  {
-    ID: 12,
-    Title: "Act III: Eyes on the Coast",
-    ObjectiveText: "Eyes on Cherno - don't engage anything. Just look and come back.",
-    Descriptions: [
-      `Cherno's gone quiet, which is worse than loud. Daniels wants eyes on it before the Harvest risks any more trade runs through there.`,
-      `"Don't engage anything. Just look. Tell me what you see." You climb to the rooftop and take it in. The warzone is either quiet or deadly - rarely in between.`,
-      "You report back. Daniels listens, nods, and reaches for the radio. Something bigger is coming.",
-    ],
-    QuestGiverIDs: [NPC_TASKMASTER_DANIELS.ID],
-    QuestTurnInIDs: [NPC_TASKMASTER_DANIELS.ID],
-    PreQuestIDs: [11],
-    Repeatable: FALSE,
-    IsDailyQuest: FALSE,
-    Objectives: [ref(OTRAVEL_ROMASHKA_PERIMETER)],
-    Rewards: [{ ClassName: "CanisterGasoline", Amount: 2 }, currency(3)],
-    QuestItems: [],
-  },
-  {
-    ID: 13,
-    Title: "Act III: Supply Line",
-    ObjectiveText: "Break the Reaper supply patrol into the warzone.",
-    Descriptions: [
-      `Reapers don't hold Cherno, they bleed it - running a supply patrol between the warzone and their checkpoints. Daniels wants that patrol broken so their grip loosens.`,
-      `You hit them hard and fast. No negotiations. No prisoners. These aren't scouts - they're the lifeline the Reapers run on.`,
-      "Cut the line, and the whole operation starts to starve. Daniels already has the next job planned.",
-    ],
-    QuestGiverIDs: [NPC_TASKMASTER_DANIELS.ID],
-    QuestTurnInIDs: [NPC_TASKMASTER_DANIELS.ID],
-    PreQuestIDs: [12],
-    Repeatable: FALSE,
-    IsDailyQuest: FALSE,
-    Objectives: [ref(OAIPATROL_CHECKPOINT_CLEAR)],
-    Rewards: [{ ClassName: "AmmoBox762x39", Amount: 2 }, currency(5)],
-    QuestItems: [],
-  },
-  {
-    ID: 14,
-    Title: "Act III: Picking the Bones",
-    ObjectiveText: "Everyone's got a price on what they're carrying - bring me keycards.",
-    Descriptions: [
-      `This is your first contact with Sery - he doesn't do introductions. "Everyone's got a price on what they're carrying. You've got keycards on you, or you know where to get them. I've got reasons to want them."`,
-      `He's not Harvest, and he's not pretending to be your friend. But he pays. And right now, that's enough.`,
-      `Sery counts the cards, nods once, and slides a yellow keycard across the table. "Consider it a down payment. There's more where this came from."`,
-    ],
-    QuestGiverIDs: [4],
-    QuestTurnInIDs: [4],
-    PreQuestIDs: [13],
-    Repeatable: FALSE,
-    IsDailyQuest: FALSE,
-    Objectives: [ref(OCOLLECT_BUILDING_MATERIALS)],
-    Rewards: [{ ClassName: "evg_keycards_Yellow", Amount: 1 }, currency(6)],
-    QuestItems: [],
-  },
-  {
-    ID: 15,
-    Title: "Act III: Paper Trail",
-    ObjectiveText: "Hand over the Reaper documents Sery wouldn't touch.",
-    Descriptions: [
-      `Sery hands you something he won't touch himself - documents pulled off a Reaper courier, unopened. "Not my business what's in there. Might be yours." Daniels needs to see it.`,
-      `He's the only one you actually trust to read it straight. You walk it back to the farm through territory you've already bled for.`,
-      "Daniels reads in silence. When he looks up, his face has changed. The Reapers are just the symptom. Something bigger is rotting from the inside.",
-    ],
-    QuestGiverIDs: [4],
-    QuestTurnInIDs: [NPC_TASKMASTER_DANIELS.ID],
-    PreQuestIDs: [14],
-    Repeatable: FALSE,
-    IsDailyQuest: FALSE,
-    Objectives: [ref(ODELIVERY_AMMO_CACHE)],
-    Rewards: [{ ClassName: "Rag", Amount: 5 }, currency(7)],
-    QuestItems: [],
-  },
-  {
-    ID: 16,
-    Title: "Act III: Take the Block",
-    ObjectiveText: "End the Reaper stronghold inside the warzone town.",
-    Descriptions: [
-      "The documents named a stronghold - a police station or apartment block the Reapers are using as their real base, not just a checkpoint. Daniels is done being reactive.",
-      `"Volk doesn't get to keep raising the price on that road. End it." Eight hostiles, fortified, dug in. This is the fight that decides whether Romashka survives the season or becomes a grave.`,
-      `When the last one falls, the block is yours. Daniels doesn't celebrate - he just marks the logbook. Another name crossed off. Another reason to keep fighting.`,
-    ],
-    QuestGiverIDs: [NPC_TASKMASTER_DANIELS.ID],
-    QuestTurnInIDs: [NPC_TASKMASTER_DANIELS.ID],
-    PreQuestIDs: [15],
-    Repeatable: FALSE,
-    IsDailyQuest: FALSE,
-    Objectives: [ref(OAICAMP_REAPER_STRONGHOLD)],
-    Rewards: [{ ClassName: "evg_keycards_Yellow", Amount: 1 }, currency(8)],
-    QuestItems: [],
-  },
-  // Act IV - The Sickness
-  {
-    ID: 17,
-    Title: "Act IV: What Daniels Needs",
-    ObjectiveText:
-      "Craft a hazmat-grade respirator - Daniels doesn't send people in blind anymore.",
-    Descriptions: [
-      "The defector finally says the word out loud: Stary Sobor. Daniels has dealt with radiation sickness exactly once before, and he still has nightmares about it.",
-      `He wants you kitted properly - full filtration, not the improvised gear from that first filter. This time, he's not taking chances.`,
-      `The hazmat respirator clicks into place. It won't save you from everything, but it'll buy you enough time to do what needs doing.`,
-    ],
-    QuestGiverIDs: [NPC_TASKMASTER_DANIELS.ID],
-    QuestTurnInIDs: [NPC_TASKMASTER_DANIELS.ID],
-    PreQuestIDs: [16],
-    Repeatable: FALSE,
-    IsDailyQuest: FALSE,
-    Objectives: [ref(OCRAFT_BEAR_TRAP)],
-    Rewards: [{ ClassName: "HazmatSuit", Amount: 1 }, currency(5)],
-    QuestItems: [],
-  },
-  {
-    ID: 18,
-    Title: "Act IV: Into the Grey",
-    ObjectiveText: "Get to the edge of Stary Sobor and confirm the defector isn't lying.",
-    Descriptions: [
-      `Daniels doesn't send you in blind - just far enough to confirm the defector isn't lying. "Don't stay long. Don't touch anything that isn't yours to touch. Just look, and come back."`,
-      `The Geiger counter starts ticking before you even see the village. The air tastes wrong. The grey sky doesn't lift - it presses down.`,
-      `You look. You see enough. And you come back with the weight of what's waiting inside, heavy enough to bend your shoulders.`,
-    ],
-    QuestGiverIDs: [NPC_TASKMASTER_DANIELS.ID],
-    QuestTurnInIDs: [NPC_TASKMASTER_DANIELS.ID],
-    PreQuestIDs: [17],
-    Repeatable: FALSE,
-    IsDailyQuest: FALSE,
-    Objectives: [ref(OTRAVEL_COASTAL_ROAD)],
-    Rewards: [{ ClassName: "AmmoBox545x39", Amount: 2 }, currency(6)],
-    QuestItems: [],
-  },
-  {
-    ID: 19,
-    Title: "Act IV: Things That Shouldn't Move Right",
-    ObjectiveText: "Clear out the Cordon sentries posted at Stary Sobor's edge.",
-    Descriptions: [
-      "Whatever's in Stary Sobor isn't just zombies - there's a Cordon patrol posted there too, and they're not there to help anyone. Daniels is grim about it: 'If they're guarding it, it's not an accident anymore.'",
-      `Four sentries. Military-grade. They weren't sent to watch - they were sent to keep something in. Or something out.`,
-      "When the last one goes down, the silence is different. Heavier. Like the ground itself is holding its breath.",
-    ],
-    QuestGiverIDs: [NPC_TASKMASTER_DANIELS.ID],
-    QuestTurnInIDs: [NPC_TASKMASTER_DANIELS.ID],
-    PreQuestIDs: [18],
-    Repeatable: FALSE,
-    IsDailyQuest: FALSE,
-    Objectives: [ref(OTARGET_ROOFTOP_SNIPER)],
-    Rewards: [{ ClassName: "evg_keycards_Blue", Amount: 1 }, currency(8)],
-    QuestItems: [],
-  },
-  {
-    ID: 20,
-    Title: "Act IV: The Core Sample",
-    ObjectiveText: "Find what the dead Cordon sentry was protecting on Skalisty Island.",
-    Descriptions: [
-      `The dead Cordon sentry was carrying a manifest pointing to Skalisty Island - a sample cache, buried, logged, and apparently never retrieved. Daniels' voice changes when he reads it.`,
-      `This is the first time he admits he's scared of what you're walking toward. Skalisty sits in the grey water like a tooth pulled from the world's jaw.`,
-      "You dig. You find it. And the documents hint at something even bigger than Sobor - NWAF, Tisy, a pattern that stretches across the whole country.",
-    ],
-    QuestGiverIDs: [NPC_TASKMASTER_DANIELS.ID],
-    QuestTurnInIDs: [NPC_TASKMASTER_DANIELS.ID],
-    PreQuestIDs: [19],
-    Repeatable: FALSE,
-    IsDailyQuest: FALSE,
-    Objectives: [ref(OTREASUREHUNT_SKALISTY_CACHE)],
-    Rewards: [{ ClassName: "evg_keycards_Violet", Amount: 1 }, currency(10)],
-    QuestItems: [],
-  },
-  // Act V - The Wire
-  {
-    ID: 21,
-    Title: "Act V: Get Him Out",
-    ObjectiveText:
-      "Bring the Cordon scientist out of NWAF alive - nobody believes anyone made it out.",
-    Descriptions: [
-      `The documents name a scientist still inside NWAF's wire, trying to get word out and failing. Daniels is reluctant - sending someone toward the Cordon's front door is a different kind of risk than anything before it.`,
-      `"Send someone toward the wire. Get him out before the Cordon realizes he's trying to leave." You don't argue. You've learned by now that arguing with Daniels about risk means he's already decided.`,
-      `The scientist doesn't trust you at first. He should. But he sees the way you move, the way you don't ask questions, and he follows. Barely.`,
-    ],
-    QuestGiverIDs: [NPC_TASKMASTER_DANIELS.ID],
-    QuestTurnInIDs: [NPC_TASKMASTER_DANIELS.ID],
-    PreQuestIDs: [20],
-    Repeatable: FALSE,
-    IsDailyQuest: FALSE,
-    Objectives: [ref(OAIVIP_EXTRACT_SCIENTIST)],
-    Rewards: [{ ClassName: "evg_keycards_Red", Amount: 1 }, currency(12)],
-    QuestItems: [],
-  },
-  {
-    ID: 22,
-    Title: "Act V: The Convoy",
-    ObjectiveText: "Break the Cordon patrol loop around NWAF - they're hunting now.",
-    Descriptions: [
-      `The scientist's escape didn't go unnoticed - Cordon's running a heavier patrol loop around NWAF now, actively hunting. Daniels wants it broken before it finds Romashka's location from questioning survivors.`,
-      `Four to six heavily armed Cordon units. They're not just patrolling - they're sweeping. And they're getting closer to the farm.`,
-      "You break the loop. The convoy scatters. Daniels makes a phone call - or what passes for a phone call out here - and the pieces start falling into place.",
-    ],
-    QuestGiverIDs: [NPC_TASKMASTER_DANIELS.ID],
-    QuestTurnInIDs: [NPC_TASKMASTER_DANIELS.ID],
-    PreQuestIDs: [21],
-    Repeatable: FALSE,
-    IsDailyQuest: FALSE,
-    Objectives: [ref(OAIPATROL_CORDON_LOOP)],
-    Rewards: [{ ClassName: "evg_keycards_Blue", Amount: 1 }, currency(10)],
-    QuestItems: [],
-  },
-  {
-    ID: 23,
-    Title: "Act V: Inside the Wire",
-    ObjectiveText: "Collect NWAF clearance materials from across the airfield's zones.",
-    Descriptions: [
-      `Proof isn't one document, Daniels says - it's a pattern. He wants NWAF-tier clearance materials collected from across the airfield's zones, enough that nobody can call it a coincidence.`,
-      `Three blue keycards. Not easy to get. Not impossible. Just the kind of thing that takes time, patience, and the willingness to walk into places that don't want you.`,
-      `When you drop them on the table, Daniels doesn't say anything. He closes the logbook, looks at you, and nods. "We're ready."`,
-    ],
-    QuestGiverIDs: [NPC_TASKMASTER_DANIELS.ID],
-    QuestTurnInIDs: [NPC_TASKMASTER_DANIELS.ID],
-    PreQuestIDs: [22],
-    Repeatable: FALSE,
-    IsDailyQuest: FALSE,
-    Objectives: [ref(OCOLLECT_MEDICINAL_HERBS)],
-    Rewards: [{ ClassName: "AmmoBox762x54R", Amount: 3 }, currency(12)],
-    QuestItems: [],
-  },
-  {
-    ID: 24,
-    Title: "Act V: The Gate at Tisy",
-    ObjectiveText: "This is the one that doesn't come back easy. You don't have to go.",
-    Descriptions: [
-      `Everything points to Tisy now. Khan's dug in there properly - this isn't a checkpoint, it's the last real defensive line the Cordon has. Daniels doesn't dress it up.`,
-      `"This is the one that doesn't come back easy. You don't have to go." You do it anyway. Not because you have to, but because someone has to, and it might as well be you.`,
-      "Ten hostiles. Best gear. Fortified gate. The kind of fight that decides whether the story gets told or dies with you. You go in swinging.",
-    ],
-    QuestGiverIDs: [NPC_TASKMASTER_DANIELS.ID],
-    QuestTurnInIDs: [NPC_TASKMASTER_DANIELS.ID],
-    PreQuestIDs: [23],
-    Repeatable: FALSE,
-    IsDailyQuest: FALSE,
-    Objectives: [ref(OAICAMP_TISY_GATE)],
-    Rewards: [{ ClassName: "evg_keycards_White", Amount: 5 }, currency(15)],
-    QuestItems: [],
-  },
-  {
-    ID: 25,
-    Title: "Act V: Signal",
-    ObjectiveText:
-      "Activate the transmitter at Daniels' desk. Whether anyone answers is never confirmed.",
-    Descriptions: [
-      `Everything comes back to the farm. Daniels' radio rig has been sitting mostly silent since the world ended - now it has something worth saying.`,
-      `He doesn't pretend it fixes anything. "Doesn't undo what happened at Tisy. Doesn't bring anyone back. But maybe somebody out there's still listening, and maybe they should know what we know."`,
-      `You flip the switch. The radio hums. Static crackles. And then - silence. Whether anyone heard it, whether it mattered, whether it changes anything at all - that's never confirmed. That's the point.`,
-    ],
-    QuestGiverIDs: [NPC_TASKMASTER_DANIELS.ID],
-    QuestTurnInIDs: [NPC_TASKMASTER_DANIELS.ID],
-    PreQuestIDs: [24],
-    Repeatable: FALSE,
-    IsDailyQuest: FALSE,
-    Objectives: [ref(OTRAVEL_INTEL_BUILDING), ref(OACTION_SEARCH_BUILDING)],
-    Rewards: [currency(20)],
-    QuestItems: [],
-  },
-];
+const MAIN_QUEST_ACT1_RAIDER_SCOUTS: Quest = {
+  ...MAIN_QUEST_DEFAULTS,
+  ID: 3,
+  Title: "Act I: Eyes in the Treeline",
+  ObjectiveText: "Find and break the patrol watching Romashka.",
+  Descriptions: [
+    "The tracks outside the perimeter are too clean for infected. Daniels calls them Raiders: armed scavengers who move with the patience of hunters and leave no witnesses when they can help it.",
+    "The treeline is breathing. Kill the scouts before they learn the farm's routines, then follow their patrol route toward the coast.",
+    "The scouts carried a hand-drawn mark: a red circle around Stary Sobor. Daniels says the radiation zones are not just dangerous—they are being used.",
+  ],
+  PreQuestIDs: [2],
+  // AIPATROL owns the encounter and spawns its targets. TARGET objectives only
+  // count existing kills and must not gate this quest before the patrol.
+  Objectives: [ref(objectives.AIPATROL_RAIDER_PERIMETER)],
+  Rewards: [reward("AmmoBox_762x39_SPG2"), currency(7.5)],
+  FollowUpQuest: 4,
+};
+
+const MAIN_QUEST_ACT2_FOLLOW_THE_SIGNAL: Quest = {
+  ...MAIN_QUEST_DEFAULTS,
+  ID: 4,
+  Title: "Act II: Follow the Signal",
+  ObjectiveText: "Reach the coastal route and prepare to enter the red zone.",
+  Descriptions: [
+    "The Raiders were not scouting Romashka. They were measuring it. Daniels has one lead: an old transmission that begins whenever the Stary zone goes loud.",
+    "Take the coastal road and build something that can keep you alive when the clean air ends. The map marks Stary's outer edge, but the dead do not respect map lines.",
+    "The signal is stronger here. Beneath the static is a repeating phrase: 'room seven'. Daniels wants the source, whatever is left of it.",
+  ],
+  PreQuestIDs: [3],
+  Objectives: [
+    ref(objectives.TRAVEL_COASTAL_ROAD),
+    ref(objectives.CRAFT_DUST_MASK),
+  ],
+  Rewards: [reward("Canteen"), reward("Morphine", 2), currency(10)],
+  FollowUpQuest: 5,
+};
+
+const MAIN_QUEST_ACT2_STARY_RED_ROOM: Quest = {
+  ...MAIN_QUEST_DEFAULTS,
+  ID: 5,
+  Title: "Act II: The Red Rooms",
+  ObjectiveText: "Break into the Stary Sobor zone and recover the buried evidence.",
+  Descriptions: [
+    "Stary Sobor is a wound in the map. The radiation is bad enough to kill slowly; the AI inside makes sure nobody has time to wait for it.",
+    "Daniels believes the keycard rooms were not built to protect supplies. They were built to hide records. Clear the guards, find the cache, and do not stay for curiosity's sake.",
+    "The buried case contains a melted keycard and a fragment of a research log. The same signal was broadcast from an island to the east: Skalisty.",
+  ],
+  PreQuestIDs: [4],
+  Objectives: [
+    ref(objectives.AICAMP_STARY_RAD_ZONE),
+    ref(objectives.TREASUREHUNT_STARY_EVIDENCE),
+  ],
+  Rewards: [reward("TetracyclineAntibiotics", 2), currency(15)],
+  FollowUpQuest: 6,
+};
+
+const MAIN_QUEST_ACT2_EXTRACT_THE_DEFECTOR: Quest = {
+  ...MAIN_QUEST_DEFAULTS,
+  ID: 6,
+  Title: "Act II: Someone Who Knows",
+  ObjectiveText: "Extract the scientist from the Cordon perimeter and return the evidence.",
+  Descriptions: [
+    "The log names a Cordon scientist who understood the signal. She was moved north before the collapse and may still be alive near the airfield perimeter.",
+    "Get her out alive. The Raiders are not protecting the scientist—they are trying to move her before anyone can ask what the keycard rooms were really for.",
+    "The scientist confirms the signal is a lure. It gathers AI around selected sites, making the zones into prisons. She knows how to shut it down, but the transmitter is at Tisy.",
+  ],
+  PreQuestIDs: [5],
+  Objectives: [
+    ref(objectives.AIVIP_EXTRACT_SCIENTIST),
+    ref(objectives.DELIVERY_MEDICAL_TO_ROMASHKA),
+  ],
+  Rewards: [reward("Epinephrine"), reward("SalineBagIV"), currency(20)],
+  FollowUpQuest: 7,
+};
+
+const MAIN_QUEST_ACT3_SKALISTY_TRUTH: Quest = {
+  ...MAIN_QUEST_DEFAULTS,
+  ID: 7,
+  Title: "Act III: No Safe Shore",
+  ObjectiveText: "Recover the transmitter component from Skalisty Island.",
+  Descriptions: [
+    "The scientist's notes point to Skalisty. The island's radiation zone was a test site, and one component of the transmitter was never recovered.",
+    "Cross the water, search the dead, and take the component from wherever Cordon buried it. The island is crawling with AI that never received the order to stand down.",
+    "The component still pulses in your hands. It is not a beacon. It is a command key—and someone at Tisy is waiting for it.",
+  ],
+  PreQuestIDs: [6],
+  Objectives: [ref(objectives.TREASUREHUNT_SKALISTY_CACHE)],
+  Rewards: [reward("NBCGlovesGray"), currency(25)],
+  FollowUpQuest: 8,
+};
+
+const MAIN_QUEST_ACT3_BREAK_THE_CONVOY: Quest = {
+  ...MAIN_QUEST_DEFAULTS,
+  ID: 8,
+  Title: "Act III: The Last Convoy",
+  ObjectiveText: "Stop the Cordon convoy carrying the transmitter core.",
+  Descriptions: [
+    "The command key is useless without the core. A Cordon convoy is moving it toward Tisy under heavy escort, and Daniels cannot spare a single guard from Romashka.",
+    "Hit the convoy before it reaches the gate. The road is open, the AI is numerous, and the people inside know exactly what happens when the signal is silenced.",
+    "The convoy is broken. The core is yours. Daniels says the transmitter can be destroyed—but only after the final broadcast begins.",
+  ],
+  PreQuestIDs: [7],
+  Objectives: [ref(objectives.AIPATROL_CONVOY_ESCORT)],
+  Rewards: [reward("AmmoBox_762x39_BS"), reward("Morphine", 2), currency(30)],
+  FollowUpQuest: 9,
+};
+
+const MAIN_QUEST_ACT3_SHUTDOWN: Quest = {
+  ...MAIN_QUEST_DEFAULTS,
+  ID: 9,
+  Title: "Act III: The Quiet After",
+  ObjectiveText: "End the signal at Tisy and decide what survives.",
+  Descriptions: [
+    "The transmitter is waking up. Every AI patrol on the map is drifting toward Tisy, and the final broadcast will turn the whole northern forest into a kill zone.",
+    "Take the core to the gate, fight through the last line, and shut the machine down. Do not expect a clean victory; there may not be enough of the old world left for one.",
+    "The signal dies. For the first time since waking on the coast, the map is silent. Daniels offers a place at Romashka, but the silence leaves one question: who built the machine, and who will come looking for it?",
+  ],
+  PreQuestIDs: [8],
+  Objectives: [
+    ref(objectives.AICAMP_TISY_TRANSMITTER),
+    ref(objectives.CRAFT_PIPE_BOMB),
+  ],
+  Rewards: [reward("PlateCarrierVest"), reward("Canteen"), currency(50)],
+  FollowUpQuest: 10,
+};
+
+const MAIN_QUEST_ACT4_SIGNAL_AFTERSHOCK: Quest = {
+  ...MAIN_QUEST_DEFAULTS,
+  ID: 10,
+  Title: "Act IV: Signal Aftershock",
+  ObjectiveText: "Find out what the dead transmitter woke up.",
+  Descriptions: [
+    "The signal is dead, but the map is not quiet. Radios are crackling from places that should have no power, and the survivors who heard the last broadcast are disappearing.",
+    "Daniels wants proof that the shutdown worked. Scavenge working radio parts and reach the overlook where the first aftershock was recorded.",
+    "The aftershock is not coming from Tisy. It is moving between relay sites, following the old civilian emergency network. Someone prepared a second route.",
+  ],
+  PreQuestIDs: [9],
+  Objectives: [
+    ref(objectives.COLLECT_RADIO_PARTS),
+    ref(objectives.TRAVEL_LOOKOUT),
+  ],
+  Rewards: [reward("ItemRadio"), reward("ItemBattery9V", 2), currency(35)],
+  FollowUpQuest: 11,
+};
+
+const MAIN_QUEST_ACT4_BROKEN_RELAY: Quest = {
+  ...MAIN_QUEST_DEFAULTS,
+  ID: 11,
+  Title: "Act IV: The Broken Relay",
+  ObjectiveText: "Search the relay vehicle and recover its control hardware.",
+  Descriptions: [
+    "The relay network was maintained by mobile crews. One of their vehicles is still parked near the old service route, surrounded by the kind of silence that usually means an ambush.",
+    "Open the vehicle, strip the useful parts, and bring back anything that can identify the next relay. The machine may be dead, but its maintenance trail is not.",
+    "The control hardware carries a route stamped with a civilian evacuation code. The destination is an abandoned hospital, and the code is still being used.",
+  ],
+  PreQuestIDs: [10],
+  Objectives: [
+    ref(objectives.ACTION_OPEN_VEHICLE_HOOD),
+    ref(objectives.COLLECT_WEAPON_PARTS),
+  ],
+  Rewards: [reward("OilFilter"), reward("GunPartWeaponParts"), currency(40)],
+  FollowUpQuest: 12,
+};
+
+const MAIN_QUEST_ACT4_HOSPITAL_BROADCAST: Quest = {
+  ...MAIN_QUEST_DEFAULTS,
+  ID: 12,
+  Title: "Act IV: Ward Zero",
+  ObjectiveText: "Clear the hospital and recover the emergency broadcast ledger.",
+  Descriptions: [
+    "The hospital was listed as an evacuation point, but no evacuation ever reached it. The relay crew used the wards as a holding site for people who heard the signal.",
+    "Sweep every floor. Whatever is inside has had years to learn the corridors, and the ledger will be buried beneath the bodies if you leave anything standing.",
+    "The ledger names a network called the Shepherds. They did not build the transmitter; they used it to decide which settlements lived long enough to be useful.",
+  ],
+  PreQuestIDs: [11],
+  Objectives: [
+    ref(objectives.TARGET_HOSPITAL_SWEEP),
+    ref(objectives.TRAVEL_RALLY_POINT),
+  ],
+  Rewards: [reward("TetracyclineAntibiotics", 3), reward("SalineBagIV"), currency(45)],
+  FollowUpQuest: 13,
+};
+
+const MAIN_QUEST_ACT4_SHEPHERD_WITNESS: Quest = {
+  ...MAIN_QUEST_DEFAULTS,
+  ID: 13,
+  Title: "Act IV: The Shepherd's Witness",
+  ObjectiveText: "Extract the last relay technician alive.",
+  Descriptions: [
+    "The ledger says one technician survived the hospital purge. He was moved before the Shepherds arrived and may still be alive, carrying the access sequence for the emergency network.",
+    "Find him and bring him out. The Shepherds will kill their own people to keep that sequence buried, and the technician knows exactly what the network was designed to do.",
+    "The technician confirms the relays can still broadcast a kill order to every connected AI faction. The final relay is hidden beneath an old bridge.",
+  ],
+  PreQuestIDs: [12],
+  Objectives: [
+    ref(objectives.AIVIP_SCIENTIST_EXFIL),
+    ref(objectives.DELIVERY_GUNSMITH_KIT),
+  ],
+  Rewards: [reward("Epinephrine"), reward("Morphine", 2), currency(50)],
+  FollowUpQuest: 14,
+};
+
+const MAIN_QUEST_ACT4_BURIED_HANDSHAKE: Quest = {
+  ...MAIN_QUEST_DEFAULTS,
+  ID: 14,
+  Title: "Act IV: Buried Handshake",
+  ObjectiveText: "Recover the relay handshake and prepare the counter-broadcast.",
+  Descriptions: [
+    "The technician's route ends at the bridge. Beneath it, the Shepherds buried a physical handshake key used to authenticate emergency broadcasts when the grid was still alive.",
+    "Dig it up, then build enough ammunition to survive the trip to the final relay. There will be no second attempt once the handshake is used.",
+    "The key is intact. Its last authenticated command was not a shutdown—it was a population purge. Daniels says the final relay must be destroyed before anyone can issue it again.",
+  ],
+  PreQuestIDs: [13],
+  Objectives: [
+    ref(objectives.TREASUREHUNT_UNDER_BRIDGE),
+    ref(objectives.CRAFT_AMMO_PACK),
+  ],
+  Rewards: [reward("AmmoBox_762x39_BS", 2), reward("Canteen"), currency(60)],
+  FollowUpQuest: 15,
+};
+
+const MAIN_QUEST_ACT5_BLACK_LEDGER: Quest = {
+  ...MAIN_QUEST_DEFAULTS,
+  ID: 15,
+  Title: "Act V: The Black Ledger",
+  ObjectiveText: "Find the Shepherds' command post and recover their target list.",
+  Descriptions: [
+    "The handshake identifies the command post, but not its exact room. The Shepherds left watchers on the rooftops to burn the ledger if anyone gets close.",
+    "Clear the high ground and search the marked ventilation shaft. The target list may tell Daniels which settlements are next—or prove Romashka was always on it.",
+    "The ledger contains Romashka's name, crossed out only because the transmitter failed. The Shepherds have moved to a new command post and are preparing a manual purge.",
+  ],
+  PreQuestIDs: [14],
+  Objectives: [
+    ref(objectives.TARGET_ROOFTOP_CLEAR),
+    ref(objectives.TREASUREHUNT_ROOFTOP_VENT),
+  ],
+  Rewards: [reward("PlateCarrierVest"), reward("AmmoBox_762x39_SPG2"), currency(65)],
+  FollowUpQuest: 16,
+};
+
+const MAIN_QUEST_ACT5_HOSTAGES: Quest = {
+  ...MAIN_QUEST_DEFAULTS,
+  ID: 16,
+  Title: "Act V: No Witnesses",
+  ObjectiveText: "Rescue the people the Shepherds kept alive as leverage.",
+  Descriptions: [
+    "The target list includes survivors being kept alive as bargaining pieces. One of them was taken from a failed convoy and is being held somewhere near the command post.",
+    "Get the captive out without turning the building into a grave. The Shepherds will use the hostage as bait, and the infected will follow every gunshot.",
+    "The captive is safe for the moment. They remember a marksman on the eastern roof calling in reinforcements whenever anyone tries to escape.",
+  ],
+  PreQuestIDs: [15],
+  Objectives: [
+    ref(objectives.AIVIP_SHEPHERD_CAPTIVE),
+    ref(objectives.COLLECT_BODY_GEAR),
+  ],
+  Rewards: [reward("Bandage", 5), reward("Canteen"), currency(70)],
+  FollowUpQuest: 17,
+};
+
+const MAIN_QUEST_ACT5_BURN_THE_ROUTE: Quest = {
+  ...MAIN_QUEST_DEFAULTS,
+  ID: 17,
+  Title: "Act V: Burn the Route",
+  ObjectiveText: "Cut the Shepherds' supply route before the final assault.",
+  Descriptions: [
+    "The command post is being resupplied through a marked warehouse route. If the Shepherds keep their ammunition and fuel, they can hold the settlement hostage for another year.",
+    "Clear the warehouse, recover the emergency documents, and light a signal that tells Daniels the route is open for the final push.",
+    "The supply line is broken. The marksman is still alive on the roof, and every remaining Shepherd is converging on the command room.",
+  ],
+  PreQuestIDs: [16],
+  Objectives: [
+    ref(objectives.TARGET_WAREHOUSE_CLEAR),
+    ref(objectives.CRAFT_FLARE_BATON),
+  ],
+  Rewards: [reward("AmmoBox_762x39_SPG2", 2), reward("Epinephrine"), currency(75)],
+  FollowUpQuest: 18,
+};
+
+const MAIN_QUEST_ACT5_EXECUTIONER: Quest = {
+  ...MAIN_QUEST_DEFAULTS,
+  ID: 18,
+  Title: "Act V: The Executioner",
+  ObjectiveText: "Silence the Shepherd marksman and deliver the command ledger.",
+  Descriptions: [
+    "The marksman is more than a guard. He is the Shepherds' executioner, the one who decides which captives are worth keeping and which are made into warnings.",
+    "Put him down, take the ledger, and deliver it to Daniels. The final page contains the authentication phrase for the manual purge.",
+    "The executioner is dead. The ledger is in Daniels' hands, but the phrase is already being broadcast from inside the command post.",
+  ],
+  PreQuestIDs: [17],
+  Objectives: [
+    ref(objectives.AIPATROL_SHEPHERD_EXECUTIONER),
+    ref(objectives.DELIVERY_INTEL_PACKAGE),
+  ],
+  Rewards: [reward("Morphine", 3), reward("AmmoBox_762x39_BS", 2), currency(80)],
+  FollowUpQuest: 19,
+};
+
+const MAIN_QUEST_ACT5_LAST_COMMAND: Quest = {
+  ...MAIN_QUEST_DEFAULTS,
+  ID: 19,
+  Title: "Act V: The Last Command",
+  ObjectiveText: "Destroy the Shepherd command post before the purge completes.",
+  Descriptions: [
+    "The command post is broadcasting the purge manually. The old network may be broken, but a human voice can still turn every connected patrol into a weapon.",
+    "Break through the last defenders, reach the command room, and destroy the route before the phrase finishes. There is no clean way to end this—only a final choice about what to leave standing.",
+    "The command room burns. Daniels has the ledger, the survivors have a place at Romashka, and the factions that once answered the signal are finally blind. The coast is still hell, but for once, the next threat will have to find you by hand.",
+  ],
+  PreQuestIDs: [18],
+  Objectives: [
+    ref(objectives.AICAMP_SHEPHERD_COMMAND),
+    ref(objectives.TRAVEL_ESCAPE_ZONE),
+  ],
+  Rewards: [reward("PlateCarrierVest"), reward("Canteen"), currency(100)],
+};
+
+const MAIN_QUESTS: Quest[] = fixQuests([
+  MAIN_QUEST_ACT1_REACH_ROMASHKA,
+  // MAIN_QUEST_ACT1_FARM_SURVIVAL,
+  // MAIN_QUEST_ACT1_RAIDER_SCOUTS,
+  // MAIN_QUEST_ACT2_FOLLOW_THE_SIGNAL,
+  // MAIN_QUEST_ACT2_STARY_RED_ROOM,
+  // MAIN_QUEST_ACT2_EXTRACT_THE_DEFECTOR,
+  // MAIN_QUEST_ACT3_SKALISTY_TRUTH,
+  // MAIN_QUEST_ACT3_BREAK_THE_CONVOY,
+  // MAIN_QUEST_ACT3_SHUTDOWN,
+  // MAIN_QUEST_ACT4_SIGNAL_AFTERSHOCK,
+  // MAIN_QUEST_ACT4_BROKEN_RELAY,
+  // MAIN_QUEST_ACT4_HOSPITAL_BROADCAST,
+  // MAIN_QUEST_ACT4_SHEPHERD_WITNESS,
+  // MAIN_QUEST_ACT4_BURIED_HANDSHAKE,
+  // MAIN_QUEST_ACT5_BLACK_LEDGER,
+  // MAIN_QUEST_ACT5_HOSTAGES,
+  // MAIN_QUEST_ACT5_BURN_THE_ROUTE,
+  // MAIN_QUEST_ACT5_EXECUTIONER,
+  // MAIN_QUEST_ACT5_LAST_COMMAND,
+]);
 
 export const MAIN_QUESTS_CONFIGS = configToRecord(MAIN_QUESTS, `${QUEST_CONFIG_DIR}/Quest_Main_`);

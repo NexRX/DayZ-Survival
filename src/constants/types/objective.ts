@@ -1,5 +1,6 @@
 import { PROFILE_DIR } from "../paths.ts";
 import type { BoolNum, CollectionEntry, Vec3 } from "./common.ts";
+import { AINpcClassNames, LoadoutName } from "./npc.ts";
 
 export const OBJECTIVE_ACTION_DIR = PROFILE_DIR + "/ExpansionMod/Quests/Objectives/Action";
 
@@ -201,6 +202,9 @@ export interface AIVipObjective extends ObjectiveBase {
   Position: Vec3;
   MaxDistance: number;
   MarkerName: string;
+  CanLootAI: BoolNum;
+  NPCLoadoutFile: LoadoutName;
+  NPCClassName: AINpcClassNames;
 }
 
 export type Objective =

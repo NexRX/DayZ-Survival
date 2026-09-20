@@ -1,7 +1,9 @@
+import { Quest } from "../types/quest.ts";
+
 /** @deprecated Usage of this variable needs updating */
-export const PLACEHOLDER_POSITION = [0, 0, 0] as const;
+export const PLACEHOLDER_POSITION = [200, 100, 300] as const;
 /** @deprecated Usage of this variable needs updating */
-export const PLACEHOLDER_ORIENTATION = [0, 0, 0] as const;
+export const PLACEHOLDER_ORIENTATION = [201, 101, 301] as const;
 
 export const QUEST_CONFIG_VERSION = 22;
 export const OBJECTIVE_CONFIG_VERSION = 28;
@@ -9,8 +11,18 @@ export const NPC_CONFIG_VERSION = 6;
 export const CURRENCY_CLASSNAME = "expansionbanknotehryvnia";
 export const CURRENCY_MULTIPLIER = 1000;
 
-export function reward(className: string, amount: number = 1) {
-  return { ClassName: className, Amount: amount };
+export function reward(
+  className: string,
+  Amount: number = 1,
+  DamagePercent: number = 0,
+  Chance: number = 0,
+) {
+  return {
+    ClassName: className,
+    Amount,
+    Chance,
+    DamagePercent,
+  };
 }
 
 export function currency(amount: number) {
@@ -45,4 +57,14 @@ export function configToRecord<T extends { ID: string | number }>(
     },
     {} as Record<string, T>,
   );
+}
+
+export function fixQuests(quests: Quest[]) {
+  return quests.map((q) => {
+    q.Rewards = (q.Rewards ?? []).map((r) => {
+      if (r.QuestID === undefined) r.QuestID = q.ID;
+      return r;
+    });
+    return q;
+  });
 }

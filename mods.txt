@@ -183,3 +183,4 @@
 2874589934  @DayZ-Dynamic-AI-Addon        server
 3277130230  @Dynamic-AI-Missions          server
 3773597150  @Dynamic-AI-Missions-Extended server
+2891781171  @More-Expansion-Factions      server

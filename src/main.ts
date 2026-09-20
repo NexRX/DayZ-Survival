@@ -11,6 +11,7 @@ import { loadMods, resolveMods, searchMods } from "./server/mods.ts";
 import { doSyncEditor } from "./tools/editorSync.ts";
 import { auditMarket } from "./tools/marketAudit.ts";
 import { clearQuestCache } from "./tools/questClear.ts";
+import { resetPlayerQuestData } from "./tools/playerQuestReset.ts";
 
 function statusLine(label: string, good: boolean, extra = ""): void {
   const mark = good ? c.green("✓") : c.dim("·");
@@ -149,7 +150,10 @@ const HELP = `Usage: deno task dayz [command]
                 profiles/market-audit-report.txt
   clear-quests  Delete the Expansion Quests cached data so the mod regenerates
                 fresh quest definitions on next start (useful after quest
-                ID changes like switching quest lines)`;
+                ID changes like switching quest lines)
+  reset-player-quests <id>
+                Back up and reset one player's Expansion quest progress;
+                run only while the DayZ server is stopped`;
 
 async function main(): Promise<void> {
   const s = await loadSettings();
@@ -201,6 +205,16 @@ async function main(): Promise<void> {
     case "clear-quests":
       await clearQuestCache();
       break;
+    case "reset-player-quests": {
+      const playerId = Deno.args[1];
+      if (!playerId) {
+        throw new DayzError(
+          "Usage: deno task dayz reset-player-quests <COT identity id>",
+        );
+      }
+      await resetPlayerQuestData(playerId);
+      break;
+    }
     case "-h":
     case "--help":
     case "help":

@@ -1,7 +1,8 @@
 // SteamCMD + DepotDownloader integration:
-//   - SteamCMD: interactive login + installing the DayZ dedicated server app.
-//   - DepotDownloader: reliable (resumable) workshop-mod downloads, because
-//     SteamCMD times out on the ~2.8 GB Expansion bundle and can't resume.
+//   - SteamCMD: interactive login, installing the server, and batched Workshop
+//     downloads in one authenticated session.
+//   - DepotDownloader: reliable (resumable) fallback for Workshop items that
+//     SteamCMD cannot complete, including very large mods.
 
 import {
   DAYZ_CLIENT_APPID,
@@ -74,6 +75,34 @@ export async function runSteamcmdCapture(
 async function runSteamcmdQuiet(args: string[]): Promise<number> {
   await Deno.mkdir(STEAMCMD_DIR, { recursive: true });
   return runFiltered("steamcmd", args, BENIGN, { env: homeEnv() });
+}
+
+/**
+ * Download several Workshop items in one authenticated SteamCMD session.
+ * SteamCMD accepts multiple `+workshop_download_item` commands, unlike the
+ * DepotDownloader CLI's single `-pubfile` operation. The caller verifies each
+ * item afterward and can fall back to DepotDownloader for failed items.
+ */
+export async function runSteamWorkshopBatch(
+  s: Settings,
+  ids: string[],
+): Promise<number> {
+  if (ids.length === 0) return 0;
+  await Deno.mkdir(SERVER_DIR, { recursive: true });
+  const workshopCommands = ids.flatMap((id) => [
+    "+workshop_download_item",
+    DAYZ_CLIENT_APPID,
+    id,
+    "validate",
+  ]);
+  return runSteamcmdQuiet([
+    "+force_install_dir",
+    SERVER_DIR,
+    "+login",
+    s.STEAM_USER,
+    ...workshopCommands,
+    "+quit",
+  ]);
 }
 
 /**
