@@ -8,7 +8,7 @@ export const PLACEHOLDER_ORIENTATION = [201, 101, 301] as const;
 export const QUEST_CONFIG_VERSION = 22;
 export const OBJECTIVE_CONFIG_VERSION = 28;
 export const NPC_CONFIG_VERSION = 6;
-export const CURRENCY_CLASSNAME = "expansionbanknotehryvnia";
+export const CURRENCY_CLASSNAME = "ExpansionBanknoteHryvnia";
 export const CURRENCY_MULTIPLIER = 1000;
 
 export function reward(

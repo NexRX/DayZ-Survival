@@ -6,9 +6,9 @@
   "RequiredFaction": "",
   "RequiredCompletedQuestID": -1,
   "TraderIcon": "Car",
-  "Currencies": ["expansionbanknotehryvnia"],
+  "Currencies": ["ExpansionBanknoteHryvnia"],
   "DisplayCurrencyValue": 1,
-  "DisplayCurrencyName": "Gold",
+  "DisplayCurrencyName": "Notes",
   "UseCategoryOrder": 0,
   "Categories": [
     "Vehicles_Cars",

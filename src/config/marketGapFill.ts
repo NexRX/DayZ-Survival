@@ -223,7 +223,7 @@ const MANUAL_EXCLUSIONS = new Set<string>(
 
     // @CJ187-MoreMoney: not currently in mods.txt (its 50-stack-cap "Coin"
     // currency was considered, then dropped in favor of Expansion Core's own
-    // expansionbanknotehryvnia - see traders.ts's GOLD_CURRENCY_CLASSNAME, patched
+    // ExpansionBanknoteHryvnia - see traders.ts's GOLD_CURRENCY_CLASSNAME, patched
     // to a real 50,000 stack cap by serverpack/addons/DZSurvivalGoldStack).
     // Kept denylisted as defense-in-depth in case the mod is ever
     // reinstalled.
@@ -837,8 +837,7 @@ const BACKPACK_PRICE_FIXES: Record<string, { min: number; max: number }> = {
 //   - TerritoryFlag (the raw, already-built flag pole) is now excluded
 //     entirely (see MANUAL_EXCLUSIONS) - only TerritoryFlagKit is
 //     purchasable, priced flat at 10,000.
-//   - Nail was wildly cheap relative to NailBox (a full box of many
-//     nails) - bumped modestly.
+//   - Nail and NailBox prices were raised above their original values.
 //   - WoodenPlank and the generic junk material band were both sitting at
 //     the very bottom of the price range - nudged up together.
 const BASE_BUILDING_LOCK3_PRICE = { min: 2500, max: 4000 };
@@ -848,7 +847,8 @@ const BASE_BUILDING_MILITARY_STORAGE_PRICE = { min: 8500, max: 13500 };
 const BASE_BUILDING_PRICE_FIXES: Record<string, { min: number; max: number }> = {
   combinationlock: BASE_BUILDING_LOCK3_PRICE,
   combinationlock4: BASE_BUILDING_LOCK4_PRICE,
-  nail: { min: 40, max: 70 },
+  nailbox: { min: 7000, max: 8000 },
+  nail: { min: 75, max: 150 },
   woodenplank: { min: 120, max: 220 },
   storagebox_bigsafe_black: BASE_BUILDING_BIG_SAFE_PRICE,
   storagebox_bigsafe_grey: BASE_BUILDING_BIG_SAFE_PRICE,

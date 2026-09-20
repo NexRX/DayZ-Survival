@@ -69,9 +69,9 @@ export const TRAVEL_ROMASHKA_FARM: TravelObjective = {
 export const TRAVEL_ROMASHKA_PERIMETER: TravelObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 2,
-  ObjectiveText: "Scout the perimeter - watch for movement near the treeline.",
+  ObjectiveText: "Scout the town and report if you see any raiders.",
   ObjectiveType: ObjectiveType.TRAVEL,
-  Position: LOCATION.farm_perimeter,
+  Position: LOCATION.severograd_raiders,
   MaxDistance: 5,
   MarkerName: "Romashka Farm Perimeter",
   TriggerOnEnter: 1,
@@ -115,7 +115,7 @@ export const TARGET_RAIDER_SCOUTS_PERIMETER: QuestTargetObjective = {
   ID: 5,
   ObjectiveText: "Eliminate Raiders scouts near the farm perimeter.",
   ObjectiveType: ObjectiveType.TARGET,
-  Position: LOCATION.farm_perimeter,
+  Position: LOCATION.severograd_raiders,
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 5,
@@ -130,7 +130,7 @@ export const TARGET_RAIDER_SCOUTS_PERIMETER: QuestTargetObjective = {
   AllowedWeapons: [],
   ExcludedClassNames: [],
   CountAIPlayers: TRUE,
-  AllowedTargetFactions: ["Bandits"],
+  AllowedTargetFactions: ["Raiders"],
   AllowedDamageZones: [],
 };
 
@@ -247,8 +247,8 @@ export const COLLECT_BUILDING_MATERIALS: CollectionObjective = {
   ObjectiveText: "Collect supplies for the farm's stockpile.",
   ObjectiveType: ObjectiveType.COLLECT,
   Collections: [
-    { ClassName: "Plank", Amount: 10, QuantityPercent: 1, MinQuantityPercent: 0 },
-    { ClassName: "Nails", Amount: 3, QuantityPercent: 1, MinQuantityPercent: 0 },
+    { ClassName: "WoodenPlank", Amount: 10, QuantityPercent: 1, MinQuantityPercent: 0 },
+    { ClassName: "Nail", Amount: 3, QuantityPercent: 1, MinQuantityPercent: 0 },
   ],
   ShowDistance: TRUE,
   AddItemsToNearbyMarketZone: FALSE,
@@ -618,7 +618,7 @@ export const AICAMP_TISY_TRANSMITTER: QuestAICampObjective = {
   AllowedWeapons: [],
   ExcludedClassNames: [],
   CountAIPlayers: FALSE,
-  AllowedTargetFactions: ["Bandits"],
+  AllowedTargetFactions: ["Raiders"],
   AllowedDamageZones: [],
 };
 
@@ -636,7 +636,7 @@ export const AICAMP_SHEPHERD_COMMAND: QuestAICampObjective = {
   AllowedWeapons: [],
   ExcludedClassNames: [],
   CountAIPlayers: TRUE,
-  AllowedTargetFactions: ["Bandits"],
+  AllowedTargetFactions: ["Raiders"],
   AllowedDamageZones: [],
 };
 
@@ -654,7 +654,7 @@ export const AICAMP_STARY_RAD_ZONE: QuestAICampObjective = {
   AllowedWeapons: [],
   ExcludedClassNames: [],
   CountAIPlayers: FALSE,
-  AllowedTargetFactions: ["Bandits"],
+  AllowedTargetFactions: ["Raiders"],
   AllowedDamageZones: [],
 };
 
@@ -761,16 +761,20 @@ export const AIPATROL_RAIDER_PERIMETER: QuestAIPatrolObjective = {
   ID: 49,
   ObjectiveText: "Break the Raider patrol watching the Green Mountain approach to Romashka.",
   ObjectiveType: ObjectiveType.AIPATROL,
-  Position: LOCATION.farm_perimeter,
+  Position: LOCATION.severograd_raiders,
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 3,
-  ClassNames: ["ZombieMadman"],
+  ClassNames: [
+    "BanditAI_Keiko",
+    "BanditAI_Denis",
+    "BanditAI_Adam",
+  ],
   CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
   CountAIPlayers: FALSE,
-  AllowedTargetFactions: ["Bandits"],
+  AllowedTargetFactions: ["Raiders"],
   AllowedDamageZones: [],
 };
 
@@ -788,7 +792,7 @@ export const AIPATROL_SHEPHERD_EXECUTIONER: QuestAIPatrolObjective = {
   AllowedWeapons: [],
   ExcludedClassNames: [],
   CountAIPlayers: TRUE,
-  AllowedTargetFactions: ["Bandits"],
+  AllowedTargetFactions: ["Raiders"],
   AllowedDamageZones: [],
 };
 
@@ -1580,7 +1584,7 @@ export const AIPATROL_CONVOY_ESCORT: AIPatrolObjective = {
   AllowedWeapons: [],
   ExcludedClassNames: [],
   CountAIPlayers: FALSE,
-  AllowedTargetFactions: ["Bandits"],
+  AllowedTargetFactions: ["Raiders"],
   AllowedDamageZones: [],
 };
 

@@ -6,9 +6,9 @@
   "RequiredFaction": "",
   "RequiredCompletedQuestID": -1,
   "TraderIcon": "Trader",
-  "Currencies": ["expansionbanknotehryvnia"],
+  "Currencies": ["ExpansionBanknoteHryvnia"],
   "DisplayCurrencyValue": 1,
-  "DisplayCurrencyName": "Gold",
+  "DisplayCurrencyName": "Notes",
   "UseCategoryOrder": 0,
   "Categories": [
     "Guns_Military",
