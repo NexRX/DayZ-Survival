@@ -1,7 +1,7 @@
 import { PROFILE_DIR } from "../paths.ts";
 import type { BoolNum, CollectionEntry, Vec3 } from "./common.ts";
 import type { ClassName, ClassNameAction } from "./classNames.ts";
-import { LoadoutName } from "./npc.ts";
+import { , LoadoutName } from "./npc.ts";
 import { NPCClassName } from "./classNamesMod.ts";
 
 export const OBJECTIVE_ACTION_DIR = PROFILE_DIR + "/ExpansionMod/Quests/Objectives/Action";
@@ -52,7 +52,7 @@ export interface TargetObjective extends ObjectiveBase {
   MaxDistance: number;
   MinDistance: number;
   Amount: number;
-  ClassNames: ClassName[];
+  ClassNames: NPCClassName[];
   CountSelfKill: BoolNum;
   AllowedWeapons: ClassName[];
   ExcludedClassNames: ClassName[];
@@ -108,7 +108,7 @@ export interface AIPatrolObjective extends ObjectiveBase {
   MaxDistance: number;
   MinDistance: number;
   Amount: number;
-  ClassNames: NPCClassName[];
+  ClassNames: ClassName[];
   CountSelfKill: BoolNum;
   AllowedWeapons: ClassName[];
   ExcludedClassNames: ClassName[];
@@ -139,7 +139,7 @@ export interface AIVipObjective extends ObjectiveBase {
   MarkerName: string;
   CanLootAI: BoolNum;
   NPCLoadoutFile: LoadoutName;
-  NPCClassName: NPCClassName;
+  NPCClassName: AINpcClassNames;
 }
 
 export type Objective =
