@@ -36,3 +36,4 @@ result-*
 server_backup/
 profiles_backup/
 # context/
+dayz_class_name.xml

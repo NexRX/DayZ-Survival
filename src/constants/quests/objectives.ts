@@ -321,6 +321,8 @@ export const ACTION_FARMING: ActionObjective = {
     "ActionDisinfectPlant",
     "ActionFertilizeSlot",
   ],
+  AllowedClassNames: ["GardenPlot", "GardenPlotGreenhouse", "GardenPlotPolytunnel"],
+  ExecutionAmount: 1,
 };
 
 /** @deprecated untill playtested */
@@ -341,6 +343,7 @@ export const ACTION_MINE_TREE: ActionObjective = {
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: ["ActionMineTree"],
   AllowedClassNames: ["Tree"],
+  ExecutionAmount: 1,
 };
 
 /** @deprecated untill playtested */
@@ -351,6 +354,7 @@ export const ACTION_MINE_ROCK: ActionObjective = {
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: ["ActionMineRock"],
   AllowedClassNames: ["Rock", "Stone"],
+  ExecutionAmount: 1,
 };
 
 /** @deprecated untill playtested */
@@ -360,6 +364,8 @@ export const ACTION_SKINNING: ActionObjective = {
   ObjectiveText: "Skin the carcass for meat and materials.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: ["ActionSkinning"],
+  AllowedClassNames: ["Carcass"],
+  ExecutionAmount: 1,
 };
 
 /** @deprecated untill playtested */
@@ -369,6 +375,7 @@ export const ACTION_EAT_DRINK: ActionObjective = {
   ObjectiveText: "Eat or drink to restore stamina.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: ["ActionEat", "ActionDrink"],
+  ExecutionAmount: 1,
 };
 
 /** @deprecated untill playtested */
@@ -383,6 +390,8 @@ export const ACTION_FIRST_AID: ActionObjective = {
     "ActionSplintTarget",
     "ActionDisinfectTarget",
   ],
+  AllowedClassNames: ["SurvivorBase"],
+  ExecutionAmount: 1,
 };
 
 /** @deprecated untill playtested */
@@ -396,6 +405,8 @@ export const ACTION_INJECT_MEDS: ActionObjective = {
     "ActionInjectMorphineTarget",
     "ActionInjectTarget",
   ],
+  AllowedClassNames: ["SurvivorBase"],
+  ExecutionAmount: 1,
 };
 
 /** @deprecated untill playtested */
@@ -408,6 +419,8 @@ export const ACTION_CPR_DEFIBRILLATE: ActionObjective = {
     "ActionCPR",
     "ActionDefibrilateTarget",
   ],
+  AllowedClassNames: ["SurvivorBase"],
+  ExecutionAmount: 1,
 };
 
 /** @deprecated untill playtested */
@@ -420,6 +433,8 @@ export const ACTION_GIVE_BLOOD_TEST: ActionObjective = {
     "ActionTestBloodTarget",
     "ActionGiveBloodTarget",
   ],
+  AllowedClassNames: ["SurvivorBase"],
+  ExecutionAmount: 1,
 };
 
 /** @deprecated untill playtested */
@@ -434,6 +449,8 @@ export const ACTION_FEED_TABLETS: ActionObjective = {
     "ActionFeedTetracyclineAntibiotics",
     "ActionFeedVitaminBottle",
   ],
+  AllowedClassNames: ["SurvivorBase"],
+  ExecutionAmount: 1,
 };
 
 /** @deprecated untill playtested */
@@ -445,6 +462,7 @@ export const ACTION_GIVE_SALINE: ActionObjective = {
   ActionNames: [
     "ActionGiveSalineTarget",
   ],
+  AllowedClassNames: ["SurvivorBase"],
 };
 
 /** @deprecated untill playtested */
@@ -457,6 +475,8 @@ export const ACTION_TURN_ON_OFF_LIGHT: ActionObjective = {
     "ActionTurnOnLight",
     "ActionTurnOffLight",
   ],
+  AllowedClassNames: ["Light"],
+  ExecutionAmount: 1,
 };
 
 /** @deprecated untill playtested */
@@ -473,6 +493,8 @@ export const ACTION_WEAPONS: ActionObjective = {
     "ActionEmptyMagazine",
     "ActionSortAmmoPile",
   ],
+  AllowedClassNames: ["Weapon", "AmmoBox"],
+  ExecutionAmount: 1,
 };
 
 /** @deprecated untill playtested */
@@ -485,6 +507,8 @@ export const ACTION_MAP: ActionObjective = {
     "ActionFoldMap",
     "ActionUnfoldMap",
   ],
+  AllowedClassNames: ["Map"],
+  ExecutionAmount: 1,
 };
 
 /** @deprecated untill playtested */
@@ -498,6 +522,8 @@ export const ACTION_OPEN_CONTAINER: ActionObjective = {
     "ActionOpenFence",
     "ActionOpenBarrel",
   ],
+  AllowedClassNames: ["Box", "Crate", "Barrel", "Fence"],
+  ExecutionAmount: 1,
 };
 
 /** @deprecated untill playtested */
@@ -509,6 +535,8 @@ export const ACTION_TAKE_ITEM: ActionObjective = {
   ActionNames: [
     "ActionTakeItem",
   ],
+  AllowedClassNames: ["Item"],
+  ExecutionAmount: 1,
 };
 
 /** @deprecated untill playtested */
@@ -520,6 +548,8 @@ export const ACTION_PACK_TENT: ActionObjective = {
   ActionNames: [
     "ActionPackTent",
   ],
+  AllowedClassNames: ["Tent"],
+  ExecutionAmount: 1,
 };
 
 /** @deprecated untill playtested */
@@ -532,6 +562,8 @@ export const ACTION_FIREARM_ATTACH_MAG: ActionObjective = {
     "FirearmActionAttachMagazine",
     "FirearmActionAttachMagazineQuick",
   ],
+  AllowedClassNames: ["Weapon"],
+  ExecutionAmount: 1,
 };
 
 /** @deprecated untill playtested */
@@ -544,6 +576,8 @@ export const ACTION_FIREARM_DETACH_MAG: ActionObjective = {
     "FirearmActionDetachMagazine",
     "FirearmActionDetachMagazine_Old",
   ],
+  AllowedClassNames: ["Weapon"],
+  ExecutionAmount: 1,
 };
 
 /** @deprecated untill playtested */
@@ -559,6 +593,8 @@ export const ACTION_FIREARM_LOAD_BULLET: ActionObjective = {
     "FirearmActionLoadMultiBulletQuick",
     "FirearmActionLoadMultiBulletRadial",
   ],
+  AllowedClassNames: ["Weapon"],
+  ExecutionAmount: 1,
 };
 
 /** @deprecated untill playtested */
@@ -570,6 +606,8 @@ export const ACTION_FIREARM_MECHANIC: ActionObjective = {
   ActionNames: [
     "FirearmActionMechanicManipulate",
   ],
+  AllowedClassNames: ["Weapon"],
+  ExecutionAmount: 1,
 };
 
 /** @deprecated untill playtested */
@@ -581,6 +619,8 @@ export const ACTION_FIREARM_UNJAM: ActionObjective = {
   ActionNames: [
     "FirearmActionUnjam",
   ],
+  AllowedClassNames: ["Weapon"],
+  ExecutionAmount: 1,
 };
 
 const ALL_OACTION: ActionObjective[] = [

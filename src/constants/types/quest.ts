@@ -88,6 +88,7 @@ export const ALL_QUEST_TYPES = {
 } as const;
 
 import { PROFILE_DIR } from "../paths.ts";
+import { ClassName } from "./classNames.ts";
 import { BoolNum, Vec3 } from "./common.ts";
 import {
   AICampObjective,
@@ -261,7 +262,7 @@ export interface QuestAIObjectiveSpawn {
   ThreatDistanceLimit: number;
   DamageMultiplier: number;
   DamageReceivedMultiplier: number;
-  ClassNames: string[];
+  ClassNames: ClassName[];
   SniperProneDistanceThreshold: number;
   RespawnTime: number;
   DespawnTime: number;

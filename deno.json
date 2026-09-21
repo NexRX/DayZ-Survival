@@ -21,7 +21,8 @@
     "clear-quests": "deno run -A src/main.ts clear-quests",
     "check": "deno check src/main.ts",
     "fmt": "deno fmt src/",
-    "lint": "deno lint src/"
+    "lint": "deno lint src/",
+    "classNames": "deno run -A tools/dayz-classnames.ts"
   },
   "fmt": {
     "lineWidth": 100

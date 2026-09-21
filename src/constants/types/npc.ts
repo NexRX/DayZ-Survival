@@ -1,4 +1,5 @@
 import { PROFILE_DIR } from "../paths.ts";
+import { NPCClassName } from "./classNamesMod.ts";
 import { BoolNum, Vec3 } from "./common.ts";
 
 /** Config path constant — the mod reads from this path. */
@@ -55,61 +56,6 @@ export enum NPCType {
   OBJECT = 1,
   AI = 2,
 }
-
-export type AINpcClassNames =
-  | "eAI_SurvivorM_Denis"
-  | "eAI_SurvivorM_Cyril"
-  | "eAI_SurvivorM_Denis"
-  | "eAI_SurvivorM_Elias"
-  | "eAI_SurvivorM_Francis"
-  | "eAI_SurvivorM_Guo"
-  | "eAI_SurvivorM_Hassan"
-  | "eAI_SurvivorM_Indar"
-  | "eAI_SurvivorM_Jose"
-  | "eAI_SurvivorM_Kaito"
-  | "eAI_SurvivorM_Lewis"
-  | "eAI_SurvivorM_Manua"
-  | "eAI_SurvivorM_Mirek"
-  | "eAI_SurvivorM_Niki"
-  | "eAI_SurvivorM_Oliver"
-  | "eAI_SurvivorM_Peter"
-  | "eAI_SurvivorM_Quinn"
-  | "eAI_SurvivorM_Rolf"
-  | "eAI_SurvivorM_Seth"
-  | "eAI_SurvivorM_Taiki"
-  | "eAI_SurvivorF_Baty"
-  | "eAI_SurvivorF_Eva"
-  | "eAI_SurvivorF_Frida"
-  | "eAI_SurvivorF_Gabi"
-  | "eAI_SurvivorF_Helga"
-  | "eAI_SurvivorF_Irena"
-  | "eAI_SurvivorF_Judy"
-  | "eAI_SurvivorF_Keiko"
-  | "eAI_SurvivorF_Linda"
-  | "eAI_SurvivorF_Maria"
-  | "eAI_SurvivorF_Naomi";
-
-export type QuestNpcClassNames =
-  | "ExpansionQuestNPCBoris"
-  | "ExpansionQuestNPCDenis"
-  | "ExpansionQuestNPCElias"
-  | "ExpansionQuestNPCFrancis"
-  | "ExpansionQuestNPCGuang"
-  | "ExpansionQuestNPCHassan"
-  | "ExpansionQuestNPCIndika"
-  | "ExpansionQuestNPCJose"
-  | "ExpansionQuestNPCKaito"
-  | "ExpansionQuestNPCLewis"
-  | "ExpansionQuestNPCManji"
-  | "ExpansionQuestNPCNiki"
-  | "ExpansionQuestNPCOliver"
-  | "ExpansionQuestNPCPeter"
-  | "ExpansionQuestNPCQuinn"
-  | "ExpansionQuestNPCRolf"
-  | "ExpansionQuestNPCSeth"
-  | "ExpansionQuestNPCTaiga";
-
-export type NPCClassName = QuestNpcClassNames | AINpcClassNames;
 
 export type LoadoutName =
   | "AirfieldLoadout"
@@ -200,7 +146,7 @@ export type LoadoutName =
 export interface Npc {
   ConfigVersion?: number;
   ID: number;
-  ClassName: QuestNpcClassNames;
+  ClassName: NPCClassName;
   Position: Vec3;
   Orientation: Vec3;
   NPCName: string;

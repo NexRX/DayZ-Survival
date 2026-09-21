@@ -1,6 +1,8 @@
 import { PROFILE_DIR } from "../paths.ts";
 import type { BoolNum, CollectionEntry, Vec3 } from "./common.ts";
-import { AINpcClassNames, LoadoutName } from "./npc.ts";
+import type { ClassName, ClassNameAction } from "./classNames.ts";
+import { LoadoutName } from "./npc.ts";
+import { NPCClassName } from "./classNamesMod.ts";
 
 export const OBJECTIVE_ACTION_DIR = PROFILE_DIR + "/ExpansionMod/Quests/Objectives/Action";
 
@@ -17,73 +19,6 @@ export enum ObjectiveType {
   ACTION = 10,
   CRAFTING = 11,
 }
-
-type ActionName =
-  | "ActionPlantSeed"
-  | "ActionRemovePlant"
-  | "ActionWaterGardenSlot"
-  | "ActionWaterPlant"
-  | "ActionDisinfectPlant"
-  | "ActionFertilizeSlot"
-  | "ActionStartEngine"
-  | "ActionTestBloodTarget"
-  | "ActionGiveBloodTarget"
-  | "ActionDefibrilateTarget"
-  | "ActionCPR"
-  | "ActionDisinfectTarget"
-  | "ActionFeedCharcoalTablets"
-  | "ActionFeedPainkillerTablets"
-  | "ActionFeedTetracyclineAntibiotics"
-  | "ActionBandageTarget"
-  | "ActionFeedVitaminBottle"
-  | "ActionGiveSalineTarget"
-  | "ActionSplintTarget"
-  | "ActionInjectEpinephrineTarget"
-  | "ActionInjectMorphineTarget"
-  | "ActionInjectTarget"
-  | "ActionSewTarget"
-  | "ActionBandageTarget"
-  | "ActionEat"
-  | "ActionDrink"
-  | "ActionRepaireItem"
-  | "ActionSewTarget"
-  | "ActionMineTree"
-  | "ActionMineTree"
-  | "ActionMineRock"
-  | "ActionSkinning"
-  | "ActionConsume"
-  | "ActionTurnOnLight"
-  | "ActionTurnOffLight"
-  | "ActionSwitchFiremode"
-  | "ActionOpenDoor"
-  | "ActionCloseDoor"
-  | "ActionLiftSpectacle"
-  | "ActionTakeItemToHands"
-  | "FirearmActionLoadMultiBullet"
-  | "FirearmActionDetachMagazine"
-  | "ActionSwitchFiremode"
-  | "ActionCockWeapon"
-  | "ActionLoadMagazine"
-  | "ActionLoadMagazineQuick"
-  | "ActionEmptyMagazine"
-  | "ActionSortAmmoPile"
-  | "ActionFoldMap"
-  | "ActionUnfoldMap"
-  | "ActionOpen"
-  | "ActionOpenFence"
-  | "ActionOpenBarrel"
-  | "ActionTakeItem"
-  | "ActionPackTent"
-  | "FirearmActionAttachMagazine"
-  | "FirearmActionAttachMagazineQuick"
-  | "FirearmActionDetachMagazine_Old"
-  | "FirearmActionLoadBullet"
-  | "FirearmActionLoadBulletQuick"
-  | "FirearmActionLoadMultiBullet"
-  | "FirearmActionLoadMultiBulletQuick"
-  | "FirearmActionLoadMultiBulletRadial"
-  | "FirearmActionMechanicManipulate"
-  | "FirearmActionUnjam";
 
 /** Minimal pointer used inside Quest.Objectives arrays. */
 export interface ObjectiveRef {
@@ -117,10 +52,10 @@ export interface TargetObjective extends ObjectiveBase {
   MaxDistance: number;
   MinDistance: number;
   Amount: number;
-  ClassNames: string[];
+  ClassNames: ClassName[];
   CountSelfKill: BoolNum;
-  AllowedWeapons: string[];
-  ExcludedClassNames: string[];
+  AllowedWeapons: ClassName[];
+  ExcludedClassNames: ClassName[];
   CountAIPlayers: BoolNum;
   AllowedTargetFactions: string[];
   AllowedDamageZones: string[];
@@ -151,10 +86,10 @@ export interface CraftingObjective extends ObjectiveBase {
 
 export interface ActionObjective extends ObjectiveBase {
   ObjectiveType: ObjectiveType.ACTION;
-  ActionNames: ActionName[];
-  AllowedClassNames?: string[];
-  ExcludedClassNames?: string[];
-  ExecutionAmount?: number;
+  ActionNames: ClassNameAction[];
+  AllowedClassNames: ClassName[];
+  ExcludedClassNames?: ClassName[];
+  ExecutionAmount: number;
 }
 
 /**
@@ -173,10 +108,10 @@ export interface AIPatrolObjective extends ObjectiveBase {
   MaxDistance: number;
   MinDistance: number;
   Amount: number;
-  ClassNames: string[];
+  ClassNames: NPCClassName[];
   CountSelfKill: BoolNum;
-  AllowedWeapons: string[];
-  ExcludedClassNames: string[];
+  AllowedWeapons: ClassName[];
+  ExcludedClassNames: ClassName[];
   CountAIPlayers: BoolNum;
   AllowedTargetFactions: string[];
   AllowedDamageZones: string[];
@@ -188,10 +123,10 @@ export interface AICampObjective extends ObjectiveBase {
   MaxDistance: number;
   MinDistance: number;
   Amount: number;
-  ClassNames: string[];
+  ClassNames: NPCClassName[];
   CountSelfKill: BoolNum;
-  AllowedWeapons: string[];
-  ExcludedClassNames: string[];
+  AllowedWeapons: ClassName[];
+  ExcludedClassNames: ClassName[];
   CountAIPlayers: BoolNum;
   AllowedTargetFactions: string[];
   AllowedDamageZones: string[];
@@ -204,7 +139,7 @@ export interface AIVipObjective extends ObjectiveBase {
   MarkerName: string;
   CanLootAI: BoolNum;
   NPCLoadoutFile: LoadoutName;
-  NPCClassName: AINpcClassNames;
+  NPCClassName: NPCClassName;
 }
 
 export type Objective =
