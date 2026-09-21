@@ -71,11 +71,11 @@ const baseClasses = [...seen.entries()]
 
 const allClasses = [...seen.keys()].sort();
 
-// Action subclasses: names starting with "Action" but NOT at depth 0
-// (depth-0 "Action*" classes like ActionAttach, ActionData are base roots)
+// Action subclasses: names starting with "Action" or "FirearmAction" but NOT at depth 0
+// (depth-0 classes like ActionBase, ActionContinuousBase, FirearmActionBase are base roots)
 const actionClasses = [...seen.entries()]
   .filter(([, depth]) => depth > 0)
-  .filter(([name]) => name.startsWith("Action"))
+  .filter(([name]) => name.startsWith("Action") || name.startsWith("FirearmAction"))
   .map(([name]) => name)
   .sort();
 

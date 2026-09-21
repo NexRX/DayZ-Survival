@@ -1,3 +1,17 @@
+import { PROFILE_DIR } from "../paths.ts";
+import { NPCClassName } from "./classNamesMod.ts";
+import { BoolNum, Vec3 } from "./common.ts";
+import {
+  AICampObjective,
+  AIPatrolObjective,
+  AIVipObjective,
+  Objective,
+  ObjectiveRef,
+  ObjectiveType,
+  TargetObjective,
+  TreasureHuntObjective,
+} from "./objective.ts";
+
 export enum QuestType {
   NORMAL = 1, // default
   SCRIPTED = 2,
@@ -87,20 +101,6 @@ export const ALL_QUEST_TYPES = {
   QuestNPCType,
 } as const;
 
-import { PROFILE_DIR } from "../paths.ts";
-import { ClassName } from "./classNames.ts";
-import { BoolNum, Vec3 } from "./common.ts";
-import {
-  AICampObjective,
-  AIPatrolObjective,
-  AIVipObjective,
-  Objective,
-  ObjectiveRef,
-  ObjectiveType,
-  TargetObjective,
-  TreasureHuntObjective,
-} from "./objective.ts";
-
 export const QUEST_SETTINGS_CONFIG = `${PROFILE_DIR}/ExpansionMod/Settings/QuestSettings.json`;
 export const QUEST_CONFIG_DIR = `${PROFILE_DIR}/ExpansionMod/Quests/Quests`;
 
@@ -117,9 +117,9 @@ export enum WeeklyResetDay {
 
 /** Group quest mode selector (0–2); exact labels unknown */
 export enum GroupQuestMode {
-  Mode0 = 0,
-  Mode1 = 1,
-  Mode2 = 2,
+  M0 = 0,
+  M1 = 1,
+  M2 = 2,
 }
 
 export interface QuestSettings {
@@ -262,7 +262,7 @@ export interface QuestAIObjectiveSpawn {
   ThreatDistanceLimit: number;
   DamageMultiplier: number;
   DamageReceivedMultiplier: number;
-  ClassNames: ClassName[];
+  ClassNames: NPCClassName[];
   SniperProneDistanceThreshold: number;
   RespawnTime: number;
   DespawnTime: number;

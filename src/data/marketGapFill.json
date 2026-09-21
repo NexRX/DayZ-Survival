@@ -275,10 +275,6 @@
     "template": "chemlight_blue"
   },
   {
-    "classNames": ["ChernarusMap_Open"],
-    "template": "chernarusmap"
-  },
-  {
     "classNames": ["ChildBag_Blue", "ChildBag_Green"],
     "template": "childbag_red"
   },

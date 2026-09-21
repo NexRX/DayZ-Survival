@@ -38,6 +38,7 @@ import {
   QuestTreasureHuntObjective,
   QuestTreasureLoot,
 } from "../types/quest.ts";
+import { AI_NPCS } from "../types/classNamesMod.ts";
 
 export function ref<T extends ObjectiveBase>(objective: T): ObjectiveRef {
   return {
@@ -148,7 +149,7 @@ export const TARGET_CHECKPOINT_SNIPER: TargetObjective = {
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 10,
-  ClassNames: ["ZombieMadman"],
+  ClassNames: AI_NPCS,
   CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
@@ -167,7 +168,7 @@ export const TARGET_ROOFTOP_SNIPER: TargetObjective = {
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 3,
-  ClassNames: ["ZombieFast"],
+  ClassNames: AI_NPCS,
   CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
@@ -191,7 +192,7 @@ export const DELIVERY_NOTE_TO_SCOUT_JAMES: DeliveryObjective = {
   ObjectiveText: "Deliver the note to scout James.",
   ObjectiveType: ObjectiveType.DELIVERY,
   Collections: [
-    { ClassName: "QPK_Note_1", Amount: 1, QuantityPercent: 1, MinQuantityPercent: 0 },
+    { ClassName: "QPK_Note_1", Amount: 1, QuantityPercent: -1, MinQuantityPercent: 0 },
   ],
   ShowDistance: TRUE,
   AddItemsToNearbyMarketZone: FALSE,
@@ -206,7 +207,7 @@ export const DELIVERY_MEDICAL_TO_ROMASHKA: DeliveryObjective = {
   ObjectiveText: "Deliver the supplies Daniels asked for.",
   ObjectiveType: ObjectiveType.DELIVERY,
   Collections: [
-    { ClassName: "BandageDressing", Amount: 3, QuantityPercent: 1, MinQuantityPercent: 0 },
+    { ClassName: "BandageDressing", Amount: 3, QuantityPercent: -1, MinQuantityPercent: 0 },
   ],
   ShowDistance: TRUE,
   AddItemsToNearbyMarketZone: FALSE,
@@ -218,10 +219,15 @@ export const DELIVERY_MEDICAL_TO_ROMASHKA: DeliveryObjective = {
 export const DELIVERY_AMMO_CACHE: DeliveryObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 10,
-  ObjectiveText: "Drop off the weapons cache at the rendezvous point.",
+  ObjectiveText: "Drop off the ammo at the rendezvous point.",
   ObjectiveType: ObjectiveType.DELIVERY,
   Collections: [
-    { ClassName: "AmmoAssault", Amount: 1, QuantityPercent: 1, MinQuantityPercent: 0 },
+    {
+      ClassName: "AmmoBox_762x54Tracer_20Rnd",
+      Amount: 4,
+      QuantityPercent: -1,
+      MinQuantityPercent: 0,
+    },
   ],
   ShowDistance: TRUE,
   AddItemsToNearbyMarketZone: FALSE,
@@ -243,8 +249,8 @@ export const COLLECT_CLOTH_DISINFECTANT: CollectionObjective = {
   ObjectiveText: "Gather cloth and disinfectant before infection finishes what the bite started.",
   ObjectiveType: ObjectiveType.COLLECT,
   Collections: [
-    { ClassName: "Cloth", Amount: 5, QuantityPercent: 1, MinQuantityPercent: 0 },
-    { ClassName: "Disinfectant", Amount: 1, QuantityPercent: 1, MinQuantityPercent: 0 },
+    { ClassName: "Rag", Amount: 5, QuantityPercent: -1, MinQuantityPercent: 0 },
+    { ClassName: "DisinfectantSpray", Amount: 1, QuantityPercent: -1, MinQuantityPercent: 0 },
   ],
   ShowDistance: TRUE,
   AddItemsToNearbyMarketZone: FALSE,
@@ -272,7 +278,7 @@ export const COLLECT_MEDICINAL_EPINEPHRINE: CollectionObjective = {
   ObjectiveText: "Gather Epinephrine for the medic's stash.",
   ObjectiveType: ObjectiveType.COLLECT,
   Collections: [
-    { ClassName: "Epinephrine", Amount: 5, QuantityPercent: 1, MinQuantityPercent: 0 },
+    { ClassName: "Epinephrine", Amount: 5, QuantityPercent: -1, MinQuantityPercent: 0 },
   ],
   ShowDistance: TRUE,
   AddItemsToNearbyMarketZone: FALSE,
@@ -293,7 +299,8 @@ export const ACTION_INSPECT_VEHICLE: ActionObjective = {
   ID: 14,
   ObjectiveText: "Inspect an abandoned vehicle for useful parts.",
   ObjectiveType: ObjectiveType.ACTION,
-  ActionNames: ["ActionOpenDoor"],
+  ActionNames: ["ActionOpenFence", "ActionOpenDoors"],
+  ExecutionAmount: 2,
   AllowedClassNames: ["CarDoor"],
 };
 
@@ -303,8 +310,9 @@ export const ACTION_SEARCH_BUILDING: ActionObjective = {
   ID: 15,
   ObjectiveText: "Search the building for intel.",
   ObjectiveType: ObjectiveType.ACTION,
-  ActionNames: ["ActionOpenDoor"],
-  AllowedClassNames: ["Fence"],
+  ActionNames: ["ActionOpen"],
+  ExecutionAmount: 1,
+  AllowedClassNames: ["BaseBuildingBase"],
 };
 
 /** @deprecated untill playtested */
@@ -331,18 +339,19 @@ export const ACTION_START_VEHICLE: ActionObjective = {
   ID: 17,
   ObjectiveText: "Start a vehicle to get moving.",
   ObjectiveType: ObjectiveType.ACTION,
-  ActionNames: ["ActionStartEngine"],
-  AllowedClassNames: ["Car", "Truck", "CarWagon", "Van", "UAZ"],
+  ActionNames: ["ActionStartCarCB", "ActionStartEngineBoatCB"],
+  ExecutionAmount: 1,
+  AllowedClassNames: ["Car", "Boat", "Helicopter"],
 };
 
 /** @deprecated untill playtested */
 export const ACTION_MINE_TREE: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 18,
-  ObjectiveText: "Harvest wood by mining a tree.",
+  ObjectiveText: "Harvest wood by cutting down a tree.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: ["ActionMineTree"],
-  AllowedClassNames: ["Tree"],
+  AllowedClassNames: ["TreeHard"],
   ExecutionAmount: 1,
 };
 
@@ -353,7 +362,7 @@ export const ACTION_MINE_ROCK: ActionObjective = {
   ObjectiveText: "Mine rock for stone and resources.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: ["ActionMineRock"],
-  AllowedClassNames: ["Rock", "Stone"],
+  AllowedClassNames: ["RockBase", "Stone"],
   ExecutionAmount: 1,
 };
 
@@ -364,7 +373,7 @@ export const ACTION_SKINNING: ActionObjective = {
   ObjectiveText: "Skin the carcass for meat and materials.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: ["ActionSkinning"],
-  AllowedClassNames: ["Carcass"],
+  AllowedClassNames: ["AnimalBase"],
   ExecutionAmount: 1,
 };
 
@@ -375,6 +384,7 @@ export const ACTION_EAT_DRINK: ActionObjective = {
   ObjectiveText: "Eat or drink to restore stamina.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: ["ActionEat", "ActionDrink"],
+  AllowedClassNames: ["Bottle_Base", "WaterBottle"],
   ExecutionAmount: 1,
 };
 
@@ -385,8 +395,10 @@ export const ACTION_FIRST_AID: ActionObjective = {
   ObjectiveText: "Provide first aid to a wounded ally.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: [
-    "ActionBandageTarget",
-    "ActionSewTarget",
+    "ActionBandageBase",
+    "ActionSewSelfCB",
+    "ActionSewTargetCB",
+    "ActionSewTargetCB",
     "ActionSplintTarget",
     "ActionDisinfectTarget",
   ],
@@ -462,21 +474,8 @@ export const ACTION_GIVE_SALINE: ActionObjective = {
   ActionNames: [
     "ActionGiveSalineTarget",
   ],
-  AllowedClassNames: ["SurvivorBase"],
-};
-
-/** @deprecated untill playtested */
-export const ACTION_TURN_ON_OFF_LIGHT: ActionObjective = {
-  ...OBJECTIVE_DEFAULTS,
-  ID: 28,
-  ObjectiveText: "Toggle lights on a device or structure.",
-  ObjectiveType: ObjectiveType.ACTION,
-  ActionNames: [
-    "ActionTurnOnLight",
-    "ActionTurnOffLight",
-  ],
-  AllowedClassNames: ["Light"],
   ExecutionAmount: 1,
+  AllowedClassNames: ["SurvivorBase"],
 };
 
 /** @deprecated untill playtested */
@@ -485,15 +484,8 @@ export const ACTION_WEAPONS: ActionObjective = {
   ID: 29,
   ObjectiveText: "Handle weapons — switch fire mode, load, or clear.",
   ObjectiveType: ObjectiveType.ACTION,
-  ActionNames: [
-    "ActionSwitchFiremode",
-    "ActionCockWeapon",
-    "ActionLoadMagazine",
-    "ActionLoadMagazineQuick",
-    "ActionEmptyMagazine",
-    "ActionSortAmmoPile",
-  ],
-  AllowedClassNames: ["Weapon", "AmmoBox"],
+  ActionNames: ["FirearmActionBase"],
+  AllowedClassNames: ["Weapon"],
   ExecutionAmount: 1,
 };
 
@@ -505,9 +497,9 @@ export const ACTION_MAP: ActionObjective = {
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: [
     "ActionFoldMap",
-    "ActionUnfoldMap",
+    "ActionUnfoldMapCB",
   ],
-  AllowedClassNames: ["Map"],
+  AllowedClassNames: ["ChernarusMap"],
   ExecutionAmount: 1,
 };
 
@@ -522,20 +514,7 @@ export const ACTION_OPEN_CONTAINER: ActionObjective = {
     "ActionOpenFence",
     "ActionOpenBarrel",
   ],
-  AllowedClassNames: ["Box", "Crate", "Barrel", "Fence"],
-  ExecutionAmount: 1,
-};
-
-/** @deprecated untill playtested */
-export const ACTION_TAKE_ITEM: ActionObjective = {
-  ...OBJECTIVE_DEFAULTS,
-  ID: 32,
-  ObjectiveText: "Take an item from its location.",
-  ObjectiveType: ObjectiveType.ACTION,
-  ActionNames: [
-    "ActionTakeItem",
-  ],
-  AllowedClassNames: ["Item"],
+  AllowedClassNames: ["Container"],
   ExecutionAmount: 1,
 };
 
@@ -546,9 +525,10 @@ export const ACTION_PACK_TENT: ActionObjective = {
   ObjectiveText: "Pack up a tent for transport.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: [
+    "ActionPackTentCB",
     "ActionPackTent",
   ],
-  AllowedClassNames: ["Tent"],
+  AllowedClassNames: ["TentBase"],
   ExecutionAmount: 1,
 };
 
@@ -588,7 +568,6 @@ export const ACTION_FIREARM_LOAD_BULLET: ActionObjective = {
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: [
     "FirearmActionLoadBullet",
-    "FirearmActionLoadBulletQuick",
     "FirearmActionLoadMultiBullet",
     "FirearmActionLoadMultiBulletQuick",
     "FirearmActionLoadMultiBulletRadial",
@@ -638,11 +617,9 @@ const ALL_OACTION: ActionObjective[] = [
   ACTION_GIVE_BLOOD_TEST,
   ACTION_FEED_TABLETS,
   ACTION_GIVE_SALINE,
-  ACTION_TURN_ON_OFF_LIGHT,
   ACTION_WEAPONS,
   ACTION_MAP,
   ACTION_OPEN_CONTAINER,
-  ACTION_TAKE_ITEM,
   ACTION_PACK_TENT,
   ACTION_FIREARM_ATTACH_MAG,
   ACTION_FIREARM_DETACH_MAG,
@@ -1084,11 +1061,9 @@ export const TARGET_HOSPITAL_SWEEP: TargetObjective = {
   Position: LOCATION.hospital,
   MaxDistance: 150,
   MinDistance: -1,
-  Amount: 15,
+  Amount: 10,
   ClassNames: [
-    "ZmbM_DoctorFat_Base",
     "ZmbF_DoctorSkinny_Base",
-    "ZmbF_NurseFat_Base",
     "ZmbM_ParamedicNormal_Base",
   ],
   CountSelfKill: FALSE,
@@ -1147,7 +1122,7 @@ export const TARGET_ROOFTOP_CLEAR: TargetObjective = {
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 6,
-  ClassNames: ["ZmbM_Runner_Base", "ZmbF_Runner_Base"],
+  ClassNames: ["ZombieFast"],
   CountSelfKill: FALSE,
   AllowedWeapons: [],
   ExcludedClassNames: [],
@@ -1184,7 +1159,7 @@ export const COLLECT_FUEL_CAN: CollectionObjective = {
   ObjectiveText: "Grab fuel cans — everything needs gas now.",
   ObjectiveType: ObjectiveType.COLLECT,
   Collections: [
-    { ClassName: "Jerrycan", Amount: 3, QuantityPercent: 1, MinQuantityPercent: 0 },
+    { ClassName: "CanisterGasoline", Amount: 3, QuantityPercent: -1, MinQuantityPercent: 0 },
   ],
   ShowDistance: TRUE,
   AddItemsToNearbyMarketZone: FALSE,
@@ -1198,8 +1173,13 @@ export const COLLECT_AMMO_RIG: CollectionObjective = {
   ObjectiveText: "Rig your ammo — sort by caliber and stack what you can use.",
   ObjectiveType: ObjectiveType.COLLECT,
   Collections: [
-    { ClassName: "AmmoBox_762x39_SPG2", Amount: 2, QuantityPercent: 1, MinQuantityPercent: 0 },
-    { ClassName: "AmmoBox_762x39_BS", Amount: 2, QuantityPercent: 1, MinQuantityPercent: 0 },
+    {
+      ClassName: "AmmoBox_762x39Tracer_20Rnd",
+      Amount: 2,
+      QuantityPercent: -1,
+      MinQuantityPercent: 0,
+    },
+    { ClassName: "AmmoBox_762x39_20Rnd", Amount: 2, QuantityPercent: -1, MinQuantityPercent: 0 },
   ],
   ShowDistance: TRUE,
   AddItemsToNearbyMarketZone: FALSE,
@@ -1213,14 +1193,8 @@ export const COLLECT_WEAPON_PARTS: CollectionObjective = {
   ObjectiveText: "Salvage what you can from the armory — every part counts.",
   ObjectiveType: ObjectiveType.COLLECT,
   Collections: [
-    { ClassName: "GunPartOpticHolo", Amount: 1, QuantityPercent: 1, MinQuantityPercent: 0 },
-    { ClassName: "GunPartOpticRedDot", Amount: 1, QuantityPercent: 1, MinQuantityPercent: 0 },
-    {
-      ClassName: "GunPartAccessoryFlashlight",
-      Amount: 2,
-      QuantityPercent: 1,
-      MinQuantityPercent: 0,
-    },
+    { ClassName: "Weapon", Amount: 1, QuantityPercent: -1, MinQuantityPercent: 0 },
+    { ClassName: "ItemOptics", Amount: 1, QuantityPercent: -1, MinQuantityPercent: 0 },
   ],
   ShowDistance: TRUE,
   AddItemsToNearbyMarketZone: FALSE,
@@ -1234,9 +1208,9 @@ export const COLLECT_FOOD_SURPLUS: CollectionObjective = {
   ObjectiveText: "Scavenge what's left in the pantry before it spoils.",
   ObjectiveType: ObjectiveType.COLLECT,
   Collections: [
-    { ClassName: "CannedPosch", Amount: 3, QuantityPercent: 1, MinQuantityPercent: 0 },
-    { ClassName: "CannedPork", Amount: 3, QuantityPercent: 1, MinQuantityPercent: 0 },
-    { ClassName: "CannedDogFood", Amount: 2, QuantityPercent: 1, MinQuantityPercent: 0 },
+    { ClassName: "PorkCan", Amount: 1, QuantityPercent: -1, MinQuantityPercent: 0 },
+    { ClassName: "PeachesCan", Amount: 1, QuantityPercent: -1, MinQuantityPercent: 0 },
+    { ClassName: "DogFoodCan", Amount: 2, QuantityPercent: -1, MinQuantityPercent: 0 },
   ],
   ShowDistance: TRUE,
   AddItemsToNearbyMarketZone: FALSE,
@@ -1247,12 +1221,11 @@ export const COLLECT_FOOD_SURPLUS: CollectionObjective = {
 export const COLLECT_RADIO_PARTS: CollectionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 71,
-  ObjectiveText: "Pull electronics off the dead — radios, batteries, wire.",
+  ObjectiveText: "Pull electronics off the dead — radios, batteries",
   ObjectiveType: ObjectiveType.COLLECT,
   Collections: [
-    { ClassName: "ItemRadio", Amount: 1, QuantityPercent: 1, MinQuantityPercent: 0 },
-    { ClassName: "ItemBattery9V", Amount: 3, QuantityPercent: 1, MinQuantityPercent: 0 },
-    { ClassName: "Wire", Amount: 5, QuantityPercent: 1, MinQuantityPercent: 0 },
+    { ClassName: "ItemRadio", Amount: 1, QuantityPercent: -1, MinQuantityPercent: 0 },
+    { ClassName: "Battery9V", Amount: 3, QuantityPercent: -1, MinQuantityPercent: 0 },
   ],
   ShowDistance: TRUE,
   AddItemsToNearbyMarketZone: FALSE,
@@ -1263,12 +1236,11 @@ export const COLLECT_RADIO_PARTS: CollectionObjective = {
 export const COLLECT_BODY_GEAR: CollectionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 72,
-  ObjectiveText: "Suit up — grab body armor, helmets, and boots from the cache.",
+  ObjectiveText: "Suit up — grab body armor and helmets from the cache.",
   ObjectiveType: ObjectiveType.COLLECT,
   Collections: [
-    { ClassName: "PlateCarrierVest", Amount: 1, QuantityPercent: 1, MinQuantityPercent: 0 },
-    { ClassName: "helmetskull", Amount: 1, QuantityPercent: 1, MinQuantityPercent: 0 },
-    { ClassName: "BootsGrounded", Amount: 1, QuantityPercent: 1, MinQuantityPercent: 0 },
+    { ClassName: "PlateCarrierVest", Amount: 1, QuantityPercent: -1, MinQuantityPercent: 0 },
+    { ClassName: "GorkaHelmet", Amount: 1, QuantityPercent: -1, MinQuantityPercent: 0 },
   ],
   ShowDistance: TRUE,
   AddItemsToNearbyMarketZone: FALSE,
@@ -1282,7 +1254,7 @@ export const COLLECT_WATER_PURE: CollectionObjective = {
   ObjectiveText: "Stock up on clean water — the old stuff is gone.",
   ObjectiveType: ObjectiveType.COLLECT,
   Collections: [
-    { ClassName: "WaterBottle", Amount: 5, QuantityPercent: 1, MinQuantityPercent: 0 },
+    { ClassName: "WaterBottle", Amount: 5, QuantityPercent: -1, MinQuantityPercent: 0 },
   ],
   ShowDistance: TRUE,
   AddItemsToNearbyMarketZone: FALSE,
@@ -1298,7 +1270,7 @@ export const DELIVERY_INTEL_PACKAGE: DeliveryObjective = {
   ObjectiveText: "Deliver the intel package before it burns a target on your back.",
   ObjectiveType: ObjectiveType.DELIVERY,
   Collections: [
-    { ClassName: "Paper", Amount: 1, QuantityPercent: 1, MinQuantityPercent: 0 },
+    { ClassName: "Paper", Amount: 1, QuantityPercent: -1, MinQuantityPercent: 0 },
   ],
   ShowDistance: TRUE,
   AddItemsToNearbyMarketZone: FALSE,
@@ -1313,7 +1285,7 @@ export const DELIVERY_BATTERY_DROP: DeliveryObjective = {
   ObjectiveText: "Drop off the battery pack — their generator's dead.",
   ObjectiveType: ObjectiveType.DELIVERY,
   Collections: [
-    { ClassName: "ItemBattery9V", Amount: 5, QuantityPercent: 1, MinQuantityPercent: 0 },
+    { ClassName: "Battery9V", Amount: 5, QuantityPercent: -1, MinQuantityPercent: 0 },
   ],
   ShowDistance: TRUE,
   AddItemsToNearbyMarketZone: FALSE,
@@ -1328,45 +1300,15 @@ export const DELIVERY_GUNSMITH_KIT: DeliveryObjective = {
   ObjectiveText: "The gunsmith wants his tools back. Bring the whole kit.",
   ObjectiveType: ObjectiveType.DELIVERY,
   Collections: [
-    { ClassName: "GunPartWeaponParts", Amount: 2, QuantityPercent: 1, MinQuantityPercent: 0 },
-    { ClassName: "OilFilter", Amount: 1, QuantityPercent: 1, MinQuantityPercent: 0 },
+    { ClassName: "M4_CQB_Handguard", Amount: 2, QuantityPercent: -1, MinQuantityPercent: 0 },
+    { ClassName: "AK74_Buttstock_Wood", Amount: 2, QuantityPercent: -1, MinQuantityPercent: 0 },
+    { ClassName: "Mosin_Bayonet", Amount: 2, QuantityPercent: -1, MinQuantityPercent: 0 },
+    { ClassName: "AmmoBox", Amount: 1, QuantityPercent: -1, MinQuantityPercent: 0 },
   ],
   ShowDistance: TRUE,
   AddItemsToNearbyMarketZone: FALSE,
   MaxDistance: 150,
   MarkerName: "Gunsmith's Table",
-};
-
-/** @deprecated untill playtested */
-export const DELIVERY_COLD_WEATHER_GEAR: DeliveryObjective = {
-  ...OBJECTIVE_DEFAULTS,
-  ID: 77,
-  ObjectiveText: "Send the cold gear pack before the temperature drops again.",
-  ObjectiveType: ObjectiveType.DELIVERY,
-  Collections: [
-    { ClassName: "WinterCoat_Black", Amount: 2, QuantityPercent: 1, MinQuantityPercent: 0 },
-    { ClassName: "WinterGloves", Amount: 2, QuantityPercent: 1, MinQuantityPercent: 0 },
-  ],
-  ShowDistance: TRUE,
-  AddItemsToNearbyMarketZone: FALSE,
-  MaxDistance: 150,
-  MarkerName: "Cold Pack Drop",
-};
-
-/** @deprecated untill playtested */
-export const DELIVERY_RATIONS_CACHE: DeliveryObjective = {
-  ...OBJECTIVE_DEFAULTS,
-  ID: 78,
-  ObjectiveText: "Stash the rations where the patrol can find them on rotation.",
-  ObjectiveType: ObjectiveType.DELIVERY,
-  Collections: [
-    { ClassName: "CannedSardines", Amount: 5, QuantityPercent: 1, MinQuantityPercent: 0 },
-    { ClassName: "CannedDogFood", Amount: 5, QuantityPercent: 1, MinQuantityPercent: 0 },
-  ],
-  ShowDistance: TRUE,
-  AddItemsToNearbyMarketZone: FALSE,
-  MaxDistance: 150,
-  MarkerName: "Rations Cache",
 };
 
 // ── Crafting ──
@@ -1381,7 +1323,7 @@ export const CRAFT_TRIPWIRE_ALARM: CraftingObjective = {
   ExecutionAmount: 3,
 };
 
-export const CRAFT_IMPROvised_SHIELDS: CraftingObjective = {
+export const CRAFT_IMPROVISED_SHIELDS: CraftingObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 80,
   ObjectiveText: "Improvised shields from scrap — better than nothing.",
@@ -1453,23 +1395,14 @@ export const CRAFT_DUST_MASK: CraftingObjective = {
 // ── Action ──
 
 /** @deprecated untill playtested */
-export const ACTION_OPEN_VEHICLE_DOOR: ActionObjective = {
-  ...OBJECTIVE_DEFAULTS,
-  ID: 87,
-  ObjectiveText: "Pry open a vehicle door — hope the lock didn't freeze.",
-  ObjectiveType: ObjectiveType.ACTION,
-  ActionNames: ["ActionOpenDoor"],
-  AllowedClassNames: ["CarDoor"],
-};
-
-/** @deprecated untill playtested */
 export const ACTION_OPEN_VEHICLE_HOOD: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 88,
   ObjectiveText: "Pop the hood and check under the metal.",
   ObjectiveType: ObjectiveType.ACTION,
   ActionNames: ["ActionOpen"],
-  AllowedClassNames: ["CarHood", "CarDoor"],
+  ExecutionAmount: 1,
+  AllowedClassNames: ["CarDoor"],
 };
 
 /** @deprecated untill playtested */
@@ -1478,28 +1411,9 @@ export const ACTION_OPEN_BACK_DOOR: ActionObjective = {
   ID: 89,
   ObjectiveText: "Open the rear doors and search the back.",
   ObjectiveType: ObjectiveType.ACTION,
-  ActionNames: ["ActionOpenDoor"],
-  AllowedClassNames: ["VanBackDoor", "CarDoor"],
-};
-
-/** @deprecated untill playtested */
-export const ACTION_SEARCH_BACKPACK: ActionObjective = {
-  ...OBJECTIVE_DEFAULTS,
-  ID: 90,
-  ObjectiveText: "Rummage through the backpack — grab anything useful.",
-  ObjectiveType: ObjectiveType.ACTION,
   ActionNames: ["ActionOpen"],
-  AllowedClassNames: ["Backpack"],
-};
-
-/** @deprecated untill playtested */
-export const ACTION_OPEN_GARAGE: ActionObjective = {
-  ...OBJECTIVE_DEFAULTS,
-  ID: 91,
-  ObjectiveText: "Roll up the garage door — what's parked inside is yours now.",
-  ObjectiveType: ObjectiveType.ACTION,
-  ActionNames: ["ActionOpen"],
-  AllowedClassNames: ["Garage"],
+  ExecutionAmount: 1,
+  AllowedClassNames: ["CarDoor"],
 };
 
 // ── Crafting (continued - more) ──
@@ -1833,11 +1747,9 @@ const ALL_SIDE = [
   DELIVERY_INTEL_PACKAGE,
   DELIVERY_BATTERY_DROP,
   DELIVERY_GUNSMITH_KIT,
-  DELIVERY_COLD_WEATHER_GEAR,
-  DELIVERY_RATIONS_CACHE,
   // Crafting
   CRAFT_TRIPWIRE_ALARM,
-  CRAFT_IMPROvised_SHIELDS,
+  CRAFT_IMPROVISED_SHIELDS,
   CRAFT_MORPHINE_SYR,
   CRAFT_FLARE_BATON,
   CRAFT_ROPE_BOOTS,
@@ -1846,11 +1758,8 @@ const ALL_SIDE = [
   CRAFT_DUST_MASK,
   CRAFT_AMMO_PACK,
   // Action
-  ACTION_OPEN_VEHICLE_DOOR,
   ACTION_OPEN_VEHICLE_HOOD,
   ACTION_OPEN_BACK_DOOR,
-  ACTION_SEARCH_BACKPACK,
-  ACTION_OPEN_GARAGE,
   // AICamp
   AICAMP_ROADBLOCK,
   AICAMP_OUTPOST_RAID,
@@ -1889,19 +1798,6 @@ const ALL_OBJECTIVES: QuestObjective[] = [
   ...ALL_SIDE,
 ];
 
-const DEFAULT_QUEST_AI_CLASSES = [
-  "eAI_SurvivorF_Keiko",
-  "eAI_SurvivorF_Linda",
-  "eAI_SurvivorM_Rolf",
-  "eAI_SurvivorM_Denis",
-  "eAI_SurvivorM_Boris",
-];
-
-function questAIClasses(classNames: string[]): string[] {
-  const validClassNames = classNames.filter((className) => className.startsWith("eAI_"));
-  return validClassNames.length > 0 ? validClassNames : DEFAULT_QUEST_AI_CLASSES;
-}
-
 function createQuestAISpawn(
   objective: QuestAIPatrolObjective | QuestAICampObjective,
   numberOfAI: number,
@@ -1923,7 +1819,7 @@ function createQuestAISpawn(
     ThreatDistanceLimit: 150,
     DamageMultiplier: 1,
     DamageReceivedMultiplier: 1,
-    ClassNames: questAIClasses(objective.ClassNames),
+    ClassNames: AI_NPCS,
     SniperProneDistanceThreshold: 300,
     RespawnTime: 1,
     DespawnTime: 1,

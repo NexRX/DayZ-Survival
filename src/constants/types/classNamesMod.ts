@@ -1,3 +1,6 @@
+import { ClassName } from "./classNames.ts";
+import { ChernarusClassNames } from "./classNamesLarge.ts";
+
 export const AI_NPCS_READ_ONLY = [
   "eAI_SurvivorM_Denis",
   "eAI_SurvivorM_Cyril",
@@ -58,6 +61,7 @@ export const QUEST_NPCS = [...QUEST_NPCS_READ_ONLY];
 export type QuestNpcClassNames = typeof QUEST_NPCS[number];
 
 export const BANDIT_NPCS_READ_ONLY = [
+  "BanditAI_Adam",
   "BanditAI_Boris",
   "BanditAI_Denis",
   "BanditAI_Elias",
@@ -67,7 +71,9 @@ export const BANDIT_NPCS_READ_ONLY = [
   "BanditAI_Indika",
   "BanditAI_Jose",
   "BanditAI_Kaito",
+  "BanditAI_Keiko",
   "BanditAI_Lewis",
+  "BanditAI_Linda",
   "BanditAI_Manji",
   "BanditAI_Niki",
   "BanditAI_Oliver",
@@ -80,6 +86,124 @@ export const BANDIT_NPCS_READ_ONLY = [
 export const BANDIT_NPCS = [...BANDIT_NPCS_READ_ONLY];
 export type BanditNpcClassNames = typeof BANDIT_NPCS[number];
 
-export type NPCClassName = QuestNpcClassNames | AINpcClassNames | BanditNpcClassNames;
+export const ZOMBIE_NPCS_READ_ONLY = [
+  "ZombieBase",
+  "ZombieMadman",
+  "ZombieFast",
+  "ZombieSlow",
+  "ZombieFemaleBase",
+  "ZombieMaleBase",
+  "ZmbM_HermitSkinny_Base",
+  "ZmbM_HermitSkinny_Beige",
+  "ZmbM_HermitSkinny_Black",
+  "ZmbM_HermitSkinny_Green",
+  "ZmbM_HermitSkinny_Red",
+  "ZmbM_FarmerFat_Base",
+  "ZmbM_FarmerFat_Beige",
+  "ZmbM_FarmerFat_Blue",
+  "ZmbM_FarmerFat_Brown",
+  "ZmbM_FarmerFat_Green",
+  "ZmbF_CitizenANormal_Base",
+  "ZmbF_CitizenANormal_Brown",
+  "ZmbF_CitizenANormal_Blue",
+  "ZmbM_CitizenBFat_Base",
+  "ZmbM_CitizenBFat_Red",
+  "ZmbM_CitizenBFat_Green",
+  "ZmbF_CitizenBSkinny_Base",
+  "ZmbF_CitizenBSkinny",
+  "ZmbM_PrisonerSkinny_Base",
+  "ZmbM_PrisonerSkinny",
+  "ZmbM_FirefighterNormal_Base",
+  "ZmbM_FirefighterNormal",
+  "ZmbM_FishermanOld_Base",
+  "ZmbM_FishermanOld_Blue",
+  "ZmbM_FishermanOld_Green",
+  "ZmbM_FishermanOld_Grey",
+  "ZmbM_FishermanOld_Red",
+  "ZmbF_JournalistNormal_Base",
+  "ZmbF_JournalistNormal_Blue",
+  "ZmbF_JournalistNormal_Green",
+  "ZmbF_JournalistNormal_Red",
+  "ZmbF_JournalistNormal_White",
+  "ZmbM_ParamedicNormal_Base",
+  "ZmbM_ParamedicNormal_Blue",
+  "ZmbM_ParamedicNormal_Green",
+  "ZmbM_ParamedicNormal_Red",
+  "ZmbM_ParamedicNormal_Black",
+  "ZmbF_ParamedicNormal_Base",
+  "ZmbF_ParamedicNormal_Blue",
+  "ZmbF_ParamedicNormal_Green",
+  "ZmbF_ParamedicNormal_Red",
+  "ZmbM_HikerSkinny_Base",
+  "ZmbM_HikerSkinny_Green",
+  "ZmbM_HikerSkinny_Yellow",
+  "ZmbF_HikerSkinny_Base",
+  "ZmbF_HikerSkinny_Blue",
+  "ZmbF_HikerSkinny_Grey",
+  "ZmbF_HikerSkinny_Green",
+  "ZmbF_HikerSkinny_Red",
+  "ZmbM_HunterOld_Base",
+  "ZmbM_HunterOld_Autumn",
+  "ZmbM_HunterOld_Spring",
+  "ZmbM_HunterOld_Summer",
+  "ZmbM_HunterOld_Winter",
+  "ZmbF_SurvivorNormal_Base",
+  "ZmbF_SurvivorNormal_Blue",
+  "ZmbF_SurvivorNormal_Orange",
+  "ZmbF_SurvivorNormal_Red",
+  "ZmbF_SurvivorNormal_White",
+  "ZmbM_SurvivorDean_Base",
+  "ZmbM_SurvivorDean_Black",
+  "ZmbM_SurvivorDean_Blue",
+  "ZmbM_SurvivorDean_Grey",
+  "ZmbM_PolicemanFat_Base",
+  "ZmbM_PolicemanFat",
+  "ZmbF_PoliceWomanNormal_Base",
+  "ZmbF_PoliceWomanNormal",
+  "ZmbM_SoldierNormal_Base",
+  "ZmbM_SoldierNormal",
+  "ZmbM_CommercialPilotOld_Base",
+  "ZmbM_CommercialPilotOld_Olive",
+  "ZmbM_CommercialPilotOld_Brown",
+  "ZmbM_CommercialPilotOld_Grey",
+  "ZmbM_PatrolNormal_Base",
+  "ZmbM_PatrolNormal_PautRev",
+  "ZmbM_PatrolNormal_Autumn",
+  "ZmbM_PatrolNormal_Flat",
+  "ZmbM_PatrolNormal_Summer",
+  "ZmbM_JoggerSkinny_Base",
+  "ZmbM_JoggerSkinny_Blue",
+  "ZmbM_JoggerSkinny_Green",
+  "ZmbM_JoggerSkinny_Red",
+  "ZmbF_JoggerSkinny_Base",
+  "ZmbF_JoggerSkinny_Blue",
+  "ZmbF_JoggerSkinny_Brown",
+  "ZmbF_JoggerSkinny_Green",
+  "ZmbF_JoggerSkinny_Red",
+  "ZmbM_MotobikerFat_Base",
+  "ZmbM_MotobikerFat_Beige",
+  "ZmbM_MotobikerFat_Black",
+  "ZmbM_VillagerOld_Base",
+  "ZmbM_VillagerOld_Blue",
+  "ZmbM_VillagerOld_Green",
+  "ZmbF_SkaterYoung_Base",
+  "ZmbF_SkaterYoung_Brown",
+  "ZmbF_SkaterYoung_Violet",
+  "ZmbF_DoctorSkinny_Base",
+  "ZmbF_DoctorSkinny",
+  "ZmbM_HeavyIndustryWorker_Base",
+  "ZmbM_ConstrWorkerNormal_Base",
+] as const;
+export const ZOMBIE_NPCS = [...ZOMBIE_NPCS_READ_ONLY];
+export type ZombieNpcClassNames = typeof ZOMBIE_NPCS[number];
+
+export type NPCClassName =
+  | QuestNpcClassNames
+  | AINpcClassNames
+  | BanditNpcClassNames
+  | ZombieNpcClassNames;
 
 export type NPCClassNames = NPCClassName[] | readonly NPCClassNames[];
+
+/** Class names added by mods or game maps */
+export type ClassNameModded = ClassName | ChernarusClassNames | "QPK_Note_1";

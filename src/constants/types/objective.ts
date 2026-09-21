@@ -1,8 +1,8 @@
 import { PROFILE_DIR } from "../paths.ts";
 import type { BoolNum, CollectionEntry, Vec3 } from "./common.ts";
-import type { ClassName, ClassNameAction } from "./classNames.ts";
-import { , LoadoutName } from "./npc.ts";
-import { NPCClassName } from "./classNamesMod.ts";
+import type { ClassNameAction } from "./classNames.ts";
+import { LoadoutName } from "./npc.ts";
+import { AINpcClassNames, ClassNameModded, NPCClassName } from "./classNamesMod.ts";
 
 export const OBJECTIVE_ACTION_DIR = PROFILE_DIR + "/ExpansionMod/Quests/Objectives/Action";
 
@@ -54,8 +54,8 @@ export interface TargetObjective extends ObjectiveBase {
   Amount: number;
   ClassNames: NPCClassName[];
   CountSelfKill: BoolNum;
-  AllowedWeapons: ClassName[];
-  ExcludedClassNames: ClassName[];
+  AllowedWeapons: ClassNameModded[];
+  ExcludedClassNames: ClassNameModded[];
   CountAIPlayers: BoolNum;
   AllowedTargetFactions: string[];
   AllowedDamageZones: string[];
@@ -87,8 +87,8 @@ export interface CraftingObjective extends ObjectiveBase {
 export interface ActionObjective extends ObjectiveBase {
   ObjectiveType: ObjectiveType.ACTION;
   ActionNames: ClassNameAction[];
-  AllowedClassNames: ClassName[];
-  ExcludedClassNames?: ClassName[];
+  AllowedClassNames: ClassNameModded[];
+  ExcludedClassNames?: ClassNameModded[];
   ExecutionAmount: number;
 }
 
@@ -108,10 +108,10 @@ export interface AIPatrolObjective extends ObjectiveBase {
   MaxDistance: number;
   MinDistance: number;
   Amount: number;
-  ClassNames: ClassName[];
+  ClassNames: NPCClassName[];
   CountSelfKill: BoolNum;
-  AllowedWeapons: ClassName[];
-  ExcludedClassNames: ClassName[];
+  AllowedWeapons: ClassNameModded[];
+  ExcludedClassNames: ClassNameModded[];
   CountAIPlayers: BoolNum;
   AllowedTargetFactions: string[];
   AllowedDamageZones: string[];
@@ -125,8 +125,8 @@ export interface AICampObjective extends ObjectiveBase {
   Amount: number;
   ClassNames: NPCClassName[];
   CountSelfKill: BoolNum;
-  AllowedWeapons: ClassName[];
-  ExcludedClassNames: ClassName[];
+  AllowedWeapons: ClassNameModded[];
+  ExcludedClassNames: ClassNameModded[];
   CountAIPlayers: BoolNum;
   AllowedTargetFactions: string[];
   AllowedDamageZones: string[];
