@@ -206,4 +206,10 @@ export type NPCClassName =
 export type NPCClassNames = NPCClassName[] | readonly NPCClassNames[];
 
 /** Class names added by mods or game maps */
-export type ClassNameModded = ClassName | ChernarusClassNames | "QPK_Note_1";
+export type ClassNameModded =
+  | ClassName
+  | ChernarusClassNames
+  | "ExpansionBanknoteHryvnia"
+  | "QPK_Note_1"
+  | "QPK_Note_1"
+  | "QPK_Note_3";

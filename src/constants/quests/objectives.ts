@@ -315,7 +315,6 @@ export const ACTION_SEARCH_BUILDING: ActionObjective = {
   AllowedClassNames: ["BaseBuildingBase"],
 };
 
-/** @deprecated untill playtested */
 export const ACTION_FARMING: ActionObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 16,

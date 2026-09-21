@@ -5,6 +5,7 @@ import {
   configToRecord,
   currency,
   fixQuests,
+  item,
   QUEST_CONFIG_VERSION,
   reward,
   rgb,
@@ -60,6 +61,7 @@ const MAIN_QUEST_ACT1_FARM_SURVIVAL: Quest = {
     "The garden is tended and the stockpile is heavier. Daniels finally tells me the attacks are not random. Someone—or something—is testing the farm.",
   ],
   PreQuestIDs: [MAIN_QUEST_ACT1_REACH_ROMASHKA.ID],
+  QuestItems: [item("HandSaw"), item("Shovel"), item("ZucchiniSeedsPack")],
   Objectives: [
     ref(objectives.ACTION_FARMING),
     ref(objectives.COLLECT_BUILDING_MATERIALS),
@@ -71,18 +73,16 @@ const MAIN_QUEST_ACT1_FARM_SURVIVAL: Quest = {
 const MAIN_QUEST_ACT1_RAIDER_SCOUTS: Quest = {
   ...MAIN_QUEST_DEFAULTS,
   ID: 3,
-  Title: "Act I: Eyes in the Treeline",
-  ObjectiveText: "Find and break the patrol watching Romashka.",
+  Title: "Act I: I Will Find You...",
+  ObjectiveText: "Find and break the scouts watching Romashka.",
   Descriptions: [
-    "The tracks outside the perimeter are too clean for infected. Daniels calls them Raiders: armed scavengers who move with the patience of hunters and leave no witnesses when they can help it.",
-    "The treeline is breathing. Kill the scouts before they learn the farm's routines, then follow their patrol route toward the coast.",
+    "We've spotted tracks outside the of camp that are too clean for infected. I believe its a scouting party from a faction called Raiders: armed scavengers who move with the patience of hunters and leave no witnesses when they can help it. We need to nip this in the bud while we still can",
+    "That scouting party is still nearby. Kill the scouts before they learn the farm's routines, we can't let them reveal our weaknesses.",
     "The scouts carried a hand-drawn mark: a red circle around Stary Sobor. Daniels says the radiation zones are not just dangerous—they are being used.",
   ],
-  PreQuestIDs: [2],
-  // AIPATROL owns the encounter and spawns its targets. TARGET objectives only
-  // count existing kills and must not gate this quest before the patrol.
+  PreQuestIDs: [MAIN_QUEST_ACT1_FARM_SURVIVAL.ID],
   Objectives: [ref(objectives.AIPATROL_RAIDER_PERIMETER)],
-  Rewards: [reward("AmmoBox_762x39_SPG2"), currency(7.5)],
+  Rewards: [reward("GPSReceiver"), reward("Battery9V"), currency(7.5)],
   FollowUpQuest: 4,
 };
 
@@ -96,7 +96,7 @@ const MAIN_QUEST_ACT2_FOLLOW_THE_SIGNAL: Quest = {
     "Take the coastal road and build something that can keep you alive when the clean air ends. The map marks Stary's outer edge, but the dead do not respect map lines.",
     "The signal is stronger here. Beneath the static is a repeating phrase: 'room seven'. Daniels wants the source, whatever is left of it.",
   ],
-  PreQuestIDs: [3],
+  PreQuestIDs: [MAIN_QUEST_ACT1_RAIDER_SCOUTS.ID],
   Objectives: [
     ref(objectives.TRAVEL_COASTAL_ROAD),
     ref(objectives.CRAFT_DUST_MASK),
@@ -115,7 +115,7 @@ const MAIN_QUEST_ACT2_STARY_RED_ROOM: Quest = {
     "Daniels believes the keycard rooms were not built to protect supplies. They were built to hide records. Clear the guards, find the cache, and do not stay for curiosity's sake.",
     "The buried case contains a melted keycard and a fragment of a research log. The same signal was broadcast from an island to the east: Skalisty.",
   ],
-  PreQuestIDs: [4],
+  PreQuestIDs: [MAIN_QUEST_ACT2_FOLLOW_THE_SIGNAL.ID],
   Objectives: [
     ref(objectives.AICAMP_STARY_RAD_ZONE),
     ref(objectives.TREASUREHUNT_STARY_EVIDENCE),
@@ -134,7 +134,7 @@ const MAIN_QUEST_ACT2_EXTRACT_THE_DEFECTOR: Quest = {
     "Get her out alive. The Raiders are not protecting the scientist—they are trying to move her before anyone can ask what the keycard rooms were really for.",
     "The scientist confirms the signal is a lure. It gathers AI around selected sites, making the zones into prisons. She knows how to shut it down, but the transmitter is at Tisy.",
   ],
-  PreQuestIDs: [5],
+  PreQuestIDs: [MAIN_QUEST_ACT2_STARY_RED_ROOM.ID],
   Objectives: [
     ref(objectives.AIVIP_EXTRACT_SCIENTIST),
     ref(objectives.DELIVERY_MEDICAL_TO_ROMASHKA),
@@ -153,7 +153,7 @@ const MAIN_QUEST_ACT3_SKALISTY_TRUTH: Quest = {
     "Cross the water, search the dead, and take the component from wherever Cordon buried it. The island is crawling with AI that never received the order to stand down.",
     "The component still pulses in your hands. It is not a beacon. It is a command key—and someone at Tisy is waiting for it.",
   ],
-  PreQuestIDs: [6],
+  PreQuestIDs: [MAIN_QUEST_ACT2_EXTRACT_THE_DEFECTOR.ID],
   Objectives: [ref(objectives.TREASUREHUNT_SKALISTY_CACHE)],
   Rewards: [reward("NBCGlovesGray"), currency(25)],
   FollowUpQuest: 8,
@@ -169,9 +169,9 @@ const MAIN_QUEST_ACT3_BREAK_THE_CONVOY: Quest = {
     "Hit the convoy before it reaches the gate. The road is open, the AI is numerous, and the people inside know exactly what happens when the signal is silenced.",
     "The convoy is broken. The core is yours. Daniels says the transmitter can be destroyed—but only after the final broadcast begins.",
   ],
-  PreQuestIDs: [7],
+  PreQuestIDs: [MAIN_QUEST_ACT3_SKALISTY_TRUTH.ID],
   Objectives: [ref(objectives.AIPATROL_CONVOY_ESCORT)],
-  Rewards: [reward("AmmoBox_762x39_BS"), reward("Morphine", 2), currency(30)],
+  Rewards: [reward("AmmoBox_762x39_20Rnd"), reward("Morphine", 2), currency(30)],
   FollowUpQuest: 9,
 };
 
@@ -185,7 +185,7 @@ const MAIN_QUEST_ACT3_SHUTDOWN: Quest = {
     "Take the core to the gate, fight through the last line, and shut the machine down. Do not expect a clean victory; there may not be enough of the old world left for one.",
     "The signal dies. For the first time since waking on the coast, the map is silent. Daniels offers a place at Romashka, but the silence leaves one question: who built the machine, and who will come looking for it?",
   ],
-  PreQuestIDs: [8],
+  PreQuestIDs: [MAIN_QUEST_ACT3_BREAK_THE_CONVOY.ID],
   Objectives: [
     ref(objectives.AICAMP_TISY_TRANSMITTER),
     ref(objectives.CRAFT_PIPE_BOMB),
@@ -204,12 +204,12 @@ const MAIN_QUEST_ACT4_SIGNAL_AFTERSHOCK: Quest = {
     "Daniels wants proof that the shutdown worked. Scavenge working radio parts and reach the overlook where the first aftershock was recorded.",
     "The aftershock is not coming from Tisy. It is moving between relay sites, following the old civilian emergency network. Someone prepared a second route.",
   ],
-  PreQuestIDs: [9],
+  PreQuestIDs: [MAIN_QUEST_ACT3_SHUTDOWN.ID],
   Objectives: [
     ref(objectives.COLLECT_RADIO_PARTS),
     ref(objectives.TRAVEL_LOOKOUT),
   ],
-  Rewards: [reward("ItemRadio"), reward("ItemBattery9V", 2), currency(35)],
+  Rewards: [reward("ItemRadio"), reward("Battery9V", 2), currency(35)],
   FollowUpQuest: 11,
 };
 
@@ -223,12 +223,12 @@ const MAIN_QUEST_ACT4_BROKEN_RELAY: Quest = {
     "Open the vehicle, strip the useful parts, and bring back anything that can identify the next relay. The machine may be dead, but its maintenance trail is not.",
     "The control hardware carries a route stamped with a civilian evacuation code. The destination is an abandoned hospital, and the code is still being used.",
   ],
-  PreQuestIDs: [10],
+  PreQuestIDs: [MAIN_QUEST_ACT4_SIGNAL_AFTERSHOCK.ID],
   Objectives: [
     ref(objectives.ACTION_OPEN_VEHICLE_HOOD),
     ref(objectives.COLLECT_WEAPON_PARTS),
   ],
-  Rewards: [reward("OilFilter"), reward("GunPartWeaponParts"), currency(40)],
+  Rewards: [reward("FNP45_MRDSOptic"), reward("PistolSuppressor"), currency(40)],
   FollowUpQuest: 12,
 };
 
@@ -242,7 +242,7 @@ const MAIN_QUEST_ACT4_HOSPITAL_BROADCAST: Quest = {
     "Sweep every floor. Whatever is inside has had years to learn the corridors, and the ledger will be buried beneath the bodies if you leave anything standing.",
     "The ledger names a network called the Shepherds. They did not build the transmitter; they used it to decide which settlements lived long enough to be useful.",
   ],
-  PreQuestIDs: [11],
+  PreQuestIDs: [MAIN_QUEST_ACT4_BROKEN_RELAY.ID],
   Objectives: [
     ref(objectives.TARGET_HOSPITAL_SWEEP),
     ref(objectives.TRAVEL_RALLY_POINT),
@@ -261,7 +261,7 @@ const MAIN_QUEST_ACT4_SHEPHERD_WITNESS: Quest = {
     "Find him and bring him out. The Shepherds will kill their own people to keep that sequence buried, and the technician knows exactly what the network was designed to do.",
     "The technician confirms the relays can still broadcast a kill order to every connected AI faction. The final relay is hidden beneath an old bridge.",
   ],
-  PreQuestIDs: [12],
+  PreQuestIDs: [MAIN_QUEST_ACT4_HOSPITAL_BROADCAST.ID],
   Objectives: [
     ref(objectives.AIVIP_SCIENTIST_EXFIL),
     ref(objectives.DELIVERY_GUNSMITH_KIT),
@@ -280,12 +280,12 @@ const MAIN_QUEST_ACT4_BURIED_HANDSHAKE: Quest = {
     "Dig it up, then build enough ammunition to survive the trip to the final relay. There will be no second attempt once the handshake is used.",
     "The key is intact. Its last authenticated command was not a shutdown—it was a population purge. Daniels says the final relay must be destroyed before anyone can issue it again.",
   ],
-  PreQuestIDs: [13],
+  PreQuestIDs: [MAIN_QUEST_ACT4_SHEPHERD_WITNESS.ID],
   Objectives: [
     ref(objectives.TREASUREHUNT_UNDER_BRIDGE),
     ref(objectives.CRAFT_AMMO_PACK),
   ],
-  Rewards: [reward("AmmoBox_762x39_BS", 2), reward("Canteen"), currency(60)],
+  Rewards: [reward("AmmoBox_762x39_20Rnd", 2), reward("Canteen"), currency(60)],
   FollowUpQuest: 15,
 };
 
@@ -299,12 +299,12 @@ const MAIN_QUEST_ACT5_BLACK_LEDGER: Quest = {
     "Clear the high ground and search the marked ventilation shaft. The target list may tell Daniels which settlements are next—or prove Romashka was always on it.",
     "The ledger contains Romashka's name, crossed out only because the transmitter failed. The Shepherds have moved to a new command post and are preparing a manual purge.",
   ],
-  PreQuestIDs: [14],
+  PreQuestIDs: [MAIN_QUEST_ACT4_BURIED_HANDSHAKE.ID],
   Objectives: [
     ref(objectives.TARGET_ROOFTOP_CLEAR),
     ref(objectives.TREASUREHUNT_ROOFTOP_VENT),
   ],
-  Rewards: [reward("PlateCarrierVest"), reward("AmmoBox_762x39_SPG2"), currency(65)],
+  Rewards: [reward("PlateCarrierVest"), reward("AmmoBox_762x39_20Rnd"), currency(65)],
   FollowUpQuest: 16,
 };
 
@@ -318,7 +318,7 @@ const MAIN_QUEST_ACT5_HOSTAGES: Quest = {
     "Get the captive out without turning the building into a grave. The Shepherds will use the hostage as bait, and the infected will follow every gunshot.",
     "The captive is safe for the moment. They remember a marksman on the eastern roof calling in reinforcements whenever anyone tries to escape.",
   ],
-  PreQuestIDs: [15],
+  PreQuestIDs: [MAIN_QUEST_ACT5_BLACK_LEDGER.ID],
   Objectives: [
     ref(objectives.AIVIP_SHEPHERD_CAPTIVE),
     ref(objectives.COLLECT_BODY_GEAR),
@@ -337,12 +337,12 @@ const MAIN_QUEST_ACT5_BURN_THE_ROUTE: Quest = {
     "Clear the warehouse, recover the emergency documents, and light a signal that tells Daniels the route is open for the final push.",
     "The supply line is broken. The marksman is still alive on the roof, and every remaining Shepherd is converging on the command room.",
   ],
-  PreQuestIDs: [16],
+  PreQuestIDs: [MAIN_QUEST_ACT5_HOSTAGES.ID],
   Objectives: [
     ref(objectives.TARGET_WAREHOUSE_CLEAR),
     ref(objectives.CRAFT_FLARE_BATON),
   ],
-  Rewards: [reward("AmmoBox_762x39_SPG2", 2), reward("Epinephrine"), currency(75)],
+  Rewards: [reward("AmmoBox_762x39_20Rnd", 2), reward("Epinephrine"), currency(75)],
   FollowUpQuest: 18,
 };
 
@@ -356,12 +356,12 @@ const MAIN_QUEST_ACT5_EXECUTIONER: Quest = {
     "Put him down, take the ledger, and deliver it to Daniels. The final page contains the authentication phrase for the manual purge.",
     "The executioner is dead. The ledger is in Daniels' hands, but the phrase is already being broadcast from inside the command post.",
   ],
-  PreQuestIDs: [17],
+  PreQuestIDs: [MAIN_QUEST_ACT5_BURN_THE_ROUTE.ID],
   Objectives: [
     ref(objectives.AIPATROL_SHEPHERD_EXECUTIONER),
     ref(objectives.DELIVERY_INTEL_PACKAGE),
   ],
-  Rewards: [reward("Morphine", 3), reward("AmmoBox_762x39_BS", 2), currency(80)],
+  Rewards: [reward("Morphine", 3), reward("AmmoBox_762x39_20Rnd", 2), currency(80)],
   FollowUpQuest: 19,
 };
 
@@ -375,7 +375,7 @@ const MAIN_QUEST_ACT5_LAST_COMMAND: Quest = {
     "Break through the last defenders, reach the command room, and destroy the route before the phrase finishes. There is no clean way to end this—only a final choice about what to leave standing.",
     "The command room burns. Daniels has the ledger, the survivors have a place at Romashka, and the factions that once answered the signal are finally blind. The coast is still hell, but for once, the next threat will have to find you by hand.",
   ],
-  PreQuestIDs: [18],
+  PreQuestIDs: [MAIN_QUEST_ACT5_EXECUTIONER.ID],
   Objectives: [
     ref(objectives.AICAMP_SHEPHERD_COMMAND),
     ref(objectives.TRAVEL_ESCAPE_ZONE),

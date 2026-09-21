@@ -1,5 +1,5 @@
 import { PROFILE_DIR } from "../paths.ts";
-import { NPCClassName } from "./classNamesMod.ts";
+import { ClassNameModded, NPCClassName } from "./classNamesMod.ts";
 import { BoolNum, Vec3 } from "./common.ts";
 import {
   AICampObjective,
@@ -28,21 +28,22 @@ export enum QuestNPCType {
   FENCE = 1,
 }
 
-/** A single reward entry — all non-core fields are optional because the mod
- *  only requires ClassName/Amount for the basic case. */
-export interface RewardEntry {
-  ClassName: string;
+export type Item = {
+  ClassName: ClassNameModded;
   Amount: number;
   Attachments?: unknown[];
   DamagePercent?: number;
+};
+
+/** A single reward entry — all non-core fields are optional because the mod
+ *  only requires ClassName/Amount for the basic case. */
+export interface RewardEntry extends Item {
   QuestID?: number;
   Chance?: number;
 }
 
 /** QuestItem — a named item with a quantity (used in QuestItems array). */
-export interface QuestItem {
-  ClassName: string;
-  Amount: number;
+export interface QuestItem extends Item {
 }
 
 /**

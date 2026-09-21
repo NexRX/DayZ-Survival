@@ -1,4 +1,5 @@
-import { Quest } from "../types/quest.ts";
+import { ClassNameModded } from "../types/classNamesMod.ts";
+import { Item, Quest } from "../types/quest.ts";
 
 /** @deprecated Usage of this variable needs updating */
 export const PLACEHOLDER_POSITION = [200, 100, 300] as const;
@@ -11,8 +12,20 @@ export const NPC_CONFIG_VERSION = 6;
 export const CURRENCY_CLASSNAME = "ExpansionBanknoteHryvnia";
 export const CURRENCY_MULTIPLIER = 1000;
 
+export function item(
+  className: ClassNameModded,
+  Amount: number = 1,
+  DamagePercent: number = 0,
+): Item {
+  return {
+    ClassName: className,
+    Amount,
+    DamagePercent,
+  };
+}
+
 export function reward(
-  className: string,
+  className: ClassNameModded,
   Amount: number = 1,
   DamagePercent: number = 0,
   Chance: number = 0,
