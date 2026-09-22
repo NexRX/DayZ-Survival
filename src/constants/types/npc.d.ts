@@ -1,9 +1,5 @@
-import { PROFILE_DIR } from "../paths.ts";
-import { NPCClassName } from "./classNamesMod.ts";
-import { BoolNum, Vec3 } from "./common.ts";
-
-/** Config path constant — the mod reads from this path. */
-export const NPC_CONFIG_DIR = `${PROFILE_DIR}/ExpansionMod/Quests/NPCs`;
+import type { NPCClassName } from "./classNames.ts";
+import type { BoolNum, Vec3 } from "./common.ts";
 
 export enum NPCEmoteID {
   None = -1,

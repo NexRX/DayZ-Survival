@@ -1,4 +1,6 @@
-import { Quest, QUEST_CONFIG_DIR, QuestType } from "../types/quest.ts";
+import type { Quest } from "../types/quest.d.ts";
+import { QuestType } from "../types/common.ts";
+import { QUEST_CONFIG_DIR } from "../paths.ts";
 import * as objectives from "./objectives.ts";
 import { ref } from "./objectives.ts";
 import {
@@ -9,6 +11,7 @@ import {
   QUEST_CONFIG_VERSION,
   reward,
   rgb,
+  safetyChecks,
 } from "./common.ts";
 import { NPC_TASKMASTER_DANIELS } from "./npc.ts";
 import { FALSE, TRUE } from "../types/common.ts";
@@ -61,7 +64,7 @@ const MAIN_QUEST_ACT1_FARM_SURVIVAL: Quest = {
     "The garden is tended and the stockpile is heavier. Daniels finally tells me the attacks are not random. Someone—or something—is testing the farm.",
   ],
   PreQuestIDs: [MAIN_QUEST_ACT1_REACH_ROMASHKA.ID],
-  QuestItems: [item("HandSaw"), item("Shovel"), item("ZucchiniSeedsPack")],
+  QuestItems: [item("Shovel"), item("ZucchiniSeedsPack")],
   Objectives: [
     ref(objectives.ACTION_FARMING),
     ref(objectives.COLLECT_BUILDING_MATERIALS),
@@ -81,7 +84,10 @@ const MAIN_QUEST_ACT1_RAIDER_SCOUTS: Quest = {
     "The scouts carried a hand-drawn mark: a red circle around Stary Sobor. Daniels says the radiation zones are not just dangerous—they are being used.",
   ],
   PreQuestIDs: [MAIN_QUEST_ACT1_FARM_SURVIVAL.ID],
-  Objectives: [ref(objectives.AIPATROL_RAIDER_PERIMETER)],
+  Objectives: [
+    ref(objectives.TRAVEL_SEVEROGRAD_RAIDERS),
+    ref(objectives.AIPATROL_RAIDER_SEVEROGRAD),
+  ],
   Rewards: [reward("GPSReceiver"), reward("Battery9V"), currency(7.5)],
   FollowUpQuest: 4,
 };
@@ -90,7 +96,7 @@ const MAIN_QUEST_ACT2_FOLLOW_THE_SIGNAL: Quest = {
   ...MAIN_QUEST_DEFAULTS,
   ID: 4,
   Title: "Act II: Follow the Signal",
-  ObjectiveText: "Reach the coastal route and prepare to enter the red zone.",
+  ObjectiveText: "Reach the rad zone perimeter.",
   Descriptions: [
     "The Raiders were not scouting Romashka. They were measuring it. Daniels has one lead: an old transmission that begins whenever the Stary zone goes loud.",
     "Take the coastal road and build something that can keep you alive when the clean air ends. The map marks Stary's outer edge, but the dead do not respect map lines.",
@@ -98,7 +104,7 @@ const MAIN_QUEST_ACT2_FOLLOW_THE_SIGNAL: Quest = {
   ],
   PreQuestIDs: [MAIN_QUEST_ACT1_RAIDER_SCOUTS.ID],
   Objectives: [
-    ref(objectives.TRAVEL_COASTAL_ROAD),
+    ref(objectives.TRAVEL_GNOMOV_CASTLE),
     ref(objectives.CRAFT_DUST_MASK),
   ],
   Rewards: [reward("Canteen"), reward("Morphine", 2), currency(10)],
@@ -383,26 +389,29 @@ const MAIN_QUEST_ACT5_LAST_COMMAND: Quest = {
   Rewards: [reward("PlateCarrierVest"), reward("Canteen"), currency(100)],
 };
 
-const MAIN_QUESTS: Quest[] = fixQuests([
-  MAIN_QUEST_ACT1_REACH_ROMASHKA,
-  MAIN_QUEST_ACT1_FARM_SURVIVAL,
-  MAIN_QUEST_ACT1_RAIDER_SCOUTS,
-  MAIN_QUEST_ACT2_FOLLOW_THE_SIGNAL,
-  MAIN_QUEST_ACT2_STARY_RED_ROOM,
-  MAIN_QUEST_ACT2_EXTRACT_THE_DEFECTOR,
-  MAIN_QUEST_ACT3_SKALISTY_TRUTH,
-  MAIN_QUEST_ACT3_BREAK_THE_CONVOY,
-  MAIN_QUEST_ACT3_SHUTDOWN,
-  MAIN_QUEST_ACT4_SIGNAL_AFTERSHOCK,
-  MAIN_QUEST_ACT4_BROKEN_RELAY,
-  MAIN_QUEST_ACT4_HOSPITAL_BROADCAST,
-  MAIN_QUEST_ACT4_SHEPHERD_WITNESS,
-  MAIN_QUEST_ACT4_BURIED_HANDSHAKE,
-  MAIN_QUEST_ACT5_BLACK_LEDGER,
-  MAIN_QUEST_ACT5_HOSTAGES,
-  MAIN_QUEST_ACT5_BURN_THE_ROUTE,
-  MAIN_QUEST_ACT5_EXECUTIONER,
-  MAIN_QUEST_ACT5_LAST_COMMAND,
-]);
+export const MAIN_QUESTS: Quest[] = safetyChecks(
+  fixQuests([
+    MAIN_QUEST_ACT1_REACH_ROMASHKA,
+    MAIN_QUEST_ACT1_FARM_SURVIVAL,
+    MAIN_QUEST_ACT1_RAIDER_SCOUTS,
+    MAIN_QUEST_ACT2_FOLLOW_THE_SIGNAL,
+    MAIN_QUEST_ACT2_STARY_RED_ROOM,
+    MAIN_QUEST_ACT2_EXTRACT_THE_DEFECTOR,
+    MAIN_QUEST_ACT3_SKALISTY_TRUTH,
+    MAIN_QUEST_ACT3_BREAK_THE_CONVOY,
+    MAIN_QUEST_ACT3_SHUTDOWN,
+    MAIN_QUEST_ACT4_SIGNAL_AFTERSHOCK,
+    MAIN_QUEST_ACT4_BROKEN_RELAY,
+    MAIN_QUEST_ACT4_HOSPITAL_BROADCAST,
+    MAIN_QUEST_ACT4_SHEPHERD_WITNESS,
+    MAIN_QUEST_ACT4_BURIED_HANDSHAKE,
+    MAIN_QUEST_ACT5_BLACK_LEDGER,
+    MAIN_QUEST_ACT5_HOSTAGES,
+    MAIN_QUEST_ACT5_BURN_THE_ROUTE,
+    MAIN_QUEST_ACT5_EXECUTIONER,
+    MAIN_QUEST_ACT5_LAST_COMMAND,
+  ]),
+  "Quests (Main)",
+);
 
 export const MAIN_QUESTS_CONFIGS = configToRecord(MAIN_QUESTS, `${QUEST_CONFIG_DIR}/Quest_`);

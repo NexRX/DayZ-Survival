@@ -1,5 +1,5 @@
-import { ClassNameModded } from "../types/classNamesMod.ts";
-import { Item, Quest } from "../types/quest.ts";
+import { ClassNameModded } from "../types/classNames.ts";
+import type { Item, Quest } from "../types/quest.d.ts";
 
 /** @deprecated Usage of this variable needs updating */
 export const PLACEHOLDER_POSITION = [200, 100, 300] as const;
@@ -80,4 +80,29 @@ export function fixQuests(quests: Quest[]) {
     });
     return q;
   });
+}
+
+export function safetyChecks<T extends { ID: number }>(
+  objs: T[],
+  label: string,
+  preexisting: T[] = [],
+): T[] {
+  const ids = new Set<number>();
+  const conflicting = new Set<number>();
+  preexisting.forEach(({ ID }) => ids.add(ID));
+
+  for (const { ID } of objs) {
+    if (ids.has(ID)) {
+      conflicting.add(ID);
+    } else {
+      ids.add(ID);
+    }
+  }
+
+  if (conflicting.size > 0) {
+    throw new Error(
+      `Conflicting ${label} IDs: ${Array.from(conflicting).join(", ")}`,
+    );
+  }
+  return objs;
 }

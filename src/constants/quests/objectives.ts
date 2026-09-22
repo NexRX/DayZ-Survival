@@ -1,19 +1,19 @@
-import { FALSE, TRUE } from "../types/common.ts";
-import {
+import type {
   ActionObjective,
   AICampObjective,
   AIPatrolObjective,
+  AiSpawn,
   AIVipObjective,
   CollectionObjective,
   CraftingObjective,
   DeliveryObjective,
   ObjectiveBase,
   ObjectiveRef,
-  ObjectiveType,
   TargetObjective,
   TravelObjective,
   TreasureHuntObjective,
-} from "../types/objective.ts";
+  TreasureLootItem,
+} from "../types/objective.d.ts";
 import {
   EXPANSION_QUESTS_OBJECTIVES_ACTION_DIR,
   EXPANSION_QUESTS_OBJECTIVES_AICAMP_DIR,
@@ -26,19 +26,22 @@ import {
   EXPANSION_QUESTS_OBJECTIVES_TRAVEL_DIR,
   EXPANSION_QUESTS_OBJECTIVES_TREASUREHUNT_DIR,
 } from "../paths.ts";
-import { OBJECTIVE_CONFIG_VERSION } from "./common.ts";
+import { OBJECTIVE_CONFIG_VERSION, PLACEHOLDER_POSITION, safetyChecks } from "./common.ts";
 import { LOCATION } from "./locations.ts";
+import { AI_NPCS, ClassNameModded } from "../types/classNames.ts";
+import { Faction } from "../types/quest.d.ts";
 import {
-  QuestAICampObjective,
-  QuestAIObjectiveSpawn,
-  QuestAIPatrolObjective,
-  QuestAIVipObjective,
-  QuestObjective,
-  QuestTargetObjective,
-  QuestTreasureHuntObjective,
-  QuestTreasureLoot,
-} from "../types/quest.ts";
-import { AI_NPCS } from "../types/classNamesMod.ts";
+  AIDefaultStance,
+  AIFormation,
+  AILootingBehaviour,
+  AISpeed,
+  AIWaypointInterpolation,
+  FALSE,
+  ObjectiveType,
+  TRUE,
+  Vec3,
+} from "../types/common.ts";
+import { LoadoutName } from "../types/npc.d.ts";
 
 export function ref<T extends ObjectiveBase>(objective: T): ObjectiveRef {
   return {
@@ -53,7 +56,68 @@ export const OBJECTIVE_DEFAULTS = {
   TimeLimit: -1, // Important, causes accept>cancelled bug
 };
 
+function aiSpawn(
+  Faction: Faction,
+  Loadout: LoadoutName,
+  Waypoints: Vec3[],
+  numberOfAI: number = 1,
+  Name: string = Faction,
+): AiSpawn {
+  return {
+    Name,
+    Speed: AISpeed.WALK,
+    // Units: objective.ClassNames.filter((name) =>
+    //   typeof name === "string" && name.startsWith("eAI_")
+    // ),
+    // ObjectClassName: "",
+    Chance: 100,
+    Faction,
+    Loadout,
+    Persist: 0,
+    Behaviour: "HALT",
+    Formation: AIFormation.NONE,
+    Waypoints,
+    NumberOfAI: numberOfAI,
+    AccuracyMax: 0.8,
+    AccuracyMin: 0.5,
+    CanBeLooted: TRUE,
+    DespawnTime: 1,
+    RespawnTime: 1,
+    DefaultStance: AIDefaultStance.STANDING,
+    DespawnRadius: 880,
+    MaxDistRadius: 150,
+    MinDistRadius: 50,
+    NumberOfAIMax: 0,
+    FormationScale: 1.5,
+    LootDropOnDeath: 0,
+    MaxSpreadRadius: 0,
+    MinSpreadRadius: 0,
+    ShoryukenChance: 0,
+    UnlimitedReload: 1,
+    DamageMultiplier: 1,
+    DefaultLookAngle: 0,
+    LootingBehaviour: AILootingBehaviour.ALL,
+    UnderThreatSpeed: AISpeed.SPRINT,
+    CanBeTriggeredByAI: FALSE,
+    FormationLooseness: 0,
+    HeadshotResistance: 0,
+    MaxFlankingDistance: -1,
+    ThreatDistanceLimit: 150,
+    LoadBalancingCategory: "",
+    WaypointInterpolation: AIWaypointInterpolation.NONE,
+    DamageReceivedMultiplier: 1,
+    ShoryukenDamageMultiplier: 0,
+    CanSpawnInContaminatedArea: FALSE,
+    EnableFlankingOutsideCombat: -1,
+    SniperProneDistanceThreshold: 300,
+    UseRandomWaypointAsStartPoint: TRUE,
+    NoiseInvestigationDistanceLimit: -1,
+  };
+}
+
 // ─── Travel Objectives ───────────────────────────────────────────────────────
+
+const SHOW_DISTANCE_DEFAULT = FALSE;
 
 export const TRAVEL_ROMASHKA_FARM: TravelObjective = {
   ...OBJECTIVE_DEFAULTS,
@@ -63,32 +127,20 @@ export const TRAVEL_ROMASHKA_FARM: TravelObjective = {
   Position: LOCATION.romashka,
   MaxDistance: 50,
   MarkerName: "Romashka Farm",
+  ShowDistance: TRUE,
   TriggerOnEnter: 1,
   TriggerOnExit: 0,
 };
 
-/** @deprecated untill playtested */
-export const TRAVEL_ROMASHKA_PERIMETER: TravelObjective = {
-  ...OBJECTIVE_DEFAULTS,
-  ID: 2,
-  ObjectiveText: "Scout the town and report if you see any raiders.",
-  ObjectiveType: ObjectiveType.TRAVEL,
-  Position: LOCATION.severograd_raiders,
-  MaxDistance: 5,
-  MarkerName: "Romashka Farm Perimeter",
-  TriggerOnEnter: 1,
-  TriggerOnExit: 0,
-};
-
-/** @deprecated untill playtested */
-export const TRAVEL_COASTAL_ROAD: TravelObjective = {
+export const TRAVEL_GNOMOV_CASTLE: TravelObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 3,
-  ObjectiveText: "Follow the coastal road - don't stop, don't look back.",
+  ObjectiveText: "Go to gnomov castle to see what you can find.",
   ObjectiveType: ObjectiveType.TRAVEL,
-  Position: LOCATION.coast_road,
+  Position: LOCATION.gnomov_castle,
   MaxDistance: 10,
-  MarkerName: "Coastal Road",
+  MarkerName: "Gnomov Castle",
+  ShowDistance: SHOW_DISTANCE_DEFAULT,
   TriggerOnEnter: 1,
   TriggerOnExit: 0,
 };
@@ -102,25 +154,40 @@ export const TRAVEL_INTEL_BUILDING: TravelObjective = {
   Position: LOCATION.intel_building,
   MaxDistance: 10,
   MarkerName: "Intel Building",
+  ShowDistance: SHOW_DISTANCE_DEFAULT,
+  TriggerOnEnter: 1,
+  TriggerOnExit: 0,
+};
+
+export const TRAVEL_SEVEROGRAD_RAIDERS: TravelObjective = {
+  ...OBJECTIVE_DEFAULTS,
+  ID: 111,
+  ObjectiveText: "Follow the scouts towards Severograd.",
+  ObjectiveType: ObjectiveType.TRAVEL,
+  Position: LOCATION.severograd_center,
+  ShowDistance: SHOW_DISTANCE_DEFAULT,
+  MaxDistance: 100,
+  MarkerName: "Severograd",
   TriggerOnEnter: 1,
   TriggerOnExit: 0,
 };
 
 const ALL_OTRAVEL: TravelObjective[] = [
   TRAVEL_ROMASHKA_FARM,
-  TRAVEL_ROMASHKA_PERIMETER,
-  TRAVEL_COASTAL_ROAD,
+  TRAVEL_GNOMOV_CASTLE,
+  TRAVEL_INTEL_BUILDING,
+  TRAVEL_SEVEROGRAD_RAIDERS,
 ] as const;
 
 // ─── Target Objectives ───────────────────────────────────────────────────────
 
 /** @deprecated untill playtested */
-export const TARGET_RAIDER_SCOUTS_PERIMETER: QuestTargetObjective = {
+export const TARGET_RAIDER_SCOUTS_PERIMETER: TargetObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 5,
   ObjectiveText: "Eliminate Raiders scouts near the farm perimeter.",
   ObjectiveType: ObjectiveType.TARGET,
-  Position: LOCATION.severograd_raiders,
+  Position: LOCATION.severograd_center,
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 5,
@@ -131,12 +198,8 @@ export const TARGET_RAIDER_SCOUTS_PERIMETER: QuestTargetObjective = {
     "BanditAI_Denis",
     "BanditAI_Adam",
   ],
-  CountSelfKill: FALSE,
-  AllowedWeapons: [],
-  ExcludedClassNames: [],
+  CountSelfKill: TRUE,
   CountAIPlayers: TRUE,
-  AllowedTargetFactions: ["Raiders"],
-  AllowedDamageZones: [],
 };
 
 /** @deprecated untill playtested */
@@ -150,12 +213,8 @@ export const TARGET_CHECKPOINT_SNIPER: TargetObjective = {
   MinDistance: -1,
   Amount: 10,
   ClassNames: AI_NPCS,
-  CountSelfKill: FALSE,
-  AllowedWeapons: [],
-  ExcludedClassNames: [],
-  CountAIPlayers: FALSE,
-  AllowedTargetFactions: [],
-  AllowedDamageZones: [],
+  CountSelfKill: TRUE,
+  CountAIPlayers: TRUE,
 };
 
 /** @deprecated untill playtested */
@@ -169,12 +228,8 @@ export const TARGET_ROOFTOP_SNIPER: TargetObjective = {
   MinDistance: -1,
   Amount: 3,
   ClassNames: AI_NPCS,
-  CountSelfKill: FALSE,
-  AllowedWeapons: [],
-  ExcludedClassNames: [],
-  CountAIPlayers: FALSE,
-  AllowedTargetFactions: [],
-  AllowedDamageZones: [],
+  CountSelfKill: TRUE,
+  CountAIPlayers: TRUE,
 };
 
 const ALL_OTARGET: TargetObjective[] = [
@@ -263,7 +318,7 @@ export const COLLECT_BUILDING_MATERIALS: CollectionObjective = {
   ObjectiveText: "Collect supplies for the farm's stockpile.",
   ObjectiveType: ObjectiveType.COLLECT,
   Collections: [
-    { ClassName: "WoodenPlank", Amount: 10, QuantityPercent: -1, MinQuantityPercent: 0 },
+    { ClassName: "Firewood", Amount: 3, QuantityPercent: -1, MinQuantityPercent: 0 },
     { ClassName: "Nail", Amount: 3, QuantityPercent: -1, MinQuantityPercent: 0 },
   ],
   ShowDistance: TRUE,
@@ -657,61 +712,51 @@ const ALL_OCRAFT: CraftingObjective[] = [
 // ─── AI Camp Objectives ──────────────────────────────────────────────────────
 
 /** @deprecated untill playtested */
-export const AICAMP_TISY_TRANSMITTER: QuestAICampObjective = {
+export const AICAMP_TISY_TRANSMITTER: AICampObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 41,
   ObjectiveText:
     "Reach the Tisy gate and destroy the transmitter before the final broadcast completes.",
   ObjectiveType: ObjectiveType.AICAMP,
-  Position: LOCATION.tisy_gate,
+  // Position: LOCATION.tisy_gate,
   MaxDistance: 150,
   MinDistance: -1,
-  Amount: 15,
-  ClassNames: ["ZombieMadman"],
-  CountSelfKill: FALSE,
-  AllowedWeapons: [],
-  ExcludedClassNames: [],
-  CountAIPlayers: FALSE,
-  AllowedTargetFactions: ["Raiders"],
-  AllowedDamageZones: [],
+  // Amount: 15,
+  // ClassNames: ["ZombieMadman"],// AllowedTargetFactions: ["Raiders"],
+
+  AiSpawn: [/* PLACEHOLDER */],
 };
 
 /** @deprecated untill playtested */
-export const AICAMP_SHEPHERD_COMMAND: QuestAICampObjective = {
+export const AICAMP_SHEPHERD_COMMAND: AICampObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 42,
   ObjectiveText: "Destroy the Shepherd command post and stop the manual purge.",
   ObjectiveType: ObjectiveType.AICAMP,
-  Position: LOCATION.shepherd_command_post,
+  // Position: LOCATION.shepherd_command_post,
   MaxDistance: 150,
   MinDistance: -1,
-  Amount: 12,
-  ClassNames: ["BanditAI_Keiko", "BanditAI_Linda", "BanditAI_Rolf", "BanditAI_Denis"],
-  CountSelfKill: FALSE,
-  AllowedWeapons: [],
-  ExcludedClassNames: [],
-  CountAIPlayers: TRUE,
-  AllowedTargetFactions: ["Raiders"],
-  AllowedDamageZones: [],
+  // Amount: 12,
+  // ClassNames: ["BanditAI_Keiko", "BanditAI_Linda", "BanditAI_Rolf", "BanditAI_Denis"],
+  // AllowedTargetFactions: ["Raiders"],
+  AiSpawn: [/* PLACEHOLDER */],
 };
 
 /** @deprecated untill playtested */
-export const AICAMP_STARY_RAD_ZONE: QuestAICampObjective = {
+export const AICAMP_STARY_RAD_ZONE: AICampObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 43,
   ObjectiveText: "Enter the Stary Sobor red zone and silence the AI guarding the keycard rooms.",
   ObjectiveType: ObjectiveType.AICAMP,
-  Position: LOCATION.stary_sobor_edge,
+  // Position: LOCATION.stary_sobor_edge,
   MaxDistance: 150,
   MinDistance: -1,
-  Amount: 12,
-  ClassNames: ["ZombieMadman"],
-  CountSelfKill: FALSE,
-  AllowedWeapons: [],
-  ExcludedClassNames: [],
-  CountAIPlayers: FALSE,
-  AllowedTargetFactions: ["Raiders"],
-  AllowedDamageZones: [],
+  // Amount: 12,
+  // ClassNames: ["ZombieMadman"],
+  //
+  // // AllowedTargetFactions: ["Raiders"],
+
+  AiSpawn: [/* PLACEHOLDER */],
 };
 
 /** @deprecated untill playtested */
@@ -720,17 +765,12 @@ export const AICAMP_REAPER_CHECKPOINT: AICampObjective = {
   ID: 44,
   ObjectiveText: "Clear the checkpoint - no survivors.",
   ObjectiveType: ObjectiveType.AICAMP,
-  Position: LOCATION.solnichniy_checkpoint,
+  // Position: LOCATION.solnichniy_checkpoint,
+  // ClassNames: ["ZombieMadman"],
+  // Amount: 10,
   MaxDistance: 150,
   MinDistance: -1,
-  Amount: 10,
-  ClassNames: ["ZombieMadman"],
-  CountSelfKill: FALSE,
-  AllowedWeapons: [],
-  ExcludedClassNames: [],
-  CountAIPlayers: FALSE,
-  AllowedTargetFactions: [],
-  AllowedDamageZones: [],
+  AiSpawn: [/* PLACEHOLDER */],
 };
 
 /** @deprecated untill playtested */
@@ -739,17 +779,14 @@ export const AICAMP_REAPER_STRONGHOLD: AICampObjective = {
   ID: 45,
   ObjectiveText: "End the Reaper stronghold inside the warzone town.",
   ObjectiveType: ObjectiveType.AICAMP,
-  Position: LOCATION.cherno_block,
+  // Position: LOCATION.cherno_block,
   MaxDistance: 150,
   MinDistance: -1,
-  Amount: 8,
-  ClassNames: ["ZombieMadman"],
-  CountSelfKill: FALSE,
-  AllowedWeapons: [],
-  ExcludedClassNames: [],
-  CountAIPlayers: FALSE,
-  AllowedTargetFactions: [],
-  AllowedDamageZones: [],
+  // Amount: 8,
+  // ClassNames: ["ZombieMadman"],
+  //
+
+  AiSpawn: [/* PLACEHOLDER */],
 };
 
 /** @deprecated untill playtested */
@@ -758,17 +795,12 @@ export const AICAMP_TISY_GATE: AICampObjective = {
   ID: 46,
   ObjectiveText: "Clear the gate at Tisy - ten hostiles, best gear, fortified.",
   ObjectiveType: ObjectiveType.AICAMP,
-  Position: LOCATION.tisy_gate,
+  // Position: LOCATION.tisy_gate,
+  // Amount: 10,
+  // ClassNames: ["ZombieMadman"],
   MaxDistance: 150,
   MinDistance: -1,
-  Amount: 10,
-  ClassNames: ["ZombieMadman"],
-  CountSelfKill: FALSE,
-  AllowedWeapons: [],
-  ExcludedClassNames: [],
-  CountAIPlayers: FALSE,
-  AllowedTargetFactions: [],
-  AllowedDamageZones: [],
+  AiSpawn: [/* PLACEHOLDER */],
 };
 
 const ALL_OAICAMP: AICampObjective[] = [
@@ -797,7 +829,7 @@ export const AIVIP_CORDON_DEFECTOR: AIVipObjective = {
 };
 
 /** @deprecated untill playtested */
-export const AIVIP_EXTRACT_SCIENTIST: QuestAIVipObjective = {
+export const AIVIP_EXTRACT_SCIENTIST: AIVipObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 48,
   ObjectiveText: "Bring the Cordon scientist out of NWAF alive.",
@@ -818,45 +850,44 @@ const ALL_OAIVIP: AIVipObjective[] = [
 // ─── AI Patrol Objectives ────────────────────────────────────────────────────
 
 /** @deprecated untill playtested */
-export const AIPATROL_RAIDER_PERIMETER: QuestAIPatrolObjective = {
+export const AIPATROL_RAIDER_SEVEROGRAD: AIPatrolObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 49,
-  ObjectiveText: "Break the Raider patrol watching the Green Mountain approach to Romashka.",
+  ObjectiveText: "Break the Raider scout party, there tracks lead to Severograd.",
   ObjectiveType: ObjectiveType.AIPATROL,
-  Position: LOCATION.severograd_raiders,
-  MaxDistance: 150,
+  // Position: LOCATION.severograd_center,
+  MaxDistance: 125,
   MinDistance: -1,
-  Amount: 3,
-  ClassNames: [
-    "BanditAI_Keiko",
-    "BanditAI_Denis",
-    "BanditAI_Adam",
+  // Amount: 3,
+  // ClassNames: AI_NPCS,
+
+  // // AllowedTargetFactions: ["Raiders"],
+
+  AiSpawn: [
+    aiSpawn("Raiders", "Bandit_Black", [
+      [8029.1, 114.261, 12695.8],
+      [8033.27, 114.099, 12695.8],
+      [8022.62, 114.451, 12690.9],
+      [8039.49, 126.648, 12698.9],
+    ], 3),
   ],
-  CountSelfKill: FALSE,
-  AllowedWeapons: [],
-  ExcludedClassNames: [],
-  CountAIPlayers: FALSE,
-  AllowedTargetFactions: ["Raiders"],
-  AllowedDamageZones: [],
 };
 
 /** @deprecated untill playtested */
-export const AIPATROL_SHEPHERD_EXECUTIONER: QuestAIPatrolObjective = {
+export const AIPATROL_SHEPHERD_EXECUTIONER: AIPatrolObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 50,
   ObjectiveText: "Silence the Shepherd executioner before he calls reinforcements.",
   ObjectiveType: ObjectiveType.AIPATROL,
-  Position: LOCATION.shepherd_command_post,
+  // Position: LOCATION.shepherd_command_post,
   MaxDistance: 150,
   MinDistance: -1,
-  Amount: 1,
-  ClassNames: ["BanditAI_Keiko", "BanditAI_Linda", "BanditAI_Rolf", "BanditAI_Denis"],
-  CountSelfKill: FALSE,
-  AllowedWeapons: [],
-  ExcludedClassNames: [],
-  CountAIPlayers: TRUE,
-  AllowedTargetFactions: ["Raiders"],
-  AllowedDamageZones: [],
+  // Amount: 1,
+  // ClassNames: ["BanditAI_Keiko", "BanditAI_Linda", "BanditAI_Rolf", "BanditAI_Denis"],
+  //
+  // AllowedTargetFactions: ["Raiders"],
+
+  AiSpawn: [/* PLACEHOLDER */],
 };
 
 /** @deprecated untill playtested */
@@ -865,17 +896,12 @@ export const AIPATROL_CHECKPOINT_CLEAR: AIPatrolObjective = {
   ID: 51,
   ObjectiveText: "Break the Reaper supply patrol into the warzone.",
   ObjectiveType: ObjectiveType.AIPATROL,
-  Position: LOCATION.solnichniy_checkpoint,
+  // Position: LOCATION.solnichniy_checkpoint,
   MaxDistance: 150,
   MinDistance: -1,
-  Amount: 5,
-  ClassNames: ["ZombieMadman"],
-  CountSelfKill: FALSE,
-  AllowedWeapons: [],
-  ExcludedClassNames: [],
-  CountAIPlayers: FALSE,
-  AllowedTargetFactions: [],
-  AllowedDamageZones: [],
+  // ClassNames: ["ZombieMadman"],
+
+  AiSpawn: [/* PLACEHOLDER */],
 };
 
 /** @deprecated untill playtested */
@@ -884,21 +910,16 @@ export const AIPATROL_CORDON_LOOP: AIPatrolObjective = {
   ID: 52,
   ObjectiveText: "Break the Cordon patrol loop around NWAF.",
   ObjectiveType: ObjectiveType.AIPATROL,
-  Position: LOCATION.nwaf_patrol,
+  // Position: LOCATION.nwaf_patrol,
   MaxDistance: 150,
   MinDistance: -1,
-  Amount: 6,
-  ClassNames: ["ZombieMadman"],
-  CountSelfKill: FALSE,
-  AllowedWeapons: [],
-  ExcludedClassNames: [],
-  CountAIPlayers: FALSE,
-  AllowedTargetFactions: [],
-  AllowedDamageZones: [],
+  // Amount: 6,
+  // ClassNames: ["ZombieMadman"],AllowedDamageZones: [],
+  AiSpawn: [/* PLACEHOLDER */],
 };
 
 const ALL_OAIPATROL: AIPatrolObjective[] = [
-  AIPATROL_RAIDER_PERIMETER,
+  AIPATROL_RAIDER_SEVEROGRAD,
   AIPATROL_SHEPHERD_EXECUTIONER,
   AIPATROL_CHECKPOINT_CLEAR,
   AIPATROL_CORDON_LOOP,
@@ -906,11 +927,11 @@ const ALL_OAIPATROL: AIPatrolObjective[] = [
 
 // ─── Treasure Hunt Objectives ────────────────────────────────────────────────
 
-function guaranteedTreasureLoot(Name: string): QuestTreasureLoot {
+function treasure(Name: ClassNameModded): TreasureLootItem {
   return {
     Name,
     Attachments: [],
-    Chance: 1,
+    Chance: 100,
     QuantityPercent: -1,
     Max: 1,
     Min: 1,
@@ -919,16 +940,43 @@ function guaranteedTreasureLoot(Name: string): QuestTreasureLoot {
 }
 
 /** @deprecated untill playtested */
-export const TREASUREHUNT_STARY_EVIDENCE: QuestTreasureHuntObjective = {
+export const TREASUREHUNT_RAIDER_RADIO_CACHE: TreasureHuntObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 53,
   ObjectiveText: "Recover the research case buried beneath the Stary Sobor red zone.",
   ObjectiveType: ObjectiveType.TREASUREHUNT,
-  Position: LOCATION.stary_sobor_edge,
+  Positions: [7431.51, 427.283, 9111.67],
+  ContainerName: "ExpansionQuestContainerBase",
+  MarkerVisibility: FALSE,
+  ShowDistance: FALSE,
+  DigInStash: FALSE,
+  MaxDistance: 80,
+  MarkerName: "Stary Research Case",
+  Loot: [
+    treasure("QPK_Quest_Album"),
+    treasure("ItemRadio"),
+    treasure("Colt1911"),
+    treasure("Mag_1911_7Rnd"),
+    treasure("AmmoBox_9x19_25rnd"),
+  ],
+  // LootItemsAmount: 0,
+};
+
+/** @deprecated untill playtested */
+export const TREASUREHUNT_STARY_EVIDENCE: TreasureHuntObjective = {
+  ...OBJECTIVE_DEFAULTS,
+  ID: 53,
+  ObjectiveText: "Recover the research case buried beneath the Stary Sobor red zone.",
+  ObjectiveType: ObjectiveType.TREASUREHUNT,
+  ContainerName: "ExpansionQuestContainerBase",
+  Positions: PLACEHOLDER_POSITION,
+  MarkerVisibility: FALSE,
+  ShowDistance: FALSE,
+  DigInStash: FALSE,
   MaxDistance: 10,
   MarkerName: "Stary Research Case",
-  Loot: [guaranteedTreasureLoot("Paper"), guaranteedTreasureLoot("ItemRadio")],
-  LootItemsAmount: 2,
+  Loot: [treasure("Paper"), treasure("ItemRadio")],
+  LootItemsAmount: 1,
 };
 
 /** @deprecated untill playtested */
@@ -937,22 +985,31 @@ export const TREASUREHUNT_BURIED_SUPPLIES: TreasureHuntObjective = {
   ID: 54,
   ObjectiveText: "Find what someone buried near the Kamenka coastline.",
   ObjectiveType: ObjectiveType.TREASUREHUNT,
-  Position: LOCATION.kamenka_coast_stash,
+  ContainerName: "ExpansionQuestContainerBase",
+  Positions: PLACEHOLDER_POSITION,
+  MarkerVisibility: FALSE,
+  ShowDistance: FALSE,
+  DigInStash: FALSE,
   MaxDistance: 10,
   MarkerName: "Buried Supplies",
+  Loot: [treasure("Paper"), treasure("ItemRadio")],
 };
 
 /** @deprecated untill playtested */
-export const TREASUREHUNT_SKALISTY_CACHE: QuestTreasureHuntObjective = {
+export const TREASUREHUNT_SKALISTY_CACHE: TreasureHuntObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 55,
   ObjectiveText: "Find what the dead Cordon sentry was protecting on Skalisty Island.",
   ObjectiveType: ObjectiveType.TREASUREHUNT,
-  Position: LOCATION.skalisty_stash,
+  Positions: LOCATION.skalisty_stash,
+  MarkerVisibility: FALSE,
+  ShowDistance: FALSE,
+  DigInStash: FALSE,
+  ContainerName: "ExpansionQuestContainerBase",
   MaxDistance: 10,
   MarkerName: "Skalisty Cache",
-  Loot: [guaranteedTreasureLoot("Paper"), guaranteedTreasureLoot("NBCGlovesGray")],
-  LootItemsAmount: 2,
+  Loot: [treasure("Paper"), treasure("NBCGlovesGray")],
+  // LootItemsAmount: 2,
 };
 
 const ALL_OTREASUREHUNT: TreasureHuntObjective[] = [
@@ -1039,16 +1096,12 @@ export const TARGET_CLEAR_BUILDING: TargetObjective = {
   ObjectiveText: "Clear the building — check every room, trust no shadows.",
   ObjectiveType: ObjectiveType.TARGET,
   Position: LOCATION.clear_building,
+  CountSelfKill: TRUE,
+  CountAIPlayers: TRUE,
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 8,
   ClassNames: ["ZombieFast"],
-  CountSelfKill: FALSE,
-  AllowedWeapons: [],
-  ExcludedClassNames: [],
-  CountAIPlayers: FALSE,
-  AllowedTargetFactions: [],
-  AllowedDamageZones: [],
 };
 
 /** @deprecated untill playtested */
@@ -1058,6 +1111,8 @@ export const TARGET_HOSPITAL_SWEEP: TargetObjective = {
   ObjectiveText: "Sweep the hospital — these things never stopped wandering the halls.",
   ObjectiveType: ObjectiveType.TARGET,
   Position: LOCATION.hospital,
+  CountSelfKill: TRUE,
+  CountAIPlayers: TRUE,
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 10,
@@ -1065,12 +1120,6 @@ export const TARGET_HOSPITAL_SWEEP: TargetObjective = {
     "ZmbF_DoctorSkinny_Base",
     "ZmbM_ParamedicNormal_Base",
   ],
-  CountSelfKill: FALSE,
-  AllowedWeapons: [],
-  ExcludedClassNames: [],
-  CountAIPlayers: FALSE,
-  AllowedTargetFactions: [],
-  AllowedDamageZones: [],
 };
 
 /** @deprecated untill playtested */
@@ -1080,16 +1129,12 @@ export const TARGET_HVIP_MARKSMAN: TargetObjective = {
   ObjectiveText: "Put down the marksman — he's calling in the horde.",
   ObjectiveType: ObjectiveType.TARGET,
   Position: LOCATION.hvip_marksman,
+  CountSelfKill: TRUE,
+  CountAIPlayers: TRUE,
   MaxDistance: 150,
   MinDistance: -1,
   Amount: 1,
   ClassNames: ["ZombieFast"],
-  CountSelfKill: FALSE,
-  AllowedWeapons: [],
-  ExcludedClassNames: [],
-  CountAIPlayers: FALSE,
-  AllowedTargetFactions: [],
-  AllowedDamageZones: [],
 };
 
 /** @deprecated untill playtested */
@@ -1099,16 +1144,12 @@ export const TARGET_WAREHOUSE_CLEAR: TargetObjective = {
   ObjectiveText: "Clear the warehouse. Lock the doors behind you.",
   ObjectiveType: ObjectiveType.TARGET,
   Position: LOCATION.warehouse,
+  Amount: 12,
+  CountSelfKill: TRUE,
+  CountAIPlayers: TRUE,
+  ClassNames: ["ZmbM_HeavyIndustryWorker_Base", "ZmbM_ConstrWorkerNormal_Base"],
   MaxDistance: 150,
   MinDistance: -1,
-  Amount: 12,
-  ClassNames: ["ZmbM_HeavyIndustryWorker_Base", "ZmbM_ConstrWorkerNormal_Base"],
-  CountSelfKill: FALSE,
-  AllowedWeapons: [],
-  ExcludedClassNames: [],
-  CountAIPlayers: FALSE,
-  AllowedTargetFactions: [],
-  AllowedDamageZones: [],
 };
 
 /** @deprecated untill playtested */
@@ -1118,16 +1159,12 @@ export const TARGET_ROOFTOP_CLEAR: TargetObjective = {
   ObjectiveText: "Clear the rooftops — they'll rain down on you if you leave them.",
   ObjectiveType: ObjectiveType.TARGET,
   Position: LOCATION.rooftop_clear,
-  MaxDistance: 150,
-  MinDistance: -1,
+  CountSelfKill: TRUE,
+  CountAIPlayers: TRUE,
   Amount: 6,
   ClassNames: ["ZombieFast"],
-  CountSelfKill: FALSE,
-  AllowedWeapons: [],
-  ExcludedClassNames: [],
-  CountAIPlayers: FALSE,
-  AllowedTargetFactions: [],
-  AllowedDamageZones: [],
+  MaxDistance: 150,
+  MinDistance: -1,
 };
 
 /** @deprecated untill playtested */
@@ -1137,16 +1174,12 @@ export const TARGET_NIGHTHUNT: TargetObjective = {
   ObjectiveText: "Hunt them down in the dark — they move slower when the lights go out.",
   ObjectiveType: ObjectiveType.TARGET,
   Position: LOCATION.nighthunt,
-  MaxDistance: 150,
-  MinDistance: -1,
   Amount: 10,
   ClassNames: ["ZombieSlow"],
-  CountSelfKill: FALSE,
-  AllowedWeapons: [],
-  ExcludedClassNames: [],
-  CountAIPlayers: FALSE,
-  AllowedTargetFactions: [],
-  AllowedDamageZones: [],
+  CountSelfKill: TRUE,
+  CountAIPlayers: TRUE,
+  MaxDistance: 150,
+  MinDistance: -1,
 };
 
 // ── Collection ──
@@ -1435,17 +1468,13 @@ export const AICAMP_ROADBLOCK: AICampObjective = {
   ID: 93,
   ObjectiveText: "Smash the roadblock. Ten hostiles, no backup, easy target.",
   ObjectiveType: ObjectiveType.AICAMP,
-  Position: LOCATION.roadblock,
+  // Position: LOCATION.roadblock,
+  // Amount: 10,
+  // ClassNames: ["ZombieFast"],
   MaxDistance: 150,
   MinDistance: -1,
-  Amount: 10,
-  ClassNames: ["ZombieFast"],
-  CountSelfKill: FALSE,
-  AllowedWeapons: [],
-  ExcludedClassNames: [],
-  CountAIPlayers: FALSE,
-  AllowedTargetFactions: [],
-  AllowedDamageZones: [],
+
+  AiSpawn: [/* PLACEHOLDER */],
 };
 
 /** @deprecated untill playtested */
@@ -1454,17 +1483,13 @@ export const AICAMP_OUTPOST_RAID: AICampObjective = {
   ID: 94,
   ObjectiveText: "Raid the outpost before they reinforce. Hit fast, leave fast.",
   ObjectiveType: ObjectiveType.AICAMP,
-  Position: LOCATION.outpost,
+  // Position: LOCATION.outpost,
+  // Amount: 12,
+  // ClassNames: ["ZombieMadman"],
   MaxDistance: 150,
   MinDistance: -1,
-  Amount: 12,
-  ClassNames: ["ZombieMadman"],
-  CountSelfKill: FALSE,
-  AllowedWeapons: [],
-  ExcludedClassNames: [],
-  CountAIPlayers: FALSE,
-  AllowedTargetFactions: [],
-  AllowedDamageZones: [],
+
+  AiSpawn: [/* PLACEHOLDER */],
 };
 
 export const AICAMP_Bunker_SWEEP: AICampObjective = {
@@ -1472,17 +1497,13 @@ export const AICAMP_Bunker_SWEEP: AICampObjective = {
   ID: 95,
   ObjectiveText: "Sweep the bunker — sealed, dark, and full of company.",
   ObjectiveType: ObjectiveType.AICAMP,
-  Position: LOCATION.bunker,
+  // Position: LOCATION.bunker,
+  // Amount: 15,
+  // ClassNames: ["ZombieSlow", "ZombieMadman"],
   MaxDistance: 150,
   MinDistance: -1,
-  Amount: 15,
-  ClassNames: ["ZombieSlow", "ZombieMadman"],
-  CountSelfKill: FALSE,
-  AllowedWeapons: [],
-  ExcludedClassNames: [],
-  CountAIPlayers: FALSE,
-  AllowedTargetFactions: [],
-  AllowedDamageZones: [],
+
+  AiSpawn: [/* PLACEHOLDER */],
 };
 
 /** @deprecated untill playtested */
@@ -1491,17 +1512,13 @@ export const AICAMP_FACTORY_CLEAR: AICampObjective = {
   ID: 96,
   ObjectiveText: "Clear the factory floor. These things were workers once.",
   ObjectiveType: ObjectiveType.AICAMP,
-  Position: LOCATION.factory,
+  // Position: LOCATION.factory,
+  // Amount: 20,
+  // ClassNames: ["ZombieMadman"],
   MaxDistance: 150,
   MinDistance: -1,
-  Amount: 20,
-  ClassNames: ["ZombieMadman"],
-  CountSelfKill: FALSE,
-  AllowedWeapons: [],
-  ExcludedClassNames: [],
-  CountAIPlayers: FALSE,
-  AllowedTargetFactions: [],
-  AllowedDamageZones: [],
+
+  AiSpawn: [/* PLACEHOLDER */],
 };
 
 /** @deprecated untill playtested */
@@ -1510,17 +1527,13 @@ export const AICAMP_TANK_GRAVEYARD: AICampObjective = {
   ID: 97,
   ObjectiveText: "The tank graveyard — the dead don't stay buried in metal.",
   ObjectiveType: ObjectiveType.AICAMP,
-  Position: LOCATION.tank_graveyard,
+  // Position: LOCATION.tank_graveyard,
+  // Amount: 10,
+  // ClassNames: ["ZombieFast"],
   MaxDistance: 150,
   MinDistance: -1,
-  Amount: 10,
-  ClassNames: ["ZombieFast"],
-  CountSelfKill: FALSE,
-  AllowedWeapons: [],
-  ExcludedClassNames: [],
-  CountAIPlayers: FALSE,
-  AllowedTargetFactions: [],
-  AllowedDamageZones: [],
+
+  AiSpawn: [/* PLACEHOLDER */],
 };
 
 // ── AIVIP ──
@@ -1568,7 +1581,7 @@ export const AIVIP_SCIENTIST_EXFIL: AIVipObjective = {
 };
 
 /** @deprecated untill playtested */
-export const AIVIP_SHEPHERD_CAPTIVE: QuestAIVipObjective = {
+export const AIVIP_SHEPHERD_CAPTIVE: AIVipObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 101,
   ObjectiveText: "Extract the Shepherd captive alive.",
@@ -1589,17 +1602,13 @@ export const AIPATROL_ROAMING_GROUP: AIPatrolObjective = {
   ID: 102,
   ObjectiveText: "Break up the roaming group — they're moving toward civilization.",
   ObjectiveType: ObjectiveType.AIPATROL,
-  Position: LOCATION.roaming_group,
+  // Position: LOCATION.roaming_group,
+  // Amount: 4,
+  // ClassNames: ["ZombieMadman"],
   MaxDistance: 150,
   MinDistance: -1,
-  Amount: 4,
-  ClassNames: ["ZombieMadman"],
-  CountSelfKill: FALSE,
-  AllowedWeapons: [],
-  ExcludedClassNames: [],
-  CountAIPlayers: FALSE,
-  AllowedTargetFactions: [],
-  AllowedDamageZones: [],
+
+  AiSpawn: [/* PLACEHOLDER */],
 };
 
 /** @deprecated untill playtested */
@@ -1608,17 +1617,13 @@ export const AIPATROL_HUNTER_PATROL: AIPatrolObjective = {
   ID: 103,
   ObjectiveText: "Take out the hunter patrol — they track everything.",
   ObjectiveType: ObjectiveType.AIPATROL,
-  Position: LOCATION.hunter_patrol,
+  // Position: LOCATION.hunter_patrol,
+  // Amount: 3,
+  // ClassNames: ["ZombieFast"],
   MaxDistance: 150,
   MinDistance: -1,
-  Amount: 3,
-  ClassNames: ["ZombieFast"],
-  CountSelfKill: FALSE,
-  AllowedWeapons: [],
-  ExcludedClassNames: [],
-  CountAIPlayers: FALSE,
-  AllowedTargetFactions: [],
-  AllowedDamageZones: [],
+
+  AiSpawn: [/* PLACEHOLDER */],
 };
 
 /** @deprecated untill playtested */
@@ -1627,17 +1632,13 @@ export const AIPATROL_CONVOY_ESCORT: AIPatrolObjective = {
   ID: 104,
   ObjectiveText: "Interrupt the convoy escort — the supply truck is the real target.",
   ObjectiveType: ObjectiveType.AIPATROL,
-  Position: LOCATION.nwaf_patrol,
+  // Position: LOCATION.nwaf_patrol,
+  // Amount: 8,
+  // ClassNames: ["ZombieMadman"],
   MaxDistance: 150,
   MinDistance: -1,
-  Amount: 8,
-  ClassNames: ["ZombieMadman"],
-  CountSelfKill: FALSE,
-  AllowedWeapons: [],
-  ExcludedClassNames: [],
-  CountAIPlayers: FALSE,
-  AllowedTargetFactions: ["Raiders"],
-  AllowedDamageZones: [],
+
+  AiSpawn: [/* PLACEHOLDER */],
 };
 
 /** @deprecated untill playtested */
@@ -1646,17 +1647,13 @@ export const AIPATROL_NIGHT_STALKERS: AIPatrolObjective = {
   ID: 105,
   ObjectiveText: "Three night stalkers — move between shadows, strike between heartbeats.",
   ObjectiveType: ObjectiveType.AIPATROL,
-  Position: LOCATION.night_stalkers,
+  // Position: LOCATION.night_stalkers,
+  // Amount: 3,
+  // ClassNames: ["ZombieSlow"],
   MaxDistance: 150,
   MinDistance: -1,
-  Amount: 3,
-  ClassNames: ["ZombieSlow"],
-  CountSelfKill: FALSE,
-  AllowedWeapons: [],
-  ExcludedClassNames: [],
-  CountAIPlayers: FALSE,
-  AllowedTargetFactions: [],
-  AllowedDamageZones: [],
+
+  AiSpawn: [/* PLACEHOLDER */],
 };
 
 // ── Treasure Hunt ──
@@ -1667,9 +1664,14 @@ export const TREASUREHUNT_DROWNED_CRATE: TreasureHuntObjective = {
   ID: 106,
   ObjectiveText: "Someone drowned a crate in the river — dig it up before the current takes it.",
   ObjectiveType: ObjectiveType.TREASUREHUNT,
-  Position: LOCATION.drowned_crate,
-  MaxDistance: 10,
+  Positions: LOCATION.drowned_crate,
+  ContainerName: "ExpansionQuestContainerBase",
   MarkerName: "Drowned Crate",
+  MarkerVisibility: FALSE,
+  ShowDistance: FALSE,
+  DigInStash: FALSE,
+  MaxDistance: 10,
+  Loot: [],
 };
 
 /** @deprecated untill playtested */
@@ -1678,9 +1680,14 @@ export const TREASUREHUNT_ABANDONED_POSTBOX: TreasureHuntObjective = {
   ID: 107,
   ObjectiveText: "The old postbox has a false bottom — someone hid something in a hurry.",
   ObjectiveType: ObjectiveType.TREASUREHUNT,
-  Position: LOCATION.abandoned_postbox,
-  MaxDistance: 10,
+  Positions: LOCATION.abandoned_postbox,
   MarkerName: "Old Postbox",
+  ContainerName: "ExpansionQuestContainerBase",
+  MarkerVisibility: FALSE,
+  ShowDistance: FALSE,
+  DigInStash: FALSE,
+  MaxDistance: 10,
+  Loot: [],
 };
 
 /** @deprecated untill playtested */
@@ -1689,35 +1696,46 @@ export const TREASUREHUNT_BUSH_UNDER_THE_OAK: TreasureHuntObjective = {
   ID: 108,
   ObjectiveText: "Dig beneath the dead oak — the soil smells different here.",
   ObjectiveType: ObjectiveType.TREASUREHUNT,
-  Position: LOCATION.oak_cache,
-  MaxDistance: 10,
+  Positions: LOCATION.oak_cache,
   MarkerName: "Under the Oak",
+  ContainerName: "ExpansionQuestContainerBase",
+  MarkerVisibility: FALSE,
+  ShowDistance: FALSE,
+  DigInStash: FALSE,
+  MaxDistance: 10,
+  Loot: [],
 };
 
 /** @deprecated untill playtested */
-export const TREASUREHUNT_ROOFTOP_VENT: QuestTreasureHuntObjective = {
+export const TREASUREHUNT_ROOFTOP_VENT: TreasureHuntObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 109,
   ObjectiveText: "There's a cache behind the ventilation shaft — climb and look.",
   ObjectiveType: ObjectiveType.TREASUREHUNT,
-  Position: LOCATION.rooftop_vent,
-  MaxDistance: 10,
+  Positions: LOCATION.rooftop_vent,
   MarkerName: "Rooftop Vent",
-  Loot: [guaranteedTreasureLoot("Paper"), guaranteedTreasureLoot("GunPartWeaponParts")],
-  LootItemsAmount: 2,
+  ContainerName: "ExpansionQuestContainerBase",
+  MarkerVisibility: FALSE,
+  ShowDistance: FALSE,
+  DigInStash: FALSE,
+  MaxDistance: 10,
+  Loot: [],
 };
 
 /** @deprecated untill playtested */
-export const TREASUREHUNT_UNDER_BRIDGE: QuestTreasureHuntObjective = {
+export const TREASUREHUNT_UNDER_BRIDGE: TreasureHuntObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 110,
   ObjectiveText: "Under the bridge, in the muck — what was tossed away.",
   ObjectiveType: ObjectiveType.TREASUREHUNT,
-  Position: LOCATION.under_bridge,
-  MaxDistance: 10,
+  Positions: LOCATION.under_bridge,
   MarkerName: "Under Bridge",
-  Loot: [guaranteedTreasureLoot("Paper"), guaranteedTreasureLoot("ItemRadio")],
-  LootItemsAmount: 2,
+  ContainerName: "ExpansionQuestContainerBase",
+  MarkerVisibility: FALSE,
+  ShowDistance: FALSE,
+  DigInStash: FALSE,
+  MaxDistance: 10,
+  Loot: [],
 };
 
 const ALL_SIDE = [
@@ -1783,7 +1801,7 @@ const ALL_SIDE = [
   TREASUREHUNT_UNDER_BRIDGE,
 ] as const;
 
-const ALL_OBJECTIVES: QuestObjective[] = [
+const ALL_OBJECTIVES: ObjectiveBase[] = safetyChecks([
   ...ALL_OACTION,
   ...ALL_OAICAMP,
   ...ALL_OAIPATROL,
@@ -1795,113 +1813,7 @@ const ALL_OBJECTIVES: QuestObjective[] = [
   ...ALL_OTRAVEL,
   ...ALL_OTREASUREHUNT,
   ...ALL_SIDE,
-];
-
-function createQuestAISpawn(
-  objective: QuestAIPatrolObjective | QuestAICampObjective,
-  numberOfAI: number,
-): QuestAIObjectiveSpawn {
-  return {
-    NumberOfAI: numberOfAI,
-    NPCName: "Quest Target",
-    Waypoints: [objective.Position],
-    Behaviour: "HALT",
-    Formation: "RANDOM",
-    Loadout: "BanditLoadout",
-    Faction: "West",
-    Speed: "JOG",
-    ThreatSpeed: "SPRINT",
-    MinAccuracy: 0,
-    MaxAccuracy: 0,
-    CanBeLooted: 1,
-    UnlimitedReload: 1,
-    ThreatDistanceLimit: 150,
-    DamageMultiplier: 1,
-    DamageReceivedMultiplier: 1,
-    ClassNames: AI_NPCS,
-    SniperProneDistanceThreshold: 300,
-    RespawnTime: 1,
-    DespawnTime: 1,
-    MinDistanceRadius: 50,
-    MaxDistanceRadius: 150,
-    DespawnRadius: 880,
-  };
-}
-
-function toExpansionObjectiveConfig(objective: QuestObjective): Record<string, unknown> {
-  const base = {
-    ConfigVersion: OBJECTIVE_CONFIG_VERSION,
-    ...OBJECTIVE_DEFAULTS,
-    ID: objective.ID,
-    ObjectiveType: objective.ObjectiveType,
-    ObjectiveText: objective.ObjectiveText,
-    Active: 1 as const,
-  };
-
-  switch (objective.ObjectiveType) {
-    case ObjectiveType.AIPATROL: {
-      const patrol = objective as QuestAIPatrolObjective;
-      return {
-        ...base,
-        AISpawn: patrol.AISpawn ?? createQuestAISpawn(patrol, patrol.Amount),
-        MaxDistance: patrol.MaxDistance,
-        MinDistance: patrol.MinDistance,
-        AllowedWeapons: patrol.AllowedWeapons,
-        AllowedDamageZones: patrol.AllowedDamageZones,
-      };
-    }
-    case ObjectiveType.AICAMP: {
-      const camp = objective as QuestAICampObjective;
-      return {
-        ...base,
-        InfectedDeletionRadius: camp.InfectedDeletionRadius ?? 0,
-        AISpawns: camp.AISpawns ??
-          Array.from(
-            { length: Math.max(1, camp.Amount) },
-            () => createQuestAISpawn(camp, 1),
-          ),
-        MaxDistance: camp.MaxDistance,
-        MinDistance: camp.MinDistance,
-        AllowedWeapons: camp.AllowedWeapons,
-        AllowedDamageZones: camp.AllowedDamageZones,
-      };
-    }
-    case ObjectiveType.AIVIP: {
-      const vip = objective as QuestAIVipObjective;
-      return {
-        ...base,
-        Position: vip.Position,
-        MaxDistance: vip.MaxDistance,
-        MarkerName: vip.MarkerName,
-        ShowDistance: vip.ShowDistance ?? 1,
-        CanLootAI: vip.CanLootAI ?? 0,
-        NPCLoadoutFile: vip.NPCLoadoutFile ?? "Quest_Survivor_noWeapon",
-        NPCClassName: vip.NPCClassName ?? "",
-        NPCName: vip.NPCName ?? "Quest VIP",
-      };
-    }
-    case ObjectiveType.TREASUREHUNT: {
-      const treasure = objective as QuestTreasureHuntObjective;
-      return {
-        ...base,
-        ShowDistance: treasure.ShowDistance ?? 1,
-        ContainerName: treasure.ContainerName ?? "ExpansionQuestSeaChest",
-        DigInStash: treasure.DigInStash ?? 1,
-        MarkerName: treasure.MarkerName,
-        MarkerVisibility: treasure.MarkerVisibility ?? 6,
-        Positions: treasure.Positions ?? [treasure.Position],
-        Loot: treasure.Loot ?? [],
-        LootItemsAmount: treasure.LootItemsAmount ?? 0,
-        MaxDistance: treasure.MaxDistance,
-      };
-    }
-    default:
-      return {
-        ...base,
-        ...objective,
-      };
-  }
-}
+], "Objectives");
 
 const OBJECTIVE_FIXES: Record<ObjectiveType, [string, string]> = {
   [ObjectiveType.NONE]: [EXPANSION_QUESTS_OBJECTIVES_ACTION_DIR, ""],
@@ -1920,10 +1832,8 @@ const OBJECTIVE_FIXES: Record<ObjectiveType, [string, string]> = {
 export const ALL_OBJECTIVE_CONFIGS = ALL_OBJECTIVES.reduce(
   (configs, objective) => {
     const [directory, prefix] = OBJECTIVE_FIXES[objective.ObjectiveType];
-    configs[`${directory}/Objective${prefix}_${objective.ID}.json`] = toExpansionObjectiveConfig(
-      objective,
-    );
+    configs[`${directory}/Objective${prefix}_${objective.ID}.json`] = objective;
     return configs;
   },
-  {} as Record<string, Record<string, unknown>>,
+  {} as Record<string, ObjectiveBase>,
 );

@@ -1,4 +1,6 @@
-import { QUEST_SETTINGS_CONFIG, QuestSettings, WeeklyResetDay } from "../types/quest.ts";
+import type { QuestSettings } from "../types/quest.d.ts";
+import { QUEST_SETTINGS_CONFIG } from "../paths.ts";
+import { WeeklyResetDay } from "../types/common.ts";
 import { ALL_NPC_CONFIGS } from "./npc.ts";
 import { ALL_OBJECTIVE_CONFIGS } from "./objectives.ts";
 import { MAIN_QUESTS_CONFIGS } from "./questsMain.ts";

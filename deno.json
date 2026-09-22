@@ -22,7 +22,8 @@
     "check": "deno check src/main.ts",
     "fmt": "deno fmt src/",
     "lint": "deno lint src/",
-    "classNames": "deno run -A tools/dayz-classnames.ts"
+    "classNames": "deno run -A tools/dayz-classnames.ts",
+    "changelog": "deno run -A tools/generate-changelog.ts"
   },
   "fmt": {
     "lineWidth": 100

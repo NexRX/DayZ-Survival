@@ -26,7 +26,7 @@ import { tuneAnimalSpawns, tuneFoodScarcity, tuneMoneyScarcity } from "../config
 import { loadMods, modParam, serverModParam } from "../server/mods.ts";
 import { ensureConfig, genConfig, type Settings } from "../config/settings.ts";
 import { ensureOverrides } from "../config/overrides.ts";
-import { ensureQuests } from "../config/quests.ts";
+import { ensureBook, ensureQuests } from "../config/expansion.ts";
 import { tuneExtendedTouristMap, tuneMapGameplayConfig } from "../config/extendedTouristMap.ts";
 import { copy } from "jsr:@std/fs@^1.0.24/copy";
 
@@ -261,6 +261,7 @@ export async function doStart(s: Settings): Promise<void> {
   await ensureCustomTrader();
 
   await ensureQuests();
+  await ensureBook();
 
   await tuneMapGameplayConfig();
   await tuneExtendedTouristMap();

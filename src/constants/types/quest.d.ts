@@ -1,16 +1,6 @@
-import { PROFILE_DIR } from "../paths.ts";
-import { ClassNameModded, NPCClassName } from "./classNamesMod.ts";
-import { BoolNum, Vec3 } from "./common.ts";
-import {
-  AICampObjective,
-  AIPatrolObjective,
-  AIVipObjective,
-  Objective,
-  ObjectiveRef,
-  ObjectiveType,
-  TargetObjective,
-  TreasureHuntObjective,
-} from "./objective.ts";
+import type { ClassNameModded } from "./classNames.ts";
+import type { BoolNum } from "./common.ts";
+import type { ObjectiveRef } from "./objective.d.ts";
 
 export enum QuestType {
   NORMAL = 1, // default
@@ -91,19 +81,6 @@ export interface Quest {
   SuppressQuestLogOnCompetion?: BoolNum;
   Active?: BoolNum;
 }
-
-/** Runtime mapping of type names to their enum/class values.
- * Use `ALL_QUEST_TYPES` for runtime type lookups; individual types
- * are exported separately for direct type references. */
-export const ALL_QUEST_TYPES = {
-  ObjectiveType,
-  QuestType,
-  RewardBehavior,
-  QuestNPCType,
-} as const;
-
-export const QUEST_SETTINGS_CONFIG = `${PROFILE_DIR}/ExpansionMod/Settings/QuestSettings.json`;
-export const QUEST_CONFIG_DIR = `${PROFILE_DIR}/ExpansionMod/Quests/Quests`;
 
 /** Days of the week for the weekly quest reset */
 export enum WeeklyResetDay {
@@ -244,78 +221,3 @@ export type Faction =
   | "Passive"
   | "Mercenaries"
   | "Bandits";
-
-/** Expansion's nested AI spawn definition used by AI Patrol/Camp objectives. */
-export interface QuestAIObjectiveSpawn {
-  NumberOfAI: number;
-  NPCName: string;
-  Waypoints: Vec3[];
-  Behaviour: string;
-  Formation: string;
-  Loadout: string;
-  Faction: Faction;
-  Speed: string;
-  ThreatSpeed: string;
-  MinAccuracy: number;
-  MaxAccuracy: number;
-  CanBeLooted: BoolNum;
-  UnlimitedReload: BoolNum;
-  ThreatDistanceLimit: number;
-  DamageMultiplier: number;
-  DamageReceivedMultiplier: number;
-  ClassNames: NPCClassName[];
-  SniperProneDistanceThreshold: number;
-  RespawnTime: number;
-  DespawnTime: number;
-  MinDistanceRadius: number;
-  MaxDistanceRadius: number;
-  DespawnRadius: number;
-}
-
-/** Expansion's treasure loot entry. */
-export interface QuestTreasureLoot {
-  Name: string;
-  Attachments: string[];
-  Chance: number;
-  QuantityPercent: number;
-  Max: number;
-  Min: number;
-  Variants: string[];
-}
-
-/** Generator-only additions used to build the documented wire shape. */
-export type QuestTargetObjective = TargetObjective;
-
-export type QuestAIPatrolObjective = AIPatrolObjective & {
-  AISpawn?: QuestAIObjectiveSpawn;
-};
-
-export type QuestAICampObjective = AICampObjective & {
-  InfectedDeletionRadius?: number;
-  AISpawns?: QuestAIObjectiveSpawn[];
-};
-
-export type QuestAIVipObjective = AIVipObjective & {
-  ShowDistance?: BoolNum;
-  CanLootAI?: BoolNum;
-  NPCLoadoutFile?: string;
-  NPCClassName?: string;
-  NPCName?: string;
-};
-
-export type QuestTreasureHuntObjective = TreasureHuntObjective & {
-  ShowDistance?: BoolNum;
-  ContainerName?: string;
-  DigInStash?: BoolNum;
-  MarkerVisibility?: number;
-  Positions?: Vec3[];
-  Loot?: QuestTreasureLoot[];
-  LootItemsAmount?: number;
-};
-
-export type QuestObjective =
-  | Objective
-  | QuestAIPatrolObjective
-  | QuestAICampObjective
-  | QuestAIVipObjective
-  | QuestTreasureHuntObjective;

@@ -1,6 +1,7 @@
-import { TRUE } from "../types/common.ts";
-import { Npc, NPC_CONFIG_DIR, NPCType } from "../types/npc.ts";
-import { configToRecord, NPC_CONFIG_VERSION } from "./common.ts";
+import { NPCType, TRUE } from "../types/common.ts";
+import { NPC_CONFIG_DIR } from "../paths.ts";
+import type { Npc } from "../types/npc.d.ts";
+import { configToRecord, NPC_CONFIG_VERSION, safetyChecks } from "./common.ts";
 
 const NPC_DEFAULTS = {
   Active: TRUE,
@@ -67,12 +68,12 @@ export const NPC_SCOUT_NIKI: Npc = {
   NPCType: NPCType.NORMAL,
 };
 
-const ALL_NPCS: Npc[] = [
+const ALL_NPCS: Npc[] = safetyChecks([
   NPC_TASKMASTER_DANIELS,
-  // NPC_GUARD_BORIS,
-  // NPC_GUARD_KAITO,
-  // NPC_BLACKMARKET_HASSAN,
-  // NPC_SCOUT_NIKI,
-];
+  NPC_GUARD_BORIS,
+  NPC_GUARD_KAITO,
+  NPC_BLACKMARKET_HASSAN,
+  NPC_SCOUT_NIKI,
+], "NPCs");
 
 export const ALL_NPC_CONFIGS = configToRecord(ALL_NPCS, `${NPC_CONFIG_DIR}/QuestNPC_`);

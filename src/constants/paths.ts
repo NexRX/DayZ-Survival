@@ -103,6 +103,12 @@ export const EXPANSION_LOADOUTS_DIR = `${PROFILE_DIR}/ExpansionMod/Loadouts`;
 // ensureCustomTraderBoard()) without a manual DayZ-Editor placement step.
 export const EXPANSION_OBJECTS_DIR = `${MISSION_DIR}/expansion/objects`;
 
+export const NPC_CONFIG_DIR = `${PROFILE_DIR}/ExpansionMod/Quests/NPCs`;
+export const QUEST_SETTINGS_CONFIG = `${PROFILE_DIR}/ExpansionMod/Settings/QuestSettings.json`;
+export const QUEST_CONFIG_DIR = `${PROFILE_DIR}/ExpansionMod/Quests/Quests`;
+export const OBJECTIVE_ACTION_DIR = PROFILE_DIR + "/ExpansionMod/Quests/Objectives/Action";
+export const BOOK_CONFIG_PATH = `${PROFILE_DIR}/ExpansionMod/Settings/BookSettings.json`;
+
 // Search For Loot (Improved)'s persistent "area flags" cache: a binary index
 // of loot-searchable areas/buildings, built once and reused across restarts.
 // It is NOT part of storage_1, so a world wipe won't touch it - but it goes

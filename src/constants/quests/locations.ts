@@ -3,8 +3,8 @@ import { NPC_BLACKMARKET_HASSAN } from "./npc.ts";
 
 export const LOCATION = {
   romashka: [7986, 221, 11308], // safe-zone trader
-  severograd_raiders: [8049.27, 113.551, 12729.3], // Hostile patrol are near Romashka
-  coast_road: PLACEHOLDER_POSITION, // Kamenka–Romashka coastal road patrol route midpoint
+  severograd_center: [8049.27, 113.551, 12729.3], // Severograd, nearest large town near Romashka, contains raider patrols
+  gnomov_castle: [7413.59, 405.762, 9108.23], // Stary–Romashka midpoint castle
   intel_building: PLACEHOLDER_POSITION, // Building containing the intel for the opening travel objective.
   solnichniy_checkpoint: PLACEHOLDER_POSITION, // Solnichniy outskirts - AI checkpoint / AI Camp location
   nwaf_outskirts: PLACEHOLDER_POSITION, // NWAF outskirts where the Cordon defector is found
