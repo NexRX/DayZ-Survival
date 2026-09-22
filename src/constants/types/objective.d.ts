@@ -26,7 +26,7 @@ export type DamageZone =
   | "RightFoot"
   | "Torso";
 
-export interface AiSpawn {
+export interface AISpawn {
   NumberOfAI: number;
   Waypoints: Vec3[];
   Faction: Faction;
@@ -37,7 +37,7 @@ export interface AiSpawn {
   Behaviour?: string;
   Speed?: AISpeed;
   Units?: string[];
-  Persist?: number;
+  Persist?: BoolNum;
   Formation?: AIFormation;
   AccuracyMax?: number;
   AccuracyMin?: number;
@@ -171,7 +171,7 @@ export interface TreasureHuntObjective extends ObjectiveBase {
 
 export interface AIPatrolObjective extends ObjectiveBase {
   ObjectiveType: ObjectiveType.AIPATROL;
-  AiSpawn: AiSpawn[];
+  AISpawn: AISpawn;
   MaxDistance: number;
   MinDistance: number;
   AllowedWeapons?: ClassNameModded[];
@@ -180,7 +180,7 @@ export interface AIPatrolObjective extends ObjectiveBase {
 
 export interface AICampObjective extends ObjectiveBase {
   ObjectiveType: ObjectiveType.AICAMP;
-  AiSpawn: AiSpawn[];
+  AISpawn: AISpawn;
   MaxDistance: number;
   MinDistance: number;
   AllowedWeapons?: ClassNameModded[];

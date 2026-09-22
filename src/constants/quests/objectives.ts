@@ -2,7 +2,7 @@ import type {
   ActionObjective,
   AICampObjective,
   AIPatrolObjective,
-  AiSpawn,
+  AISpawn,
   AIVipObjective,
   CollectionObjective,
   CraftingObjective,
@@ -30,17 +30,7 @@ import { OBJECTIVE_CONFIG_VERSION, PLACEHOLDER_POSITION, safetyChecks } from "./
 import { LOCATION } from "./locations.ts";
 import { AI_NPCS, ClassNameModded } from "../types/classNames.ts";
 import { Faction } from "../types/quest.d.ts";
-import {
-  AIDefaultStance,
-  AIFormation,
-  AILootingBehaviour,
-  AISpeed,
-  AIWaypointInterpolation,
-  FALSE,
-  ObjectiveType,
-  TRUE,
-  Vec3,
-} from "../types/common.ts";
+import { AISpeed, BoolNum, FALSE, ObjectiveType, TRUE, Vec3 } from "../types/common.ts";
 import { LoadoutName } from "../types/npc.d.ts";
 
 export function ref<T extends ObjectiveBase>(objective: T): ObjectiveRef {
@@ -52,6 +42,7 @@ export function ref<T extends ObjectiveBase>(objective: T): ObjectiveRef {
 }
 
 export const OBJECTIVE_DEFAULTS = {
+  ConfigVersion: OBJECTIVE_CONFIG_VERSION,
   Active: TRUE,
   TimeLimit: -1, // Important, causes accept>cancelled bug
 };
@@ -60,58 +51,29 @@ function aiSpawn(
   Faction: Faction,
   Loadout: LoadoutName,
   Waypoints: Vec3[],
-  numberOfAI: number = 1,
+  NumberOfAI: number = 1,
   Name: string = Faction,
-): AiSpawn {
+  CanBeLooted: BoolNum = TRUE,
+): AISpawn {
   return {
     Name,
     Speed: AISpeed.WALK,
-    // Units: objective.ClassNames.filter((name) =>
-    //   typeof name === "string" && name.startsWith("eAI_")
-    // ),
-    // ObjectClassName: "",
     Chance: 100,
+    Waypoints,
+    NumberOfAI,
     Faction,
     Loadout,
-    Persist: 0,
-    Behaviour: "HALT",
-    Formation: AIFormation.NONE,
-    Waypoints,
-    NumberOfAI: numberOfAI,
-    AccuracyMax: 0.8,
-    AccuracyMin: 0.5,
-    CanBeLooted: TRUE,
-    DespawnTime: 1,
-    RespawnTime: 1,
-    DefaultStance: AIDefaultStance.STANDING,
-    DespawnRadius: 880,
-    MaxDistRadius: 150,
-    MinDistRadius: 50,
-    NumberOfAIMax: 0,
-    FormationScale: 1.5,
-    LootDropOnDeath: 0,
-    MaxSpreadRadius: 0,
-    MinSpreadRadius: 0,
-    ShoryukenChance: 0,
-    UnlimitedReload: 1,
-    DamageMultiplier: 1,
-    DefaultLookAngle: 0,
-    LootingBehaviour: AILootingBehaviour.ALL,
+    Persist: FALSE,
     UnderThreatSpeed: AISpeed.SPRINT,
-    CanBeTriggeredByAI: FALSE,
-    FormationLooseness: 0,
-    HeadshotResistance: 0,
-    MaxFlankingDistance: -1,
-    ThreatDistanceLimit: 150,
-    LoadBalancingCategory: "",
-    WaypointInterpolation: AIWaypointInterpolation.NONE,
-    DamageReceivedMultiplier: 1,
-    ShoryukenDamageMultiplier: 0,
-    CanSpawnInContaminatedArea: FALSE,
-    EnableFlankingOutsideCombat: -1,
-    SniperProneDistanceThreshold: 300,
-    UseRandomWaypointAsStartPoint: TRUE,
-    NoiseInvestigationDistanceLimit: -1,
+    CanBeLooted,
+    UnlimitedReload: TRUE,
+    ThreatDistanceLimit: 150.0,
+    DamageMultiplier: 1.0,
+    DamageReceivedMultiplier: 1.0,
+    SniperProneDistanceThreshold: 300.0,
+    RespawnTime: 1.0,
+    DespawnTime: 1.0,
+    DespawnRadius: 880.0,
   };
 }
 
@@ -718,13 +680,9 @@ export const AICAMP_TISY_TRANSMITTER: AICampObjective = {
   ObjectiveText:
     "Reach the Tisy gate and destroy the transmitter before the final broadcast completes.",
   ObjectiveType: ObjectiveType.AICAMP,
-  // Position: LOCATION.tisy_gate,
   MaxDistance: 150,
   MinDistance: -1,
-  // Amount: 15,
-  // ClassNames: ["ZombieMadman"],// AllowedTargetFactions: ["Raiders"],
-
-  AiSpawn: [/* PLACEHOLDER */],
+  AISpawn: aiSpawn("Raiders", "BanditLoadout", [PLACEHOLDER_POSITION], 15, "Raider"),
 };
 
 /** @deprecated untill playtested */
@@ -739,7 +697,7 @@ export const AICAMP_SHEPHERD_COMMAND: AICampObjective = {
   // Amount: 12,
   // ClassNames: ["BanditAI_Keiko", "BanditAI_Linda", "BanditAI_Rolf", "BanditAI_Denis"],
   // AllowedTargetFactions: ["Raiders"],
-  AiSpawn: [/* PLACEHOLDER */],
+  AISpawn: aiSpawn("Raiders", "Bandit_Black", [PLACEHOLDER_POSITION], 12, "Shepherd"),
 };
 
 /** @deprecated untill playtested */
@@ -755,8 +713,7 @@ export const AICAMP_STARY_RAD_ZONE: AICampObjective = {
   // ClassNames: ["ZombieMadman"],
   //
   // // AllowedTargetFactions: ["Raiders"],
-
-  AiSpawn: [/* PLACEHOLDER */],
+  AISpawn: aiSpawn("West", "BanditLoadout", [PLACEHOLDER_POSITION], 12),
 };
 
 /** @deprecated untill playtested */
@@ -770,7 +727,7 @@ export const AICAMP_REAPER_CHECKPOINT: AICampObjective = {
   // Amount: 10,
   MaxDistance: 150,
   MinDistance: -1,
-  AiSpawn: [/* PLACEHOLDER */],
+  AISpawn: aiSpawn("Raiders", "BanditLoadout", [PLACEHOLDER_POSITION], 10, "Reaper"),
 };
 
 /** @deprecated untill playtested */
@@ -782,11 +739,7 @@ export const AICAMP_REAPER_STRONGHOLD: AICampObjective = {
   // Position: LOCATION.cherno_block,
   MaxDistance: 150,
   MinDistance: -1,
-  // Amount: 8,
-  // ClassNames: ["ZombieMadman"],
-  //
-
-  AiSpawn: [/* PLACEHOLDER */],
+  AISpawn: aiSpawn("Raiders", "BanditLoadout", [PLACEHOLDER_POSITION], 8, "Reaper"),
 };
 
 /** @deprecated untill playtested */
@@ -800,7 +753,7 @@ export const AICAMP_TISY_GATE: AICampObjective = {
   // ClassNames: ["ZombieMadman"],
   MaxDistance: 150,
   MinDistance: -1,
-  AiSpawn: [/* PLACEHOLDER */],
+  AISpawn: aiSpawn("Raiders", "Bandit_Black", [PLACEHOLDER_POSITION], 10, "Raider"),
 };
 
 const ALL_OAICAMP: AICampObjective[] = [
@@ -849,28 +802,19 @@ const ALL_OAIVIP: AIVipObjective[] = [
 
 // ─── AI Patrol Objectives ────────────────────────────────────────────────────
 
-/** @deprecated untill playtested */
 export const AIPATROL_RAIDER_SEVEROGRAD: AIPatrolObjective = {
   ...OBJECTIVE_DEFAULTS,
   ID: 49,
   ObjectiveText: "Break the Raider scout party, there tracks lead to Severograd.",
   ObjectiveType: ObjectiveType.AIPATROL,
-  // Position: LOCATION.severograd_center,
-  MaxDistance: 125,
+  MaxDistance: -1,
   MinDistance: -1,
-  // Amount: 3,
-  // ClassNames: AI_NPCS,
-
-  // // AllowedTargetFactions: ["Raiders"],
-
-  AiSpawn: [
-    aiSpawn("Raiders", "Bandit_Black", [
-      [8029.1, 114.261, 12695.8],
-      [8033.27, 114.099, 12695.8],
-      [8022.62, 114.451, 12690.9],
-      [8039.49, 126.648, 12698.9],
-    ], 3),
-  ],
+  AISpawn: aiSpawn("Raiders", "BanditLoadout", [
+    [8029.1, 114.261, 12695.8],
+    [8033.27, 114.099, 12695.8],
+    [8022.62, 114.451, 12690.9],
+    [8039.49, 126.648, 12698.9],
+  ], 3),
 };
 
 /** @deprecated untill playtested */
@@ -882,12 +826,7 @@ export const AIPATROL_SHEPHERD_EXECUTIONER: AIPatrolObjective = {
   // Position: LOCATION.shepherd_command_post,
   MaxDistance: 150,
   MinDistance: -1,
-  // Amount: 1,
-  // ClassNames: ["BanditAI_Keiko", "BanditAI_Linda", "BanditAI_Rolf", "BanditAI_Denis"],
-  //
-  // AllowedTargetFactions: ["Raiders"],
-
-  AiSpawn: [/* PLACEHOLDER */],
+  AISpawn: aiSpawn("Raiders", "Bandit_Black", [PLACEHOLDER_POSITION], 1, "Executioner"),
 };
 
 /** @deprecated untill playtested */
@@ -896,12 +835,9 @@ export const AIPATROL_CHECKPOINT_CLEAR: AIPatrolObjective = {
   ID: 51,
   ObjectiveText: "Break the Reaper supply patrol into the warzone.",
   ObjectiveType: ObjectiveType.AIPATROL,
-  // Position: LOCATION.solnichniy_checkpoint,
   MaxDistance: 150,
   MinDistance: -1,
-  // ClassNames: ["ZombieMadman"],
-
-  AiSpawn: [/* PLACEHOLDER */],
+  AISpawn: aiSpawn("Raiders", "BanditLoadout", [PLACEHOLDER_POSITION]),
 };
 
 /** @deprecated untill playtested */
@@ -915,7 +851,7 @@ export const AIPATROL_CORDON_LOOP: AIPatrolObjective = {
   MinDistance: -1,
   // Amount: 6,
   // ClassNames: ["ZombieMadman"],AllowedDamageZones: [],
-  AiSpawn: [/* PLACEHOLDER */],
+  AISpawn: aiSpawn("West", "BanditLoadout", [PLACEHOLDER_POSITION], 6),
 };
 
 const ALL_OAIPATROL: AIPatrolObjective[] = [
@@ -1468,13 +1404,9 @@ export const AICAMP_ROADBLOCK: AICampObjective = {
   ID: 93,
   ObjectiveText: "Smash the roadblock. Ten hostiles, no backup, easy target.",
   ObjectiveType: ObjectiveType.AICAMP,
-  // Position: LOCATION.roadblock,
-  // Amount: 10,
-  // ClassNames: ["ZombieFast"],
   MaxDistance: 150,
   MinDistance: -1,
-
-  AiSpawn: [/* PLACEHOLDER */],
+  AISpawn: aiSpawn("West", "BanditLoadout", [PLACEHOLDER_POSITION], 10),
 };
 
 /** @deprecated untill playtested */
@@ -1483,13 +1415,9 @@ export const AICAMP_OUTPOST_RAID: AICampObjective = {
   ID: 94,
   ObjectiveText: "Raid the outpost before they reinforce. Hit fast, leave fast.",
   ObjectiveType: ObjectiveType.AICAMP,
-  // Position: LOCATION.outpost,
-  // Amount: 12,
-  // ClassNames: ["ZombieMadman"],
   MaxDistance: 150,
   MinDistance: -1,
-
-  AiSpawn: [/* PLACEHOLDER */],
+  AISpawn: aiSpawn("West", "BanditLoadout", [PLACEHOLDER_POSITION], 12),
 };
 
 export const AICAMP_Bunker_SWEEP: AICampObjective = {
@@ -1497,13 +1425,9 @@ export const AICAMP_Bunker_SWEEP: AICampObjective = {
   ID: 95,
   ObjectiveText: "Sweep the bunker — sealed, dark, and full of company.",
   ObjectiveType: ObjectiveType.AICAMP,
-  // Position: LOCATION.bunker,
-  // Amount: 15,
-  // ClassNames: ["ZombieSlow", "ZombieMadman"],
   MaxDistance: 150,
   MinDistance: -1,
-
-  AiSpawn: [/* PLACEHOLDER */],
+  AISpawn: aiSpawn("West", "BanditLoadout", [PLACEHOLDER_POSITION], 15),
 };
 
 /** @deprecated untill playtested */
@@ -1512,13 +1436,9 @@ export const AICAMP_FACTORY_CLEAR: AICampObjective = {
   ID: 96,
   ObjectiveText: "Clear the factory floor. These things were workers once.",
   ObjectiveType: ObjectiveType.AICAMP,
-  // Position: LOCATION.factory,
-  // Amount: 20,
-  // ClassNames: ["ZombieMadman"],
   MaxDistance: 150,
   MinDistance: -1,
-
-  AiSpawn: [/* PLACEHOLDER */],
+  AISpawn: aiSpawn("West", "BanditLoadout", [PLACEHOLDER_POSITION], 20),
 };
 
 /** @deprecated untill playtested */
@@ -1527,13 +1447,9 @@ export const AICAMP_TANK_GRAVEYARD: AICampObjective = {
   ID: 97,
   ObjectiveText: "The tank graveyard — the dead don't stay buried in metal.",
   ObjectiveType: ObjectiveType.AICAMP,
-  // Position: LOCATION.tank_graveyard,
-  // Amount: 10,
-  // ClassNames: ["ZombieFast"],
   MaxDistance: 150,
   MinDistance: -1,
-
-  AiSpawn: [/* PLACEHOLDER */],
+  AISpawn: aiSpawn("West", "BanditLoadout", [PLACEHOLDER_POSITION], 10),
 };
 
 // ── AIVIP ──
@@ -1602,13 +1518,9 @@ export const AIPATROL_ROAMING_GROUP: AIPatrolObjective = {
   ID: 102,
   ObjectiveText: "Break up the roaming group — they're moving toward civilization.",
   ObjectiveType: ObjectiveType.AIPATROL,
-  // Position: LOCATION.roaming_group,
-  // Amount: 4,
-  // ClassNames: ["ZombieMadman"],
   MaxDistance: 150,
   MinDistance: -1,
-
-  AiSpawn: [/* PLACEHOLDER */],
+  AISpawn: aiSpawn("West", "BanditLoadout", [PLACEHOLDER_POSITION], 4),
 };
 
 /** @deprecated untill playtested */
@@ -1617,13 +1529,9 @@ export const AIPATROL_HUNTER_PATROL: AIPatrolObjective = {
   ID: 103,
   ObjectiveText: "Take out the hunter patrol — they track everything.",
   ObjectiveType: ObjectiveType.AIPATROL,
-  // Position: LOCATION.hunter_patrol,
-  // Amount: 3,
-  // ClassNames: ["ZombieFast"],
   MaxDistance: 150,
   MinDistance: -1,
-
-  AiSpawn: [/* PLACEHOLDER */],
+  AISpawn: aiSpawn("West", "BanditLoadout", [PLACEHOLDER_POSITION], 3, "Hunter"),
 };
 
 /** @deprecated untill playtested */
@@ -1632,13 +1540,9 @@ export const AIPATROL_CONVOY_ESCORT: AIPatrolObjective = {
   ID: 104,
   ObjectiveText: "Interrupt the convoy escort — the supply truck is the real target.",
   ObjectiveType: ObjectiveType.AIPATROL,
-  // Position: LOCATION.nwaf_patrol,
-  // Amount: 8,
-  // ClassNames: ["ZombieMadman"],
   MaxDistance: 150,
   MinDistance: -1,
-
-  AiSpawn: [/* PLACEHOLDER */],
+  AISpawn: aiSpawn("Raiders", "BanditLoadout", [PLACEHOLDER_POSITION], 8),
 };
 
 /** @deprecated untill playtested */
@@ -1652,8 +1556,7 @@ export const AIPATROL_NIGHT_STALKERS: AIPatrolObjective = {
   // ClassNames: ["ZombieSlow"],
   MaxDistance: 150,
   MinDistance: -1,
-
-  AiSpawn: [/* PLACEHOLDER */],
+  AISpawn: aiSpawn("West", "BanditLoadout", [PLACEHOLDER_POSITION], 3, "Stalker"),
 };
 
 // ── Treasure Hunt ──
