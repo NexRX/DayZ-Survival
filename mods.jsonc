@@ -45,7 +45,7 @@
     [2999984359, "@NCPR-Signs-Canvas"],
     // --- Zombie/bandit AI ---
     [3321340470, "@Zens-ExpansionAI-Audio"],
-    // 3031784065  @InediaInfectedAI # makes things too hard]
+    // 3031784065  @InediaInfectedAI makes things too hard]
     [2990236173, "@InediaStamina"],
     [1866298408, "@CreepyZombies"],
     [3628006769, "@AI-Bandits"],
@@ -75,7 +75,7 @@
     [2901480106, "@Yuretskiy-Creatures"],
     [3693114761, "@Necromutant"],
     [2950280649, "@DayZ-Rat"],
-    [2471347750, "@DayZ-Dog # caused bleed issues before"],
+    [2471347750, "@DayZ-Dog"],
     [3114410963, "@Ambient-Animals-Pack"],
     // --- Base building / access control ---
     [2810212624, "@Custom-Keycards"],
