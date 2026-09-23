@@ -12,9 +12,9 @@
 // COT keybinds once admin in-game: Y = toolbar menu, INSERT = free camera,
 // H = teleport to where you're looking, END = toggle keybindings.
 
+import { exists } from "jsr:@std/fs@1.0.24";
 import { AI_SETTINGS, COT_PLAYERS_DIR, PROFILE_DIR } from "../constants/paths.ts";
 import { ask, log, ok, warn } from "../ui.ts";
-import { exists } from "../steam.ts";
 
 interface AISettingsFile {
   Admins?: string[];

@@ -26,7 +26,7 @@
 
 import { EXPANSION_MARKET_DIR } from "../constants/paths.ts";
 import { log, ok, warn } from "../ui.ts";
-import { exists } from "../steam.ts";
+import { exists } from "jsr:@std/fs@1.0.24";
 import manifest from "../data/marketGapFill.json" with { type: "json" };
 // Vehicle_Parts/Batteries absolute price targets - see VEHICLE_PARTS_PRICE_FIXES
 // below. Kept as a separate JSON file purely for size/readability.

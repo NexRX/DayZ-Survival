@@ -2,116 +2,68 @@
 
 import { ask, c, DayzError, warn } from "./ui.ts";
 import { configure, loadSettings, type Settings } from "./config/settings.ts";
-import { doInstall, doLogin, loggedIn, serverInstalled } from "./steam.ts";
-import { doMods, modsInstalled } from "./server/install.ts";
 import { doAdmin } from "./config/admin.ts";
-import { doSimpleStart, doStart } from "./server/server.ts";
+import { doSimpleStart, doStart, ensureMods, ensureServer } from "./server/server.ts";
 import { doWipe } from "./tools/wipe.ts";
-import { loadMods, resolveMods, searchMods } from "./server/mods.ts";
 import { doSyncEditor } from "./tools/editorSync.ts";
 import { auditMarket } from "./tools/marketAudit.ts";
 import { clearQuestCache } from "./tools/questClear.ts";
 import { resetPlayerQuestData } from "./tools/playerQuestReset.ts";
-
-function statusLine(label: string, good: boolean, extra = ""): void {
-  const mark = good ? c.green("✓") : c.dim("·");
-  const value = good ? extra : extra || "not done";
-  console.log(`   ${mark} ${label.padEnd(18)} ${value}`);
-}
-
-async function showStatus(s: Settings): Promise<void> {
-  let nmods = 0;
-  try {
-    nmods = (await loadMods()).length;
-  } catch {
-    // mods.txt missing - reported elsewhere
-  }
-  let mods = false;
-  try {
-    mods = await modsInstalled();
-  } catch {
-    // ignore
-  }
-
-  console.log(`\n${c.cyan("DayZ Survival - status")}`);
-  statusLine(
-    "Configured",
-    !!s.STEAM_USER && s.STEAM_USER !== "anonymous",
-    s.STEAM_USER,
-  );
-  statusLine("Steam login", await loggedIn(s.STEAM_USER));
-  statusLine("Server installed", await serverInstalled());
-  statusLine("Mods installed", mods, `${nmods} in mods.txt`);
-  console.log("");
-}
+import { loginSteam } from "./steam/index.ts";
 
 async function menu(s: Settings): Promise<void> {
   while (true) {
-    await showStatus(s);
     console.log(`${c.cyan("What would you like to do?")}
     1) Set up & start  (does everything needed)  ${c.dim("[recommended]")}
     2) Configure settings
-    3) Log in to Steam
-    4) Install / update server
-    5) Download / update mods
-    6) Start server
-    7) Verify mod IDs (Steam API)
-    8) Grant admin access (test AI quickly)
-    9) Search the Steam Workshop
-    10) Wipe server (reset world or reinstall)
-    11) Build server pack (serverpack/addons/)
-    12) Publish server pack to Steam Workshop
-    13) Sync DayZ-Editor save into the mission (EditorFiles/)
-    14) Verify server pack scripts actually compile (no publish)
-    15) Audit trader economy (find missing/mispriced items)
-    16) Quit`);
+    3) Install / update server
+    4) Download / update mods
+    5) Grant admin access
+    6) Wipe server (reset world or reinstall)
+    7) Sync DayZ-Editor save into the mission (EditorFiles/)
+    8) Verify server pack scripts actually compile (no publish)
+    9) Audit trader economy (find missing/mispriced items)
+    10) Clear Expansion Quests cached data (regenerates quest definitions)
+    11) Reset a player's Expansion quest progress
+    12) Quit`);
 
     const choice = await ask("Choice", "1");
     try {
       switch (choice) {
         case "1":
-        case "6":
           await doStart(s);
           break;
         case "2":
           await configure(s);
           break;
         case "3":
-          await doLogin(s);
+          await ensureServer();
           break;
-        case "4":
-          await doInstall(s);
-          break;
-        case "5": {
-          const ids = await ask(
-            "Workshop id(s) to force re-check even if not flagged as stale (blank = auto-detect only)",
-            "",
-          );
-          await doMods(s, ids.trim() ? new Set(ids.trim().split(/\s+/)) : undefined);
+        case "4": {
+          ensureMods();
           break;
         }
-        case "7":
-          await resolveMods(await loadMods());
-          break;
-        case "8":
+        case "5":
           await doAdmin();
           break;
-        case "9": {
-          const query = await ask("Search terms", "");
-          await searchMods(query, s.STEAM_API_KEY);
-          break;
-        }
-        case "10":
+        case "6":
           await doWipe();
           break;
-        case "11":
+        case "7":
           await doSyncEditor();
           break;
-        case "12":
-        case "13":
+        case "8":
           await auditMarket();
           break;
-        case "14":
+        case "9":
+          await clearQuestCache();
+          break;
+        case "10": {
+          const playerId = await ask("Player/identity ID to reset", "");
+          if (playerId) await resetPlayerQuestData(playerId);
+          break;
+        }
+        case "11":
           Deno.exit(0);
           break;
         default:
@@ -137,6 +89,7 @@ const HELP = `Usage: deno task dayz [command]
                 add workshop id(s) to also force-recheck specific ones, e.g.
                 'deno task mods 3149798901')
   resolve       Verify mod IDs via the Steam Web API
+  check-mods    Show which mods have updates available on Steam (no download)
   search <terms> Search the Steam Workshop for DayZ mods (needs a Steam Web API key)
   status        Show setup status
   admin         Grant AI-menu / Community Online Tools admin access
@@ -168,6 +121,12 @@ async function main(): Promise<void> {
     case "start":
       await doStart(s);
       break;
+    case "server":
+      await ensureServer();
+      break;
+    case "mods":
+      await ensureMods();
+      break;
     case "up-simple":
       await doSimpleStart(s);
       break;
@@ -175,24 +134,7 @@ async function main(): Promise<void> {
       await configure(s);
       break;
     case "login":
-      await doLogin(s);
-      break;
-    case "install":
-      await doInstall(s);
-      break;
-    case "mods": {
-      const ids = Deno.args.slice(1);
-      await doMods(s, ids.length ? new Set(ids) : undefined);
-      break;
-    }
-    case "resolve":
-      await resolveMods(await loadMods());
-      break;
-    case "search":
-      await searchMods(Deno.args.slice(1).join(" "), s.STEAM_API_KEY);
-      break;
-    case "status":
-      await showStatus(s);
+      await loginSteam();
       break;
     case "admin":
       await doAdmin();

@@ -40,7 +40,7 @@
 
 import { CFG_GAMEPLAY_FILE, EXTENDED_TOURIST_MAP_SETTINGS } from "../constants/paths.ts";
 import { log, ok } from "../ui.ts";
-import { exists } from "../steam.ts";
+import { exists } from "jsr:@std/fs@1.0.24";
 
 interface CfgGameplay {
   UIData?: {

@@ -51,7 +51,7 @@
 
 import { EXPANSION_MARKET_DIR } from "../constants/paths.ts";
 import { log, ok } from "../ui.ts";
-import { exists } from "../steam.ts";
+import { exists } from "jsr:@std/fs@1.0.24";
 import { DEAD_MARKET_FILES } from "./marketGapFill.ts";
 
 type Tier = "Common" | "Uncommon" | "Rare" | "Legendary";

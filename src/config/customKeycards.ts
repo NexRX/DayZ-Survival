@@ -26,8 +26,8 @@
 
 import { ECONOMY_TYPES_FILE } from "../constants/paths.ts";
 import { log, ok } from "../ui.ts";
-import { exists } from "../steam.ts";
-import type { Mod } from "../server/mods.ts";
+import { exists } from "jsr:@std/fs@1.0.24";
+import type { Mod } from "../server/server.ts";
 import { CUSTOM_KEYCARDS_ITEM_TYPES } from "./modTypes.ts";
 
 const MOD_NAME = "@Custom-Keycards";
@@ -134,7 +134,7 @@ function typeBlock(classname: string): string {
 }
 
 export async function ensureCustomKeycardsTypesWired(mods: Mod[]): Promise<void> {
-  if (!mods.some((m) => m.name === MOD_NAME)) return;
+  if (!mods.some(([_, name]) => name === MOD_NAME)) return;
 
   if (!(await exists(ECONOMY_TYPES_FILE))) {
     log(`${ECONOMY_TYPES_FILE} not found yet - skipping ${MOD_NAME} setup`);

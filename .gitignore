@@ -3,6 +3,7 @@
 
 # --- Large / generated runtime dirs ---
 steamcmd/
+steamcmd-*
 server/
 !src/server/
 profiles/

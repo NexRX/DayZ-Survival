@@ -44,7 +44,7 @@ import {
   SAFE_ZONE_SETTINGS,
 } from "../constants/paths.ts";
 import { log, ok, warn } from "../ui.ts";
-import { exists } from "../steam.ts";
+import { exists } from "jsr:@std/fs@1.0.24";
 import { MANAGED_MARKET_CATEGORIES } from "./market.ts";
 import {
   KEYCARD_SELL_ONLY_CLASSNAMES,

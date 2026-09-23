@@ -32,8 +32,8 @@ import {
   SERVER_DIR,
 } from "../constants/paths.ts";
 import { log, ok } from "../ui.ts";
-import { exists } from "../steam.ts";
-import type { Mod } from "../server/mods.ts";
+import { exists } from "jsr:@std/fs@1.0.24";
+import type { Mod } from "../server/server.ts";
 
 // ─── Entry type detection ───────────────────────────────────────────────────
 
@@ -133,7 +133,7 @@ interface EconomyBlocksData {
 const BLOCKS_FILE = `${ROOT}/overrides_server/mpmissions/db/economy_blocks.json`;
 
 export async function ensureEconomyBlocks(mods: Mod[]): Promise<void> {
-  const installedModNames = new Set(mods.map((m) => m.name));
+  const installedModNames = new Set(mods.map(([_, name]) => name));
 
   if (
     !(await exists(ECONOMY_TYPES_FILE)) &&

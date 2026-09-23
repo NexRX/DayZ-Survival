@@ -1,0 +1,148 @@
+{
+  // DayZ server mod list
+  // ---------------------
+  // Format: { mods: [workshop_id, "@name", "server" | undefined] }
+  "mods": [
+    [1559212036, "@CF"],
+    [2545327648, "@Dabs_Framework"],
+    [1564026768, "@Community-Online-Tools"],
+    // --- World-building, Loaders & Spawners ---
+    [2276010135, "@DayZ-Editor-Loader", "server"],
+    [2482312670, "@SpawnerBubaku", "server"],
+    [3638393043, "@KnockKnockAIBandits", "server"],
+    // --- Assets ---
+    [2961092390, "@R22R-Fortifications-Assets"],
+    [2866394785, "@Objects_Free_Mapping"],
+    // --- Areas & POI ---
+    [2967438123, "@Mapping_Skalisty_Military", "server"],
+    // --- DayZ Expansion ---
+    [2291785308, "@DayZ-Expansion-Core"],
+    [2116151222, "@DayZ-Expansion"],
+    [2116157322, "@DayZ-Expansion-Licensed"],
+    [2291785437, "@DayZ-Expansion-Vehicles"],
+    [2572324799, "@DayZ-Expansion-Book"],
+    [2572328470, "@DayZ-Expansion-Market"],
+    [2792982069, "@DayZ-Expansion-AI"],
+    [2828486817, "@DayZ-Expansion-Quests"],
+    // --- AI ---
+    [3321340470, "@Zens-ExpansionAI-Audio"],
+    // --- Terje suite ---
+    [3649957186, "@Terje-Core"],
+    [3649958397, "@Terje-Skills"],
+    [3649957536, "@Terje-Medicine"],
+    [3649958757, "@Terje-Radiation"],
+    [3649959402, "@Terje-Start-Screen"],
+    [3690738331, "@Zens-COT-Plus-Fix"],
+    // --- "s" suite (sGunplay/sVisual need sFramework; NOT related to CFTools ---
+    [2863299105, "@sFramework"],
+    [2863305254, "@sGunplay"],
+    [2863300519, "@sVisual"],
+    // --- Nemsis Craftingpack Redux (Core first) ---
+    [2999980206, "@NCPR-Core"],
+    [2999981660, "@NCPR-Armors"],
+    [2999983669, "@NCPR-Metalworking"],
+    [2999983984, "@NCPR-Sewing"],
+    [2999984359, "@NCPR-Signs-Canvas"],
+    // --- Zombie/bandit AI ---
+    [3321340470, "@Zens-ExpansionAI-Audio"],
+    // 3031784065  @InediaInfectedAI # makes things too hard]
+    [2990236173, "@InediaStamina"],
+    [1866298408, "@CreepyZombies"],
+    [3628006769, "@AI-Bandits"],
+    [2394804821, "@Zombie-Sound"],
+    [3499461862, "@Knock-Knock-Zombies"],
+    [3557687387, "@Custom-Zombies"],
+    [3767913539, "@Moving-AI-Convoy"],
+    [2912241382, "@Admirals-Parachute-Mod"],
+    [3472298147, "@Airborne-AI"],
+    [3521304609, "@Ai-Warzone"],
+    [2936212352, "@Tarkov-Expansion-AI"],
+    // --- Vehicles ---
+    [3160244059, "@UAZ-31514"],
+    [2122332595, "@Vehicle3PP"],
+    [3661300360, "@MBM-ApocalypseTruck"],
+    [3665166604, "@MBM-ApocalypticPAZ"],
+    [1931069341, "@MoreCars"],
+    [2048694610, "@JunkYardDog"],
+    [3533929661, "@Fuel-System"],
+    [3738839427, "@TP-Apoc-SUV"],
+    [3737385977, "@TP-Apoc-M1025"],
+    [3738834788, "@TP-Apoc-Pickup"],
+    [3382463948, "@AnimatedDynamicHelicopters"],
+    // --- Animals/creatures ---
+    [2959526520, "@DayZ-Raven"],
+    [3295021220, "@DayZ-Horse"],
+    [2901480106, "@Yuretskiy-Creatures"],
+    [3693114761, "@Necromutant"],
+    [2950280649, "@DayZ-Rat"],
+    [2471347750, "@DayZ-Dog # caused bleed issues before"],
+    [3114410963, "@Ambient-Animals-Pack"],
+    // --- Base building / access control ---
+    [2810212624, "@Custom-Keycards"],
+    [3083277274, "@Risus-Bases"],
+    [2670506982, "@Building-Fortifications"],
+    [3238690259, "@CS-Modular-Cave"],
+    [1646187754, "@Code-Lock"],
+    [3647777793, "@Peek-Doors"],
+    [2860643107, "@BoomLays-Things"],
+    [3010267444, "@Paragon-Storage"],
+    // --- No-Build-Zones: blocks construction around high-value/high-loot spots]
+    // (currently just NWAF - see src/noBuildZones.ts) ---
+    [2371483403, "@No-Build-Zones"],
+    // --- Weapons/equipment ---
+    [2449234595, "@Mag-Obfuscation"],
+    [3349198004, "@Quiver"],
+    [3604658284, "@Nail-Gun"],
+    [3118099775, "@Crowwolfie-Recipes"],
+    [3149798901, "@MoreMaterials"],
+    [3311720441, "@Gas-Mask-Overhaul"],
+    [2891614133, "@Hardcore-Backpack"],
+    [3571068454, "@Optics"],
+    [3464752232, "@Hunter-Bow"],
+    [2926289548, "@Survivor-Backpack"],
+    [3788373552, "@DecoyGrenades"],
+    [3444350187, "@TGK-WeaponPack"],
+    // --- Clothing ---
+    [1797720064, "@Windstride-Clothing"],
+    [3354931239, "@Alevarics-Clothing-Overhaul"],
+    [3311622303, "@Survival-Clothing"],
+    // --- Economy ---
+    // [3728619225, "@P2P-Trading-Board"],
+    // --- Food/survival mechanics ---
+    [3263494703, "@Search-For-Charcoal"],
+    [3237950572, "@Old-Food"],
+    // --- This project's own custom content ----
+    [3800261242, "@DZSurvivalServerPack"],
+    // --- Environment/atmosphere/events ---
+    [3632726388, "@Chernarus-Overhaul-Standalone"],
+    [3012019528, "@Lads-Lighting-Overhaul"],
+    [2536780687, "@SkyZ-Skybox-Overhaul"],
+    [2289461232, "@Namalsk-Survival"],
+    [2065443797, "@AirRaid"],
+    [2975514806, "@CJ187-RandomMineFields"],
+    [3608781425, "@OFG-Nuclear-Zone"],
+    [3659550946, "@Signal-Overnight-Stay"],
+    [3726714048, "@IronhordeLighting"],
+    [3660359997, "@WeatherLightingControl", "server"],
+    [3720376716, "@WeatherLightingControl-COT-Control-Panel"],
+    [3303988563, "@Early-Winter-Chernarus"],
+    // --- Misc/QoL ---
+    [3690267695, "@Admirals-Advanced-Hologram-Mod"],
+    [3726129210, "@Dart-Board-Game"],
+    [2627491185, "@Andys-EarPlugs"],
+    [2918418331, "@Survivor-Animations"],
+    [1565871491, "@BuilderItems"],
+    [3765278986, "@Tent-Actions-Fix"], // Tent Actions Fix - 1.29 Road To Buglands hotfix: restores tent UI
+    [3788295678, "@Extended-Tourist-Map"],
+    [3229104508, "@A-Hunters-Ritual"],
+    [2834577714, "@Burning-Mutant"],
+    [2867537797, "@Freezing-Mutant"],
+    [3170285574, "@Zens-Zippo-Lighter"],
+    [3036748011, "@Buddys-BoltZ"],
+    // Server-side-only AI extras]
+    [2874589934, "@DayZ-Dynamic-AI-Addon", "server"],
+    [3277130230, "@Dynamic-AI-Missions", "server"],
+    [3773597150, "@Dynamic-AI-Missions-Extended", "server"],
+    [2891781171, "@More-Expansion-Factions", "server"],
+  ],
+}

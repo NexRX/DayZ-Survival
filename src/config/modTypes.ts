@@ -12,10 +12,10 @@
 // it only ever lifts whole <type name="...">...</type> blocks verbatim and
 // appends them, leaving every other byte of the mission's file untouched.
 
+import { exists } from "jsr:@std/fs@^1.0.24";
 import { ECONOMY_TYPES_FILE, SERVER_DIR } from "../constants/paths.ts";
 import { log, ok } from "../ui.ts";
-import { exists } from "../steam.ts";
-import type { Mod } from "../server/mods.ts";
+import type { Mod } from "../server/server.ts";
 
 // Mods confirmed to ship a reference economy types file somewhere in their
 // mod folder for admins to merge in by hand. Keyed by the @name used in
@@ -109,15 +109,15 @@ export async function ensureModTypesMerged(mods: Mod[]): Promise<void> {
   );
 
   let addedTotal = 0;
-  for (const mod of mods) {
-    if (!MOD_TYPES_SOURCES.has(mod.name)) continue;
+  for (const [_id, name] of mods) {
+    if (!MOD_TYPES_SOURCES.has(name)) continue;
 
-    const modDir = `${SERVER_DIR}/${mod.name}`;
+    const modDir = `${SERVER_DIR}/${name}`;
     if (!(await exists(modDir))) continue; // not installed yet
 
     const files = await findEconomyTypesFiles(modDir);
     if (files.length === 0) {
-      log(`${mod.name}: no economy types.xml found under ${modDir} - nothing to merge`);
+      log(`${name}: no economy types.xml found under ${modDir} - nothing to merge`);
       continue;
     }
 
@@ -134,7 +134,7 @@ export async function ensureModTypesMerged(mods: Mod[]): Promise<void> {
     }
     if (addedForMod > 0) {
       addedTotal += addedForMod;
-      ok(`Merged ${addedForMod} item type(s) from ${mod.name} into ${ECONOMY_TYPES_FILE}`);
+      ok(`Merged ${addedForMod} item type(s) from ${name} into ${ECONOMY_TYPES_FILE}`);
     }
   }
 
@@ -173,7 +173,7 @@ export const CUSTOM_KEYCARDS_ITEM_TYPES = [
 export async function ensureCustomKeycardsTypesRemoved(mods: Mod[]): Promise<void> {
   // Mod is currently installed - customKeycards.ts's own wiring owns these
   // types now, don't fight it.
-  if (mods.some((m) => m.name === "@Custom-Keycards")) return;
+  if (mods.some(([_, name]) => name === "@Custom-Keycards")) return;
 
   // ensureModTypesMerged() already logs the missing-file case.
   if (!(await exists(ECONOMY_TYPES_FILE))) return;

@@ -7,7 +7,7 @@
 import { AREA_FLAGS_CACHE, MISSION_DIR, PROFILE_DIR, SERVER_DIR } from "../constants/paths.ts";
 import { ask, confirm, log, ok, warn } from "../ui.ts";
 import { runCapture } from "../proc.ts";
-import { exists } from "../steam.ts";
+import { exists } from "jsr:@std/fs@1.0.24";
 
 async function serverRunning(): Promise<boolean> {
   const { code } = await runCapture("pgrep", ["-f", "DayZServer"]);

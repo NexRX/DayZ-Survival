@@ -22,7 +22,7 @@
 
 import { ECONOMY_EVENTS_FILE, ECONOMY_TYPES_FILE } from "../constants/paths.ts";
 import { log, ok } from "../ui.ts";
-import { exists } from "../steam.ts";
+import { exists } from "jsr:@std/fs@1.0.24";
 
 // --- Food scarcity (types.xml, category="food") ---
 const FOOD_NOMINAL_MULTIPLIER = 0.5; // half as much ready-to-eat food spawns

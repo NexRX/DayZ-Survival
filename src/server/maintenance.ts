@@ -5,7 +5,7 @@
 import { MISSION_DIR, PROFILE_DIR, ROOT } from "../constants/paths.ts";
 import { log, ok, warn } from "../ui.ts";
 import { runCapture } from "../proc.ts";
-import { exists } from "../steam.ts";
+import { exists } from "jsr:@std/fs@1.0.24/exists";
 
 // --- Log rotation ---
 

@@ -65,6 +65,12 @@ const DESCRIPTIONS: DescriptionCategory[] = [
     ),
   },
   {
+    CategoryName: "Experimental & Known Issues",
+    Descriptions: descriptions(
+      "The main story line has only been playtested up to the ACT I",
+    ),
+  },
+  {
     CategoryName: "Headline Features",
     Descriptions: descriptions(
       "A fullmain questline with objectives, NPCs, and rewards",

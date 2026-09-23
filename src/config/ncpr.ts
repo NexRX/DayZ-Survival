@@ -6,8 +6,8 @@
 
 import { ECONOMY_TYPES_FILE, MISSION_DIR, ROOT } from "../constants/paths.ts";
 import { log, ok, warn } from "../ui.ts";
-import { exists } from "../steam.ts";
-import type { Mod } from "../server/mods.ts";
+import { exists } from "jsr:@std/fs@1.0.24";
+import type { Mod } from "../server/server.ts";
 
 const NCPR_MOD_NAMES = new Set([
   "@NCPR-Core",
@@ -83,7 +83,7 @@ function mergeBlocks(
 }
 
 export async function ensureNCPRTypesMerged(mods: Mod[]): Promise<void> {
-  if (!mods.some((m) => NCPR_MOD_NAMES.has(m.name))) return; // no NCPR module in mods.txt
+  if (!mods.some(([_, name]) => NCPR_MOD_NAMES.has(name))) return; // no NCPR module in mods.txt
 
   for (const src of SOURCES) {
     if (!(await exists(src.targetFile))) {

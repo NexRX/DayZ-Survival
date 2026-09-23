@@ -5,7 +5,7 @@
 
 import { PROFILE_DIR } from "../constants/paths.ts";
 import { log, ok } from "../ui.ts";
-import { exists } from "../steam.ts";
+import { exists } from "jsr:@std/fs@1.0.24";
 
 const QUESTS_DATA = `${PROFILE_DIR}/ExpansionQuests/quests_data.json`;
 

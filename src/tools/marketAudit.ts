@@ -31,7 +31,7 @@
 
 import { ECONOMY_TYPES_FILE, EXPANSION_MARKET_DIR, PROFILE_DIR } from "../constants/paths.ts";
 import { log, ok, warn } from "../ui.ts";
-import { exists } from "../steam.ts";
+import { exists } from "jsr:@std/fs@1.0.24";
 import {
   MANAGED_MARKET_CATEGORIES,
   RARE_CATEGORIES,

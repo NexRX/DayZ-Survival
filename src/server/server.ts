@@ -1,15 +1,14 @@
-// serverDZ.cfg generation and launching the server under steam-run.
-
+import { parse as parseJsonc } from "jsr:@std/jsonc@^1.0.2";
 import {
+  DAYZ_SERVER_APPID,
   PROFILE_DIR,
+  ROOT,
   SERVER_DIR,
   SERVERONLYPACK_DIR,
   SERVERONLYPACK_NAME,
 } from "../constants/paths.ts";
-import { log, warn } from "../ui.ts";
+import { log, ok, warn } from "../ui.ts";
 import { requireTools, runInherit } from "../proc.ts";
-import { ensureServer, serverBinary } from "../steam.ts";
-import { ensureMods } from "./install.ts";
 import { backupWorldState, pruneOldLogs } from "./maintenance.ts";
 import {
   ensureCustomKeycardsTypesRemoved,
@@ -23,12 +22,18 @@ import { ensureMarketGapFill } from "../config/marketGapFill.ts";
 import { ensureCustomTrader } from "../config/traders.ts";
 import { tuneExpansionMarket } from "../config/market.ts";
 import { tuneAnimalSpawns, tuneFoodScarcity, tuneMoneyScarcity } from "../config/economy.ts";
-import { loadMods, modParam, serverModParam } from "../server/mods.ts";
 import { ensureConfig, genConfig, type Settings } from "../config/settings.ts";
 import { ensureOverrides } from "../config/overrides.ts";
 import { ensureBook, ensureQuests } from "../config/expansion.ts";
 import { tuneExtendedTouristMap, tuneMapGameplayConfig } from "../config/extendedTouristMap.ts";
 import { copy } from "jsr:@std/fs@^1.0.24/copy";
+import { updateGame, updateWorkshopMods, WorkshopModRequest } from "../steam/index.ts";
+
+export type Mod = [number, string, "server" | undefined];
+export type ModFile = { mods: Mod[] };
+const MOD_FILE = parseJsonc(Deno.readTextFileSync(`${ROOT}/mods.jsonc`)) as ModFile;
+const CLIENT_MODS = MOD_FILE.mods.filter((m) => m[2] !== "server").map((m) => m[1]).join(";");
+const SERVER_MODS = MOD_FILE.mods.filter((m) => m[2] === "server").map((m) => m[1]).join(";");
 
 async function deployServerOnlyPack(): Promise<void> {
   const dest = `${SERVER_DIR}/${SERVERONLYPACK_NAME}`;
@@ -194,16 +199,13 @@ async function runServerWithWatchdog(args: string[]): Promise<never> {
 }
 
 export async function doSimpleStart(s: Settings): Promise<void> {
-  const allMods = await loadMods();
-  const mods = modParam(allMods);
-  const serverMods = serverModParam(allMods);
   const extra = s.EXTRA_PARAMS.trim() ? s.EXTRA_PARAMS.trim().split(/\s+/) : [];
   const args = [
-    await serverBinary(),
+    `${SERVER_DIR}/DayZServer`,
     "-config=serverDZ.cfg",
     `-port=${s.PORT}`,
-    `-mod=${mods}`,
-    ...(serverMods ? [`-servermod=${serverMods}`] : []),
+    `-mod=${CLIENT_MODS}`,
+    ...(SERVER_MODS ? [`-servermod=${SERVER_MODS}`] : []),
     `-BEpath=${PROFILE_DIR}/battleye`,
     `-profiles=${PROFILE_DIR}`,
     `-cpuCount=${navigator.hardwareConcurrency}`,
@@ -219,24 +221,43 @@ export async function doSimpleStart(s: Settings): Promise<void> {
   if (code !== 0) Deno.exit(code);
 }
 
+export async function ensureServer(): Promise<void> {
+  ok(`Updating server to ${SERVER_DIR}`);
+  const result = await updateGame(DAYZ_SERVER_APPID, SERVER_DIR);
+  if (result.status === "failed") {
+    throw new Error(`Failed to install/update server: ${result.error ?? ""}`);
+  }
+}
+
+export async function ensureMods() {
+  const mods: WorkshopModRequest[] = MOD_FILE.mods.map(([workshopId, folderName]) => {
+    return { workshopId, folderName };
+  });
+  ok(`Updating ${mods.length} mods to ${SERVER_DIR}`);
+  const result = await updateWorkshopMods(SERVER_DIR, mods);
+  const errors = result.filter((r) => r.error);
+  if (errors.length > 0) {
+    const errorLines = errors.map((e) => `- ${e.folderName} (${e.workshopId}): ${e.error}`)
+      .join("\n");
+    throw new Error(`Failed to downloads mods...\n${errorLines}`);
+  }
+}
+
 export async function doStart(s: Settings): Promise<void> {
   await requireTools();
   await ensureConfig(s);
-  await ensureServer(s);
-  await ensureMods(s);
-  const allMods = await loadMods();
+  await ensureServer();
+  await ensureMods();
   await genConfig(s);
 
-  const mods = modParam(allMods);
-  const serverMods = serverModParam(allMods);
   await Deno.mkdir(PROFILE_DIR, { recursive: true });
   const extra = s.EXTRA_PARAMS.trim() ? s.EXTRA_PARAMS.trim().split(/\s+/) : [];
   const args = [
-    await serverBinary(),
+    `${SERVER_DIR}/DayZServer`,
     "-config=serverDZ.cfg",
     `-port=${s.PORT}`,
-    `-mod=${mods}`,
-    ...(serverMods ? [`-servermod=${serverMods}`] : []),
+    `-mod=${CLIENT_MODS}`,
+    ...(SERVER_MODS ? [`-servermod=${SERVER_MODS}`] : []),
     `-BEpath=${PROFILE_DIR}/battleye`,
     `-profiles=${PROFILE_DIR}`,
     `-cpuCount=${navigator.hardwareConcurrency}`,
@@ -245,13 +266,13 @@ export async function doStart(s: Settings): Promise<void> {
 
   await ensureOverrides();
 
-  await ensureModTypesMerged(allMods);
-  await ensureCustomKeycardsTypesRemoved(allMods);
+  await ensureModTypesMerged(MOD_FILE.mods);
+  await ensureCustomKeycardsTypesRemoved(MOD_FILE.mods);
   await ensureKeyCardRoomsTypesRemoved();
 
-  await ensureNCPRTypesMerged(allMods);
-  await ensureEconomyBlocks(allMods);
-  await ensureCustomKeycardsTypesWired(allMods);
+  await ensureNCPRTypesMerged(MOD_FILE.mods);
+  await ensureEconomyBlocks(MOD_FILE.mods);
+  await ensureCustomKeycardsTypesWired(MOD_FILE.mods);
 
   await tuneFoodScarcity();
   await tuneAnimalSpawns();
@@ -272,8 +293,8 @@ export async function doStart(s: Settings): Promise<void> {
   await backupWorldState();
 
   log(`Starting DayZ server on UDP ${s.PORT}`);
-  log(`Mods: ${mods}`);
-  if (serverMods) log(`Server-only mods: ${serverMods}`);
+  log(`Mods: ${CLIENT_MODS}`);
+  if (SERVER_MODS) log(`Server-only mods: ${SERVER_MODS}`);
 
   // steam-run provides the prebuilt DayZServer an FHS environment on NixOS.
   await runServerWithWatchdog(args);

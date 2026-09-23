@@ -25,3 +25,7 @@ Add a system where ai spawn 500m from a player every 1-2 hours. This will happen
 ## Technical - Pack Automation
 
 use [Dayz Dev Tools](https://pypi.org/project/dayz-dev-tools/) to automate serverpack stuff
+
+## Car Vanila Extended and Modding/Tunning
+
+https://steamcommunity.com/sharedfiles/filedetails/?id=3802783684
