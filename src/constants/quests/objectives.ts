@@ -33,7 +33,7 @@ import {
   safetyChecks,
   SEVEROGRAD_CENTER,
 } from "./common.ts";
-import { AI_NPCS, AINpcClassNames, ClassNameModded, NPCClassName } from "../types/classNames.ts";
+import { AI_NPCS, ClassNameModded } from "../types/classNames.ts";
 import { Faction } from "../types/quest.d.ts";
 import { AISpeed, BoolNum, FALSE, ObjectiveType, TRUE, Vec3 } from "../types/common.ts";
 import { LoadoutName } from "../types/npc.d.ts";
@@ -56,7 +56,7 @@ function aiSpawn(
   return {
     Name,
     Speed: AISpeed.WALK,
-    Chance: 100,
+    Chance: 1,
     Waypoints,
     NumberOfAI,
     Faction,
@@ -79,7 +79,7 @@ function treasure(Name: ClassNameModded): TreasureLootItem {
   return {
     Name,
     Attachments: [],
-    Chance: 100,
+    Chance: 1,
     QuantityPercent: -1,
     Max: 1,
     Min: 1,
@@ -162,29 +162,13 @@ export const ACTI_AIPATROL_RAIDER_SEVEROGRAD: AIPatrolObjective = {
   ], 3),
 } as const;
 
-/** @deprecated untill playtested */
-export const ACTI_COLLECT_SCOUT_INTEL: CollectionObjective = {
-  ...OBJECTIVE_DEFAULTS,
-  ID: 7,
-  ObjectiveText: "Recover the scouts' route notes before they're destroyed.",
-  ObjectiveType: ObjectiveType.COLLECT,
-  Collections: [
-    { ClassName: "QPK_Quest_Envelope", Amount: 1, QuantityPercent: -1, MinQuantityPercent: 0 },
-  ],
-  ShowDistance: TRUE,
-  AddItemsToNearbyMarketZone: FALSE,
-  NeedAnyCollection: FALSE,
-} as const;
-
-/** @deprecated untill playtested */
 export const ACTI_TRAVEL_RAIDER_CAMP: TravelObjective = {
   ...OBJECTIVE_DEFAULTS,
-  ID: 8,
+  ID: 6,
   ObjectiveText:
     "Follow the scout notes to the Raiders' camp at Dwarf Castle, south of the farm on your map.",
   ObjectiveType: ObjectiveType.TRAVEL,
-  Position: [7430.5, 427.283, 9109.28], // just past the AIPATROL_RAIDER_SEVEROGRAD waypoints
-
+  Position: [7430.5, 427.283, 9109.28],
   MaxDistance: 100,
   MarkerName: "Raider Forward Camp",
   ShowDistance: TRUE,
@@ -192,14 +176,24 @@ export const ACTI_TRAVEL_RAIDER_CAMP: TravelObjective = {
   TriggerOnExit: 0,
 } as const;
 
-/** @deprecated untill playtested */
 export const ACTI_TREASUREHUNT_RAIDER_CACHE: TreasureHuntObjective = {
   ...OBJECTIVE_DEFAULTS,
-  ID: 9,
+  ID: 7,
   ObjectiveText:
-    "The Raiders seemingly abandoned the camp, try find if the burried anything they couldn't take with them.",
+    "The Raiders seemingly abandoned the area, try find if the left anything behind that they couldn't take with them.",
   ObjectiveType: ObjectiveType.TREASUREHUNT,
-  Positions: [7381.57, 401.665, 9116.99],
+  Positions: [
+    [7381.57, 401.665, 9116.99],
+    [7430.63, 412.053, 9104.52],
+    [7439.57, 403.471, 9134.52],
+    [7423.53, 402.58, 9141.39],
+    [7415.75, 402.382, 9137.32],
+    [7404, 401.964, 9132.81],
+    [7395.16, 401.966, 9109.98],
+    [7418.4, 406.318, 9095.67],
+    [7418.09, 408.967, 9095.41],
+    [7388.68, 406.194, 9110.76],
+  ],
   Loot: [
     treasure("QPK_Quest_Envelope"),
     treasure("NailBox"),
@@ -212,32 +206,29 @@ export const ACTI_TREASUREHUNT_RAIDER_CACHE: TreasureHuntObjective = {
     treasure("Matchbox"),
   ],
   MaxDistance: 60,
-  MarkerName: "Buried Cache",
+  MarkerName: "Cache",
   ShowDistance: FALSE,
-  DigInStash: TRUE,
-  LootItemsAmount: 2,
-  ContainerName: "ExpansionQuestContainerBase",
+  DigInStash: FALSE,
+  LootItemsAmount: 9,
+  ContainerName: "ExpansionQuestSeaChest",
 } as const;
 
-/** @deprecated untill playtested */
 export const ACTI_CRAFTING_WATCHTOWER: CraftingObjective = {
   ...OBJECTIVE_DEFAULTS,
-  ID: 10,
-  ObjectiveText: "Craft a watchtower and floor so Romashka can prepare for trouble.",
+  ID: 8,
+  ObjectiveText: "Learn how to craft watchtower kits so Romashka can prepare for trouble.",
   ObjectiveType: ObjectiveType.CRAFTING,
-  ItemNames: ["WatchTowerKit", "ExpansionFloorKit"],
-  ExecutionAmount: 4,
+  ItemNames: ["WatchTowerKit"],
+  ExecutionAmount: 1,
 } as const;
 
-/** @deprecated untill playtested */
 export const ACTI_DELIVERY_TOWER_KITS: DeliveryObjective = {
   ...OBJECTIVE_DEFAULTS,
-  ID: 11,
+  ID: 9,
   ObjectiveText: "Deliver some base reinforcement kits to Daniels.",
   ObjectiveType: ObjectiveType.DELIVERY,
   Collections: [
-    { ClassName: "ExpansionFloorKit", Amount: 2, QuantityPercent: -1, MinQuantityPercent: 0 },
-    { ClassName: "WatchTowerKit", Amount: 2, QuantityPercent: -1, MinQuantityPercent: 0 },
+    { ClassName: "WatchTowerKit", Amount: 1, QuantityPercent: -1, MinQuantityPercent: 0 },
   ],
   ShowDistance: TRUE,
   AddItemsToNearbyMarketZone: FALSE,
@@ -248,12 +239,12 @@ export const ACTI_DELIVERY_TOWER_KITS: DeliveryObjective = {
 /** @deprecated untill playtested */
 export const ACTI_TARGET_RAIDER_GUARDS: TargetObjective = {
   ...OBJECTIVE_DEFAULTS,
-  ID: 12,
-  ObjectiveText: "Clear the guards before you get anywhere near the radio.",
+  ID: 10,
+  ObjectiveText: "Kill Raiders 1KM around Bashnya (Northern NWAF).",
   ObjectiveType: ObjectiveType.TARGET,
   Position: [4041.62, 372.717, 11713.6],
-  MaxDistance: 250,
-  MinDistance: 0,
+  MaxDistance: 0,
+  MinDistance: 1000,
   Amount: 4,
   ClassNames: AI_NPCS,
   CountSelfKill: TRUE,
@@ -264,7 +255,7 @@ export const ACTI_TARGET_RAIDER_GUARDS: TargetObjective = {
 /** @deprecated untill playtested */
 export const ACTI_AIVIP_SIGNAL_OPERATOR: AIVipObjective = {
   ...OBJECTIVE_DEFAULTS,
-  ID: 13,
+  ID: 11,
   ObjectiveText: "Track down the Raider running the radio that's calling this in.",
   ObjectiveType: ObjectiveType.AIVIP,
   Position: [4139.81, 417.742, 11759.3],
@@ -281,7 +272,6 @@ const ACT_I_OBJECTIVES: ObjectiveBase[] = [
   ACTI_COLLECT_BUILDING_MATERIALS,
   ACTI_TRAVEL_SEVEROGRAD_RAIDERS,
   ACTI_AIPATROL_RAIDER_SEVEROGRAD,
-  ACTI_COLLECT_SCOUT_INTEL,
   ACTI_TRAVEL_RAIDER_CAMP,
   ACTI_TREASUREHUNT_RAIDER_CACHE,
   ACTI_CRAFTING_WATCHTOWER,

@@ -1,4 +1,4 @@
-export async function ensureConfigs(configs: Record<string, unknown>): Promise<void> {
+export async function ensureConfigs(configs: Record<string, object>): Promise<void> {
   for (const [path, config] of Object.entries(configs)) {
     await ensureConfig(path, config);
   }
@@ -12,7 +12,7 @@ export async function ensureConfig(path: string, config: unknown): Promise<void>
   await Deno.writeTextFile(path, JSON.stringify(config, null, 2));
 }
 
-export async function ensureRemoved(...paths: string[]) {
+export async function ensureRemoved(paths: string[]) {
   for (const path of paths) {
     await Deno.remove(path, { recursive: true }).catch(() => {});
   }

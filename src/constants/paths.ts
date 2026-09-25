@@ -193,6 +193,7 @@ export const OFG_NUCLEAR_ZONE_EXPANSION_AI_SETTINGS =
 // (all prefixed "DZSurvival_" so they never collide by name with the mod's
 // own "Quest_<n>.json"/"QuestNPC_<n>.json"/"Objective_<X>_<n>.json" pattern).
 export const EXPANSION_QUESTS_DIR = `${PROFILE_DIR}/ExpansionMod/Quests`;
+export const EXPANSION_QUESTS_PLAYERDATA_DIR = `${EXPANSION_QUESTS_DIR}/PlayerData`;
 export const EXPANSION_QUESTS_QUESTS_DIR = `${EXPANSION_QUESTS_DIR}/Quests`;
 export const EXPANSION_QUESTS_NPCS_DIR = `${EXPANSION_QUESTS_DIR}/NPCs`;
 export const EXPANSION_QUESTS_OBJECTIVES_DIR = `${EXPANSION_QUESTS_DIR}/Objectives`;

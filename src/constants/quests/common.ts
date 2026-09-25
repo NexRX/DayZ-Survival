@@ -32,7 +32,7 @@ export function reward(
   className: ClassNameModded,
   Amount: number = 1,
   DamagePercent: number = 0,
-  Chance: number = 0,
+  Chance: number = 1,
 ): RewardEntry {
   return {
     ClassName: className,

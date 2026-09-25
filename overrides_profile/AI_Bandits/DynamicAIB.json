@@ -2,7 +2,7 @@
   "GroupLocations": [
     {
       "name": "NWAF_Industrial",
-      "faction": "Bandits",
+      "faction": "Raiders",
       "waypoints": [
         "4305.451172 339.049591 10874.753906",
         "4349.890137 339.140198 10837.599609",
@@ -63,7 +63,7 @@
     },
     {
       "name": "NWAF_Gate",
-      "faction": "Bandits",
+      "faction": "Raiders",
       "waypoints": [
         "4464.186035 338.931549 9520.162109",
         "4458.933105 339.120453 9481.244141",
@@ -77,6 +77,58 @@
         "4514.037109 339.074127 9781.719727",
         "4443.940430 339.040009 9763.751953",
         "4442.051270 339.039948 9742.824219",
+        "4433.756836 339.040039 9735.499023",
+        "4434.712402 339.040009 9699.764648",
+        "4459.530762 339.000031 9650.942383",
+        "4487.938965 338.999969 9608.134766"
+      ],
+      "npcclasses": [
+        "BanditAI_Keiko",
+        "BanditAI_Linda",
+        "BanditAI_Rolf",
+        "BanditAI_Denis",
+        "BanditAI_Adam"
+      ],
+      "accuracy": 75.0,
+      "dog": 1,
+      "weaponpool": ["Predefined_AKM"],
+      "npcproperties": {
+        "headgear": [],
+        "masks": [],
+        "vests": [],
+        "backpacks": ["HuntingBag"],
+        "bodywear": [
+          "HuntingJacket_Winter",
+          "HuntingJacket_Summer",
+          "HuntingJacket_Spring",
+          "HuntingJacket_Brown"
+        ],
+        "pants": [
+          "HunterPants_Winter",
+          "HunterPants_Summer",
+          "HunterPants_Spring",
+          "HunterPants_Brown"
+        ],
+        "shoes": ["CombatBoots_Black"],
+        "loot": ["Mag_AKM_30Rnd", "Apple"]
+      }
+    },
+    {
+      "name": "NWAF_North",
+      "faction": "Raiders",
+      "waypoints": [
+        "<4042.12, 372.717, 11712.6>",
+        "<4038.25, 375.977, 11709.4>",
+        "<4001.33, 375.755, 11786.3>",
+        "<4001.33, 375.755, 11786.3>",
+        "<4030.31, 375.749, 11802.2>",
+        "<4058.96, 379.417, 11764.9>",
+        "<4099.34, 379.507, 11732.2>",
+        "<4096.65, 374.824, 11682.6>",
+        "<4097.23, 370.242, 11624>",
+        "<4042.3, 369.924, 11603.5>",
+        "<4007.8, 369.787, 11629.7>",
+        "<3976.04, 367.302, 11627.2>",
         "4433.756836 339.040039 9735.499023",
         "4434.712402 339.040009 9699.764648",
         "4459.530762 339.000031 9650.942383",
@@ -166,7 +218,7 @@
     },
     {
       "name": "TISY_Tents",
-      "faction": "Bandits",
+      "faction": "Raiders",
       "waypoints": [
         "6702.334473 15.095179 11165.135742",
         "6726.584473 15.109262 11166.520508",
@@ -208,7 +260,7 @@
     },
     {
       "name": "Petrovka_West",
-      "faction": "Bandits",
+      "faction": "Raiders",
       "waypoints": [
         "3267.220947 200.706055 12921.532227",
         "3335.748535 198.678146 12982.898438",

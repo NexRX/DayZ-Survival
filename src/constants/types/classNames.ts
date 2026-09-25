@@ -214,6 +214,7 @@ export type ClassNameModded =
   | "QPK_Note_1"
   | "QPK_Note_3"
   | "ExpansionQuestContainerBase"
+  | "ExpansionQuestSeaChest"
   | "ExpansionQuestDryBag_Orange"
   | "ExpansionQuestDryBag_Yellow"
   | "ExpansionQuestDryBag_Blue"

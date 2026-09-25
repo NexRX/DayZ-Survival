@@ -102,10 +102,15 @@ export interface TravelObjective extends ObjectiveBase {
 
 export interface TargetObjective extends ObjectiveBase {
   ObjectiveType: ObjectiveType.TARGET;
-  Position: Vec3;
+  Position?: Vec3;
+  /* If an objective position is defined then the quest players need to be outside the given range when they eliminate a target to count it for the objective. */
   MaxDistance: number;
+  /* If an objective position is defined then the quest players need to be within the given range when they eliminate a target to count it for the objective. */
   MinDistance: number;
+  /* Amount of eliminations that need to be executed on given entities to complete this objective. */
   Amount: number;
+  /* Class names that will be used to control kills. If a unit gets killed that is not in this array the kill will not count for this objective.
+   * Manual Note: DOES NOT SPAWN AI, use AICampObjective or AIPatrolObjective instead if you need spawn control */
   ClassNames: NPCClassName[];
   CountSelfKill: BoolNum;
   AllowedWeapons?: ClassNameModded[];
@@ -158,7 +163,7 @@ export interface TreasureLootItem {
 
 export interface TreasureHuntObjective extends ObjectiveBase {
   ObjectiveType: ObjectiveType.TREASUREHUNT;
-  Positions: Vec3;
+  Positions: Vec3[];
   Loot: TreasureLootItem[];
   MaxDistance: number;
   MarkerName: string;

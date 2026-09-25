@@ -122,7 +122,7 @@ const MAIN_QUEST_ACT1_DIGGING_IN: Quest = {
   Descriptions: [
     "Daniels: \"When they notice that cache is gone, they'll be pissed and undoubtly search for it, and given the scotts we fucking killed, they may divert people to find us. I'd rather they find a strong defence than a weak one. Figure out how we can make watch towers with whatever you can find. Do that and then we'll pay you handsomely for the lessons learnt.\"",
     "Timber, wire, and a working pair of eyes up high, we might just be able to make this watchtower plank by plank while a stockpile grows underneath it.",
-    '"Welcome as usual, looks like you\'ve learnt a thing or too." Daniels remarks. I begin to start explain the resources I used to build a watch tower and explain some of the farming techniques I\'ve employed. His expression almost turns to a smile as he utters "First time in weeks this place has felt like it could hold off against more than zeds. Heres your tution fee."',
+    '"Welcome back, looks like you\'ve learnt a thing or too." Daniels remarks. I begin to start explain the resources I used to build a watch tower and explain some of the farming techniques I\'ve employed. His expression almost turns to a smile as he utters "First time in weeks this place has felt like it could hold off against more than zeds. Heres your tution fee."',
   ],
   PreQuestIDs: [MAIN_QUEST_ACT1_DIGGING_FOR_ANSWERS.ID],
   QuestItems: [item("ExpansionBarbedWireKit"), item("ExpansionFloorKit", 2)],
@@ -131,11 +131,10 @@ const MAIN_QUEST_ACT1_DIGGING_IN: Quest = {
     ref(objectives.ACTI_DELIVERY_TOWER_KITS),
   ],
   Rewards: [
-    reward("TacticalBaconCan"),
     reward("Matchbox"),
     reward("Pot"),
     reward("CookingStand"),
-    currency(25),
+    currency(15),
   ],
   FollowUpQuest: 6,
 };
@@ -160,7 +159,7 @@ const MAIN_QUEST_ACT1_SIGNAL_IN_THE_STATIC: Quest = {
     reward("Mag_1911_7Rnd"),
     reward("PistolSuppressor"),
     reward("AmmoBox_9x19_25rnd"),
-    currency(30),
+    currency(25),
   ],
 };
 
