@@ -47,7 +47,7 @@ export const NPC_GUARD_KAITO: Npc = {
 export const NPC_BLACKMARKET_HASSAN: Npc = {
   ...NPC_DEFAULTS,
   ID: 4,
-  ClassName: "ExpansionQuestNPCHassan", // TODO CHANGE
+  ClassName: "ExpansionQuestNPCHassan",
   Position: [13119.5, 1.9622, 8178.82],
   Orientation: [176.868, 0, -0],
   NPCName: "Hassan",

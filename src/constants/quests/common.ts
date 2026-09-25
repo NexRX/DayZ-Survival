@@ -1,5 +1,5 @@
 import { ClassNameModded } from "../types/classNames.ts";
-import type { Item, Quest } from "../types/quest.d.ts";
+import type { Item, Quest, RewardEntry } from "../types/quest.d.ts";
 
 /** @deprecated Usage of this variable needs updating */
 export const PLACEHOLDER_POSITION = [200, 100, 300] as const;
@@ -11,6 +11,10 @@ export const OBJECTIVE_CONFIG_VERSION = 28;
 export const NPC_CONFIG_VERSION = 6;
 export const CURRENCY_CLASSNAME = "ExpansionBanknoteHryvnia";
 export const CURRENCY_MULTIPLIER = 1000;
+
+// Common Locations Only!
+export const ROMASHKA_FARM = [7986, 221, 11308] as const;
+export const SEVEROGRAD_CENTER = [8061.14, 113.996, 12728.1] as const;
 
 export function item(
   className: ClassNameModded,
@@ -29,7 +33,7 @@ export function reward(
   Amount: number = 1,
   DamagePercent: number = 0,
   Chance: number = 0,
-) {
+): RewardEntry {
   return {
     ClassName: className,
     Amount,

@@ -56,6 +56,8 @@ export enum NPCType {
 export type LoadoutName =
   | "AirfieldLoadout"
   | "BlackLoadout"
+  | "BanditLoadout_Intel"
+  | "BanditLoadout_Radio"
   | "GuardLoadout"
   | "MMG_SNAFU_Tan"
   | "PoliceLoadoutMMG"

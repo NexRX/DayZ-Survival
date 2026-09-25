@@ -31,6 +31,7 @@ import { updateGame, updateWorkshopMods, WorkshopModRequest } from "../steam/ind
 
 export type Mod = [number, string, "server" | undefined];
 export type ModFile = { mods: Mod[] };
+
 const MOD_FILE = parseJsonc(Deno.readTextFileSync(`${ROOT}/mods.jsonc`)) as ModFile;
 const CLIENT_MODS = MOD_FILE.mods.filter((m) => m[2] !== "server").map((m) => m[1]).join(";");
 const SERVER_MODS = MOD_FILE.mods.filter((m) => m[2] === "server").map((m) => m[1]).join(";");
@@ -54,49 +55,22 @@ async function deployServerOnlyPack(): Promise<void> {
   }
 }
 
-// Crash-recovery watchdog for the actual server launch (the last step of
-// doStart()): auto-restarts on an unexpected exit with a short backoff,
-// but stops cleanly (no restart) on an intentional Ctrl-C/SIGTERM. Also
-// drives the wall-clock scheduled restarts every 12h at 03:00/15:00 - see
-// scheduleNextAutoRestart() below.
 const CRASH_LOG = `${PROFILE_DIR}/crashes.log`;
-// Below this much runtime, an exit counts as a "fast crash" for the
-// give-up logic below rather than a normal shutdown after a real play
-// session.
 const FAST_CRASH_THRESHOLD_MS = 60_000;
 const RESTART_BACKOFF_MS = 15_000;
 const MAX_CONSECUTIVE_FAST_CRASHES = 5;
-// If the server hasn't exited this long after a graceful SIGTERM, force-kill
-// it ourselves. This matters under systemd, which sends exactly one SIGTERM
-// on `systemctl stop`/`restart` and then just waits - there's no interactive
-// "press Ctrl-C again" follow-up in that context, so without this the whole
-// unit (and `systemctl restart`) can hang if the DayZ binary doesn't exit
-// cleanly on its own.
 const GRACEFUL_STOP_TIMEOUT_MS = 30_000;
+const DUPLICATE_SIGNAL_WINDOW_MS = 1_000;
 
 let stopRequested = false;
 let stopRequestedAt = 0;
 let currentChild: Deno.ChildProcess | null = null;
-// Set right before a scheduled restart's SIGTERM goes out, cleared once the
-// watchdog loop below observes the resulting exit - lets that loop log a
-// clear "this was scheduled" message instead of the generic crash/clean-exit
-// warnings, without changing any of the actual restart/backoff behavior.
 let scheduledRestartInProgress = false;
-
-// A single Ctrl-C often reaches this process as more than one signal - e.g.
-// the terminal delivers SIGINT to the whole foreground process group while
-// a wrapper (nix develop --command, a shell, etc.) separately forwards
-// SIGTERM moments later as its own cleanup behavior. Both are registered on
-// this same handler below, so a second signal arriving within this window
-// is treated as an artifact of that, not a genuinely repeated Ctrl-C.
-const DUPLICATE_SIGNAL_WINDOW_MS = 1_000;
 
 function forceKill(): void {
   try {
     currentChild?.kill("SIGKILL");
-  } catch {
-    // already exited - nothing to kill
-  }
+  } catch { /* no-op */ }
 }
 
 function requestStop(): void {
@@ -116,9 +90,7 @@ function requestStop(): void {
   );
   try {
     currentChild?.kill("SIGTERM");
-  } catch {
-    // already exited - the watchdog loop will notice via child.status
-  }
+  } catch { /* no-op */ }
   setTimeout(() => {
     if (stopRequested && currentChild) {
       warn(
@@ -135,12 +107,6 @@ async function logCrash(code: number, ranMs: number): Promise<void> {
 }
 
 async function runServerWithWatchdog(args: string[]): Promise<never> {
-  // Change to the server directory before spawning steam-run. This matters
-  // because steam-run uses `--chdir "$(pwd)"` internally - if we don't cd
-  // first, bwrap runs with the parent shell's CWD (the repo root), and the
-  // Enfusion engine resolves "$CurrentDir" there, failing to find dayz.gproj
-  // which lives in server/. The Deno spawn `cwd` option only affects the
-  // child process itself, not the $(pwd) captured inside the steam-run script.
   Deno.chdir(SERVER_DIR);
 
   log(`Starting Server: ${args.reduce((a, b) => `${a}\n${b}`)}`);
@@ -150,8 +116,6 @@ async function runServerWithWatchdog(args: string[]): Promise<never> {
   let consecutiveFastCrashes = 0;
   while (true) {
     const startedAt = Date.now();
-    // Run directly (no setsid) - setsid can interfere with LD_LIBRARY_PATH
-    // resolution in Nix environments. signal handling is via requestStop().
     currentChild = new Deno.Command("steam-run", {
       args,
       cwd: SERVER_DIR,
@@ -296,6 +260,5 @@ export async function doStart(s: Settings): Promise<void> {
   log(`Mods: ${CLIENT_MODS}`);
   if (SERVER_MODS) log(`Server-only mods: ${SERVER_MODS}`);
 
-  // steam-run provides the prebuilt DayZServer an FHS environment on NixOS.
   await runServerWithWatchdog(args);
 }

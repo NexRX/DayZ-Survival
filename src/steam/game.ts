@@ -1,7 +1,7 @@
 import { loadBaseConfig, persistentSteamOptions } from "./config.ts";
 import { runInteractive } from "./process.ts";
 import { withRateLimitBackoff } from "./backoff.ts";
-import { ROOT } from "../constants/paths.ts";
+import { DAYZ_CLIENT_APPID, NEWS_CACHE, ROOT } from "../constants/paths.ts";
 
 export interface GameSyncResult {
   appId: string;
@@ -26,9 +26,16 @@ export async function updateGame(
   appId: string,
   path: string,
 ): Promise<GameSyncResult> {
-  const config = await loadBaseConfig();
   await Deno.mkdir(path, { recursive: true });
 
+  const serverBinary = `${path}/DayZServer`;
+  const needsLogin = await checkServerNeedsUpdate(appId, path, serverBinary);
+
+  if (!needsLogin) {
+    return { appId, path, status: "success" };
+  }
+
+  const config = await loadBaseConfig();
   const scriptDir = await Deno.makeTempDir({ prefix: "steamcmd-game-", dir: ROOT });
 
   try {
@@ -68,5 +75,65 @@ export async function updateGame(
     return { appId, path, status: "success" };
   } finally {
     await Deno.remove(scriptDir, { recursive: true }).catch(() => {});
+  }
+}
+
+/**
+ * Returns whether the server needs an authenticated SteamCMD login.
+ *
+ * If the binary doesn't exist → login needed to install.
+ * If the binary exists → check Steam News API for new announcements.
+ *   Server updates are posted as news on the DayZ client page.
+ *   If no new news → skip entirely (zero SteamCMD, zero SDA risk).
+ *   If new news → fall back to authenticated SteamCMD login.
+ */
+async function checkServerNeedsUpdate(
+  _appId: string,
+  _path: string,
+  serverBinary: string,
+): Promise<boolean> {
+  // Not installed yet — definitely needs login.
+  try {
+    await Deno.stat(serverBinary);
+  } catch {
+    return true;
+  }
+
+  // Binary exists — check Steam News API for new update announcements.
+  const latestGid = await getLatestNewsGid();
+  if (!latestGid) return false; // API failed — assume up-to-date
+
+  try {
+    const cached = await Deno.readTextFile(NEWS_CACHE);
+    if (cached.trim() === latestGid) return false; // same news — no update
+  } catch {
+    // No cached gid yet — first run, assume up-to-date
+    await Deno.writeTextFile(NEWS_CACHE, latestGid).catch(() => {});
+    return false;
+  }
+
+  // New news found — auth login needed to check for server update.
+  await Deno.writeTextFile(NEWS_CACHE, latestGid).catch(() => {});
+  return true;
+}
+
+interface NewsApiResponse {
+  appnews: {
+    newsitems: Array<{ gid: string }>;
+  };
+}
+
+const NEWS_API_URL = `https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/` +
+  `?appid=${DAYZ_CLIENT_APPID}&count=1&feedlist=feed_steam_announcements`;
+
+/** Fetches the latest news gid from the Steam News API. Returns null on failure. */
+async function getLatestNewsGid(): Promise<string | null> {
+  try {
+    const resp = await fetch(NEWS_API_URL);
+    if (!resp.ok) return null;
+    const json = (await resp.json()) as NewsApiResponse;
+    return json.appnews?.newsitems?.[0]?.gid ?? null;
+  } catch {
+    return null;
   }
 }

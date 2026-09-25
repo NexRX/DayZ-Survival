@@ -105,6 +105,14 @@ export async function updateWorkshopMods(
     queued.push({ mod, sizeBytes, timeUpdated, isUpdate: Boolean(record) });
   }
 
+  // Skip downloading entirely when everything is up-to-date — avoids a
+  // SteamCMD login that can interfere with other tools sharing the same
+  // account (e.g. Steam Desktop Authenticator).
+  if (queued.length === 0) {
+    await saveMetadata(path, metadata);
+    return results;
+  }
+
   const smallMods = queued.filter((q) => q.sizeBytes <= config.largeFileCutoffBytes);
   const largeMods = queued.filter((q) => q.sizeBytes > config.largeFileCutoffBytes);
 

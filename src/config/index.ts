@@ -14,6 +14,6 @@ export async function ensureConfig(path: string, config: unknown): Promise<void>
 
 export async function ensureRemoved(...paths: string[]) {
   for (const path of paths) {
-    await Deno.remove(path, { recursive: true });
+    await Deno.remove(path, { recursive: true }).catch(() => {});
   }
 }

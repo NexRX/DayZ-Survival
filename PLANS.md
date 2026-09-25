@@ -29,3 +29,9 @@ use [Dayz Dev Tools](https://pypi.org/project/dayz-dev-tools/) to automate serve
 ## Car Vanila Extended and Modding/Tunning
 
 https://steamcommunity.com/sharedfiles/filedetails/?id=3802783684
+
+# Expansion Chat
+
+https://dayzexpansion.com/mods/expansion-chat
+
+Need a way to tlak to people incase i need to restart server etc

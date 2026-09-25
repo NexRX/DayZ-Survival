@@ -134,7 +134,7 @@ export interface CollectionObjective extends ObjectiveBase {
 
 export interface CraftingObjective extends ObjectiveBase {
   ObjectiveType: ObjectiveType.CRAFTING;
-  ItemNames: string[];
+  ItemNames: ClassNameModded[];
   ExecutionAmount: number;
 }
 

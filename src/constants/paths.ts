@@ -21,6 +21,7 @@ export const SERVERONLYPACK_DIR = `${ROOT}/serveronlypack/${SERVERONLYPACK_NAME}
 
 export const LOGIN_MARKER = `${STEAMCMD_DIR}/.dayz_login_ok`;
 export const DD_LOGIN_MARKER = `${STEAMCMD_DIR}/.dd_login_ok`;
+export const NEWS_CACHE = `${STEAMCMD_DIR}/.dayz_last_news_gid`;
 
 export const DAYZ_SERVER_APPID = "223350";
 export const DAYZ_CLIENT_APPID = "221100";
